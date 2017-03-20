@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2016 The Josh Tool Project
+ * Copyright (C) 2017 The Josh Tool Project
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -59,12 +59,12 @@ public class JoshGameLibrary {
     }
 
     public void setScreenDimension(int w, int h) {
-        mCaptureService.SetScreenDimension(w, h);
-        mInputService.SetScreenDimension(w, h);
+        mCaptureService.setScreenDimension(w, h);
+        mInputService.setScreenDimension(w, h);
     }
 
     public void setGameOrientation(int orientation) {
-        mInputService.SetGameOrientation(orientation);
+        mInputService.setGameOrientation(orientation);
     }
 
     public CaptureService getCaptureService() {

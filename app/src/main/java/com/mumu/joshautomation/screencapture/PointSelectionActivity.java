@@ -108,8 +108,8 @@ public class PointSelectionActivity extends AppCompatActivity {
         mGL.setContext(this);
         mGL.setGameOrientation(ScreenPoint.SO_Landscape);
         mGL.setScreenDimension(1080, 1920);
-        mGL.getCaptureService().DumpScreenPNG(mPngFilePath);
-        mGL.getCaptureService().DumpScreen(mDumpFilePath);
+        mGL.getCaptureService().dumpScreenPNG(mPngFilePath);
+        mGL.getCaptureService().dumpScreen(mDumpFilePath);
 
         mImageView.setImageBitmap(BitmapFactory.decodeFile(mPngFilePath));
         mImageView.setOnTouchListener(mPointTouchListener);
@@ -229,7 +229,7 @@ public class PointSelectionActivity extends AppCompatActivity {
         kUserPoint.coord.orientation = ScreenPoint.SO_Portrait;
         kUserPoint.coord.x = x;
         kUserPoint.coord.y = y;
-        mGL.getCaptureService().GetColorOnDump(kUserPoint.color, mDumpFilePath, kUserPoint.coord);
+        mGL.getCaptureService().getColorOnDump(kUserPoint.color, mDumpFilePath, kUserPoint.coord);
         kColorOnPoint = "0x" + Integer.toHexString(kUserPoint.color.r & 0xFF) + " "
                 + Integer.toHexString(kUserPoint.color.g & 0xFF) + " "
                 + Integer.toHexString(kUserPoint.color.b & 0xFF) + " "

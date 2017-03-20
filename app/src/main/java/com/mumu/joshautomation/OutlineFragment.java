@@ -185,29 +185,6 @@ public class OutlineFragment extends MainFragment implements JobEventListener {
         void onFragmentInteraction(Uri uri);
     }
 
-    void createNewAccountFolder(String folderName) {
-        String baseFileName = mContext.getFilesDir().getAbsolutePath() +
-                File.separator + folderName;
-        File folderBase = new File(baseFileName);
-        File folderFiles = new File(baseFileName + "/files");
-        File folderPrefs = new File(baseFileName + "/shared_prefs");
-
-        if (!folderBase.exists()) {
-            if (!folderBase.mkdirs())
-                Log.d(TAG, "folder " + baseFileName + " create fail");
-        }
-
-        if (!folderFiles.exists()) {
-            if (!folderFiles.mkdirs())
-                Log.d(TAG, "folder " + baseFileName + "/files create fail");
-        }
-
-        if (!folderPrefs.exists()) {
-            if (!folderPrefs.mkdirs())
-                Log.d(TAG, "folder " + baseFileName + "/shared_prefs create fail");
-        }
-    }
-
     /*
      *  Add record
      */
@@ -223,7 +200,6 @@ public class OutlineFragment extends MainFragment implements JobEventListener {
                             String nextSerial = mRecordHandler.getNextSerial();
                             addNewRecordFromUser("account" + nextSerial, "NOW", input.toString());
                             updateView();
-                            createNewAccountFolder("account" + nextSerial);
                         } catch (Exception e) {
                             Log.e(TAG, e.getMessage());
                         }
