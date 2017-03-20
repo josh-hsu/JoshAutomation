@@ -1,0 +1,81 @@
+<resources>
+    <string name="app_name">Josh Auto</string>
+
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
+    <string name="action_settings">Settings</string>
+    <string name="action_detail">Detail</string>
+    <string name="action_yes">Yes</string>
+    <string name="action_no">No</string>
+    <string name="action_confirm">Confirm</string>
+    <string name="action_cancel">Cancel</string>
+
+    <!-- project parameters -->
+    <string name="electric_data_file_name">electric_records.xml</string>
+
+    <!-- drawer -->
+    <string name="drawer_title">User Name</string>
+    <string name="drawer_subtitle">User Email</string>
+    <string name="drawer_outline">Outline Function</string>
+    <string name="drawer_electricity">Accounts</string>
+    <string name="drawer_menu_social">Social</string>
+    <string name="drawer_send">Send Mail to developer</string>
+    <string name="drawer_share">Share to ..</string>
+
+    <!-- home activity -->
+    <string name="bugreport_permission_request">We need permission to access external storage.</string>
+    <string name="bugreport_permission_not_grant">Your record is not sent to developer because you denied the permission request.</string>
+    <string name="bugreport_subject">Bugreport</string>
+    <string name="bugreport_send_out_via">Send out mail via ..</string>
+    <string name="bugreport_context">Briefly describe the bug you found or suggestions to this APP: \n</string>
+    
+    <!-- Electricity activity -->
+    <string name="electric_edit">Restore Account</string>
+    <string name="electric_update">Update Account</string>
+    <string name="electric_delete">Delete Account</string>
+
+    <string name="electric_add">Give an account name</string>
+    <string name="electric_add_info">Please add a new account</string>
+    <string name="electric_add_next">Add new one to compare</string>
+    <string name="electric_add_field_holder">Current number</string>
+    <string name="electric_add_cancel">Cancel</string>
+
+    <string name="electric_graphic_today">Today</string>
+    <string name="electric_graphic_yesterday">Yesterday</string>
+    <string name="electric_sheet_button_assistant">Inverse the table</string>
+
+    <!-- Outline fragment -->
+    <string name="outline_kill_fgo">Josh Automation</string>
+    <string name="outline_backup_fgo_account">Backup FGO Account</string>
+    <string name="outline_backup_fgo_title">Backup FGO Account</string>
+    <string name="outline_backup_fgo_msg">Save account data in current FGO game into account1.\n Continue?</string>
+    <string name="outline_remove_fgo_account">Remove FGO Account</string>
+    <string name="outline_remove_fgo_title">Remove FGO Account</string>
+    <string name="outline_remove_fgo_msg">This is not reversible, you can not undo it!.\n Continue?</string>
+    <string name="outline_refresh_fgo_info">List all accounts</string>
+    <string name="outline_restore_fgo_title">Restore FGO Account</string>
+    <string name="outline_restore_fgo_msg">Restore account will replace the current account.\n Continue?</string>
+    <string name="outline_update_fgo_title">Update FGO Account</string>
+    <string name="outline_update_fgo_msg">Update account will only update the preference in game, not affect any account ID data.\n Continue?</string>
+    <string name="outline_update_fgo_msg_forbid1">Sorry, last restore might be </string>
+    <string name="outline_update_fgo_msg_forbid2">, so we cannot backup it for </string>
+    <string name="outline_update_fgo_msg_forbid3">Sorry, you haven\'t restore any account yet</string>
+    <string name="outline_account_num">Current number of accounts: </string>
+    <string name="outline_start_auto_traverse">Start Auto Login Routine</string>
+    <string name="outline_stop_auto_traverse">Stop Auto Login Routine</string>
+    <string name="outline_current_progress">Auto Login: </string>
+    <string name="outline_current_finish">Finished: </string>
+    <string name="outline_start_screen_capture">Capture Screen Color</string>
+
+    <!-- Settings -->
+    <string name="settings_fragment_title_1">Account Setting</string>
+    <string name="settings_fragment_summary_1">Link your Google account or Dropbox account to App</string>
+    <string name="settings_restore_data_from_sdcard">Restore Data from external Storage</string>
+    <string name="settings_restore_title">Restore Saved Data</string>
+    <string name="settings_restore_subtitle">Warning: restore recently backup data will erase all the data you add after last backup. Continue?</string>
+    <string name="settings_restore_failed">Restore Failed</string>
+    <string name="settings_restore_not_found">Sorry, no backup data found in your device.</string>
+    <string name="settings_restore_finished">Restore has finished successfully.</string>
+
+
+</resources>

@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:card_view="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/cvExampleCard"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_gravity="center"
+    card_view:cardCornerRadius="4dp"
+    card_view:cardUseCompatPadding="true">
+
+    <LinearLayout
+        android:id="@+id/llCardBack"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:background="@android:color/white"
+        android:animateLayoutChanges="true"
+        android:padding="4dp"
+        android:orientation="vertical">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <TextView
+                android:id="@+id/textViewSerial"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:background="@drawable/bg_blue_circle"
+                android:gravity="center"
+                android:text="+15"
+                android:textColor="#EC407A"
+                android:textSize="14sp"
+                android:layout_centerVertical="true"
+                android:layout_alignParentStart="true"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceSmall"
+                android:text="2988"
+                android:textSize="18sp"
+                android:id="@+id/textViewAccountTitle"
+                android:textColor="@color/colorAccent"
+                android:paddingStart="6dp"
+
+                android:layout_centerVertical="true"
+                android:layout_toEndOf="@+id/textViewSerial" />
+            <!--
+            <TextView
+                android:id="@+id/textViewDateTitle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center|fill_horizontal"
+                android:padding="4dp"
+                android:text="16:31, Yesterday"
+                android:textSize="18sp"
+                android:textColor="#EC407A"
+                android:layout_centerVertical="true"
+                android:layout_alignParentEnd="true"
+                android:layout_toEndOf="@+id/textViewAccountTitle"
+                android:textAlignment="viewEnd" /> -->
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/imageView2"
+                android:textColor="@color/colorAccent"
+                android:layout_alignParentTop="true"
+                android:layout_alignParentEnd="true" />
+        </RelativeLayout>
+
+        <LinearLayout
+            android:id="@+id/llExpandArea"
+            android:visibility="visible"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:orientation="vertical">
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="#1F000000"/>
+
+            <Button
+                android:id="@+id/btn_restore_account"
+                android:text="@string/electric_edit"
+                android:textSize="16sp"
+                android:background="#00000000"
+                android:textColor="#42A5F5"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
+
+            <Button
+                android:id="@+id/btn_update"
+                android:text="@string/electric_update"
+                android:textSize="16sp"
+                android:background="#00000000"
+                android:textColor="#42A5F5"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
+
+            <Button
+                android:id="@+id/btn_delete"
+                android:background="#00000000"
+                android:textColor="#F44336"
+                android:text="@string/electric_delete"
+                android:textSize="16sp"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
+
+        </LinearLayout>
+    </LinearLayout>
+</android.support.v7.widget.CardView>

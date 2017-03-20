@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen
+    xmlns:android="http://schemas.android.com/apk/res/android">
+    <PreferenceCategory android:title="Service">
+        <Preference
+            android:title="Turn On Service"
+            android:key="enableServicePref"
+            android:summary="Start auto start service"/>
+        <CheckBoxPreference
+            android:title="Ambiguous Color Matching"
+            android:defaultValue="true"
+            android:summary="If you got trouble using this App, please enable this option"
+            android:key="ambiguousColorMatching" />
+    </PreferenceCategory>
+
+    <PreferenceCategory android:title="Battle Settings">
+        <EditTextPreference
+            android:key="firstNormalBattleCount"
+            android:title="First Normal Battle Count"
+            android:summary="When start the new auto battle, first round count number. This option is for initial heroes are not started at LV1"
+            android:numeric="integer"
+            android:maxLength="1"/>
+        <EditTextPreference
+            android:key="normalBattleCount"
+            android:title="Normal Battle Count"
+            android:summary="Normally the battle count of normal battle, default is 8. When hit this number of battles, we start to change heroes"
+            android:numeric="integer"
+            android:maxLength="1"/>
+        <Preference
+            android:key="normal_skill"
+            android:title="Normal Battle Skill"
+            android:summary="Unselected"
+            android:dialogTitle="Select Skill"/>
+        <Preference
+            android:key="golden_skill"
+            android:title="Golden House Battle Skill"
+            android:summary="Sorry, we will make it available soon."
+            android:dialogTitle="Select Skoll"/>
+        <CheckBoxPreference
+            android:title="AUTO"
+            android:defaultValue="true"
+            android:summary="Whether we should turn on AUTO battle."
+            android:key="battleAutoPref" />
+        <CheckBoxPreference
+            android:title="Auto Change Hero (Beta)"
+            android:defaultValue="true"
+            android:summary="Changing 3 LV1 heros after 8 normal battles, this feature makes you easy to gain 200 rubies a day."
+            android:key="battleAutoChangePref" />
+        <CheckBoxPreference
+            android:title="Turn Off Screen"
+            android:defaultValue="false"
+            android:summary="When in battle, turn off the screen to save battery life."
+            android:key="battleScreenDisablePref" />
+        <CheckBoxPreference
+            android:title="Turn Off Touch Function (Beta)"
+            android:defaultValue="false"
+            android:summary="When in battle, ignore all touch events. Not suitable for all devices."
+            android:key="battleTouchDisablePref" />
+        <CheckBoxPreference
+            android:title="Vibration Notification"
+            android:defaultValue="false"
+            android:summary="When the auto battle finished, it will vibrate. (Not ready)"
+            android:key="battleVibratePref" />
+        <Preference
+            android:title="Ringtone Selection"
+            android:key="ringtonePref"
+            android:summary="When the auto battle finished, it will ring to tell you. (Not ready)"/>
+    </PreferenceCategory>
+
+</PreferenceScreen>

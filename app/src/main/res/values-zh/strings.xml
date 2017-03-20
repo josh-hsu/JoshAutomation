@@ -1,0 +1,79 @@
+<resources>
+    <string name="app_name">JA自動腳本</string>
+
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
+
+    <string name="action_settings">設定</string>
+    <string name="action_detail">所有資料</string>
+    <string name="action_yes">是</string>
+    <string name="action_no">否</string>
+    <string name="action_confirm">確定</string>
+    <string name="action_cancel">取消</string>
+
+    <!-- drawer -->
+    <string name="drawer_title">您</string>
+    <string name="drawer_subtitle">lazypig1226@gmail.com</string>
+    <string name="drawer_outline">概覽與功能</string>
+    <string name="drawer_electricity">帳號管理</string>
+    <string name="drawer_menu_social">社群</string>
+    <string name="drawer_send">問題回報</string>
+    <string name="drawer_share">分享給 </string>
+
+    <!-- home activity -->
+    <string name="bugreport_permission_request">需要外部儲存空間權限以便寄出錯誤報告</string>
+    <string name="bugreport_permission_not_grant">您的資料無法寄給開發者因為您拒絕了外部儲存空間權限要求</string>
+    <string name="bugreport_subject">問題回報</string>
+    <string name="bugreport_send_out_via">選擇 APP 來寄出 ..</string>
+    <string name="bugreport_context">簡單陳述您遇到的問題或是任何意見：\n</string>
+
+    <!-- Electricity activity -->
+    <string name="electric_edit">復原此帳號</string>
+    <string name="electric_update">更新此帳號遊戲設定</string>
+    <string name="electric_delete">刪除此帳號(尚未開放)</string>
+
+    <string name="electric_add">給一個帳號名稱</string>
+    <string name="electric_add_info">請輸入您現在的數值</string>
+    <string name="electric_add_next">再新增一筆來比較</string>
+    <string name="electric_add_field_holder">上個帳號名稱</string>
+    <string name="electric_add_cancel">取消</string>
+
+    <string name="electric_graphic_today">今天</string>
+    <string name="electric_graphic_yesterday">昨天</string>
+    <string name="electric_sheet_button_assistant">反向列出資料</string>
+
+    <!-- Outline -->
+    <string name="outline_kill_fgo">JA 自動化腳本服務</string>
+    <string name="outline_backup_fgo_account">備份 FGO 帳號</string>
+    <string name="outline_backup_fgo_title">備份 FGO 帳號</string>
+    <string name="outline_backup_fgo_msg">FGO 現在的帳號將會被備份。\n繼續嗎？</string>
+    <string name="outline_remove_fgo_account">移除 FGO 帳號(無法復原)</string>
+    <string name="outline_remove_fgo_title">移除 FGO 帳號</string>
+    <string name="outline_remove_fgo_msg">注意，這無法復原\n確定嗎？</string>
+    <string name="outline_refresh_fgo_info">列出所有帳號</string>
+    <string name="outline_restore_fgo_title">恢復帳號</string>
+    <string name="outline_restore_fgo_msg">恢復帳號將會覆蓋現在的帳號，這不能復原。\n繼續嗎？</string>
+    <string name="outline_update_fgo_title">更新帳號設定資訊</string>
+    <string name="outline_update_fgo_msg">這只會更新遊戲設定(例如戰鬥速度、音效等)，並不會影響帳號ID資訊\n繼續嗎？</string>
+    <string name="outline_update_fgo_msg_forbid1">很抱歉，您上一次套用的帳號是 </string>
+    <string name="outline_update_fgo_msg_forbid2"> ，保險起見，我們不能為以下帳號備份設定\n</string>
+    <string name="outline_update_fgo_msg_forbid3">很抱歉，您尚未復原任何帳號</string>
+    <string name="outline_account_num">目前保存帳號數：</string>
+    <string name="outline_start_auto_traverse">開始自動登入帳號</string>
+    <string name="outline_stop_auto_traverse">停止自動登入帳號</string>
+    <string name="outline_current_progress">登入進度(按此停止): </string>
+    <string name="outline_current_finish">已完成第 </string>
+    <string name="outline_start_screen_capture">啟用抓點抓色</string>
+
+    <!-- Settings -->
+    <string name="settings_fragment_title_1">遊戲備份設定</string>
+    <string name="settings_fragment_summary_1">連結您的 Google 或是 Dropbox 帳號以便保存資料至雲端。</string>
+    <string name="settings_restore_data_from_sdcard">恢復帳號表\n(使用問題回報來備份)</string>
+    <string name="settings_restore_title">恢復上次備份</string>
+    <string name="settings_restore_subtitle">注意！您即將恢復上次備份資料，從上個備份至今你輸入的資料將會遺失。確定嗎？</string>
+    <string name="settings_restore_failed">備份失敗</string>
+    <string name="settings_restore_not_found">抱歉，在裝置上找不到任何備份資料。</string>
+    <string name="settings_restore_finished">備份資料已成功復原。</string>
+
+
+</resources>

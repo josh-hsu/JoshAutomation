@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen
+    xmlns:android="http://schemas.android.com/apk/res/android">
+    <PreferenceCategory android:title="服務設定">
+        <Preference
+            android:title="開啟服務"
+            android:key="enableServicePref"
+            android:summary="服務自動服務平台"/>
+        <CheckBoxPreference
+            android:title="顏色判定放寬"
+            android:defaultValue="true"
+            android:summary="由於各個裝置的顯示顏色會有落差，如果使用上有問題，請確保此選項開啟"
+            android:key="ambiguousColorMatching" />
+    </PreferenceCategory>
+
+    <PreferenceCategory android:title="戰鬥設定">
+        <EditTextPreference
+            android:key="firstNormalBattleCount"
+            android:title="一般戰鬥起始場數"
+            android:summary="開始自動戰鬥時，第一次換寵所經歷的場數。如果一開始放的寵物並非LV1時，你可以在這邊設定。"
+            android:numeric="integer"
+            android:defaultValue="8"
+            android:maxLength="1"/>
+        <EditTextPreference
+            android:key="normalBattleCount"
+            android:title="一般戰鬥場數"
+            android:summary="從開始到換LV1寵的場數"
+            android:numeric="integer"
+            android:defaultValue="8"
+            android:maxLength="1"/>
+        <Preference
+            android:key="normal_skill"
+            android:title="一般戰鬥技能"
+            android:summary="尚未選擇"
+            android:dialogTitle="技能選擇"/>
+        <Preference
+            android:key="golden_skill"
+            android:title="黃金屋戰鬥技能"
+            android:summary="很抱歉，目前尚未開放設定"
+            android:dialogTitle="技能選擇"/>
+        <CheckBoxPreference
+            android:title="AUTO"
+            android:defaultValue="true"
+            android:summary="確保遊戲內的自動戰鬥是開啟的"
+            android:key="battleAutoPref" />
+        <CheckBoxPreference
+            android:title="自動換寵 (Beta)"
+            android:defaultValue="true"
+            android:summary="戰鬥場次完成後，自動更換LV1肥料。目前採用暴力法更換，有BUG請使用問題回報。"
+            android:key="battleAutoChangePref" />
+        <CheckBoxPreference
+            android:title="關閉螢幕"
+            android:defaultValue="false"
+            android:summary="開啟時自動戰鬥時會將背光關閉，可以省電 (部分裝置可能只有背光變暗)"
+            android:key="battleScreenDisablePref" />
+        <CheckBoxPreference
+            android:title="關閉觸控"
+            android:defaultValue="false"
+            android:summary="開啟時自動戰鬥時會將觸控面板關閉以免誤觸 (只支援部分裝置)"
+            android:key="battleTouchDisablePref" />
+        <CheckBoxPreference
+            android:title="震動通知"
+            android:defaultValue="false"
+            android:summary="戰鬥完成後除了鈴聲外也啟動震動通知 (開發中)"
+            android:key="battleVibratePref" />
+        <Preference
+            android:title="鈴聲選擇"
+            android:key="ringtonePref"
+            android:summary="設定通知鈴聲 (開發中)"/>
+    </PreferenceCategory>
+
+</PreferenceScreen>
