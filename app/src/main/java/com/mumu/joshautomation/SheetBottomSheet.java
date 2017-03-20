@@ -13,14 +13,14 @@ import android.widget.Button;
 import com.mumu.joshautomation.records.UserRecordHandler;
 
 /**
- * ElectricityBottomSheet class holds the view of total usage data
+ * SheetBottomSheet class holds the view of total usage data
  *
  * We must implement a maximum length of data in case this occupies too
  * many resources
  */
-public class ElectricityBottomSheet extends BottomSheetDialogFragment {
+public class SheetBottomSheet extends BottomSheetDialogFragment {
     private int mSheetButtonAssistantPressed = 0;
-    private ElectricityRecyclerViewAdapter mEHAdapter;
+    private SheetRecyclerViewAdapter mEHAdapter;
 
     private BottomSheetBehavior.BottomSheetCallback mBottomSheetBehaviorCallback
             = new BottomSheetBehavior.BottomSheetCallback() {
@@ -61,7 +61,7 @@ public class ElectricityBottomSheet extends BottomSheetDialogFragment {
         mEHRecycler.setLayoutManager(mSGLM);
 
         //  Setup Adapter & DataSet //
-        mEHAdapter = new ElectricityRecyclerViewAdapter();
+        mEHAdapter = new SheetRecyclerViewAdapter();
         mEHRecycler.setAdapter(mEHAdapter);
 
         if (behavior != null && behavior instanceof BottomSheetBehavior) {

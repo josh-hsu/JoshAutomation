@@ -15,8 +15,8 @@ import android.widget.Toast;
 
 import com.mumu.joshautomation.records.UserRecordHandler;
 
-class ElectricityRecyclerViewAdapter
-        extends RecyclerView.Adapter<ElectricityRecyclerViewAdapter.ViewHolder>
+class SheetRecyclerViewAdapter
+        extends RecyclerView.Adapter<SheetRecyclerViewAdapter.ViewHolder>
         implements View.OnClickListener {
 
     private static final String TAG = "ProjectLI";
@@ -24,7 +24,7 @@ class ElectricityRecyclerViewAdapter
     private UserRecordHandler mRecordHandler;
     private static int mLastRestoreAccountIndex = -1;
 
-    ElectricityRecyclerViewAdapter () {
+    SheetRecyclerViewAdapter() {
         mRecordHandler = UserRecordHandler.getHandler();
 
         if (!mRecordHandler.getAvailable())
@@ -32,7 +32,7 @@ class ElectricityRecyclerViewAdapter
     }
 
     @Override
-    public ElectricityRecyclerViewAdapter.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+    public SheetRecyclerViewAdapter.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         // Create a new view by inflating the row item xml.
         View v = LayoutInflater
                 .from(parent.getContext())
@@ -42,7 +42,7 @@ class ElectricityRecyclerViewAdapter
 
         // Sets the click adapter for the entire cell
         // to the one in this class.
-        holder.itemView.setOnClickListener(ElectricityRecyclerViewAdapter.this);
+        holder.itemView.setOnClickListener(SheetRecyclerViewAdapter.this);
         holder.itemView.setTag(holder);
 
         return holder;
@@ -54,7 +54,7 @@ class ElectricityRecyclerViewAdapter
     }
 
     @Override
-    public void onBindViewHolder(ElectricityRecyclerViewAdapter.ViewHolder holder, int pos) {
+    public void onBindViewHolder(SheetRecyclerViewAdapter.ViewHolder holder, int pos) {
         final int position = holder.getAdapterPosition();
         int serialNum = mRecordHandler.getSerialNum(position);
 

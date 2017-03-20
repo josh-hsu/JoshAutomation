@@ -22,7 +22,6 @@ import com.mumu.joshautomation.screencapture.PointSelectionActivity;
 import com.mumu.joshautomation.script.FGOJobHandler;
 import com.mumu.joshautomation.script.JobEventListener;
 
-import java.io.File;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -32,7 +31,6 @@ public class OutlineFragment extends MainFragment implements JobEventListener {
     private static final String TAG = "FGOTool";
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
-    private Context mContext;
     private FGOJobHandler mFGOJobs;
 
     // Data Holder
@@ -43,7 +41,6 @@ public class OutlineFragment extends MainFragment implements JobEventListener {
     private TextView mAccountNumText;
 
     private OnFragmentInteractionListener mListener;
-    private String mUpdatedString;
     private final Handler mHandler = new Handler();
     final Runnable mUpdateRunnable = new Runnable() {
         public void run() {
@@ -72,7 +69,6 @@ public class OutlineFragment extends MainFragment implements JobEventListener {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        mContext = getContext();
         mFGOJobs = FGOJobHandler.getHandler();
         mFGOJobs.setJobEventListener(FGOJobHandler.AUTO_TRAVERSE_JOB, this);
     }
@@ -155,16 +151,14 @@ public class OutlineFragment extends MainFragment implements JobEventListener {
      */
     private void updateView() {
         String accountNumText = getString(R.string.outline_account_num);
-        String currentProgressText = getString(R.string.outline_current_progress);
         accountNumText = accountNumText + " " + mRecordHandler.getCount();
-        currentProgressText = currentProgressText + " " + mUpdatedString;
 
         mAccountNumText.setText(accountNumText);
         mRunJoshCmdButton.setText(R.string.outline_start_auto_traverse);
     }
 
     private void showBottomSheet() {
-        ElectricityBottomSheet ebs = new ElectricityBottomSheet();
+        SheetBottomSheet ebs = new SheetBottomSheet();
         ebs.show(getFragmentManager(), ebs.getTag());
     }
 
@@ -177,7 +171,6 @@ public class OutlineFragment extends MainFragment implements JobEventListener {
     @Override
     public void onEventReceived(String msg, Object extra) {
         Log.d(TAG, "Message Received " + msg);
-        mUpdatedString = msg;
         mHandler.post(mUpdateRunnable);
     }
 

@@ -38,7 +38,7 @@ public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener,
         OutlineFragment.OnFragmentInteractionListener {
 
-    public static final String TAG = "FGOTool";
+    public static final String TAG = "JATool";
     public static final int FRAG_IDX_OUTLINE = 0;
     //public static final int FRAG_IDX_ELECTRICITY = 1;
 
