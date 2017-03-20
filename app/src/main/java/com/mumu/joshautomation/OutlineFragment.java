@@ -33,7 +33,6 @@ public class OutlineFragment extends MainFragment implements JobEventListener {
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
     private Context mContext;
-    private static boolean mFGOFlag = false;
     private FGOJobHandler mFGOJobs;
 
     // Data Holder
@@ -161,11 +160,7 @@ public class OutlineFragment extends MainFragment implements JobEventListener {
         currentProgressText = currentProgressText + " " + mUpdatedString;
 
         mAccountNumText.setText(accountNumText);
-
-        if (mFGOFlag)
-            mRunJoshCmdButton.setText(currentProgressText);
-        else
-            mRunJoshCmdButton.setText(R.string.outline_start_auto_traverse);
+        mRunJoshCmdButton.setText(R.string.outline_start_auto_traverse);
     }
 
     private void showBottomSheet() {
@@ -174,16 +169,9 @@ public class OutlineFragment extends MainFragment implements JobEventListener {
     }
 
     private void runAutoLoginRoutine() {
-        if (!mFGOFlag) {
-            mFGOJobs.setExtra(FGOJobHandler.AUTO_TRAVERSE_JOB, UserRecordHandler.getHandler());
-            mFGOJobs.startJob(FGOJobHandler.AUTO_TRAVERSE_JOB);
-            mRunJoshCmdButton.setText(R.string.outline_stop_auto_traverse);
-        } else {
-            mFGOJobs.stopJob(FGOJobHandler.AUTO_TRAVERSE_JOB);
-            mRunJoshCmdButton.setText(R.string.outline_start_auto_traverse);
-        }
-
-        mFGOFlag = !mFGOFlag;
+        mFGOJobs.setExtra(FGOJobHandler.AUTO_TRAVERSE_JOB, UserRecordHandler.getHandler());
+        mFGOJobs.startJob(FGOJobHandler.AUTO_TRAVERSE_JOB);
+        mFGOJobs.stopJob(FGOJobHandler.AUTO_TRAVERSE_JOB);
     }
 
     @Override
@@ -221,7 +209,7 @@ public class OutlineFragment extends MainFragment implements JobEventListener {
     }
 
     /*
-     *  Add electricity
+     *  Add record
      */
     private void showAddDialog() {
         new MaterialDialog.Builder(getContext())
@@ -236,7 +224,6 @@ public class OutlineFragment extends MainFragment implements JobEventListener {
                             addNewRecordFromUser("account" + nextSerial, "NOW", input.toString());
                             updateView();
                             createNewAccountFolder("account" + nextSerial);
-
                         } catch (Exception e) {
                             Log.e(TAG, e.getMessage());
                         }

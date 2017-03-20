@@ -13,11 +13,9 @@ import com.mumu.libjoshgame.ScreenPoint;
 
 class AutoTraverseJob extends FGOJobHandler.FGOJob {
     private static final String TAG = "AutoTraverseJob";
-    private UserRecordHandler mAccountHandler;
     private AutoTraverseRoutine mRoutine;
     private JoshGameLibrary mGL;
     private JobEventListener mListener;
-    private int mCurrentIndex = -1;
 
     AutoTraverseJob (String jobName, int jobIndex) {
         super(jobName, jobIndex);
@@ -33,8 +31,6 @@ class AutoTraverseJob extends FGOJobHandler.FGOJob {
     public void start() {
         super.start();
         Log.d(TAG, "starting job " + getJobName());
-
-        mCurrentIndex = 0;
         mRoutine = null;
         mRoutine = new AutoTraverseRoutine();
         mRoutine.start();
@@ -51,12 +47,7 @@ class AutoTraverseJob extends FGOJobHandler.FGOJob {
     @Override
     public void setExtra(Object object) {
         if (object instanceof UserRecordHandler) {
-            mAccountHandler = (UserRecordHandler) object;
-            if (!mAccountHandler.getAvailable()) {
-                Log.w(TAG, "Account Record Handler is not available yet, might be a bug.");
-            } else {
-                Log.d(TAG, "Account number: " + mAccountHandler.getCount());
-            }
+            Log.d(TAG, "Receive extra object from initiator");
         } else {
             Log.e(TAG, "Set extra for AutoTraverseJob failed, wrong data type");
         }
@@ -66,7 +57,7 @@ class AutoTraverseJob extends FGOJobHandler.FGOJob {
         mListener = el;
     }
 
-    public void sendEvent(String msg, Object extra) {
+    private void sendEvent(String msg, Object extra) {
         if (mListener != null) {
             mListener.onEventReceived(msg, extra);
         } else {
@@ -74,7 +65,7 @@ class AutoTraverseJob extends FGOJobHandler.FGOJob {
         }
     }
 
-    public void sendMessage(String msg) {
+    private void sendMessage(String msg) {
         sendEvent(msg, null);
     }
 
@@ -92,7 +83,6 @@ class AutoTraverseJob extends FGOJobHandler.FGOJob {
 
         private void main() throws Exception {
             boolean shouldRunning = true;
-            mCurrentIndex = 0;
             stopFGO();
 
             while (shouldRunning) {
@@ -114,9 +104,8 @@ class AutoTraverseJob extends FGOJobHandler.FGOJob {
                 stopFGO();
                 sleep(1000);
 
-                mCurrentIndex++;
-                if (mCurrentIndex >= mAccountHandler.getCount())
-                    shouldRunning = false;
+                shouldRunning = false;
+                sendMessage("Job is done");
             }
         }
 

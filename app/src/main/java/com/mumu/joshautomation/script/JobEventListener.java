@@ -6,5 +6,5 @@ package com.mumu.joshautomation.script;
  */
 
 public interface JobEventListener {
-    public void onEventReceived(String msg, Object extra);
+    void onEventReceived(String msg, Object extra);
 }

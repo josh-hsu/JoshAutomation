@@ -51,7 +51,7 @@ public class PointSelectionActivity extends AppCompatActivity {
     private int mScreenSizeX, mScreenSizeY;
 
     private final Handler mHideHandler = new Handler();
-    private JoshGameLibrary mLibJG;
+    private JoshGameLibrary mGL;
     private String mPointInfo;
 
     /* View declaration */
@@ -104,9 +104,12 @@ public class PointSelectionActivity extends AppCompatActivity {
         mInfoTextView = (TextView) findViewById(R.id.idInfoTextView);
         mWindowManager = (WindowManager) getSystemService(WINDOW_SERVICE);
 
-        mLibJG = JoshGameLibrary.getInstance();
-        mLibJG.getCaptureService().DumpScreenPNG(mPngFilePath);
-        mLibJG.getCaptureService().DumpScreen(mDumpFilePath);
+        mGL = JoshGameLibrary.getInstance();
+        mGL.setContext(this);
+        mGL.setGameOrientation(ScreenPoint.SO_Landscape);
+        mGL.setScreenDimension(1080, 1920);
+        mGL.getCaptureService().DumpScreenPNG(mPngFilePath);
+        mGL.getCaptureService().DumpScreen(mDumpFilePath);
 
         mImageView.setImageBitmap(BitmapFactory.decodeFile(mPngFilePath));
         mImageView.setOnTouchListener(mPointTouchListener);
@@ -119,7 +122,7 @@ public class PointSelectionActivity extends AppCompatActivity {
         display.getSize(size);
         mScreenSizeX = size.x;
         mScreenSizeY = size.y;
-        mLibJG.setScreenDimension(mScreenSizeX, mScreenSizeY);
+        mGL.setScreenDimension(mScreenSizeX, mScreenSizeY);
 
         hide();
     }
@@ -226,7 +229,7 @@ public class PointSelectionActivity extends AppCompatActivity {
         kUserPoint.coord.orientation = ScreenPoint.SO_Portrait;
         kUserPoint.coord.x = x;
         kUserPoint.coord.y = y;
-        mLibJG.getCaptureService().GetColorOnDump(kUserPoint.color, mDumpFilePath, kUserPoint.coord);
+        mGL.getCaptureService().GetColorOnDump(kUserPoint.color, mDumpFilePath, kUserPoint.coord);
         kColorOnPoint = "0x" + Integer.toHexString(kUserPoint.color.r & 0xFF) + " "
                 + Integer.toHexString(kUserPoint.color.g & 0xFF) + " "
                 + Integer.toHexString(kUserPoint.color.b & 0xFF) + " "
