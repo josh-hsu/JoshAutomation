@@ -12,7 +12,7 @@ import android.view.View;
  * functions to be implemented by its children
  */
 public class MainFragment extends Fragment {
-    final static String TAG = "FGOTool";
+    final static String TAG = "JATool";
     protected FloatingActionButton mFab;
 
     public void onFabClick(View view){

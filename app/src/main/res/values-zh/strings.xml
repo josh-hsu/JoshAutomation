@@ -43,23 +43,9 @@
     <string name="electric_sheet_button_assistant">反向列出資料</string>
 
     <!-- Outline -->
-    <string name="outline_kill_fgo">JA 自動化腳本服務</string>
-    <string name="outline_backup_fgo_account">備份 FGO 帳號</string>
-    <string name="outline_backup_fgo_title">備份 FGO 帳號</string>
-    <string name="outline_backup_fgo_msg">FGO 現在的帳號將會被備份。\n繼續嗎？</string>
-    <string name="outline_remove_fgo_account">移除 FGO 帳號(無法復原)</string>
-    <string name="outline_remove_fgo_title">移除 FGO 帳號</string>
-    <string name="outline_remove_fgo_msg">注意，這無法復原\n確定嗎？</string>
-    <string name="outline_refresh_fgo_info">列出所有帳號</string>
-    <string name="outline_restore_fgo_title">恢復帳號</string>
-    <string name="outline_restore_fgo_msg">恢復帳號將會覆蓋現在的帳號，這不能復原。\n繼續嗎？</string>
-    <string name="outline_update_fgo_title">更新帳號設定資訊</string>
-    <string name="outline_update_fgo_msg">這只會更新遊戲設定(例如戰鬥速度、音效等)，並不會影響帳號ID資訊\n繼續嗎？</string>
-    <string name="outline_update_fgo_msg_forbid1">很抱歉，您上一次套用的帳號是 </string>
-    <string name="outline_update_fgo_msg_forbid2"> ，保險起見，我們不能為以下帳號備份設定\n</string>
-    <string name="outline_update_fgo_msg_forbid3">很抱歉，您尚未復原任何帳號</string>
+    <string name="outline_title">JA 自動化腳本服務</string>
     <string name="outline_account_num">目前保存帳號數：</string>
-    <string name="outline_start_auto_traverse">開始自動登入帳號</string>
+    <string name="outline_list_all_scripts">列出所有腳本</string>
     <string name="outline_stop_auto_traverse">停止自動登入帳號</string>
     <string name="outline_current_progress">登入進度(按此停止): </string>
     <string name="outline_current_finish">已完成第 </string>
@@ -75,5 +61,18 @@
     <string name="settings_restore_not_found">抱歉，在裝置上找不到任何備份資料。</string>
     <string name="settings_restore_finished">備份資料已成功復原。</string>
 
+    <!-- HeadService -->
+    <string name="headservice_how_to_stop">服務已啟動，長按圖示可終止服務</string>
+    <string name="headservice_stop_title">停止服務</string>
+    <string name="headservice_stop_info">確定要停止JA自動腳本服務嗎？</string>
+    <string name="headservice_stop_button">停止</string>
+
+    <!-- Start up dialog -->
+    <string name="startup_confirm">確定</string>
+    <string name="startup_cancel">取消</string>
+    <string name="startup_cancel_warn">警告</string>
+    <string name="startup_cancel_exit">離開</string>
+    <string name="startup_permit_system_alarm">請允許使用系統繪圖</string>
+    <string name="startup_permit_system_alarm_failed">您未允許設定，程式將不會正常運作</string>
 
 </resources>

@@ -4,8 +4,10 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
+import android.provider.Settings;
 import android.support.annotation.NonNull;
 import android.text.InputType;
 import android.util.Log;
@@ -14,11 +16,11 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.mumu.joshautomation.records.UserRecordHandler;
 import com.mumu.joshautomation.records.UserRecordParser;
-import com.mumu.joshautomation.screencapture.PointSelectionActivity;
 import com.mumu.joshautomation.script.FGOJobHandler;
 import com.mumu.joshautomation.script.JobEventListener;
 
@@ -28,7 +30,7 @@ import java.util.Calendar;
 import java.util.Locale;
 
 public class OutlineFragment extends MainFragment implements JobEventListener {
-    private static final String TAG = "FGOTool";
+    private static final String TAG = "JATool";
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
     private FGOJobHandler mFGOJobs;
@@ -134,9 +136,7 @@ public class OutlineFragment extends MainFragment implements JobEventListener {
         mScreenCaptureButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent();
-                intent.setClass(getMainActivity(), PointSelectionActivity.class);
-                startActivity(intent);
+                startChatHeadService();
             }
         });
     }
@@ -154,7 +154,7 @@ public class OutlineFragment extends MainFragment implements JobEventListener {
         accountNumText = accountNumText + " " + mRecordHandler.getCount();
 
         mAccountNumText.setText(accountNumText);
-        mRunJoshCmdButton.setText(R.string.outline_start_auto_traverse);
+        mRunJoshCmdButton.setText(R.string.outline_list_all_scripts);
     }
 
     private void showBottomSheet() {
@@ -176,6 +176,33 @@ public class OutlineFragment extends MainFragment implements JobEventListener {
 
     public interface OnFragmentInteractionListener {
         void onFragmentInteraction(Uri uri);
+    }
+
+    private void startChatHeadService() {
+        if (Build.VERSION.SDK_INT >= 23) {
+            Toast.makeText(getContext(), R.string.startup_permit_system_alarm, Toast.LENGTH_SHORT).show();
+            if (!Settings.canDrawOverlays(getContext())) {
+                Intent intent = new Intent(Settings.ACTION_MANAGE_OVERLAY_PERMISSION,
+                        Uri.parse("package:" + getContext().getPackageName()));
+                startActivityForResult(intent, 10);
+                Log.d(TAG, "No permission for drawing on screen, prompt one.");
+            } else {
+                Toast.makeText(getContext(), R.string.headservice_how_to_stop, Toast.LENGTH_SHORT).show();
+                getContext().startService(new Intent(getContext(), HeadService.class));
+                returnHomeScreen();
+            }
+        } else {
+            Log.d(TAG, "Permission granted, starting service.");
+            Toast.makeText(getContext(), R.string.headservice_how_to_stop, Toast.LENGTH_SHORT).show();
+            getContext().startService(new Intent(getContext(), HeadService.class));
+            returnHomeScreen();
+        }
+    }
+
+    private void returnHomeScreen() {
+        Intent intent = new Intent(Intent.ACTION_MAIN);
+        intent.addCategory(Intent.CATEGORY_HOME);
+        startActivity(intent);
     }
 
     /*

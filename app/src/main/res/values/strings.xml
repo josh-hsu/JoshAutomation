@@ -45,23 +45,9 @@
     <string name="electric_sheet_button_assistant">Inverse the table</string>
 
     <!-- Outline fragment -->
-    <string name="outline_kill_fgo">Josh Automation</string>
-    <string name="outline_backup_fgo_account">Backup FGO Account</string>
-    <string name="outline_backup_fgo_title">Backup FGO Account</string>
-    <string name="outline_backup_fgo_msg">Save account data in current FGO game into account1.\n Continue?</string>
-    <string name="outline_remove_fgo_account">Remove FGO Account</string>
-    <string name="outline_remove_fgo_title">Remove FGO Account</string>
-    <string name="outline_remove_fgo_msg">This is not reversible, you can not undo it!.\n Continue?</string>
-    <string name="outline_refresh_fgo_info">List all accounts</string>
-    <string name="outline_restore_fgo_title">Restore FGO Account</string>
-    <string name="outline_restore_fgo_msg">Restore account will replace the current account.\n Continue?</string>
-    <string name="outline_update_fgo_title">Update FGO Account</string>
-    <string name="outline_update_fgo_msg">Update account will only update the preference in game, not affect any account ID data.\n Continue?</string>
-    <string name="outline_update_fgo_msg_forbid1">Sorry, last restore might be </string>
-    <string name="outline_update_fgo_msg_forbid2">, so we cannot backup it for </string>
-    <string name="outline_update_fgo_msg_forbid3">Sorry, you haven\'t restore any account yet</string>
+    <string name="outline_title">Josh Automation</string>
     <string name="outline_account_num">Current number of accounts: </string>
-    <string name="outline_start_auto_traverse">Start Auto Login Routine</string>
+    <string name="outline_list_all_scripts">List All Scripts</string>
     <string name="outline_stop_auto_traverse">Stop Auto Login Routine</string>
     <string name="outline_current_progress">Auto Login: </string>
     <string name="outline_current_finish">Finished: </string>
@@ -77,5 +63,18 @@
     <string name="settings_restore_not_found">Sorry, no backup data found in your device.</string>
     <string name="settings_restore_finished">Restore has finished successfully.</string>
 
+    <!-- HeadService -->
+    <string name="headservice_how_to_stop">Service started, you can long press the icon to stop it.</string>
+    <string name="headservice_stop_title">Stop Service</string>
+    <string name="headservice_stop_info">Are you sure you want to stop Josh Auto Script service?</string>
+    <string name="headservice_stop_button">Stop</string>
+
+    <!-- Start up dialog -->
+    <string name="startup_confirm">Proceed</string>
+    <string name="startup_cancel">Cancel</string>
+    <string name="startup_cancel_warn">Warning</string>
+    <string name="startup_cancel_exit">Exit</string>
+    <string name="startup_permit_system_alarm">Please allow to draw on screen permission.</string>
+    <string name="startup_permit_system_alarm_failed">No permission, this App will not run.</string>
 
 </resources>

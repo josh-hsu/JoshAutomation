@@ -24,7 +24,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/outline_kill_fgo"
+                android:text="@string/outline_title"
                 android:textColor="#FFFFFF"
                 android:textSize="18sp"
                 android:textAlignment="center"
@@ -37,7 +37,7 @@
                 android:layout_alignParentStart="true" />
 
             <Button
-                android:text="@string/outline_start_auto_traverse"
+                android:text="@string/outline_list_all_scripts"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_below="@+id/textViewElectricBarView"

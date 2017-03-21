@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.mumu.joshautomation.utility;
+package com.mumu.joshautomation;
 
 import android.graphics.Color;
 import android.os.Bundle;
@@ -44,7 +44,7 @@ import java.io.OutputStream;
 import java.util.List;
 
 public class AppPreferenceActivity extends PreferenceActivity {
-    public static final String TAG = "ProjectLI";
+    public static final String TAG = "JATool";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

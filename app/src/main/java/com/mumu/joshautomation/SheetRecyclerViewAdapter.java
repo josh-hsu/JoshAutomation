@@ -19,7 +19,7 @@ class SheetRecyclerViewAdapter
         extends RecyclerView.Adapter<SheetRecyclerViewAdapter.ViewHolder>
         implements View.OnClickListener {
 
-    private static final String TAG = "ProjectLI";
+    private static final String TAG = "JATool";
     private int expandedPosition = -1;
     private UserRecordHandler mRecordHandler;
     private static int mLastRestoreAccountIndex = -1;
@@ -66,8 +66,8 @@ class SheetRecyclerViewAdapter
             public void onClick(View view) {
                 final Context sContext = view.getContext();
                 AlertDialog.Builder ad = new AlertDialog.Builder(sContext, R.style.MyDialogStyle)
-                        .setTitle(R.string.outline_restore_fgo_title)
-                        .setMessage(R.string.outline_restore_fgo_msg)
+                        .setTitle("")
+                        .setMessage("")
                         .setPositiveButton(R.string.action_confirm, new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
@@ -93,10 +93,10 @@ class SheetRecyclerViewAdapter
             public void onClick(View view) {
                 final Context sContext = view.getContext();
                 AlertDialog.Builder ad = new AlertDialog.Builder(sContext, R.style.MyDialogStyle);
-                ad.setTitle(R.string.outline_update_fgo_title);
+                ad.setTitle("");
 
                 if (mLastRestoreAccountIndex == position) {
-                    ad.setMessage(R.string.outline_update_fgo_msg);
+                    ad.setMessage("");
                     ad.setPositiveButton(R.string.action_confirm, new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
@@ -107,18 +107,6 @@ class SheetRecyclerViewAdapter
                             }
                         }
                     });
-                } else {
-                    String warningText;
-                    if (mLastRestoreAccountIndex == -1) {
-                        warningText = sContext.getString(R.string.outline_update_fgo_msg_forbid3) +
-                                sContext.getString(R.string.outline_update_fgo_msg_forbid2);
-                    } else {
-                        warningText = sContext.getString(R.string.outline_update_fgo_msg_forbid1) +
-                                mRecordHandler.getTitle(mLastRestoreAccountIndex) +
-                                sContext.getString(R.string.outline_update_fgo_msg_forbid2) +
-                                mRecordHandler.getTitle(position);
-                    }
-                    ad.setMessage(warningText);
                 }
 
                 ad.setNegativeButton(R.string.action_cancel, new DialogInterface.OnClickListener() {

@@ -23,7 +23,7 @@
         </activity>
 
         <activity
-            android:name=".utility.AppPreferenceActivity">
+            android:name=".AppPreferenceActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.DEFAULT" />
@@ -31,12 +31,17 @@
         </activity>
 
         <activity
-            android:name=".screencapture.PointSelectionActivity">
+            android:name=".screencapture.PointSelectionActivity"
+            android:screenOrientation="portrait"
+            android:configChanges="orientation|keyboardHidden|screenSize">
+        </activity>
+
+        <service android:name=".HeadService">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
-        </activity>
+        </service>
 
     </application>
 

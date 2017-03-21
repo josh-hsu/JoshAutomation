@@ -10,7 +10,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 public class MoneyFragment extends MainFragment {
-    private static final String TAG = "MoneyFragment";
+    private static final String TAG = "JATool";
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
 

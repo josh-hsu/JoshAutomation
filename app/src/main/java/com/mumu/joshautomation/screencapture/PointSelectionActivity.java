@@ -41,7 +41,7 @@ import com.mumu.libjoshgame.ScreenPoint;
  * status bar and navigation/system bar) with user interaction.
  */
 public class PointSelectionActivity extends AppCompatActivity {
-    private static final String TAG = "FGOTool";
+    private static final String TAG = "JATool";
     private static final int UI_ANIMATION_DELAY = 300;
     public static final int ZOOM_FLAG_START = 0;
     public static final int ZOOM_FLAG_MOVE = 1;
@@ -108,8 +108,6 @@ public class PointSelectionActivity extends AppCompatActivity {
         mGL.setContext(this);
         mGL.setGameOrientation(ScreenPoint.SO_Landscape);
         mGL.setScreenDimension(1080, 1920);
-        mGL.getCaptureService().dumpScreenPNG(mPngFilePath);
-        mGL.getCaptureService().dumpScreen(mDumpFilePath);
 
         mImageView.setImageBitmap(BitmapFactory.decodeFile(mPngFilePath));
         mImageView.setOnTouchListener(mPointTouchListener);

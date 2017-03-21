@@ -6,6 +6,7 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
+import android.provider.Settings;
 import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
@@ -22,8 +23,6 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Toast;
-
-import com.mumu.joshautomation.utility.AppPreferenceActivity;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -169,6 +168,18 @@ public class MainActivity extends AppCompatActivity
     }
 
     @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data){
+        if (requestCode == 10) {
+            if (Build.VERSION.SDK_INT >= 23) {
+                if (!Settings.canDrawOverlays(this)) {
+                    // SYSTEM_ALERT_WINDOW permission not granted
+                    Toast.makeText(MainActivity.this, R.string.startup_permit_system_alarm_failed, Toast.LENGTH_SHORT).show();
+                }
+            }
+        }
+    }
+
+    @Override
     public void onRequestPermissionsResult(int permsRequestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         switch (permsRequestCode) {
             case 200:
@@ -203,12 +214,6 @@ public class MainActivity extends AppCompatActivity
         }
     }
 
-    private void startPreferenceActivity() {
-        Intent intent=new Intent();
-        intent.setClass(MainActivity.this, AppPreferenceActivity.class);
-        startActivity(intent);
-    }
-
     public FloatingActionButton getFab() {
         return mFab;
     }
@@ -216,6 +221,12 @@ public class MainActivity extends AppCompatActivity
     public void showSnackBarMessage(String msg) {
         Snackbar.make(mCoordinateLayoutView, msg, Snackbar.LENGTH_LONG)
                 .setAction("Action", null).show();
+    }
+
+    private void startPreferenceActivity() {
+        Intent intent = new Intent();
+        intent.setClass(MainActivity.this, AppPreferenceActivity.class);
+        startActivity(intent);
     }
 
     private void requestPermissions() {
