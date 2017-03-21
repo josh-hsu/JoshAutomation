@@ -22,7 +22,6 @@ class AutoTraverseJob extends FGOJobHandler.FGOJob {
 
         /* JoshGameLibrary basic initial */
         mGL = JoshGameLibrary.getInstance();
-        mGL.setPackageManager(null);
         mGL.setGameOrientation(ScreenPoint.SO_Landscape);
         mGL.setScreenDimension(1080, 1920);
     }
