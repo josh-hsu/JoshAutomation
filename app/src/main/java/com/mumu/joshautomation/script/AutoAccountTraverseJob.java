@@ -7,17 +7,17 @@ import com.mumu.libjoshgame.JoshGameLibrary;
 import com.mumu.libjoshgame.ScreenPoint;
 
 /**
- * AutoTraverseJob
+ * AutoAccountTraverseJob
  * Traverse all accounts in list
  */
 
-class AutoTraverseJob extends AutoJobHandler.FGOJob {
-    private static final String TAG = "AutoTraverseJob";
-    private AutoTraverseRoutine mRoutine;
+class AutoAccountTraverseJob extends AutoJobHandler.AutoJob {
+    private static final String TAG = "AutoAccountTraverseJob";
+    private MainJobRoutine mRoutine;
     private JoshGameLibrary mGL;
     private AutoJobEventListener mListener;
 
-    AutoTraverseJob (String jobName, int jobIndex) {
+    AutoAccountTraverseJob(String jobName, int jobIndex) {
         super(jobName, jobIndex);
 
         /* JoshGameLibrary basic initial */
@@ -31,7 +31,7 @@ class AutoTraverseJob extends AutoJobHandler.FGOJob {
         super.start();
         Log.d(TAG, "starting job " + getJobName());
         mRoutine = null;
-        mRoutine = new AutoTraverseRoutine();
+        mRoutine = new MainJobRoutine();
         mRoutine.start();
     }
 
@@ -48,7 +48,7 @@ class AutoTraverseJob extends AutoJobHandler.FGOJob {
         if (object instanceof UserRecordHandler) {
             Log.d(TAG, "Receive extra object from initiator");
         } else {
-            Log.e(TAG, "Set extra for AutoTraverseJob failed, wrong data type");
+            Log.e(TAG, "Set extra for AutoAccountTraverseJob failed, wrong data type");
         }
     }
 
@@ -76,7 +76,7 @@ class AutoTraverseJob extends AutoJobHandler.FGOJob {
         mGL.runCommand("am start \"com.aniplex.fategrandorder/jp.delightworks.Fgo.player.AndroidPlugin\"");
     }
 
-    private class AutoTraverseRoutine extends Thread {
+    private class MainJobRoutine extends Thread {
         ScreenPoint pointScreenCenter = new ScreenPoint(0,0,0,0,500,1090,ScreenPoint.SO_Portrait);
         ScreenPoint pointExitBulletin = new ScreenPoint(0,0,0,0,1871,37,ScreenPoint.SO_Landscape);
 

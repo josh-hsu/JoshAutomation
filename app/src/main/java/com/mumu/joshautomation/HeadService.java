@@ -34,12 +34,14 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.mumu.joshautomation.screencapture.PointSelectionActivity;
+import com.mumu.joshautomation.script.AutoJobEventListener;
+import com.mumu.joshautomation.script.AutoJobHandler;
 import com.mumu.libjoshgame.JoshGameLibrary;
 import com.mumu.libjoshgame.ScreenPoint;
 
 import java.util.ArrayList;
 
-public class HeadService extends Service {
+public class HeadService extends Service implements AutoJobEventListener{
     private static final String TAG = "JATool";
     private final Handler mHandler = new Handler();
     private String mPngFilePath = Environment.getExternalStorageDirectory().toString() + "/select.png";
@@ -57,10 +59,14 @@ public class HeadService extends Service {
     private static final int IDX_PLAY_ICON = 5;
 
     private int mTouchHeadIconCount = 0;
+    private int mSameMsgCount = 0;
     private String mMessageText = "";
+    private String mLastMessage = "";
     private boolean mScriptRunning = false;
+    private boolean mMessageThreadRunning = false;
 
     private JoshGameLibrary mGL;
+    private AutoJobHandler mAutoJobHandler;
 
     /*
      * Runnable threads
@@ -72,7 +78,16 @@ public class HeadService extends Service {
     };
 
     private void updateUI() {
-        ((TextView) mHeadIconList.get(IDX_MSG_TEXT).getView()).setText(mMessageText);
+        if (mLastMessage.equals(mMessageText)) {
+            mSameMsgCount++;
+            if (mSameMsgCount > 10) {
+                ((TextView) mHeadIconList.get(IDX_MSG_TEXT).getView()).setText("");
+            }
+        } else {
+            mLastMessage = mMessageText;
+            mSameMsgCount = 0;
+            ((TextView) mHeadIconList.get(IDX_MSG_TEXT).getView()).setText(mMessageText);
+        }
     }
 
     private final Runnable mDumpScreenRunnable = new Runnable() {
@@ -107,12 +122,16 @@ public class HeadService extends Service {
         mWindowManager = (WindowManager) getSystemService(WINDOW_SERVICE);
 
         initGamePanelViews();
+        mMessageThreadRunning = true;
         new GetMessageThread().start();
 
         mGL = JoshGameLibrary.getInstance();
         mGL.setContext(mContext);
         mGL.setScreenDimension(1080, 1920);
         mGL.setGameOrientation(ScreenPoint.SO_Portrait);
+
+        mAutoJobHandler = AutoJobHandler.getHandler();
+        mAutoJobHandler.setJobEventListener(AutoJobHandler.FGO_BATTLE_JOB, this);
     }
 
     private void initGamePanelViews() {
@@ -138,7 +157,6 @@ public class HeadService extends Service {
 
         // Message Text Icon
         HeadIconView msgText = new HeadIconView(new TextView(this), mWindowManager, 140, 45);
-        msgText.getTextView().setText("Message will be here");
         msgText.getTextView().setTextColor(Color.BLACK);
         msgText.getView().setBackgroundColor(Color.WHITE);
         mHeadIconList.add(msgText);
@@ -198,11 +216,7 @@ public class HeadService extends Service {
         startIcon.setOnTapListener(new HeadIconView.OnTapListener() {
             @Override
             public void onTap(View view) {
-                Log.d(TAG, "config script start or stop");
-                if (!mScriptRunning)
-                    configScriptStatus();
-                else
-                    mMessageText = "You can't";
+                configScriptStatus();
             }
 
             @Override
@@ -317,12 +331,31 @@ public class HeadService extends Service {
     }
 
     private void configScriptStatus() {
+        if(!mScriptRunning) {
+            mAutoJobHandler.startJob(AutoJobHandler.FGO_BATTLE_JOB);
+        } else {
+            mAutoJobHandler.stopJob(AutoJobHandler.FGO_BATTLE_JOB);
+        }
 
+        mScriptRunning = !mScriptRunning;
+    }
+
+    @Override
+    public void onEventReceived(String msg, Object extra) {
+        Log.d(TAG, "Get event message " + msg);
+        mMessageText = msg;
     }
 
     class GetMessageThread extends Thread {
         public void run() {
-
+            while(mMessageThreadRunning) {
+                mHandler.post(updateRunnable);
+                try {
+                    Thread.sleep(500);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+            }
         }
     }
 }

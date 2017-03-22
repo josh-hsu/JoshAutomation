@@ -11,13 +11,15 @@ public class AutoJobHandler {
     public static final String TAG = "AutoJobHandler";
     private static AutoJobHandler mHandler;
     public static final int AUTO_TRAVERSE_JOB = 0;
-    public static final int TOTAL_JOB = 1;
+    public static final int FGO_BATTLE_JOB = 1;
+    public static final int TOTAL_JOB = 2;
 
-    private FGOJob[] mJobList;
+    private AutoJob[] mJobList;
 
     private AutoJobHandler() {
-        mJobList = new FGOJob[TOTAL_JOB];
-        mJobList[0] = new AutoTraverseJob("traverse_job", AUTO_TRAVERSE_JOB);
+        mJobList = new AutoJob[TOTAL_JOB];
+        mJobList[0] = new AutoAccountTraverseJob("traverse_job", AUTO_TRAVERSE_JOB);
+        mJobList[1] = new AutoBattleJob("fgo_battle_job", FGO_BATTLE_JOB);
     }
 
     public static AutoJobHandler getHandler() {
@@ -59,12 +61,12 @@ public class AutoJobHandler {
         }
     }
 
-    static class FGOJob {
+    static class AutoJob {
         private String mJobName;
         private int mJobIndex;
         private boolean mShouldJobRunning;
 
-        FGOJob(String name, int idx) {
+        AutoJob(String name, int idx) {
             mJobIndex = idx;
             mJobName = name;
             mShouldJobRunning = false;
