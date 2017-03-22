@@ -11,11 +11,11 @@ import com.mumu.libjoshgame.ScreenPoint;
  * Traverse all accounts in list
  */
 
-class AutoTraverseJob extends FGOJobHandler.FGOJob {
+class AutoTraverseJob extends AutoJobHandler.FGOJob {
     private static final String TAG = "AutoTraverseJob";
     private AutoTraverseRoutine mRoutine;
     private JoshGameLibrary mGL;
-    private JobEventListener mListener;
+    private AutoJobEventListener mListener;
 
     AutoTraverseJob (String jobName, int jobIndex) {
         super(jobName, jobIndex);
@@ -52,7 +52,7 @@ class AutoTraverseJob extends FGOJobHandler.FGOJob {
         }
     }
 
-    public void setJobEventListener(JobEventListener el) {
+    public void setJobEventListener(AutoJobEventListener el) {
         mListener = el;
     }
 

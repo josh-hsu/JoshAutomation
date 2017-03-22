@@ -3,26 +3,26 @@ package com.mumu.joshautomation.script;
 import android.util.Log;
 
 /**
- * FGOJobHandler
+ * AutoJobHandler
  * Start or Stop any Job of FGO
  */
 
-public class FGOJobHandler {
-    public static final String TAG = "FGOJobHandler";
-    private static FGOJobHandler mHandler;
+public class AutoJobHandler {
+    public static final String TAG = "AutoJobHandler";
+    private static AutoJobHandler mHandler;
     public static final int AUTO_TRAVERSE_JOB = 0;
     public static final int TOTAL_JOB = 1;
 
     private FGOJob[] mJobList;
 
-    private FGOJobHandler() {
+    private AutoJobHandler() {
         mJobList = new FGOJob[TOTAL_JOB];
         mJobList[0] = new AutoTraverseJob("traverse_job", AUTO_TRAVERSE_JOB);
     }
 
-    public static FGOJobHandler getHandler() {
+    public static AutoJobHandler getHandler() {
         if (mHandler == null)
-            mHandler = new FGOJobHandler();
+            mHandler = new AutoJobHandler();
 
         return mHandler;
     }
@@ -51,9 +51,9 @@ public class FGOJobHandler {
         }
     }
 
-    public void setJobEventListener(int idx, JobEventListener el) {
+    public void setJobEventListener(int idx, AutoJobEventListener el) {
         if (idx >= TOTAL_JOB) {
-            Log.d(TAG, "Setting JobEventListener for job " + idx + " failed, no such index.");
+            Log.d(TAG, "Setting AutoJobEventListener for job " + idx + " failed, no such index.");
         } else {
             mJobList[idx].setJobEventListener(el);
         }
@@ -96,7 +96,7 @@ public class FGOJobHandler {
             Log.d(TAG, "calling super setExtra");
         }
 
-        public void setJobEventListener(JobEventListener el) {
+        public void setJobEventListener(AutoJobEventListener el) {
             Log.d(TAG, "calling super setJobEventListener");
         }
     }

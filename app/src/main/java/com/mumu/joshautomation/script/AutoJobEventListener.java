@@ -1,10 +1,10 @@
 package com.mumu.joshautomation.script;
 
 /**
- * JobEventListener
+ * AutoJobEventListener
  * For FGO Job, starter can response anything from this listener
  */
 
-public interface JobEventListener {
+public interface AutoJobEventListener {
     void onEventReceived(String msg, Object extra);
 }

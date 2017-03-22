@@ -21,19 +21,19 @@ import android.widget.Toast;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.mumu.joshautomation.records.UserRecordHandler;
 import com.mumu.joshautomation.records.UserRecordParser;
-import com.mumu.joshautomation.script.FGOJobHandler;
-import com.mumu.joshautomation.script.JobEventListener;
+import com.mumu.joshautomation.script.AutoJobHandler;
+import com.mumu.joshautomation.script.AutoJobEventListener;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Locale;
 
-public class OutlineFragment extends MainFragment implements JobEventListener {
+public class OutlineFragment extends MainFragment implements AutoJobEventListener {
     private static final String TAG = "JATool";
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
-    private FGOJobHandler mFGOJobs;
+    private AutoJobHandler mFGOJobs;
 
     // Data Holder
     private UserRecordHandler mRecordHandler;
@@ -71,8 +71,8 @@ public class OutlineFragment extends MainFragment implements JobEventListener {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        mFGOJobs = FGOJobHandler.getHandler();
-        mFGOJobs.setJobEventListener(FGOJobHandler.AUTO_TRAVERSE_JOB, this);
+        mFGOJobs = AutoJobHandler.getHandler();
+        mFGOJobs.setJobEventListener(AutoJobHandler.AUTO_TRAVERSE_JOB, this);
     }
 
     @Override
@@ -163,9 +163,9 @@ public class OutlineFragment extends MainFragment implements JobEventListener {
     }
 
     private void runAutoLoginRoutine() {
-        mFGOJobs.setExtra(FGOJobHandler.AUTO_TRAVERSE_JOB, UserRecordHandler.getHandler());
-        mFGOJobs.startJob(FGOJobHandler.AUTO_TRAVERSE_JOB);
-        mFGOJobs.stopJob(FGOJobHandler.AUTO_TRAVERSE_JOB);
+        mFGOJobs.setExtra(AutoJobHandler.AUTO_TRAVERSE_JOB, UserRecordHandler.getHandler());
+        mFGOJobs.startJob(AutoJobHandler.AUTO_TRAVERSE_JOB);
+        mFGOJobs.stopJob(AutoJobHandler.AUTO_TRAVERSE_JOB);
     }
 
     @Override
