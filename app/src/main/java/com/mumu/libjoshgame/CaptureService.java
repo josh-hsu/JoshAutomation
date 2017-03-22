@@ -78,9 +78,9 @@ public class CaptureService extends JoshGameLibrary.GLService {
             dumpFile = new RandomAccessFile(filename, "rw");
             dumpFile.seek(offset);
             dumpFile.read(colorInfo);
-            sc.b = colorInfo[0];
+            sc.r = colorInfo[0];
             sc.g = colorInfo[1];
-            sc.r = colorInfo[2];
+            sc.b = colorInfo[2];
             sc.t = colorInfo[3];
             dumpFile.close();
         } catch (Exception e) {

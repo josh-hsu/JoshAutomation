@@ -24,21 +24,25 @@
         android:layout_centerHorizontal="true" />
 
     <ImageView
-        android:layout_width="140dp"
-        android:layout_height="140dp"
+        android:layout_width="100dp"
+        android:layout_height="100dp"
         android:id="@+id/idZoomViewTop"
+        android:visibility="invisible"
+        android:src="@drawable/enable"
         android:layout_alignParentTop="true"
         android:layout_alignParentEnd="true"
-        android:visibility="invisible"
-        android:src="@drawable/enable"/>
+        android:layout_marginEnd="30dp"
+        android:layout_marginTop="30dp" />
 
     <ImageView
-        android:layout_width="140dp"
-        android:layout_height="140dp"
+        android:layout_width="100dp"
+        android:layout_height="100dp"
         android:id="@+id/idZoomViewBottom"
+        android:visibility="invisible"
+        android:src="@drawable/disable"
         android:layout_above="@+id/idInfoTextView"
         android:layout_alignParentStart="true"
-        android:visibility="invisible"
-        android:src="@drawable/disable"/>
+        android:layout_marginStart="30dp"
+        android:layout_marginBottom="30dp" />
 
 </RelativeLayout>

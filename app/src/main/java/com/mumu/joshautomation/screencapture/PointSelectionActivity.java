@@ -17,14 +17,19 @@
 package com.mumu.joshautomation.screencapture;
 
 import android.annotation.SuppressLint;
+import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Point;
+import android.graphics.drawable.ShapeDrawable;
+import android.graphics.drawable.shapes.RectShape;
 import android.os.Environment;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.os.Handler;
+import android.util.Log;
 import android.view.Display;
 import android.view.MotionEvent;
 import android.view.View;
@@ -53,6 +58,7 @@ public class PointSelectionActivity extends AppCompatActivity {
     private final Handler mHideHandler = new Handler();
     private JoshGameLibrary mGL;
     private String mPointInfo;
+    private ScreenPoint mPointTouched;
 
     /* View declaration */
     private WindowManager mWindowManager;
@@ -188,13 +194,37 @@ public class PointSelectionActivity extends AppCompatActivity {
         }
     };
 
+    private void getUserTouchColor(int x, int y) {
+        ScreenPoint kUserPoint = new ScreenPoint();
+        kUserPoint.coord.orientation = ScreenPoint.SO_Portrait;
+        kUserPoint.coord.x = x;
+        kUserPoint.coord.y = y;
+        mGL.getCaptureService().getColorOnDump(kUserPoint.color, mDumpFilePath, kUserPoint.coord);
+        mPointTouched = kUserPoint;
+    }
+
+    private Bitmap prepareZoomedViewCanvas(int w, int h) {
+        ShapeDrawable drawable;
+        Bitmap bmp = Bitmap.createBitmap(w, h, Bitmap.Config.ARGB_8888); // this creates a MUTABLE bitmap
+        Canvas canvas = new Canvas(bmp);
+
+        drawable = new ShapeDrawable(new RectShape());
+        drawable.getPaint().setColor(mPointTouched.getColor());
+        drawable.setBounds(0, 0, w, h);
+        drawable.draw(canvas);
+
+        return bmp;
+    }
+
     private void controlZoomView(int flag, int x, int y) {
         switch (flag) {
             case ZOOM_FLAG_START:
+                getUserTouchColor(x, y);
                 controlZoomViewUpdatePoint(x, y);
                 controlZoomViewUpdateInfo(x, y);
                 break;
             case ZOOM_FLAG_MOVE:
+                getUserTouchColor(x, y);
                 controlZoomViewUpdatePoint(x, y);
                 controlZoomViewUpdateInfo(x, y);
                 break;
@@ -216,7 +246,9 @@ public class PointSelectionActivity extends AppCompatActivity {
             mUpZoomImageView.setVisibility(View.INVISIBLE);
         }
 
-
+        Bitmap bmp = prepareZoomedViewCanvas(140, 140);
+        mDownZoomImageView.setImageBitmap(bmp);
+        mUpZoomImageView.setImageBitmap(bmp);
     }
 
     /*
@@ -225,17 +257,17 @@ public class PointSelectionActivity extends AppCompatActivity {
      */
     private void controlZoomViewUpdateInfo(int x, int y) {
         String kColorOnPoint;
-        ScreenPoint kUserPoint = new ScreenPoint();
-        kUserPoint.coord.orientation = ScreenPoint.SO_Portrait;
-        kUserPoint.coord.x = x;
-        kUserPoint.coord.y = y;
-        mGL.getCaptureService().getColorOnDump(kUserPoint.color, mDumpFilePath, kUserPoint.coord);
-        kColorOnPoint = "0x" + Integer.toHexString(kUserPoint.color.r & 0xFF) + " "
-                + Integer.toHexString(kUserPoint.color.g & 0xFF) + " "
-                + Integer.toHexString(kUserPoint.color.b & 0xFF) + " "
-                + Integer.toHexString(kUserPoint.color.t & 0xFF);
 
-        mPointInfo = String.valueOf("X=" + x + ", Y=" + y + ", Color=" + kColorOnPoint);
-        mInfoTextView.setText(mPointInfo);
+        if (mPointTouched == null) {
+            Log.e(TAG, "Touch point is null.");
+        } else {
+            kColorOnPoint = "R:0x" + Integer.toHexString(mPointTouched.color.r & 0xFF).toUpperCase() + " G:0x"
+                    + Integer.toHexString(mPointTouched.color.g & 0xFF).toUpperCase()  + " B:0x"
+                    + Integer.toHexString(mPointTouched.color.b & 0xFF).toUpperCase()  + " A:0x"
+                    + Integer.toHexString(mPointTouched.color.t & 0xFF).toUpperCase() ;
+
+            mPointInfo = String.valueOf("X=" + x + ", Y=" + y + ", Color=" + kColorOnPoint);
+            mInfoTextView.setText(mPointInfo);
+        }
     }
 }

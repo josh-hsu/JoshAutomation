@@ -39,6 +39,10 @@ public class ScreenPoint {
                 + String.format("0x%02X ", color.b) + String.format("0x%02X", color.t);
     }
 
+    public int getColor() {
+        return ((color.t & 0xff) << 24 | (color.r & 0xff) << 16 | (color.g & 0xff) << 8 | (color.b & 0xff));
+    }
+
     /*
      * Landscape view (xl, yl) v.s. Portrait view
      *
