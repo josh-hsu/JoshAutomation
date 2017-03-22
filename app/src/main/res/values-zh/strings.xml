@@ -75,4 +75,7 @@
     <string name="startup_permit_system_alarm">請允許使用系統繪圖</string>
     <string name="startup_permit_system_alarm_failed">您未允許設定，程式將不會正常運作</string>
 
+    <!-- Capture view -->
+    <string name="capture_point_default_info">觸碰位置取得資訊</string>
+
 </resources>

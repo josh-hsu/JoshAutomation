@@ -193,13 +193,13 @@ public class PointSelectionActivity extends AppCompatActivity {
             case ZOOM_FLAG_START:
                 controlZoomViewUpdatePoint(x, y);
                 controlZoomViewUpdateInfo(x, y);
-                return;
+                break;
             case ZOOM_FLAG_MOVE:
                 controlZoomViewUpdatePoint(x, y);
                 controlZoomViewUpdateInfo(x, y);
-                return;
+                break;
             case ZOOM_FLAG_END:
-                return;
+                break;
         }
     }
 
@@ -215,6 +215,8 @@ public class PointSelectionActivity extends AppCompatActivity {
             mDownZoomImageView.setVisibility(View.VISIBLE);
             mUpZoomImageView.setVisibility(View.INVISIBLE);
         }
+
+
     }
 
     /*

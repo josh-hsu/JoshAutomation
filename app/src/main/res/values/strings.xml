@@ -77,4 +77,7 @@
     <string name="startup_permit_system_alarm">Please allow to draw on screen permission.</string>
     <string name="startup_permit_system_alarm_failed">No permission, this App will not run.</string>
 
+    <!-- Capture view -->
+    <string name="capture_point_default_info">Touch screen to get info</string>
+
 </resources>

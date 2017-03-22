@@ -18,7 +18,7 @@
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="default_point_info"
+        android:text="@string/capture_point_default_info"
         android:id="@+id/idInfoTextView"
         android:layout_alignParentBottom="true"
         android:layout_centerHorizontal="true" />
