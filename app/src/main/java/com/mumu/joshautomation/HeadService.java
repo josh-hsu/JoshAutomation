@@ -215,9 +215,12 @@ public class HeadService extends Service {
         // Share the same on move listener for moving in the same time
         HeadIconView.OnMoveListener moveListener = new HeadIconView.OnMoveListener() {
             @Override
-            public void onMove(int initialX, int initialY, float initialTouchX, float initialTouchY, MotionEvent event) {
-                for(HeadIconView icon : mHeadIconList) {
-                    icon.moveIconDefault(initialX, initialY, initialTouchX, initialTouchY, event);
+            public void onMove(HeadIconView view, int initialX, int initialY, float initialTouchX, float initialTouchY, MotionEvent event) {
+                // we limit the initiator of moving to only head icon
+                if (view == mHeadIconList.get(IDX_HEAD_ICON)) {
+                    for (HeadIconView icon : mHeadIconList) {
+                        icon.moveIconDefault(initialX, initialY, initialTouchX, initialTouchY, event);
+                    }
                 }
             }
         };

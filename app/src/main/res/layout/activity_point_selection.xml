@@ -1,13 +1,7 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:background="#0099cc"
-    tools:context="com.mumu.fgotool.screencapture.PointSelectionActivity">
+    android:layout_height="match_parent">
 
-    <!-- The primary full-screen view. This can be replaced with whatever view
-         is needed to present your content, e.g. VideoView, SurfaceView,
-         TextureView, etc. -->
     <ImageView
         android:id="@+id/idFullScreenImageView"
         android:layout_width="match_parent"
@@ -21,7 +15,8 @@
         android:text="@string/capture_point_default_info"
         android:id="@+id/idInfoTextView"
         android:layout_alignParentBottom="true"
-        android:layout_centerHorizontal="true" />
+        android:layout_centerHorizontal="true"
+        android:textAlignment="center" />
 
     <ImageView
         android:layout_width="100dp"

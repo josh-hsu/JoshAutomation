@@ -30,6 +30,7 @@ public class HeadIconView {
     private OnTapListener mOnTapListener = null;
     private OnMoveListener mOnMoveListener = null;
     private View mView;
+    private final HeadIconView mSelf = this;
 
     private int mOffsetX, mOffsetY;
     private boolean mIsMovable = true;
@@ -93,7 +94,7 @@ public class HeadIconView {
                         return true;
                     case MotionEvent.ACTION_MOVE:
                         if (mIsMovable && mOnMoveListener != null) {
-                            mOnMoveListener.onMove(initialX, initialY, initialTouchX, initialTouchY, event);
+                            mOnMoveListener.onMove(mSelf, initialX, initialY, initialTouchX, initialTouchY, event);
                         }
                         return true;
                 }
@@ -162,6 +163,6 @@ public class HeadIconView {
     }
 
     public interface OnMoveListener {
-        void onMove(int initialX, int initialY, float initialTouchX, float initialTouchY, MotionEvent event);
+        void onMove(HeadIconView view, int initialX, int initialY, float initialTouchX, float initialTouchY, MotionEvent event);
     }
 }

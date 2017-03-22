@@ -41,10 +41,6 @@ import com.mumu.joshautomation.R;
 import com.mumu.libjoshgame.JoshGameLibrary;
 import com.mumu.libjoshgame.ScreenPoint;
 
-/**
- * An example full-screen activity that shows and hides the system UI (i.e.
- * status bar and navigation/system bar) with user interaction.
- */
 public class PointSelectionActivity extends AppCompatActivity {
     private static final String TAG = "JATool";
     private static final int UI_ANIMATION_DELAY = 300;
@@ -261,12 +257,12 @@ public class PointSelectionActivity extends AppCompatActivity {
         if (mPointTouched == null) {
             Log.e(TAG, "Touch point is null.");
         } else {
-            kColorOnPoint = "R:0x" + Integer.toHexString(mPointTouched.color.r & 0xFF).toUpperCase() + " G:0x"
-                    + Integer.toHexString(mPointTouched.color.g & 0xFF).toUpperCase()  + " B:0x"
-                    + Integer.toHexString(mPointTouched.color.b & 0xFF).toUpperCase()  + " A:0x"
-                    + Integer.toHexString(mPointTouched.color.t & 0xFF).toUpperCase() ;
+            kColorOnPoint = "R:0x" + Integer.toHexString(mPointTouched.color.r & 0xFF).toUpperCase() +
+                    "  G:0x" + Integer.toHexString(mPointTouched.color.g & 0xFF).toUpperCase() +
+                    "  B:0x" + Integer.toHexString(mPointTouched.color.b & 0xFF).toUpperCase() +
+                    "  A:0x"+ Integer.toHexString(mPointTouched.color.t & 0xFF).toUpperCase();
 
-            mPointInfo = String.valueOf("X=" + x + ", Y=" + y + ", Color=" + kColorOnPoint);
+            mPointInfo = String.valueOf("X=" + x + "   Y=" + y + "\n" + kColorOnPoint);
             mInfoTextView.setText(mPointInfo);
         }
     }
