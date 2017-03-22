@@ -322,6 +322,13 @@ public class HeadService extends Service implements AutoJobEventListener{
     }
 
     private void configCapture() {
+        // head service is responsible for setting orientation
+        int orientation = getResources().getConfiguration().orientation;
+        if (orientation == 1)
+            mGL.setGameOrientation(ScreenPoint.SO_Portrait);
+        else
+            mGL.setGameOrientation(ScreenPoint.SO_Landscape);
+
         configAllIconShowing(HeadIconView.INVISIBLE);
         mHandler.postDelayed(mDumpScreenRunnable, 100);
     }

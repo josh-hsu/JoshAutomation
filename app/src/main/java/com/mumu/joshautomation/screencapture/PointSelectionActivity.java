@@ -21,6 +21,7 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Color;
+import android.graphics.Matrix;
 import android.graphics.Point;
 import android.graphics.drawable.ShapeDrawable;
 import android.graphics.drawable.shapes.RectShape;
@@ -108,10 +109,18 @@ public class PointSelectionActivity extends AppCompatActivity {
 
         mGL = JoshGameLibrary.getInstance();
         mGL.setContext(this);
-        mGL.setGameOrientation(ScreenPoint.SO_Landscape);
+        //mGL.setGameOrientation(ScreenPoint.SO_Landscape); //orientation is set by head service
         mGL.setScreenDimension(1080, 1920);
 
-        mImageView.setImageBitmap(BitmapFactory.decodeFile(mPngFilePath));
+        Bitmap pngFileMap = BitmapFactory.decodeFile(mPngFilePath);
+        int w = pngFileMap.getWidth();
+        int h = pngFileMap.getHeight();
+        if (pngFileMap.getWidth() > pngFileMap.getHeight()) {
+            Matrix mtx = new Matrix();
+            mtx.postRotate(90);
+            pngFileMap = Bitmap.createBitmap(pngFileMap, 0, 0, w, h, mtx, true);
+        }
+        mImageView.setImageBitmap(pngFileMap);
         mImageView.setOnTouchListener(mPointTouchListener);
         mInfoTextView.setBackgroundColor(Color.WHITE);
         mUpZoomImageView.setVisibility(View.INVISIBLE);

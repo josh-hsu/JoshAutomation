@@ -27,6 +27,7 @@ public class CaptureService extends JoshGameLibrary.GLService {
     private final String mInternalDumpFile = Environment.getExternalStorageDirectory().toString() + "/internal.dump";
     private int mScreenWidth = -1;
     private int mScreenHeight = -1;
+    private int mCurrentGameOrientation = ScreenPoint.SO_Portrait;
     
     CaptureService()
     {
@@ -36,6 +37,10 @@ public class CaptureService extends JoshGameLibrary.GLService {
     public void setScreenDimension(int w, int h) {
         mScreenHeight = h;
         mScreenWidth = w;
+    }
+
+    public void setScreenOrientation(int o) {
+        mCurrentGameOrientation = o;
     }
 
     public void dumpScreenPNG(String filename) {
@@ -69,10 +74,19 @@ public class CaptureService extends JoshGameLibrary.GLService {
         int bpp = 4;
         byte[] colorInfo = new byte[4];
 
-        if (coord.orientation == ScreenPoint.SO_Portrait)
-            offset = (mScreenWidth * coord.y + coord.x) * bpp;
-        else if (coord.orientation == ScreenPoint.SO_Landscape)
-            offset = (mScreenWidth * coord.x + (mScreenWidth - coord.y)) * bpp;
+        //if Android version is 7.0 or higher, the dump orientation will be obeyed device
+        if (mCurrentGameOrientation == ScreenPoint.SO_Portrait) {
+            if (coord.orientation == ScreenPoint.SO_Portrait)
+                offset = (mScreenWidth * coord.y + coord.x) * bpp;
+            else if (coord.orientation == ScreenPoint.SO_Landscape)
+                offset = (mScreenWidth * coord.x + (mScreenWidth - coord.y)) * bpp;
+        } else {
+            if (coord.orientation == ScreenPoint.SO_Portrait) {
+                offset = (mScreenHeight * (mScreenWidth - coord.x) + coord.y) * bpp;
+            } else if (coord.orientation == ScreenPoint.SO_Landscape) {
+                offset = (mScreenHeight * coord.y + coord.x) * bpp;
+            }
+        }
 
         try {
             dumpFile = new RandomAccessFile(filename, "rw");

@@ -65,6 +65,7 @@ public class JoshGameLibrary {
 
     public void setGameOrientation(int orientation) {
         mInputService.setGameOrientation(orientation);
+        mCaptureService.setScreenOrientation(orientation);
     }
 
     public CaptureService getCaptureService() {
