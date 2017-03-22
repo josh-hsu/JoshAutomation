@@ -62,7 +62,7 @@ public class ScreenPoint {
                     + String.format("0x%02X ", b) + String.format("0x%02X", t);
         }
 
-        public ScreenColor(byte bb, byte gg, byte rr, byte tt) {
+        public ScreenColor(byte rr, byte gg, byte bb, byte tt) {
             b = bb;
             g = gg;
             r = rr;

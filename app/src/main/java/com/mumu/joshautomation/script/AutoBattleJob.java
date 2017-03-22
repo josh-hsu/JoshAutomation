@@ -60,33 +60,21 @@ public class AutoBattleJob extends AutoJobHandler.AutoJob {
     }
 
     private class MainJobRoutine extends Thread {
-        ScreenPoint pointScreenCenter = new ScreenPoint(0,0,0,0,500,1090,ScreenPoint.SO_Portrait);
-        ScreenPoint pointExitBulletin = new ScreenPoint(0,0,0,0,1871,37,ScreenPoint.SO_Landscape);
+        ScreenPoint pointIntroPage = new ScreenPoint(0x44,0x44,0x75,0xFF,824,1035,ScreenPoint.SO_Portrait);
 
         private void main() throws Exception {
             boolean shouldRunning = true;
 
+            mGL.setGameOrientation(ScreenPoint.SO_Landscape);
+
             while (shouldRunning) {
                 sleep(1000);
-                sendMessage("Hello 1");
-                mGL.getInputService().tapOnScreen(pointScreenCenter.coord);
-                sleep(500);
-                mGL.getInputService().tapOnScreen(pointScreenCenter.coord);
-                sleep(500);
-                mGL.getInputService().tapOnScreen(pointScreenCenter.coord);
-                sleep(500);
-                mGL.getInputService().tapOnScreen(pointScreenCenter.coord);
-                sendMessage("Hello 2");
-                sleep(2000);
-                sendMessage("Hello 3");
-                mGL.getInputService().tapOnScreen(pointScreenCenter.coord);
-                sleep(2000);
-                sendMessage("Hello 4");
-                mGL.getInputService().tapOnScreen(pointExitBulletin.coord);
-                sleep(2000);
+                sendMessage("Wait for Home");
+
+                mGL.getCaptureService().waitOnColor(pointIntroPage, 1000, this);
 
                 shouldRunning = false;
-                sendMessage("Job is done");
+                sendMessage("Got it!");
             }
         }
 
