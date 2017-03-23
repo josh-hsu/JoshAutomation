@@ -68,6 +68,10 @@ public class JoshGameLibrary {
         mCaptureService.setScreenOrientation(orientation);
     }
 
+    public void setAmbiguousRange(int range) {
+        mCaptureService.setAmbiguousRange(range);
+    }
+
     public CaptureService getCaptureService() {
         return mCaptureService;
     }

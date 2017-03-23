@@ -5,6 +5,8 @@ import android.util.Log;
 import com.mumu.libjoshgame.JoshGameLibrary;
 import com.mumu.libjoshgame.ScreenPoint;
 
+import static com.mumu.joshautomation.script.AutoBattleJobDefine.pointIntroPage;
+
 public class AutoBattleJob extends AutoJobHandler.AutoJob {
     private static final String TAG = "AutoBattleJob";
     private MainJobRoutine mRoutine;
@@ -60,18 +62,18 @@ public class AutoBattleJob extends AutoJobHandler.AutoJob {
     }
 
     private class MainJobRoutine extends Thread {
-        ScreenPoint pointIntroPage = new ScreenPoint(0x44,0x44,0x75,0xFF,824,1035,ScreenPoint.SO_Portrait);
 
         private void main() throws Exception {
             boolean shouldRunning = true;
 
             mGL.setGameOrientation(ScreenPoint.SO_Landscape);
+            mGL.setAmbiguousRange(0x04);
 
             while (shouldRunning) {
                 sleep(1000);
                 sendMessage("Wait for Home");
 
-                mGL.getCaptureService().waitOnColor(pointIntroPage, 1000, this);
+                mGL.getCaptureService().waitOnColor(pointIntroPage, 60, this);
 
                 shouldRunning = false;
                 sendMessage("Got it!");

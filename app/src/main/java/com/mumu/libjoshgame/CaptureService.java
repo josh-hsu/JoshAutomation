@@ -28,47 +28,53 @@ public class CaptureService extends JoshGameLibrary.GLService {
     private int mScreenWidth = -1;
     private int mScreenHeight = -1;
     private int mCurrentGameOrientation = ScreenPoint.SO_Portrait;
+    private int mAmbiguousRange = 0x05;
     
-    CaptureService()
-    {
+    CaptureService() {
         Log.d(TAG, "CaptureService has been created.");
     }
 
-    public void setScreenDimension(int w, int h) {
+    void setScreenDimension(int w, int h) {
         mScreenHeight = h;
         mScreenWidth = w;
     }
 
-    public void setScreenOrientation(int o) {
+    void setScreenOrientation(int o) {
         mCurrentGameOrientation = o;
+    }
+
+    void setAmbiguousRange(int range) {
+        mAmbiguousRange = range;
     }
 
     public void dumpScreenPNG(String filename) {
         super.runCommand("screencap -p " + filename);
-        //Cmd.runCommand("chmod 664 "+ filename);
-        //Cmd.runCommand("chown sdcard_rw:media_rw "+ filename);
     }
 
-    public void dumpScreen(String filename)
-    {
+    public void dumpScreen(String filename) {
         super.runCommand("screencap " + filename);
-        //Cmd.runCommand("chmod 664 "+ filename);
-        //Cmd.runCommand("chown sdcard_rw:media_rw "+ filename);
     }
 
-    private void dumpScreen()
-    {
+    private void dumpScreen() {
         super.runCommand("screencap " + mInternalDumpFile);
         super.runCommand("chmod 666 " + mInternalDumpFile);
     }
 
-    private void getColorOnDumpInternal(ScreenColor sc, ScreenCoord coord)
-    {
+    /*
+     * getColorOnDumpInternal
+     * This is used only insides this class
+     */
+    private void getColorOnDumpInternal(ScreenColor sc, ScreenCoord coord) {
         getColorOnDump(sc, mInternalDumpFile, coord);
     }
 
-    public void getColorOnDump(ScreenColor sc, String filename, ScreenCoord coord)
-    {
+    /*
+     * getColorOnDump
+     * sc: ScreenColor to be saved into
+     * filename: dump file path
+     * coord: ScreenCoord to be used
+     */
+    public void getColorOnDump(ScreenColor sc, String filename, ScreenCoord coord) {
         RandomAccessFile dumpFile;
         int offset = 0;
         int bpp = 4;
@@ -102,26 +108,30 @@ public class CaptureService extends JoshGameLibrary.GLService {
         }
     }
 
-    /* This should be called after dumpScreen, otherwise you will get old dumps */
-    private void getColor(ScreenColor sc, ScreenCoord coord)
-    {
+    /*
+     * getColorOnScreen
+     * sc: ScreenColor to be saved
+     * coord: ScreenCoord to be used to get color
+     */
+    public void getColorOnScreen(ScreenColor sc, ScreenCoord coord) {
+        dumpScreen();
         getColorOnDumpInternal(sc, coord);
     }
 
-    public void getColorOnScreen(ScreenColor sc, ScreenCoord coord)
-    {
-        dumpScreen();
-        getColor(sc, coord);
-    }
-
-    public int waitOnColor(ScreenColor sc, ScreenCoord coord, int thres, Thread kThread)
-    {
+    /*
+     * waitOnColor
+     * sc: ScreenColor used to be compared
+     * coord: ScreenCoord used to get color
+     * threshold: Timeout, 1 threshold equals to 100 ms
+     * kThread: Executing thread of your task
+     */
+    public int waitOnColor(ScreenColor sc, ScreenCoord coord, int threshold, Thread kThread) {
         ScreenPoint currentPoint = new ScreenPoint();
         Log.d(TAG, "now busy waiting for ( " + coord.x  + "," + coord.y + ") turn into 0x"
                 + Integer.toHexString(sc.r & 0xFF) + Integer.toHexString(sc.g & 0xFF)
                 + Integer.toHexString(sc.b & 0xFF));
 
-        while(thres-- > 0) {
+        while(threshold-- > 0) {
             getColorOnScreen(currentPoint.color, coord);
             if (colorCompare(sc, currentPoint.color)) {
                 Log.d(TAG, "CaptureService: Matched!");
@@ -139,35 +149,17 @@ public class CaptureService extends JoshGameLibrary.GLService {
         return -1;
     }
 
-    public int waitOnColor(ScreenPoint sp, int thres, Thread kThread)
-    {
-        return waitOnColor(sp.color, sp.coord, thres, kThread);
+    public int waitOnColor(ScreenPoint sp, int threshold, Thread kThread) {
+        return waitOnColor(sp.color, sp.coord, threshold, kThread);
     }
 
-    public boolean colorIs(ScreenPoint point)
-    {
-        if (point == null) {
-            Log.w(TAG, "Point is null");
-            return false;
-        }
-        ScreenPoint currentPoint = new ScreenPoint();
-        getColorOnScreen(currentPoint.color, point.coord);
-        return colorCompare(currentPoint.color, point.color);
-    }
-
-    private int waitOnColorAsync(ScreenColor sc, ScreenCoord coord, int thres)
-    {
-        return 0;
-    }
-
-    public int waitOnColorNotEqual(ScreenColor sc, ScreenCoord coord, int thres, Thread kThread)
-    {
+    public int waitOnColorNotEqual(ScreenColor sc, ScreenCoord coord, int threshold, Thread kThread) {
         ScreenPoint currentPoint = new ScreenPoint();
         Log.d(TAG, "now busy waiting for ( " + coord.x  + "," + coord.y + ") is not 0x"
                 + Integer.toHexString(sc.r & 0xFF) + Integer.toHexString(sc.g & 0xFF)
                 + Integer.toHexString(sc.b & 0xFF));
 
-        while(thres-- > 0) {
+        while(threshold-- > 0) {
             getColorOnScreen(currentPoint.color, coord);
             if (!colorCompare(sc, currentPoint.color)) {
                 Log.d(TAG, "CaptureService: Matched!");
@@ -184,27 +176,35 @@ public class CaptureService extends JoshGameLibrary.GLService {
         return -1;
     }
 
-    public boolean colorCompare(ScreenColor src, ScreenColor dest)
-    {
-        int ambiguousRange = 0x05;
-        Log.d(TAG, "Compare source: " + src.toString() + " to dest: " + dest.toString());
-        if( colorWithIn(src.r, dest.r, ambiguousRange) &&
-                colorWithIn(src.b, dest.b, ambiguousRange) &&
-                colorWithIn(src.g, dest.g, ambiguousRange)) {
-            return true;
+    public boolean colorIs(ScreenPoint point) {
+        if (point == null) {
+            Log.w(TAG, "Point is null");
+            return false;
         }
-
-        return false;
+        ScreenPoint currentPoint = new ScreenPoint();
+        getColorOnScreen(currentPoint.color, point.coord);
+        return colorCompare(currentPoint.color, point.color);
     }
 
-    private boolean colorWithIn(byte a, byte b, int range) {
+    public boolean colorCompare(ScreenColor src, ScreenColor dest) {
+        Log.d(TAG, "Compare source: " + src.toString() + " to dest: " + dest.toString());
+        return colorWithinRange(src.r, dest.r, mAmbiguousRange) &&
+                colorWithinRange(src.b, dest.b, mAmbiguousRange) &&
+                colorWithinRange(src.g, dest.g, mAmbiguousRange);
+    }
+
+    private boolean colorWithinRange(byte a, byte b, int range) {
         int src = (int) a;
         int dst = (int) b;
+        int upperBound = src + range;
+        int lowerBound = src - range;
 
-        if ( (dst < (src + range)) && (dst > (src - range))) {
-            return true;
-        }
+        if (upperBound > 0xff)
+            upperBound = 0xff;
 
-        return false;
+        if (lowerBound < 0x00)
+            lowerBound = 0x00;
+
+        return ((dst <= upperBound) && (dst >= lowerBound));
     }
 }

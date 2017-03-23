@@ -20,32 +20,30 @@ import android.util.Log;
 
 import com.mumu.libjoshgame.ScreenPoint.*;
 
-
 public class InputService extends JoshGameLibrary.GLService {
     private static final String TAG = "LibJG";
-    private static int mGameOrientation = ScreenPoint.SO_Landscape;
-    private static int mScreenWidth = -1;
-    private static int mScreenHeight = -1;
+    private int mGameOrientation = ScreenPoint.SO_Landscape;
+    private int mScreenWidth = -1;
+    private int mScreenHeight = -1;
     public static final int INPUT_TYPE_TAP = 0;
     public static final int INPUT_TYPE_DOUBLE_TAP = 1;
     public static final int INPUT_TYPE_TRIPLE_TAP = 2;
     public static final int INPUT_TYPE_CONT_TAPS =3;
     public static final int INPUT_TYPE_SWIPE = 4;
     public static final int INPUT_TYPE_MAX = 5;
-    public boolean mUseSu = false;
-    CaptureService mCaptureService = null;
+    private CaptureService mCaptureService = null;
 
-    public InputService(CaptureService cs) {
+    InputService(CaptureService cs) {
         Log.d(TAG, "InputService instance is created. \n");
         mCaptureService = cs;
     }
 
-    public void setScreenDimension(int w, int h) {
+    void setScreenDimension(int w, int h) {
         mScreenWidth = w;
         mScreenHeight = h;
     }
 
-    public void setGameOrientation(int orientation) {
+    void setGameOrientation(int orientation) {
         mGameOrientation = orientation;
     }
 
@@ -79,8 +77,7 @@ public class InputService extends JoshGameLibrary.GLService {
         return 0;
     }
 
-    public int tapOnScreen(ScreenCoord coord1)
-    {
+    public int tapOnScreen(ScreenCoord coord1) {
         if (mGameOrientation != coord1.orientation)
             touchOnScreen(coord1.y, mScreenWidth - coord1.x, 0, 0, INPUT_TYPE_TAP);
         else
@@ -92,8 +89,7 @@ public class InputService extends JoshGameLibrary.GLService {
     /*
      * Tap on screen amount of times until the color on the screen is not in point->color
      */
-    public int tapOnScreenUntilColorChanged(ScreenPoint point, int interval, int retry, Thread kThread)
-    {
+    public int tapOnScreenUntilColorChanged(ScreenPoint point, int interval, int retry, Thread kThread) {
         if (point == null) {
             Log.e(TAG, "null point");
             return -1;
@@ -118,8 +114,7 @@ public class InputService extends JoshGameLibrary.GLService {
     }
 
     public int tapOnScreenUntilColorChangedTo(ScreenPoint point,
-                                       ScreenPoint to, int interval, int retry, Thread kThread)
-    {
+                                       ScreenPoint to, int interval, int retry, Thread kThread) {
         if ((point == null) || (to == null)) {
             Log.e(TAG, "InputService: null points.\n");
             return -1;
@@ -143,31 +138,16 @@ public class InputService extends JoshGameLibrary.GLService {
         return -1;
     }
 
-    public int touchOnScreenAsync(int x, int y, int tx, int ty, int type) {
-        //TODO: implement required
-        touchOnScreen(x, y, tx, ty, type);
-        return 0;
-    }
-
-    public void configTouchScreen(boolean enable) {
-        if (enable)
-            super.runCommand("echo 1 > /proc/touch-enable");
-        else
-            super.runCommand("echo 0 > /proc/touch-enable");
-    }
-
-    public void configGyroSensor(boolean enable) {
-        if (enable)
-            super.runCommand("echo 1 > /proc/sensor-enable");
-        else
-            super.runCommand("echo 0 > /proc/sensor-enable");
-    }
-
     public void setBacklightLow() {
         super.runCommand("echo 0 > /sys/class/leds/lcd-backlight/brightness");
     }
 
     public void setBacklight(int bl) {
         super.runCommand("echo " + bl + " > /sys/class/leds/lcd-backlight/brightness");
+    }
+
+    public String toString() {
+        return "InputService:\nScreen Dimension: w = " + mScreenWidth + " h=" + mScreenHeight +
+                "\nGame Orientation: " + mGameOrientation;
     }
 }
