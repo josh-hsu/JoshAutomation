@@ -21,6 +21,9 @@ import android.content.pm.PackageManager;
 import android.util.Log;
 
 /*
+ * Josh Game Library - Version 1.20
+ */
+/*
  * JoshGameLibrary (GL)
  * This game control library require the following initial phase
 

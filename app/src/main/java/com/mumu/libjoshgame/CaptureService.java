@@ -18,17 +18,19 @@ package com.mumu.libjoshgame;
 
 import android.os.Environment;
 import android.util.Log;
-import com.mumu.libjoshgame.ScreenPoint.*;
 
 import java.io.RandomAccessFile;
+import java.util.ArrayList;
 
 public class CaptureService extends JoshGameLibrary.GLService {
     private final String TAG = "LibJG";
     private final String mInternalDumpFile = Environment.getExternalStorageDirectory().toString() + "/internal.dump";
+    private final String mFindColorDumpFile = Environment.getExternalStorageDirectory().toString() + "/find_color.dump";
     private int mScreenWidth = -1;
     private int mScreenHeight = -1;
     private int mCurrentGameOrientation = ScreenPoint.SO_Portrait;
     private int mAmbiguousRange = 0x05;
+    private final int mMaxColorFinding = 10;
     
     CaptureService() {
         Log.d(TAG, "CaptureService has been created.");
@@ -119,6 +121,137 @@ public class CaptureService extends JoshGameLibrary.GLService {
     }
 
     /*
+     * getColorOnDump
+     * sc: ScreenColor to be saved into
+     * filename: dump file path
+     * coord: ScreenCoord to be used
+     */
+    public void getColorsOnDump(ArrayList<ScreenColor> colors,
+                                String filename, ArrayList<ScreenCoord> coords) {
+        RandomAccessFile dumpFile;
+        int offset = 0;
+        int bpp = 4;
+        byte[] colorInfo;
+
+        try {
+            dumpFile = new RandomAccessFile(filename, "rw");
+        } catch (Exception e) {
+            Log.d(TAG, "getColorsOnDump: File opened failed." + e.getMessage());
+            return;
+        }
+
+        for(int i = 0; i < coords.size(); i++) {
+            ScreenCoord coord = coords.get(i);
+            ScreenColor color = colors.get(i);
+
+            //if Android version is 7.0 or higher, the dump orientation will be obeyed device
+            if (mCurrentGameOrientation == ScreenPoint.SO_Portrait) {
+                if (coord.orientation == ScreenPoint.SO_Portrait)
+                    offset = (mScreenWidth * coord.y + coord.x) * bpp;
+                else if (coord.orientation == ScreenPoint.SO_Landscape)
+                    offset = (mScreenWidth * coord.x + (mScreenWidth - coord.y)) * bpp;
+            } else {
+                if (coord.orientation == ScreenPoint.SO_Portrait) {
+                    offset = (mScreenHeight * (mScreenWidth - coord.x) + coord.y) * bpp;
+                } else if (coord.orientation == ScreenPoint.SO_Landscape) {
+                    offset = (mScreenHeight * coord.y + coord.x) * bpp;
+                }
+            }
+
+            try {
+                colorInfo = new byte[4];
+                dumpFile.seek(offset);
+                dumpFile.read(colorInfo);
+                color.r = colorInfo[0];
+                color.g = colorInfo[1];
+                color.b = colorInfo[2];
+                color.t = colorInfo[3];
+            } catch (Exception e) {
+                Log.d(TAG, "File seek error: " + e.toString());
+            }
+        }
+
+        try {
+            dumpFile.close();
+        } catch (Exception e) {
+            Log.d(TAG, "File close failed: " + e.toString());
+        }
+    }
+
+    /*
+     * findColorInRange (added in 1.20)
+     * src: Source ScreenCoord (must smaller than dest)
+     * dest: Destination ScreenCoord
+     * colors: ScreenColor array to be found
+     */
+    public boolean findColorInRange(ScreenCoord src, ScreenCoord dest, ArrayList<ScreenColor> colors) {
+        ArrayList<ScreenCoord> coordList = new ArrayList<>();
+        ArrayList<ScreenColor> colorsReturned = new ArrayList<>();
+        ArrayList<Boolean> checkList = new ArrayList<>();
+        int colorCount;
+        int orientation;
+
+        // sanity check
+        if (colors == null || src == null || dest == null) {
+            Log.w(TAG, "findColorInRange: colors cannot be null");
+            return false;
+        } else {
+            orientation = src.orientation;
+            colorCount = colors.size();
+        }
+
+        if (src.x > dest.x || src.y > dest.y) {
+            Log.w(TAG, "findColorInRange: Src is bigger than Dest");
+            return false;
+        }
+
+        if (src.orientation != dest.orientation) {
+            Log.w(TAG, "findColorInRange: Src and Dest must in same orientation");
+            return false;
+        }
+
+        if (colorCount < 1 || colorCount > mMaxColorFinding) {
+            Log.w(TAG, "findColorInRange: colors size should be bigger than 0 and smaller than " +
+                    mMaxColorFinding);
+            return false;
+        }
+
+        for(int i = 0; i < colorCount; i++)
+            checkList.add(false);
+
+        for(int x = src.x; x <= dest.x; x++) {
+            for(int y = src.y; y <= dest.y; y++) {
+                coordList.add(new ScreenCoord(x, y, orientation));
+                colorsReturned.add(new ScreenColor());
+            }
+        }
+
+        Log.d(TAG, "FindColorInRange: now checking total " + coordList.size() + " points");
+        dumpScreen(mFindColorDumpFile);
+        getColorsOnDump(colorsReturned, mFindColorDumpFile, coordList);
+        for(ScreenColor color : colorsReturned) {
+            for (int i = 0; i < colorCount; i++) {
+                ScreenColor sc = colors.get(i);
+
+                if (checkList.get(i))
+                    continue;
+
+                if (colorCompare(color, sc)) {
+                    Log.d(TAG, "Found color " + color.toString());
+                    checkList.set(i, true);
+                }
+            }
+        }
+
+        for(Boolean b : checkList) {
+            if (!b)
+                return false;
+        }
+
+        return true;
+    }
+
+    /*
      * waitOnColor
      * sc: ScreenColor used to be compared
      * coord: ScreenCoord used to get color
@@ -187,7 +320,6 @@ public class CaptureService extends JoshGameLibrary.GLService {
     }
 
     public boolean colorCompare(ScreenColor src, ScreenColor dest) {
-        Log.d(TAG, "Compare source: " + src.toString() + " to dest: " + dest.toString());
         return colorWithinRange(src.r, dest.r, mAmbiguousRange) &&
                 colorWithinRange(src.b, dest.b, mAmbiguousRange) &&
                 colorWithinRange(src.g, dest.g, mAmbiguousRange);

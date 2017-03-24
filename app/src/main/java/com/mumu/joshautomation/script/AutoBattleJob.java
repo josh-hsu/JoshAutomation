@@ -5,6 +5,11 @@ import android.util.Log;
 import com.mumu.libjoshgame.JoshGameLibrary;
 import com.mumu.libjoshgame.ScreenPoint;
 
+import static com.mumu.joshautomation.script.AutoBattleJobDefine.cardArt;
+import static com.mumu.joshautomation.script.AutoBattleJobDefine.cardBurst;
+import static com.mumu.joshautomation.script.AutoBattleJobDefine.cardPositionEnd;
+import static com.mumu.joshautomation.script.AutoBattleJobDefine.cardPositionStart;
+import static com.mumu.joshautomation.script.AutoBattleJobDefine.cardQuick;
 import static com.mumu.joshautomation.script.AutoBattleJobDefine.pointIntroPage;
 
 public class AutoBattleJob extends AutoJobHandler.AutoJob {
@@ -70,13 +75,36 @@ public class AutoBattleJob extends AutoJobHandler.AutoJob {
             mGL.setAmbiguousRange(0x04);
 
             while (shouldRunning) {
-                sleep(1000);
+                /*sleep(1000);
                 sendMessage("Wait for Home");
 
-                mGL.getCaptureService().waitOnColor(pointIntroPage, 60, this);
+                mGL.getCaptureService().waitOnColor(pointIntroPage, 60, this);*/
 
-                shouldRunning = false;
-                sendMessage("Got it!");
+                sleep(1000);
+                sendMessage("Checking ...");
+
+                String cardInfo = "";
+                for(int i = 0; i < 5; i++) {
+                    if (mGL.getCaptureService().findColorInRange(
+                            cardPositionStart.get(i),
+                            cardPositionEnd.get(i),
+                            cardArt)) {
+                        cardInfo += "A";
+                    } else if (mGL.getCaptureService().findColorInRange(
+                            cardPositionStart.get(i),
+                            cardPositionEnd.get(i),
+                            cardBurst)) {
+                        cardInfo += "B";
+                    } else if (mGL.getCaptureService().findColorInRange(
+                            cardPositionStart.get(i),
+                            cardPositionEnd.get(i),
+                            cardQuick)) {
+                        cardInfo += "Q";
+                    }
+                    cardInfo += ", ";
+                }
+
+                sendMessage(cardInfo);
             }
         }
 

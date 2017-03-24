@@ -19,7 +19,6 @@ package com.mumu.libjoshgame;
 public class ScreenPoint {
     public final static int SO_Portrait = 0;
     public final static int SO_Landscape = 1;
-    public final static int SO_Max = 2;
     public ScreenCoord coord;
     public ScreenColor color;
 
@@ -41,48 +40,5 @@ public class ScreenPoint {
 
     public int getColor() {
         return ((color.t & 0xff) << 24 | (color.r & 0xff) << 16 | (color.g & 0xff) << 8 | (color.b & 0xff));
-    }
-
-    /*
-     * Landscape view (xl, yl) v.s. Portrait view
-     *
-     *   xl = yp
-     *   yl = screen_width - xp
-     */
-
-    public class ScreenColor {
-        public byte b;	/* blue */
-        public byte g;	/* green */
-        public byte r;	/* red */
-        public byte t;	/* transparent */
-
-        public String toString() {
-            return "The color is "
-                    + String.format("0x%02X ", r) + String.format("0x%02X ", g)
-                    + String.format("0x%02X ", b) + String.format("0x%02X", t);
-        }
-
-        public ScreenColor(byte rr, byte gg, byte bb, byte tt) {
-            b = bb;
-            g = gg;
-            r = rr;
-            t = tt;
-        }
-    }
-
-    public class ScreenCoord {
-        public int x;
-        public int y;
-        public int orientation;
-
-        public ScreenCoord(int xx, int yy, int oo) {
-            x = xx;
-            y = yy;
-            orientation = oo;
-        }
-
-        public String toString() {
-            return "The color of point (" + x + "," + y + ")";
-        }
     }
 }
