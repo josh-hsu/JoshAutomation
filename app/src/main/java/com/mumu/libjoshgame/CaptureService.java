@@ -190,6 +190,7 @@ public class CaptureService extends JoshGameLibrary.GLService {
         ArrayList<Boolean> checkList = new ArrayList<>();
         int colorCount;
         int orientation;
+        int x_start, x_end, y_start, y_end;
 
         // sanity check
         if (colors == null || src == null || dest == null) {
@@ -198,11 +199,6 @@ public class CaptureService extends JoshGameLibrary.GLService {
         } else {
             orientation = src.orientation;
             colorCount = colors.size();
-        }
-
-        if (src.x > dest.x || src.y > dest.y) {
-            Log.w(TAG, "findColorInRange: Src is bigger than Dest");
-            return false;
         }
 
         if (src.orientation != dest.orientation) {
@@ -219,8 +215,24 @@ public class CaptureService extends JoshGameLibrary.GLService {
         for(int i = 0; i < colorCount; i++)
             checkList.add(false);
 
-        for(int x = src.x; x <= dest.x; x++) {
-            for(int y = src.y; y <= dest.y; y++) {
+        if (src.x > dest.x) {
+            x_start = dest.x;
+            x_end = src.x;
+        } else {
+            x_start = src.x;
+            x_end = dest.x;
+        }
+
+        if (src.y > dest.y) {
+            y_start = dest.y;
+            y_end = src.y;
+        } else {
+            y_start = src.y;
+            y_end = dest.y;
+        }
+
+        for(int x = x_start; x <= x_end; x++) {
+            for(int y = y_start; y <= y_end; y++) {
                 coordList.add(new ScreenCoord(x, y, orientation));
                 colorsReturned.add(new ScreenColor());
             }
@@ -320,23 +332,27 @@ public class CaptureService extends JoshGameLibrary.GLService {
     }
 
     public boolean colorCompare(ScreenColor src, ScreenColor dest) {
+        //Log.d(TAG, "compare " + src.toString() + " with " + dest.toString());
         return colorWithinRange(src.r, dest.r, mAmbiguousRange) &&
                 colorWithinRange(src.b, dest.b, mAmbiguousRange) &&
                 colorWithinRange(src.g, dest.g, mAmbiguousRange);
     }
 
     private boolean colorWithinRange(byte a, byte b, int range) {
-        int src = (int) a;
-        int dst = (int) b;
+        Byte byteA = a;
+        Byte byteB = b;
+        int src = byteA.intValue() & 0xFF;
+        int dst = byteB.intValue() & 0xFF;
         int upperBound = src + range;
         int lowerBound = src - range;
 
-        if (upperBound > 0xff)
-            upperBound = 0xff;
+        if (upperBound > 0xFF)
+            upperBound = 0xFF;
 
-        if (lowerBound < 0x00)
-            lowerBound = 0x00;
+        if (lowerBound < 0)
+            lowerBound = 0;
 
-        return ((dst <= upperBound) && (dst >= lowerBound));
+        //Log.d(TAG, "compare range " + upperBound + " > " + lowerBound + " with " + dst);
+        return (dst <= upperBound) && (dst >= lowerBound);
     }
 }

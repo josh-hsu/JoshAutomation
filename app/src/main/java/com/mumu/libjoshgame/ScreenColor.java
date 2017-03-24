@@ -23,9 +23,9 @@ public class ScreenColor {
     public byte t;	/* transparent */
 
     public String toString() {
-        return "The color is "
-                + String.format("0x%02X ", r) + String.format("0x%02X ", g)
-                + String.format("0x%02X ", b) + String.format("0x%02X", t);
+        return "0x "
+                + String.format("%02X ", r) + String.format("%02X ", g)
+                + String.format("%02X ", b) + String.format("%02X", t);
     }
 
     public ScreenColor(byte rr, byte gg, byte bb, byte tt) {

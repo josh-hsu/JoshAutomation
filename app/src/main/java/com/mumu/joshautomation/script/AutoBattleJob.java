@@ -5,12 +5,7 @@ import android.util.Log;
 import com.mumu.libjoshgame.JoshGameLibrary;
 import com.mumu.libjoshgame.ScreenPoint;
 
-import static com.mumu.joshautomation.script.AutoBattleJobDefine.cardArt;
-import static com.mumu.joshautomation.script.AutoBattleJobDefine.cardBurst;
-import static com.mumu.joshautomation.script.AutoBattleJobDefine.cardPositionEnd;
-import static com.mumu.joshautomation.script.AutoBattleJobDefine.cardPositionStart;
-import static com.mumu.joshautomation.script.AutoBattleJobDefine.cardQuick;
-import static com.mumu.joshautomation.script.AutoBattleJobDefine.pointIntroPage;
+import static com.mumu.joshautomation.script.AutoBattleJobDefine.*;
 
 public class AutoBattleJob extends AutoJobHandler.AutoJob {
     private static final String TAG = "AutoBattleJob";
@@ -72,7 +67,7 @@ public class AutoBattleJob extends AutoJobHandler.AutoJob {
             boolean shouldRunning = true;
 
             mGL.setGameOrientation(ScreenPoint.SO_Landscape);
-            mGL.setAmbiguousRange(0x04);
+            mGL.setAmbiguousRange(0x0A);
 
             while (shouldRunning) {
                 /*sleep(1000);
@@ -80,10 +75,11 @@ public class AutoBattleJob extends AutoJobHandler.AutoJob {
 
                 mGL.getCaptureService().waitOnColor(pointIntroPage, 60, this);*/
 
-                sleep(1000);
                 sendMessage("Checking ...");
+                sleep(500);
 
                 String cardInfo = "";
+
                 for(int i = 0; i < 5; i++) {
                     if (mGL.getCaptureService().findColorInRange(
                             cardPositionStart.get(i),
@@ -100,11 +96,13 @@ public class AutoBattleJob extends AutoJobHandler.AutoJob {
                             cardPositionEnd.get(i),
                             cardQuick)) {
                         cardInfo += "Q";
+                    } else {
+                        cardInfo += "Cannot find it";
                     }
-                    cardInfo += ", ";
                 }
 
                 sendMessage(cardInfo);
+                sleep(5000);
             }
         }
 
