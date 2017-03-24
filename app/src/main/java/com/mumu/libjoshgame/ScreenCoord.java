@@ -30,4 +30,13 @@ public class ScreenCoord {
     public String toString() {
         return "The color of point (" + x + "," + y + ")";
     }
+
+    public static ScreenCoord getTwoPointCenter(ScreenCoord src, ScreenCoord dest) {
+
+        if (src.orientation != dest.orientation) {
+            return null;
+        }
+
+        return new ScreenCoord((src.x + dest.x)/2, (src.y + dest.y)/2, src.orientation);
+    }
 }

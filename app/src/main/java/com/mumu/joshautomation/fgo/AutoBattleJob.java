@@ -1,11 +1,13 @@
-package com.mumu.joshautomation.script;
+package com.mumu.joshautomation.fgo;
 
 import android.util.Log;
 
+import com.mumu.joshautomation.script.AutoJobEventListener;
+import com.mumu.joshautomation.script.AutoJobHandler;
 import com.mumu.libjoshgame.JoshGameLibrary;
 import com.mumu.libjoshgame.ScreenPoint;
 
-import static com.mumu.joshautomation.script.AutoBattleJobDefine.*;
+import static com.mumu.joshautomation.fgo.FGORoutineDefine.*;
 
 public class AutoBattleJob extends AutoJobHandler.AutoJob {
     private static final String TAG = "AutoBattleJob";
@@ -13,13 +15,17 @@ public class AutoBattleJob extends AutoJobHandler.AutoJob {
     private JoshGameLibrary mGL;
     private AutoJobEventListener mListener;
 
-    AutoBattleJob(String jobName, int jobIndex) {
+    private FGORoutine mFGO;
+
+    public AutoBattleJob(String jobName, int jobIndex) {
         super(jobName, jobIndex);
 
         /* JoshGameLibrary basic initial */
         mGL = JoshGameLibrary.getInstance();
         mGL.setGameOrientation(ScreenPoint.SO_Landscape);
         mGL.setScreenDimension(1080, 1920);
+
+        mFGO = new FGORoutine(mGL);
     }
 
     @Override
@@ -61,48 +67,45 @@ public class AutoBattleJob extends AutoJobHandler.AutoJob {
         sendEvent(msg, this);
     }
 
+
     private class MainJobRoutine extends Thread {
 
         private void main() throws Exception {
-            boolean shouldRunning = true;
+            String cardInfo;
+            int[] optimizedDraw, cardStatusNow;
+            int maxTry = 20;
+            int currentTry = 0;
 
             mGL.setGameOrientation(ScreenPoint.SO_Landscape);
             mGL.setAmbiguousRange(0x0A);
 
-            while (shouldRunning) {
-                /*sleep(1000);
-                sendMessage("Wait for Home");
-
-                mGL.getCaptureService().waitOnColor(pointIntroPage, 60, this);*/
-
-                sendMessage("Checking ...");
+            while (isShouldJobRunning()) {
                 sleep(500);
+                sendMessage("Wait for Battle Button");
+                currentTry = maxTry;
 
-                String cardInfo = "";
+                mGL.getCaptureService().waitOnColor(pointBattleButton, 600, this);
+                mGL.getInputService().tapOnScreen(pointBattleButton.coord);
 
-                for(int i = 0; i < 5; i++) {
-                    if (mGL.getCaptureService().findColorInRange(
-                            cardPositionStart.get(i),
-                            cardPositionEnd.get(i),
-                            cardArt)) {
-                        cardInfo += "A";
-                    } else if (mGL.getCaptureService().findColorInRange(
-                            cardPositionStart.get(i),
-                            cardPositionEnd.get(i),
-                            cardBurst)) {
-                        cardInfo += "B";
-                    } else if (mGL.getCaptureService().findColorInRange(
-                            cardPositionStart.get(i),
-                            cardPositionEnd.get(i),
-                            cardQuick)) {
-                        cardInfo += "Q";
-                    } else {
-                        cardInfo += "Cannot find it";
-                    }
+                sendMessage("Now checking cards");
+                cardStatusNow = mFGO.getCurrentCardPresent();
+                while(!mFGO.isCardValid(cardStatusNow) && currentTry > 0) {
+                    cardStatusNow = mFGO.getCurrentCardPresent();
+                    currentTry--;
                 }
 
-                sendMessage(cardInfo);
-                sleep(5000);
+                if(mFGO.isCardValid(cardStatusNow)) {
+                    cardInfo = mFGO.getCardNameSeries(cardStatusNow);
+                    sendMessage(cardInfo);
+                } else {
+                    sendMessage("Sorry card is not valid.");
+                    continue;
+                }
+
+                optimizedDraw = mFGO.getOptimizeDraw(cardStatusNow);
+                mFGO.tapOnCard(optimizedDraw);
+
+                sleep(1000);
             }
         }
 

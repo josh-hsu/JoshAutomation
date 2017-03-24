@@ -2,22 +2,22 @@ package com.mumu.joshautomation.script;
 
 import android.util.Log;
 
-import com.mumu.joshautomation.records.UserRecordHandler;
 import com.mumu.libjoshgame.JoshGameLibrary;
+import com.mumu.libjoshgame.ScreenCoord;
 import com.mumu.libjoshgame.ScreenPoint;
 
 /**
- * AutoAccountTraverseJob
- * Traverse all accounts in list
+ * AutoJobExample
+ * An example workable script implementation
  */
 
-class AutoAccountTraverseJob extends AutoJobHandler.AutoJob {
-    private static final String TAG = "AutoAccountTraverseJob";
+class AutoJobExample extends AutoJobHandler.AutoJob {
+    private static final String TAG = "AutoJobExample";
     private MainJobRoutine mRoutine;
     private JoshGameLibrary mGL;
     private AutoJobEventListener mListener;
 
-    AutoAccountTraverseJob(String jobName, int jobIndex) {
+    AutoJobExample(String jobName, int jobIndex) {
         super(jobName, jobIndex);
 
         /* JoshGameLibrary basic initial */
@@ -26,6 +26,10 @@ class AutoAccountTraverseJob extends AutoJobHandler.AutoJob {
         mGL.setScreenDimension(1080, 1920);
     }
 
+    /*
+     * start
+     * called by AutoJobHandler to start MainJobRoutine
+     */
     @Override
     public void start() {
         super.start();
@@ -35,6 +39,10 @@ class AutoAccountTraverseJob extends AutoJobHandler.AutoJob {
         mRoutine.start();
     }
 
+    /*
+     * stop
+     * called by AutoJobHandler to stop MainJobRoutine
+     */
     @Override
     public void stop() {
         super.stop();
@@ -43,19 +51,27 @@ class AutoAccountTraverseJob extends AutoJobHandler.AutoJob {
         mRoutine.interrupt();
     }
 
+    /*
+     * setExtra
+     * called by caller to set any data to you
+     */
     @Override
     public void setExtra(Object object) {
-        if (object instanceof UserRecordHandler) {
-            Log.d(TAG, "Receive extra object from initiator");
-        } else {
-            Log.e(TAG, "Set extra for AutoAccountTraverseJob failed, wrong data type");
-        }
+        // You can receive any object from your caller
     }
 
+    /*
+     * setJobEventListener
+     * called by caller to receiver your message
+     */
     public void setJobEventListener(AutoJobEventListener el) {
         mListener = el;
     }
 
+    /*
+     * SendEvent
+     * Your can send anything back to caller (i.e., AutoJobHandler)
+     */
     private void sendEvent(String msg, Object extra) {
         if (mListener != null) {
             mListener.onEventReceived(msg, extra);
@@ -65,43 +81,25 @@ class AutoAccountTraverseJob extends AutoJobHandler.AutoJob {
     }
 
     private void sendMessage(String msg) {
-        sendEvent(msg, null);
+        sendEvent(msg, this);
     }
 
-    private void stopFGO() {
-        mGL.runCommand("am force-stop com.aniplex.fategrandorder");
-    }
-
-    private void startFGO() {
-        mGL.runCommand("am start \"com.aniplex.fategrandorder/jp.delightworks.Fgo.player.AndroidPlugin\"");
-    }
-
+    /*
+     * MainJobRoutine
+     * Your script implementation should be here
+     */
     private class MainJobRoutine extends Thread {
-        ScreenPoint pointScreenCenter = new ScreenPoint(0,0,0,0,500,1090,ScreenPoint.SO_Portrait);
-        ScreenPoint pointExitBulletin = new ScreenPoint(0,0,0,0,1871,37,ScreenPoint.SO_Landscape);
+        ScreenCoord pointScreenCenter = new ScreenCoord(500, 1090, ScreenPoint.SO_Portrait);
 
         private void main() throws Exception {
             boolean shouldRunning = true;
-            stopFGO();
 
             while (shouldRunning) {
-                sleep(1000);
-                startFGO();
-                sleep(48000);
-                mGL.getInputService().tapOnScreen(pointScreenCenter.coord);
-                sleep(500);
-                mGL.getInputService().tapOnScreen(pointScreenCenter.coord);
-                sleep(500);
-                mGL.getInputService().tapOnScreen(pointScreenCenter.coord);
-                sleep(500);
-                mGL.getInputService().tapOnScreen(pointScreenCenter.coord);
-                sleep(10000);
-                mGL.getInputService().tapOnScreen(pointScreenCenter.coord);
-                sleep(7000);
-                mGL.getInputService().tapOnScreen(pointExitBulletin.coord);
-                sleep(2000);
-                stopFGO();
-                sleep(1000);
+                // do your job here
+                sendMessage("Starting job");
+
+                // tap a screen coordination
+                mGL.getInputService().tapOnScreen(pointScreenCenter);
 
                 shouldRunning = false;
                 sendMessage("Job is done");

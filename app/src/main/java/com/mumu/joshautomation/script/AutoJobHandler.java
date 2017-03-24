@@ -2,6 +2,8 @@ package com.mumu.joshautomation.script;
 
 import android.util.Log;
 
+import com.mumu.joshautomation.fgo.AutoBattleJob;
+
 /**
  * AutoJobHandler
  * Start or Stop any Job of FGO
@@ -18,7 +20,7 @@ public class AutoJobHandler {
 
     private AutoJobHandler() {
         mJobList = new AutoJob[TOTAL_JOB];
-        mJobList[0] = new AutoAccountTraverseJob("traverse_job", AUTO_TRAVERSE_JOB);
+        mJobList[0] = new AutoJobExample("example_job", AUTO_TRAVERSE_JOB);
         mJobList[1] = new AutoBattleJob("fgo_battle_job", FGO_BATTLE_JOB);
     }
 
@@ -61,12 +63,12 @@ public class AutoJobHandler {
         }
     }
 
-    static class AutoJob {
+    static public class AutoJob {
         private String mJobName;
         private int mJobIndex;
         private boolean mShouldJobRunning;
 
-        AutoJob(String name, int idx) {
+        public AutoJob(String name, int idx) {
             mJobIndex = idx;
             mJobName = name;
             mShouldJobRunning = false;
