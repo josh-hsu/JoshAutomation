@@ -86,6 +86,15 @@ public class InputService extends JoshGameLibrary.GLService {
         return 0;
     }
 
+    public int swipeOnScreen(ScreenCoord start, ScreenCoord end) {
+        if (mGameOrientation != start.orientation)
+            touchOnScreen(start.y, mScreenWidth - start.x, end.y, mScreenWidth - end.x, INPUT_TYPE_SWIPE);
+        else
+            touchOnScreen(start.x, start.y, end.x, end.y, INPUT_TYPE_SWIPE);
+
+        return 0;
+    }
+
     /*
      * Tap on screen amount of times until the color on the screen is not in point->color
      */

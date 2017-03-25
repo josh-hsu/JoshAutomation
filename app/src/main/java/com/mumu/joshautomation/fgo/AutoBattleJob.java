@@ -10,7 +10,7 @@ import com.mumu.libjoshgame.ScreenPoint;
 
 import static com.mumu.joshautomation.fgo.FGORoutineDefine.*;
 
-public class AutoBattleJob extends AutoJobHandler.AutoJob {
+public class AutoBattleJob extends AutoJobHandler.AutoJob implements AutoJobEventListener {
     private static final String TAG = "AutoBattleJob";
     private MainJobRoutine mRoutine;
     private JoshGameLibrary mGL;
@@ -26,7 +26,7 @@ public class AutoBattleJob extends AutoJobHandler.AutoJob {
         mGL.setGameOrientation(ScreenPoint.SO_Landscape);
         mGL.setScreenDimension(1080, 1920);
 
-        mFGO = new FGORoutine(mGL);
+        mFGO = new FGORoutine(mGL, this);
     }
 
     @Override
@@ -52,6 +52,11 @@ public class AutoBattleJob extends AutoJobHandler.AutoJob {
 
     }
 
+    @Override
+    public void onEventReceived(String msg, Object extra) {
+        sendMessage(msg);
+    }
+
     public void setJobEventListener(AutoJobEventListener el) {
         mListener = el;
     }
@@ -72,45 +77,17 @@ public class AutoBattleJob extends AutoJobHandler.AutoJob {
     private class MainJobRoutine extends Thread {
 
         private void main() throws Exception {
-            String cardInfo;
-            int[] optimizedDraw, cardStatusNow;
-            int maxTry = 20;
-            int currentTry = 0;
+
 
             mGL.setGameOrientation(ScreenPoint.SO_Landscape);
             mGL.setAmbiguousRange(0x0A);
 
             while (isShouldJobRunning()) {
-                sleep(500);
-                sendMessage("Wait for Battle Button");
-                currentTry = maxTry;
 
-                sendMessage("Finding NEXT");
-                ScreenCoord x = mGL.getCaptureService().findColorSegment(pointRightNextStart, pointRightNextEnd, pointRightNextPoints);
-                sendMessage("Found: " + x.toString());
 
-                /*
-                mGL.getCaptureService().waitOnColor(pointBattleButton, 600, this);
-                mGL.getInputService().tapOnScreen(pointBattleButton.coord);
+                mFGO.findNextAndClick();
 
-                sendMessage("Now checking cards");
-                cardStatusNow = mFGO.getCurrentCardPresent();
-                while(!mFGO.isCardValid(cardStatusNow) && currentTry > 0) {
-                    cardStatusNow = mFGO.getCurrentCardPresent();
-                    currentTry--;
-                }
-
-                if(mFGO.isCardValid(cardStatusNow)) {
-                    cardInfo = mFGO.getCardNameSeries(cardStatusNow);
-                    sendMessage(cardInfo);
-                } else {
-                    sendMessage("Sorry card is not valid.");
-                    continue;
-                }
-
-                optimizedDraw = mFGO.getOptimizeDraw(cardStatusNow);
-                mFGO.tapOnCard(optimizedDraw);
-                */
+                mFGO.battleRoutine(this);
 
                 sleep(1000);
             }

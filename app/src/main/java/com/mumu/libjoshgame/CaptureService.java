@@ -376,6 +376,7 @@ public class CaptureService extends JoshGameLibrary.GLService {
                     Log.d(TAG, "findColorSegment: Found! ");
                     ret.x = x;
                     ret.y = points.get(0).coord.y;
+                    ret.orientation = start.orientation;
                     found = true;
                     break;
                 }
@@ -397,6 +398,7 @@ public class CaptureService extends JoshGameLibrary.GLService {
                     Log.d(TAG, "findColorSegment: Found! ");
                     ret.x = points.get(0).coord.x;
                     ret.y = y;
+                    ret.orientation = start.orientation;
                     found = true;
                     break;
                 }

@@ -340,8 +340,10 @@ public class HeadService extends Service implements AutoJobEventListener{
     private void configScriptStatus() {
         if(!mScriptRunning) {
             mAutoJobHandler.startJob(AutoJobHandler.FGO_BATTLE_JOB);
+            mHeadIconList.get(IDX_PLAY_ICON).getImageView().setImageResource(R.drawable.ic_pause);
         } else {
             mAutoJobHandler.stopJob(AutoJobHandler.FGO_BATTLE_JOB);
+            mHeadIconList.get(IDX_PLAY_ICON).getImageView().setImageResource(R.drawable.ic_play);
         }
 
         mScriptRunning = !mScriptRunning;

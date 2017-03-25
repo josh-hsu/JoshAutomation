@@ -79,5 +79,17 @@ class FGORoutineDefine {
         add(pointRightNextPoint1);/*add(pointRightNextPoint2);*/
         add(pointRightNextPoint3);add(pointRightNextPoint4);}};
 
+    static ScreenCoord pointMapNextStart = new ScreenCoord(909, 300, ScreenPoint.SO_Landscape);
+    static ScreenCoord pointMapNextEnd = new ScreenCoord(909, 500, ScreenPoint.SO_Landscape);
+    static private ScreenPoint pointMapNextPoint1 = new ScreenPoint(253,223,106,0xff,909,184,ScreenPoint.SO_Landscape);
+    //static private ScreenPoint pointMapNextPoint2 = new ScreenPoint(255,255, 89,0xff,1668,184,ScreenPoint.SO_Landscape);
+    static private ScreenPoint pointMapNextPoint3 = new ScreenPoint(255,223,103,0xff,981,184,ScreenPoint.SO_Landscape);
+    static private ScreenPoint pointMapNextPoint4 = new ScreenPoint(255,223,104,0xff,1019,184,ScreenPoint.SO_Landscape);
+    static ArrayList<ScreenPoint> pointMapNextPoints = new ArrayList<ScreenPoint>() {{
+        add(pointMapNextPoint1);/*add(pointMapNextPoint2);*/
+        add(pointMapNextPoint3);add(pointMapNextPoint4);}};
+
+    static ScreenCoord pointSwipeStart = new ScreenCoord(1440,913,ScreenPoint.SO_Landscape);
+    static ScreenCoord pointSwipeEnd = new ScreenCoord(1440,208,ScreenPoint.SO_Landscape);
 
 }
