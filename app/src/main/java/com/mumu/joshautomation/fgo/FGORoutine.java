@@ -143,8 +143,12 @@ class FGORoutine {
      * =======================
      */
 
-    public int battlePreSetup(Thread kThread) {
+    public int battlePreSetup(Thread kThread, boolean swipeFriend) {
         sleep(3000);
+        if (swipeFriend) {
+            mGL.getInputService().swipeOnScreen(pointSwipeStart, pointSwipeEnd);
+        }
+
         mGL.getInputService().tapOnScreen(pointFriendSelect);
         sleep(1000);
         if (mGL.getCaptureService().waitOnColor(pointEnterStage, 20, kThread) < 0) {

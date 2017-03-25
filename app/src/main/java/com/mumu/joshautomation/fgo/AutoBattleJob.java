@@ -95,7 +95,7 @@ public class AutoBattleJob extends AutoJobHandler.AutoJob implements AutoJobEven
                     return;
                 }
 
-                if (mFGO.battlePreSetup(this) < 0) {
+                if (mFGO.battlePreSetup(this, true) < 0) {
                     sendMessage("進入關卡錯誤");
                     mShouldJobRunning = false;
                     return;
