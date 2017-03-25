@@ -78,16 +78,62 @@ public class AutoBattleJob extends AutoJobHandler.AutoJob implements AutoJobEven
 
         private void main() throws Exception {
 
-
             mGL.setGameOrientation(ScreenPoint.SO_Landscape);
             mGL.setAmbiguousRange(0x0A);
 
             while (isShouldJobRunning()) {
 
+                if (!mFGO.isInHomeScreen()) {
+                    sendMessage("這不是主畫面誒");
+                    mShouldJobRunning = false;
+                    return;
+                }
 
-                mFGO.findNextAndClick();
+                if (mFGO.findNextAndClick(20) < 0) {
+                    sendMessage("找不到下一關");
+                    mShouldJobRunning = false;
+                    return;
+                }
 
-                mFGO.battleRoutine(this);
+                if (mFGO.battlePreSetup(this) < 0) {
+                    sendMessage("進入關卡錯誤");
+                    mShouldJobRunning = false;
+                    return;
+                }
+
+                if (mFGO.waitForSkip(70, this) < 0) { //wait skip 7 seconds
+                    sendMessage("等不到SKIP，當作正常");
+                }
+
+                if (mFGO.battleRoutine(this) < 0) {
+                    sendMessage("戰鬥出現錯誤");
+                    mShouldJobRunning = false;
+                    return;
+                }
+
+                sleep(1000);
+                if (mFGO.battleHandleFriendRequest(this) < 0) {
+                    sendMessage("沒有朋友請求，可能正常");
+                }
+
+                if (mFGO.waitForSkip(70, this) < 0) { //wait skip 7 seconds
+                    sendMessage("等不到SKIP，當作正常");
+                }
+
+                sleep(3000);
+                if (mFGO.battlePostSetup(this) < 0) {
+                    sendMessage("離開戰鬥錯誤");
+                    mShouldJobRunning = false;
+                    return;
+                }
+
+                sleep(2000);
+                sendMessage("回到主畫面中");
+                if (mFGO.returnToHome(this, 5) < 0) {
+                    sendMessage("回主畫面出錯");
+                    mShouldJobRunning = false;
+                    return;
+                }
 
                 sleep(1000);
             }

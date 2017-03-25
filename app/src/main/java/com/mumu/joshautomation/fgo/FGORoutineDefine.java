@@ -21,10 +21,7 @@ class FGORoutineDefine {
     static ScreenPoint pointSkipConfirm = new ScreenPoint(0xDA,0xDA,0xDB,0xff,233,1166,ScreenPoint.SO_Portrait);
     static ScreenPoint pointSkipCancel = new ScreenPoint(0xD3,0xD4,0xD4,0xff,232,807,ScreenPoint.SO_Portrait);
 
-    //battle results
-    static ScreenPoint pointBattleResult = new ScreenPoint(0xEF,0xC6,0x2F,0xff,810,192,ScreenPoint.SO_Portrait);
-    static ScreenPoint pointBattleNext = new ScreenPoint(0xD7,0xD7,0xD7,0xff,72,1526,ScreenPoint.SO_Portrait);
-    static ScreenPoint pointQuestClear = new ScreenPoint(0xFF,0xCD,0x00,0xff,261,885,ScreenPoint.SO_Portrait);
+    static ScreenPoint pointCloseButton = new ScreenPoint(45,61,108,0xff,156,63,ScreenPoint.SO_Landscape);
 
     //battle cards
     static ScreenPoint pointBattleButton = new ScreenPoint(0x01,0xCE,0xF0,0xFF,218,1699,ScreenPoint.SO_Portrait);
@@ -66,30 +63,55 @@ class FGORoutineDefine {
         add(cardRed1);add(cardRed2);add(cardRed3);add(cardRed4);}};
 
     // home screen
-    static ScreenPoint pointHomeAddAP = new ScreenPoint(0xD2,0x99,0x61,0xff,25,258,ScreenPoint.SO_Portrait);
+    static ScreenPoint pointHomeGiftBox = new ScreenPoint(229,64,39,0xff,646,1013,ScreenPoint.SO_Landscape);
+    static ScreenPoint pointHomeOSiRaSe = new ScreenPoint(0,0,4,0xff,219,78,ScreenPoint.SO_Landscape);
+    static ScreenPoint pointHomeApAdd = new ScreenPoint(201,142,85,0xff,262,1049,ScreenPoint.SO_Landscape);
     static ScreenPoint pointMenuDownButton = new ScreenPoint(0x31,0x39,0x65,0xff,53,1772,ScreenPoint.SO_Portrait);
 
+    // NEXT button location
     static ScreenCoord pointRightNextStart = new ScreenCoord(1640, 156, ScreenPoint.SO_Landscape);
     static ScreenCoord pointRightNextEnd = new ScreenCoord(1640, 821, ScreenPoint.SO_Landscape);
     static private ScreenPoint pointRightNextPoint1 = new ScreenPoint(253,223,106,0xff,1640,184,ScreenPoint.SO_Landscape);
-    //static private ScreenPoint pointRightNextPoint2 = new ScreenPoint(255,255, 89,0xff,1668,184,ScreenPoint.SO_Landscape);
     static private ScreenPoint pointRightNextPoint3 = new ScreenPoint(255,223,103,0xff,1712,184,ScreenPoint.SO_Landscape);
     static private ScreenPoint pointRightNextPoint4 = new ScreenPoint(255,223,104,0xff,1750,184,ScreenPoint.SO_Landscape);
     static ArrayList<ScreenPoint> pointRightNextPoints = new ArrayList<ScreenPoint>() {{
-        add(pointRightNextPoint1);/*add(pointRightNextPoint2);*/
+        add(pointRightNextPoint1);
         add(pointRightNextPoint3);add(pointRightNextPoint4);}};
 
-    static ScreenCoord pointMapNextStart = new ScreenCoord(909, 300, ScreenPoint.SO_Landscape);
-    static ScreenCoord pointMapNextEnd = new ScreenCoord(909, 500, ScreenPoint.SO_Landscape);
+    static ScreenCoord pointLeftNextStart = new ScreenCoord(1141, 156, ScreenPoint.SO_Landscape);
+    static ScreenCoord pointLeftNextEnd = new ScreenCoord(1141, 821, ScreenPoint.SO_Landscape);
+    static private ScreenPoint pointLeftNextPoint1 = new ScreenPoint(253,223,105,0xff,1141,657,ScreenPoint.SO_Landscape);
+    static private ScreenPoint pointLeftNextPoint3 = new ScreenPoint(254,221,92,0xff,1213,657,ScreenPoint.SO_Landscape);
+    static private ScreenPoint pointLeftNextPoint4 = new ScreenPoint(255,223,104,0xff,1249,657,ScreenPoint.SO_Landscape);
+    static ArrayList<ScreenPoint> pointLeftNextPoints = new ArrayList<ScreenPoint>() {{
+        add(pointLeftNextPoint1);add(pointLeftNextPoint3);add(pointLeftNextPoint4);}};
+
+    static ScreenCoord pointSubStageNextStart = new ScreenCoord(1036, 138, ScreenPoint.SO_Landscape);
+    static ScreenCoord pointSubStageNextEnd = new ScreenCoord(1036, 1049, ScreenPoint.SO_Landscape);
+    static private ScreenPoint pointSubStageNextPoint1 = new ScreenPoint(252,221,109,0xff,1036,166,ScreenPoint.SO_Landscape);
+    static private ScreenPoint pointSubStageNextPoint3 = new ScreenPoint(255,223,102,0xff,1109,166,ScreenPoint.SO_Landscape);
+    static private ScreenPoint pointSubStageNextPoint4 = new ScreenPoint(255,223,104,0xff,1145,166,ScreenPoint.SO_Landscape);
+    static ArrayList<ScreenPoint> pointSubStageNextPoints = new ArrayList<ScreenPoint>() {{
+        add(pointSubStageNextPoint1);add(pointSubStageNextPoint3);add(pointSubStageNextPoint4);}};
+
+    static ScreenCoord pointMapNextStart = new ScreenCoord(909, 156, ScreenPoint.SO_Landscape);
+    static ScreenCoord pointMapNextEnd = new ScreenCoord(909, 821, ScreenPoint.SO_Landscape);
     static private ScreenPoint pointMapNextPoint1 = new ScreenPoint(253,223,106,0xff,909,184,ScreenPoint.SO_Landscape);
-    //static private ScreenPoint pointMapNextPoint2 = new ScreenPoint(255,255, 89,0xff,1668,184,ScreenPoint.SO_Landscape);
     static private ScreenPoint pointMapNextPoint3 = new ScreenPoint(255,223,103,0xff,981,184,ScreenPoint.SO_Landscape);
     static private ScreenPoint pointMapNextPoint4 = new ScreenPoint(255,223,104,0xff,1019,184,ScreenPoint.SO_Landscape);
     static ArrayList<ScreenPoint> pointMapNextPoints = new ArrayList<ScreenPoint>() {{
-        add(pointMapNextPoint1);/*add(pointMapNextPoint2);*/
-        add(pointMapNextPoint3);add(pointMapNextPoint4);}};
+        add(pointMapNextPoint1);add(pointMapNextPoint3);add(pointMapNextPoint4);}};
 
     static ScreenCoord pointSwipeStart = new ScreenCoord(1440,913,ScreenPoint.SO_Landscape);
-    static ScreenCoord pointSwipeEnd = new ScreenCoord(1440,208,ScreenPoint.SO_Landscape);
+    static ScreenCoord pointSwipeEnd = new ScreenCoord(1440,508,ScreenPoint.SO_Landscape);
 
+    //Battle Pre-setup
+    static ScreenCoord pointFriendSelect = new ScreenCoord(979,746,ScreenPoint.SO_Landscape);
+    static ScreenPoint pointEnterStage = new ScreenPoint(37,47,75,0xff,1735,1010,ScreenPoint.SO_Landscape);
+
+    //battle results
+    static ScreenPoint pointBattleResult = new ScreenPoint(236,236,235,0xff,832,74,ScreenPoint.SO_Landscape);
+    static ScreenPoint pointBattleNext = new ScreenPoint(211,211,211,0xff,1527,1018,ScreenPoint.SO_Landscape);
+    static ScreenPoint pointQuestClear = new ScreenPoint(0xFF,0xCD,0x00,0xff,261,885,ScreenPoint.SO_Portrait);
+    static ScreenPoint pointDenyFriend = new ScreenPoint(115,115,115,0xff,487,921,ScreenPoint.SO_Landscape);
 }

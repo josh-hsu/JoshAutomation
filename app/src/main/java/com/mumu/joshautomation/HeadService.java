@@ -64,6 +64,7 @@ public class HeadService extends Service implements AutoJobEventListener{
     private String mLastMessage = "";
     private boolean mScriptRunning = false;
     private boolean mMessageThreadRunning = false;
+    private static int mDumpCount = 0;
 
     private JoshGameLibrary mGL;
     private AutoJobHandler mAutoJobHandler;
@@ -80,7 +81,7 @@ public class HeadService extends Service implements AutoJobEventListener{
     private void updateUI() {
         if (mLastMessage.equals(mMessageText)) {
             mSameMsgCount++;
-            if (mSameMsgCount > 10) {
+            if (mSameMsgCount > 20) { //a same message will last for 2 second on screen
                 ((TextView) mHeadIconList.get(IDX_MSG_TEXT).getView()).setText("");
             }
         } else {
@@ -287,7 +288,7 @@ public class HeadService extends Service implements AutoJobEventListener{
         mTouchHeadIconCount++;
 
         for (HeadIconView view : mHeadIconList) {
-            if (view == mHeadIconList.get(IDX_HEAD_ICON))
+            if (view == mHeadIconList.get(IDX_HEAD_ICON) || view == mHeadIconList.get(IDX_MSG_TEXT))
                 continue;
             view.setVisibility(visible);
         }
@@ -334,6 +335,10 @@ public class HeadService extends Service implements AutoJobEventListener{
     }
 
     private void configSettings() {
+        String filename = mDumpFilePath + mDumpCount;
+        mGL.getCaptureService().dumpScreen(filename);
+        mMessageText = "Dump count = " + mDumpCount;
+        mDumpCount++;
 
     }
 
@@ -360,7 +365,7 @@ public class HeadService extends Service implements AutoJobEventListener{
             while(mMessageThreadRunning) {
                 mHandler.post(updateRunnable);
                 try {
-                    Thread.sleep(500);
+                    Thread.sleep(100);
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }

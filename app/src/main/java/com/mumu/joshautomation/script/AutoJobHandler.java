@@ -66,7 +66,7 @@ public class AutoJobHandler {
     static public class AutoJob {
         private String mJobName;
         private int mJobIndex;
-        private boolean mShouldJobRunning;
+        public boolean mShouldJobRunning;
 
         public AutoJob(String name, int idx) {
             mJobIndex = idx;

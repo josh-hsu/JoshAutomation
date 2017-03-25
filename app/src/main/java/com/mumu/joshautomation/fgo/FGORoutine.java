@@ -1,16 +1,19 @@
 package com.mumu.joshautomation.fgo;
 
+import android.util.Log;
+
 import com.mumu.joshautomation.script.AutoJobEventListener;
 import com.mumu.libjoshgame.JoshGameLibrary;
 import com.mumu.libjoshgame.ScreenCoord;
 
 import static com.mumu.joshautomation.fgo.FGORoutineDefine.*;
 
-public class FGORoutine {
+class FGORoutine {
     private JoshGameLibrary mGL;
     private AutoJobEventListener mCallbacks;
+    private static final String TAG = "FGORoutine";
 
-    public FGORoutine(JoshGameLibrary gl, AutoJobEventListener el) {
+    FGORoutine(JoshGameLibrary gl, AutoJobEventListener el) {
         mGL = gl;
         mCallbacks = el;
     }
@@ -32,7 +35,7 @@ public class FGORoutine {
      * Battle Card Checking
      * =======================
      */
-    public int[] getCurrentCardPresent() {
+    private int[] getCurrentCardPresent() {
         int ret[] = new int[5];
 
         for(int i = 0; i < 5; i++) {
@@ -59,7 +62,7 @@ public class FGORoutine {
         return ret;
     }
 
-    public boolean isCardValid(int[] cards) {
+    private boolean isCardValid(int[] cards) {
         for(int i: cards) {
             if (i == sCardUnknown)
                 return false;
@@ -67,7 +70,7 @@ public class FGORoutine {
         return true;
     }
 
-    public String getCardName(int i) {
+    private String getCardName(int i) {
         switch (i) {
             case sCardArt:
                 return "A";
@@ -81,7 +84,7 @@ public class FGORoutine {
         }
     }
 
-    public String getCardNameSeries(int[] series) {
+    private String getCardNameSeries(int[] series) {
         String cardInfo = "";
         for (int i : series) {
             if (i == sCardUnknown) {
@@ -94,7 +97,7 @@ public class FGORoutine {
         return cardInfo;
     }
 
-    public int[] getOptimizeDraw(int[] pattern) {
+    private int[] getOptimizeDraw(int[] pattern) {
         int[] select = new int[3];
         int selected = 0;
 
@@ -127,7 +130,7 @@ public class FGORoutine {
         return null;
     }
 
-    public void tapOnCard(int[] cardIndex) {
+    private void tapOnCard(int[] cardIndex) {
         for(int i : cardIndex) {
             ScreenCoord coord = ScreenCoord.getTwoPointCenter(cardPositionStart.get(i),
                     cardPositionEnd.get(i));
@@ -139,33 +142,53 @@ public class FGORoutine {
      * Battle Info
      * =======================
      */
-    public void battleRoutine(Thread kThread) {
+
+    public int battlePreSetup(Thread kThread) {
+        sleep(3000);
+        mGL.getInputService().tapOnScreen(pointFriendSelect);
+        sleep(1000);
+        if (mGL.getCaptureService().waitOnColor(pointEnterStage, 20, kThread) < 0) {
+            return -1;
+        }
+
+        mGL.getInputService().tapOnScreen(pointEnterStage.coord);
+        sleep(100);
+
+        return 0;
+    }
+
+    public int battleRoutine(Thread kThread) {
         String cardInfo;
         int[] optimizedDraw, cardStatusNow;
-        int maxTry = 20;
-        int currentTry = 0;
+        int resultTry = 20; //fail retry of waiting result
+        int battleTry = 60; // fail retry of waiting battle button (60 * 2 = 120 secs)
+        int checkCardTry = 20; // fail retry of waiting card recognize
 
-        while(!mGL.getCaptureService().colorIs(pointBattleResult)) {
+        while(!mGL.getCaptureService().colorIs(pointBattleResult) && battleTry > 0) {
             sleep(500);
             sendMessage("在等Battle按鈕");
-            currentTry = maxTry;
+            checkCardTry = 20;
 
-            mGL.getCaptureService().waitOnColor(pointBattleButton, 100, kThread);
+            if (mGL.getCaptureService().waitOnColor(pointBattleButton, 20, kThread) < 0) {
+                Log.d(TAG, "Cannot find battle button, checking if finished");
+                battleTry--;
+                continue;
+            }
             mGL.getInputService().tapOnScreen(pointBattleButton.coord);
 
             sendMessage("辨識卡片");
             cardStatusNow = getCurrentCardPresent();
-            while (!isCardValid(cardStatusNow) && currentTry > 0) {
+            while (!isCardValid(cardStatusNow) && checkCardTry > 0) {
                 cardStatusNow = getCurrentCardPresent();
-                currentTry--;
+                checkCardTry--;
             }
 
             if (isCardValid(cardStatusNow)) {
                 cardInfo = getCardNameSeries(cardStatusNow);
                 sendMessage(cardInfo);
             } else {
-                sendMessage("卡片無法辨識");
-                continue;
+                sendMessage("卡片無法辨識，隨便按");
+                cardStatusNow = new int[] {sCardBust, sCardBust,sCardBust,sCardBust,sCardBust};
             }
 
             optimizedDraw = getOptimizeDraw(cardStatusNow);
@@ -173,18 +196,64 @@ public class FGORoutine {
             sleep(8000);
         }
 
-        while (!mGL.getCaptureService().colorIs(pointBattleNext)) {
+        // check if this is a timeout
+        if (battleTry == 0 || checkCardTry == 0)
+            return -2;
+
+        // tap on screen until NEXT button to exit battle
+        while (!mGL.getCaptureService().colorIs(pointBattleNext) && resultTry > 0) {
             mGL.getInputService().tapOnScreen(pointBattleResult.coord);
+            resultTry--;
             sleep(500);
         }
+
+        if (resultTry == 0)
+            return -1;
+
+        mGL.getInputService().tapOnScreen(pointBattleNext.coord);
+        sleep(1000);
+
+        return 0;
+    }
+
+    public int battleHandleFriendRequest(Thread kThread) {
+        sleep(500);
+        if (mGL.getCaptureService().waitOnColor(pointDenyFriend, 20, kThread) < 0) {
+            sendMessage("沒出現朋友請求");
+        } else {
+            mGL.getInputService().tapOnScreen(pointDenyFriend.coord);
+            sleep(500);
+        }
+        return 0;
+    }
+
+    public int battlePostSetup(Thread kThread) {
+
+        if (mGL.getCaptureService().waitOnColor(pointQuestClear, 30, kThread) < 0) {
+            sendMessage("沒出現破關魔法石");
+        } else {
+            mGL.getInputService().tapOnScreen(pointQuestClear.coord);
+        }
+
+        return 0;
     }
 
     /* =======================
      * Story Info
      * =======================
      */
-    public void waitForSkip(int maxTry, Thread kThread) {
-        mGL.getCaptureService().waitOnColor(pointSkipDialog, maxTry, kThread);
+    public int waitForSkip(int maxTry, Thread kThread) {
+        if (mGL.getCaptureService().waitOnColor(pointSkipDialog, maxTry, kThread) < 0) {
+            Log.w(TAG, "Skip not found.");
+            return -1;
+        } else {
+            sendMessage("找到SKIP但是等一下");
+            sleep(3000);
+            mGL.getInputService().tapOnScreen(pointSkipDialog.coord);
+            sleep(1000);
+            mGL.getInputService().tapOnScreen(pointSkipConfirm.coord);
+            return 0;
+        }
     }
 
 
@@ -192,31 +261,96 @@ public class FGORoutine {
      * Home Info
      * =======================
      */
-    public void findNextAndClick() {
+    public boolean isInHomeScreen() {
+        return mGL.getCaptureService().colorIs(pointHomeOSiRaSe);
+    }
+
+    public boolean isInUserMode() {
+        return mGL.getCaptureService().colorIs(pointHomeApAdd);
+    }
+
+    public int findNextAndClick(int retry) {
+        ScreenCoord coordFound;
+        int maxTry = retry;
+
         sendMessage("尋找NEXT");
-        ScreenCoord x = null;
         do {
-            x = mGL.getCaptureService().findColorSegment(pointRightNextStart, pointRightNextEnd, pointRightNextPoints);
-            sleep(1000);
-            if (x == null) {
+            coordFound = mGL.getCaptureService().findColorSegment(pointRightNextStart,
+                    pointRightNextEnd, pointRightNextPoints);
+            if (coordFound == null) {
+                coordFound = mGL.getCaptureService().findColorSegment(pointLeftNextStart,
+                        pointLeftNextEnd, pointLeftNextPoints);
+            }
+
+            sleep(500);
+            if (coordFound == null) {
                 mGL.getInputService().swipeOnScreen(pointSwipeStart, pointSwipeEnd);
             }
-        } while (x == null);
+
+            if(retry-- < 0 && coordFound == null) {
+                return -1;
+            }
+        } while (coordFound == null);
 
         sendMessage("找到選單的NEXT");
-        x.y += 100;
-        mGL.getInputService().tapOnScreen(x);
-        sleep(2000);
+        coordFound.y += 100;
+        mGL.getInputService().tapOnScreen(coordFound);
+        retry = maxTry;
+        sleep(1000);
 
         sendMessage("找下一關");
         do {
-            x = mGL.getCaptureService().findColorSegment(pointMapNextStart, pointMapNextEnd, pointMapNextPoints);
+            coordFound = mGL.getCaptureService().findColorSegment(pointMapNextStart, pointMapNextEnd, pointMapNextPoints);
             sleep(1000);
-        } while (x == null);
+
+            if(retry-- < 0 && coordFound == null) {
+                return -1;
+            }
+        } while (coordFound == null);
 
         sendMessage("找到下一關");
-        x.y += 200;
-        mGL.getInputService().tapOnScreen(x);
-        sleep(2000);
+        coordFound.y += 200;
+        mGL.getInputService().tapOnScreen(coordFound);
+        retry = maxTry;
+        sleep(1500);
+
+        sendMessage("找子關卡");
+        do {
+            coordFound = mGL.getCaptureService().findColorSegment(pointSubStageNextStart,
+                    pointSubStageNextEnd, pointSubStageNextPoints);
+            sleep(1000);
+
+            if(retry-- < 0 && coordFound == null) {
+                return -1;
+            }
+        } while (coordFound == null);
+
+        sendMessage("找到子關卡");
+        coordFound.y += 150;
+        mGL.getInputService().tapOnScreen(coordFound);
+
+        return 0;
     }
+
+    public int returnToHome(Thread kThread, int retry) {
+        int maxRetry = retry;
+
+        while(!isInUserMode() && retry >= 0) {
+            sleep(1000);
+            retry--;
+        }
+
+        retry = maxRetry;
+        while(!isInHomeScreen() && retry >= 0) {
+            mGL.getInputService().tapOnScreen(pointCloseButton.coord);
+            sleep(1000);
+            retry--;
+        }
+
+        if (retry < 0)
+            return -1;
+
+        return 0;
+    }
+
 }
