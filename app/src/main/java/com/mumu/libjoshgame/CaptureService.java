@@ -179,6 +179,55 @@ public class CaptureService extends JoshGameLibrary.GLService {
     }
 
     /*
+     * checkColorInList
+     * this function requires file opened to improve performance
+     * i.e., the file open/close should be handled outside
+     */
+    private boolean checkColorInList(RandomAccessFile dumpFileOpened, ArrayList<ScreenPoint> points) {
+        int offset = 0;
+        int bpp = 4;
+        byte[] colorInfo;
+
+        for(int i = 0; i < points.size(); i++) {
+            ScreenPoint point = points.get(i);
+            ScreenCoord coord = point.coord;
+            ScreenColor nowColor = new ScreenColor();
+
+            //if Android version is 7.0 or higher, the dump orientation will be obeyed device
+            if (mCurrentGameOrientation == ScreenPoint.SO_Portrait) {
+                if (coord.orientation == ScreenPoint.SO_Portrait)
+                    offset = (mScreenWidth * coord.y + coord.x) * bpp;
+                else if (point.coord.orientation == ScreenPoint.SO_Landscape)
+                    offset = (mScreenWidth * coord.x + (mScreenWidth - coord.y)) * bpp;
+            } else {
+                if (point.coord.orientation == ScreenPoint.SO_Portrait) {
+                    offset = (mScreenHeight * (mScreenWidth - coord.x) + coord.y) * bpp;
+                } else if (point.coord.orientation == ScreenPoint.SO_Landscape) {
+                    offset = (mScreenHeight * coord.y + coord.x) * bpp;
+                }
+            }
+
+            try {
+                colorInfo = new byte[4];
+                dumpFileOpened.seek(offset);
+                dumpFileOpened.read(colorInfo);
+                nowColor.r = colorInfo[0];
+                nowColor.g = colorInfo[1];
+                nowColor.b = colorInfo[2];
+                nowColor.t = colorInfo[3];
+            } catch (Exception e) {
+                Log.d(TAG, "File seek error: " + e.toString());
+            }
+
+            //compare the color
+            if(!colorCompare(point.color, nowColor))
+                return false;
+        }
+
+        return true;
+    }
+
+    /*
      * findColorInRange (added in 1.20)
      * src: Source ScreenCoord (must smaller than dest)
      * dest: Destination ScreenCoord
@@ -262,6 +311,110 @@ public class CaptureService extends JoshGameLibrary.GLService {
 
         return true;
     }
+
+    /*
+     * findColorSegment
+     * start: upper coordination to start search
+     * end: lower coordination to end search
+     * colorPoints: segment of colors
+     *
+     * return: the coordination of segment started or null if not found
+     *
+     * NOTICE: the color segment can be horizontal raw or
+     * vertical column
+     */
+    public ScreenCoord findColorSegment(ScreenCoord start, ScreenCoord end, ArrayList<ScreenPoint> colorPoints) {
+        boolean searchX;
+        boolean found = false;
+        RandomAccessFile dumpFile;
+        ScreenCoord ret = new ScreenCoord();
+
+        if (start == null || end == null || colorPoints == null) {
+            Log.e(TAG, "findColorSegment: null pointer of inputs");
+            return null;
+        }
+
+        if (start.orientation != end.orientation) {
+            Log.e(TAG, "findColorSegment: start and end has different orientation, abort");
+            return null;
+        }
+
+        if(start.x == end.x) {
+            Log.d(TAG, "findColorSegment: X axis is fixed, colorPoints is y determined");
+            searchX = false;
+        } else if (start.y == end.y) {
+            Log.d(TAG, "findColorSegment: Y axis is fixed, colorPoints is x determined");
+            searchX = true;
+        } else {
+            Log.e(TAG, "findColorSegment: No axis is fixed, abort here.");
+            return null;
+        }
+
+        try {
+            dumpScreen(mFindColorDumpFile);
+            dumpFile = new RandomAccessFile(mFindColorDumpFile, "rw");
+        } catch (Exception e) {
+            Log.d(TAG, "findColorSegment: File opened failed." + e.getMessage());
+            return null;
+        }
+
+        ArrayList<ScreenPoint> points = new ArrayList<>();
+        if (searchX) {
+            for(int x = start.x; x <= end.x; x++) {
+                points.clear();
+
+                for(ScreenPoint point: colorPoints) {
+                    ScreenPoint insert = new ScreenPoint();
+                    insert.coord.x = x;
+                    insert.coord.y = point.coord.y;
+                    insert.coord.orientation = point.coord.orientation;
+                    insert.color = point.color;
+                    points.add(insert);
+                }
+
+                if(checkColorInList(dumpFile, points)) {
+                    Log.d(TAG, "findColorSegment: Found! ");
+                    ret.x = x;
+                    ret.y = points.get(0).coord.y;
+                    found = true;
+                    break;
+                }
+            }
+        } else {
+            for(int y = start.y; y <= end.y; y++) {
+                points.clear();
+
+                for(ScreenPoint point: colorPoints) {
+                    ScreenPoint insert = new ScreenPoint();
+                    insert.coord.x = point.coord.x;
+                    insert.coord.y = y;
+                    insert.coord.orientation = point.coord.orientation;
+                    insert.color = point.color;
+                    points.add(insert);
+                }
+
+                if(checkColorInList(dumpFile, points)) {
+                    Log.d(TAG, "findColorSegment: Found! ");
+                    ret.x = points.get(0).coord.x;
+                    ret.y = y;
+                    found = true;
+                    break;
+                }
+            }
+        }
+
+        try {
+            dumpFile.close();
+        } catch (Exception e) {
+            Log.d(TAG, "findColorSegment: File close failed: " + e.toString());
+        }
+
+        if (found)
+            return ret;
+
+        return null;
+    }
+
 
     /*
      * waitOnColor

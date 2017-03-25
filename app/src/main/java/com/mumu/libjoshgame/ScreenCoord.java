@@ -27,8 +27,14 @@ public class ScreenCoord {
         orientation = oo;
     }
 
+    public ScreenCoord() {
+        x = 0;
+        y = 0;
+        orientation = 0;
+    }
+
     public String toString() {
-        return "The color of point (" + x + "," + y + ")";
+        return "(" + x + ", " + y + ")";
     }
 
     public static ScreenCoord getTwoPointCenter(ScreenCoord src, ScreenCoord dest) {

@@ -180,22 +180,22 @@ public class OutlineFragment extends MainFragment implements AutoJobEventListene
 
     private void startChatHeadService() {
         if (Build.VERSION.SDK_INT >= 23) {
-            Toast.makeText(getContext(), R.string.startup_permit_system_alarm, Toast.LENGTH_SHORT).show();
+            //Toast.makeText(getContext(), R.string.startup_permit_system_alarm, Toast.LENGTH_SHORT).show();
             if (!Settings.canDrawOverlays(getContext())) {
                 Intent intent = new Intent(Settings.ACTION_MANAGE_OVERLAY_PERMISSION,
                         Uri.parse("package:" + getContext().getPackageName()));
                 startActivityForResult(intent, 10);
                 Log.d(TAG, "No permission for drawing on screen, prompt one.");
             } else {
-                Toast.makeText(getContext(), R.string.headservice_how_to_stop, Toast.LENGTH_SHORT).show();
+                //Toast.makeText(getContext(), R.string.headservice_how_to_stop, Toast.LENGTH_SHORT).show();
                 getContext().startService(new Intent(getContext(), HeadService.class));
-                returnHomeScreen();
+                //returnHomeScreen();
             }
         } else {
             Log.d(TAG, "Permission granted, starting service.");
             Toast.makeText(getContext(), R.string.headservice_how_to_stop, Toast.LENGTH_SHORT).show();
             getContext().startService(new Intent(getContext(), HeadService.class));
-            returnHomeScreen();
+            //returnHomeScreen();
         }
     }
 

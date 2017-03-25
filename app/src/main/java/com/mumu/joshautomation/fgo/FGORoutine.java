@@ -12,6 +12,10 @@ public class FGORoutine {
         mGL = gl;
     }
 
+    /* =======================
+     * Battle Card Checking
+     * =======================
+     */
     public int[] getCurrentCardPresent() {
         int ret[] = new int[5];
 
@@ -115,6 +119,10 @@ public class FGORoutine {
         }
     }
 
+    /* =======================
+     * Story Info
+     * =======================
+     */
     public void waitForSkip(int maxTry, Thread kThread) {
         mGL.getCaptureService().waitOnColor(pointSkipDialog, maxTry, kThread);
     }

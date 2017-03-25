@@ -20,8 +20,11 @@ class FGORoutineDefine {
     static ScreenPoint pointSkipDialog = new ScreenPoint(0xff,0xff,0xff,0xff,982,1743,ScreenPoint.SO_Portrait);
     static ScreenPoint pointSkipConfirm = new ScreenPoint(0xDA,0xDA,0xDB,0xff,233,1166,ScreenPoint.SO_Portrait);
     static ScreenPoint pointSkipCancel = new ScreenPoint(0xD3,0xD4,0xD4,0xff,232,807,ScreenPoint.SO_Portrait);
+
+    //battle results
     static ScreenPoint pointBattleResult = new ScreenPoint(0xEF,0xC6,0x2F,0xff,810,192,ScreenPoint.SO_Portrait);
     static ScreenPoint pointBattleNext = new ScreenPoint(0xD7,0xD7,0xD7,0xff,72,1526,ScreenPoint.SO_Portrait);
+    static ScreenPoint pointQuestClear = new ScreenPoint(0xFF,0xCD,0x00,0xff,261,885,ScreenPoint.SO_Portrait);
 
     //battle cards
     static ScreenPoint pointBattleButton = new ScreenPoint(0x01,0xCE,0xF0,0xFF,218,1699,ScreenPoint.SO_Portrait);
@@ -61,4 +64,20 @@ class FGORoutineDefine {
     static private ScreenColor cardRed4 = new ScreenColor(253, 134, 39, 0xff);
     static ArrayList<ScreenColor> cardBurst = new ArrayList<ScreenColor>() {{
         add(cardRed1);add(cardRed2);add(cardRed3);add(cardRed4);}};
+
+    // home screen
+    static ScreenPoint pointHomeAddAP = new ScreenPoint(0xD2,0x99,0x61,0xff,25,258,ScreenPoint.SO_Portrait);
+    static ScreenPoint pointMenuDownButton = new ScreenPoint(0x31,0x39,0x65,0xff,53,1772,ScreenPoint.SO_Portrait);
+
+    static ScreenCoord pointRightNextStart = new ScreenCoord(1640, 156, ScreenPoint.SO_Landscape);
+    static ScreenCoord pointRightNextEnd = new ScreenCoord(1640, 821, ScreenPoint.SO_Landscape);
+    static private ScreenPoint pointRightNextPoint1 = new ScreenPoint(253,223,106,0xff,1640,184,ScreenPoint.SO_Landscape);
+    //static private ScreenPoint pointRightNextPoint2 = new ScreenPoint(255,255, 89,0xff,1668,184,ScreenPoint.SO_Landscape);
+    static private ScreenPoint pointRightNextPoint3 = new ScreenPoint(255,223,103,0xff,1712,184,ScreenPoint.SO_Landscape);
+    static private ScreenPoint pointRightNextPoint4 = new ScreenPoint(255,223,104,0xff,1750,184,ScreenPoint.SO_Landscape);
+    static ArrayList<ScreenPoint> pointRightNextPoints = new ArrayList<ScreenPoint>() {{
+        add(pointRightNextPoint1);/*add(pointRightNextPoint2);*/
+        add(pointRightNextPoint3);add(pointRightNextPoint4);}};
+
+
 }

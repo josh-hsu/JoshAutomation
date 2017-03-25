@@ -5,6 +5,7 @@ import android.util.Log;
 import com.mumu.joshautomation.script.AutoJobEventListener;
 import com.mumu.joshautomation.script.AutoJobHandler;
 import com.mumu.libjoshgame.JoshGameLibrary;
+import com.mumu.libjoshgame.ScreenCoord;
 import com.mumu.libjoshgame.ScreenPoint;
 
 import static com.mumu.joshautomation.fgo.FGORoutineDefine.*;
@@ -84,6 +85,11 @@ public class AutoBattleJob extends AutoJobHandler.AutoJob {
                 sendMessage("Wait for Battle Button");
                 currentTry = maxTry;
 
+                sendMessage("Finding NEXT");
+                ScreenCoord x = mGL.getCaptureService().findColorSegment(pointRightNextStart, pointRightNextEnd, pointRightNextPoints);
+                sendMessage("Found: " + x.toString());
+
+                /*
                 mGL.getCaptureService().waitOnColor(pointBattleButton, 600, this);
                 mGL.getInputService().tapOnScreen(pointBattleButton.coord);
 
@@ -104,6 +110,7 @@ public class AutoBattleJob extends AutoJobHandler.AutoJob {
 
                 optimizedDraw = mFGO.getOptimizeDraw(cardStatusNow);
                 mFGO.tapOnCard(optimizedDraw);
+                */
 
                 sleep(1000);
             }
