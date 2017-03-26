@@ -33,6 +33,7 @@ import android.view.WindowManager;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.mumu.joshautomation.fgo.BattleArgument;
 import com.mumu.joshautomation.screencapture.PointSelectionActivity;
 import com.mumu.joshautomation.script.AutoJobEventListener;
 import com.mumu.joshautomation.script.AutoJobHandler;
@@ -133,6 +134,8 @@ public class HeadService extends Service implements AutoJobEventListener{
 
         mAutoJobHandler = AutoJobHandler.getHandler();
         mAutoJobHandler.setJobEventListener(AutoJobHandler.FGO_BATTLE_JOB, this);
+        mAutoJobHandler.setJobEventListener(AutoJobHandler.FGO_PURE_BATTLE_JOB, this);
+        mAutoJobHandler.setExtra(AutoJobHandler.FGO_PURE_BATTLE_JOB, new BattleArgument("bc6#eg7#j8"));
     }
 
     private void initGamePanelViews() {
@@ -185,6 +188,7 @@ public class HeadService extends Service implements AutoJobEventListener{
             @Override
             public void onTap(View view) {
                 Log.d(TAG, "config home icon");
+                configHome();
             }
 
             @Override
@@ -332,6 +336,10 @@ public class HeadService extends Service implements AutoJobEventListener{
 
         configAllIconShowing(HeadIconView.INVISIBLE);
         mHandler.postDelayed(mDumpScreenRunnable, 100);
+    }
+
+    private void configHome() {
+        mAutoJobHandler.startJob(AutoJobHandler.FGO_PURE_BATTLE_JOB);
     }
 
     private void configSettings() {

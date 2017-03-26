@@ -62,6 +62,28 @@ class FGORoutineDefine {
     static ArrayList<ScreenColor> cardBurst = new ArrayList<ScreenColor>() {{
         add(cardRed1);add(cardRed2);add(cardRed3);add(cardRed4);}};
 
+    // skill and royal
+    static private ScreenCoord cardSkill1 = new ScreenCoord(107 , 870, ScreenPoint.SO_Landscape);
+    static private ScreenCoord cardSkill2 = new ScreenCoord(250 , 870, ScreenPoint.SO_Landscape);
+    static private ScreenCoord cardSkill3 = new ScreenCoord(400 , 870, ScreenPoint.SO_Landscape);
+    static private ScreenCoord cardSkill4 = new ScreenCoord(570 , 870, ScreenPoint.SO_Landscape);
+    static private ScreenCoord cardSkill5 = new ScreenCoord(720 , 870, ScreenPoint.SO_Landscape);
+    static private ScreenCoord cardSkill6 = new ScreenCoord(860 , 870, ScreenPoint.SO_Landscape);
+    static private ScreenCoord cardSkill7 = new ScreenCoord(1050, 870, ScreenPoint.SO_Landscape);
+    static private ScreenCoord cardSkill8 = new ScreenCoord(1200, 870, ScreenPoint.SO_Landscape);
+    static private ScreenCoord cardSkill9 = new ScreenCoord(1350, 870, ScreenPoint.SO_Landscape);
+    static ArrayList<ScreenCoord> cardSkills = new ArrayList<ScreenCoord>() {{
+        add(cardSkill1);add(cardSkill2);add(cardSkill3);add(cardSkill4);add(cardSkill5);
+        add(cardSkill6);add(cardSkill7);add(cardSkill8);add(cardSkill9);
+    }};
+
+    static private ScreenCoord cardRoyal1 = new ScreenCoord(620 , 289, ScreenPoint.SO_Landscape);
+    static private ScreenCoord cardRoyal2 = new ScreenCoord(976 , 293, ScreenPoint.SO_Landscape);
+    static private ScreenCoord cardRoyal3 = new ScreenCoord(1320, 289, ScreenPoint.SO_Landscape);
+    static ArrayList<ScreenCoord> cardRoyals = new ArrayList<ScreenCoord>() {{
+        add(cardRoyal1);add(cardRoyal2);add(cardRoyal3);
+    }};
+
     // home screen
     static ScreenPoint pointHomeGiftBox = new ScreenPoint(229,64,39,0xff,646,1013,ScreenPoint.SO_Landscape);
     static ScreenPoint pointHomeOSiRaSe = new ScreenPoint(0,0,4,0xff,219,78,ScreenPoint.SO_Landscape);

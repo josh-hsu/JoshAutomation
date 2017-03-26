@@ -9,9 +9,9 @@ import com.mumu.libjoshgame.ScreenCoord;
 import static com.mumu.joshautomation.fgo.FGORoutineDefine.*;
 
 class FGORoutine {
+    private static final String TAG = "FGORoutine";
     private JoshGameLibrary mGL;
     private AutoJobEventListener mCallbacks;
-    private static final String TAG = "FGORoutine";
 
     FGORoutine(JoshGameLibrary gl, AutoJobEventListener el) {
         mGL = gl;
@@ -135,6 +135,27 @@ class FGORoutine {
             ScreenCoord coord = ScreenCoord.getTwoPointCenter(cardPositionStart.get(i),
                     cardPositionEnd.get(i));
             mGL.getInputService().tapOnScreen(coord);
+            sleep(200);
+        }
+    }
+
+    private void tapOnSkill(int[] skillIndex) {
+        if (skillIndex.length < 1)
+            return;
+
+        for(int i : skillIndex) {
+            mGL.getInputService().tapOnScreen(cardSkills.get(i));
+            sleep(2000);
+        }
+    }
+
+    private void tapOnRoyal(int[] royal) {
+        if (royal.length < 1)
+            return;
+
+        for(int i : royal) {
+            mGL.getInputService().tapOnScreen(cardRoyals.get(i));
+            sleep(500);
         }
     }
 
@@ -161,25 +182,33 @@ class FGORoutine {
         return 0;
     }
 
-    public int battleRoutine(Thread kThread) {
+    public int battleRoutine(Thread kThread, BattleArgument arg) {
         String cardInfo;
-        int[] optimizedDraw, cardStatusNow;
+        int[] optimizedDraw, cardStatusNow, skillDraw, royalDraw;
         int resultTry = 20; //fail retry of waiting result
-        int battleTry = 60; // fail retry of waiting battle button (60 * 2 = 120 secs)
+        int battleTry = 150; // fail retry of waiting battle button (150 * 1 = 150 secs)
         int checkCardTry = 20; // fail retry of waiting card recognize
+        int battleRound = 1; //indicate which round of battle
 
         while(!mGL.getCaptureService().colorIs(pointBattleResult) && battleTry > 0) {
             sleep(500);
             sendMessage("在等Battle按鈕");
             checkCardTry = 20;
 
-            if (mGL.getCaptureService().waitOnColor(pointBattleButton, 20, kThread) < 0) {
+            if (mGL.getCaptureService().waitOnColor(pointBattleButton, 10, kThread) < 0) {
                 Log.d(TAG, "Cannot find battle button, checking if finished");
                 battleTry--;
                 continue;
             }
-            mGL.getInputService().tapOnScreen(pointBattleButton.coord);
 
+            //check skill
+            if (arg != null) {
+                skillDraw = arg.getSkillIndexOfRound(battleRound);
+                sendMessage("技能需求");
+                tapOnSkill(skillDraw);
+            }
+
+            mGL.getInputService().tapOnScreen(pointBattleButton.coord);
             sendMessage("辨識卡片");
             cardStatusNow = getCurrentCardPresent();
             while (!isCardValid(cardStatusNow) && checkCardTry > 0) {
@@ -195,8 +224,16 @@ class FGORoutine {
                 cardStatusNow = new int[] {sCardBust, sCardBust,sCardBust,sCardBust,sCardBust};
             }
 
+            //check royal request if any
+            if (arg != null) {
+                royalDraw = arg.getRoyalIndexOfRound(battleRound);
+                tapOnRoyal(royalDraw);
+            }
+
             optimizedDraw = getOptimizeDraw(cardStatusNow);
             tapOnCard(optimizedDraw);
+
+            battleRound++;
             sleep(8000);
         }
 
@@ -300,11 +337,16 @@ class FGORoutine {
         coordFound.y += 100;
         mGL.getInputService().tapOnScreen(coordFound);
         retry = maxTry;
-        sleep(1000);
+        sleep(4000);
 
         sendMessage("找下一關");
         do {
-            coordFound = mGL.getCaptureService().findColorSegment(pointMapNextStart, pointMapNextEnd, pointMapNextPoints);
+            coordFound = mGL.getCaptureService().findColorSegment(pointMapNextStart,
+                    pointMapNextEnd, pointMapNextPoints);
+            if (coordFound == null) {
+                sendMessage("從中間找不到，試看看全域");
+                coordFound = mGL.getCaptureService().findColorSegmentGlobal(pointMapNextPoints);
+            }
             sleep(1000);
 
             if(retry-- < 0 && coordFound == null) {
@@ -356,5 +398,6 @@ class FGORoutine {
 
         return 0;
     }
+
 
 }

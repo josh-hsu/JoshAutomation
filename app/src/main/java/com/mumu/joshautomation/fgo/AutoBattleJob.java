@@ -5,10 +5,7 @@ import android.util.Log;
 import com.mumu.joshautomation.script.AutoJobEventListener;
 import com.mumu.joshautomation.script.AutoJobHandler;
 import com.mumu.libjoshgame.JoshGameLibrary;
-import com.mumu.libjoshgame.ScreenCoord;
 import com.mumu.libjoshgame.ScreenPoint;
-
-import static com.mumu.joshautomation.fgo.FGORoutineDefine.*;
 
 public class AutoBattleJob extends AutoJobHandler.AutoJob implements AutoJobEventListener {
     private static final String TAG = "AutoBattleJob";
@@ -73,7 +70,6 @@ public class AutoBattleJob extends AutoJobHandler.AutoJob implements AutoJobEven
         sendEvent(msg, this);
     }
 
-
     private class MainJobRoutine extends Thread {
 
         private void main() throws Exception {
@@ -95,7 +91,7 @@ public class AutoBattleJob extends AutoJobHandler.AutoJob implements AutoJobEven
                     return;
                 }
 
-                if (mFGO.battlePreSetup(this, true) < 0) {
+                if (mFGO.battlePreSetup(this, false) < 0) {
                     sendMessage("進入關卡錯誤");
                     mShouldJobRunning = false;
                     return;
@@ -105,7 +101,7 @@ public class AutoBattleJob extends AutoJobHandler.AutoJob implements AutoJobEven
                     sendMessage("等不到SKIP，當作正常");
                 }
 
-                if (mFGO.battleRoutine(this) < 0) {
+                if (mFGO.battleRoutine(this, null) < 0) {
                     sendMessage("戰鬥出現錯誤");
                     mShouldJobRunning = false;
                     return;

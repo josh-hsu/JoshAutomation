@@ -314,8 +314,6 @@ public class CaptureService extends JoshGameLibrary.GLService {
 
     /*
      * findColorSegment
-     * start: upper coordination to start search
-     * end: lower coordination to end search
      * colorPoints: segment of colors
      *
      * return: the coordination of segment started or null if not found
@@ -417,6 +415,128 @@ public class CaptureService extends JoshGameLibrary.GLService {
         return null;
     }
 
+    public ScreenCoord findColorSegmentGlobal(ArrayList<ScreenPoint> colorPoints) {
+        boolean searchX;
+        boolean found = false;
+        int orientation = 0;
+        RandomAccessFile dumpFile;
+        ScreenCoord ret = new ScreenCoord();
+
+        if (colorPoints == null || colorPoints.get(0) == null || colorPoints.get(1) == null) {
+            Log.e(TAG, "findColorSegmentGlobal: require at least 2 points in colorPoints");
+            return null;
+        }
+
+        orientation = colorPoints.get(0).coord.orientation;
+        for(ScreenPoint point: colorPoints) {
+            if (point.coord.orientation != orientation) {
+                Log.e(TAG, "findColorSegmentGlobal: start and end has different orientation, abort");
+                return null;
+            }
+        }
+
+        // Use two points to decide search direction
+        ScreenCoord start = colorPoints.get(0).coord;
+        ScreenCoord end = colorPoints.get(colorPoints.size()-1).coord;
+        if(start.x == end.x) {
+            Log.d(TAG, "findColorSegmentGlobal: X axis is fixed, colorPoints is y determined");
+            searchX = false;
+        } else if (start.y == end.y) {
+            Log.d(TAG, "findColorSegmentGlobal: Y axis is fixed, colorPoints is x determined");
+            searchX = true;
+        } else {
+            Log.e(TAG, "findColorSegmentGlobal: No axis is fixed, abort here.");
+            return null;
+        }
+
+        try {
+            dumpScreen(mFindColorDumpFile);
+            dumpFile = new RandomAccessFile(mFindColorDumpFile, "rw");
+        } catch (Exception e) {
+            Log.d(TAG, "findColorSegmentGlobal: File opened failed." + e.getMessage());
+            return null;
+        }
+
+        ArrayList<ScreenPoint> points = new ArrayList<>();
+        int xBound = (orientation == ScreenPoint.SO_Portrait ? mScreenWidth : mScreenHeight);
+        int yBound = (orientation == ScreenPoint.SO_Portrait ? mScreenHeight : mScreenWidth);
+
+        if (searchX) {
+            for(int x = 1; x < xBound; x++) {
+                points.clear();
+
+                for(int y = 1; y < yBound - (end.y - start.y); y++) {
+                    for(int i = 0; i < colorPoints.size(); i++) {
+                        ScreenPoint pointInList = colorPoints.get(i);
+                        ScreenPoint insert = new ScreenPoint();
+                        insert.coord.x = x;
+                        if (i != 0)
+                            insert.coord.y = y + (pointInList.coord.y - colorPoints.get(0).coord.y);
+                        else
+                            insert.coord.y = y;
+
+                        insert.coord.orientation = pointInList.coord.orientation;
+                        insert.color = pointInList.color;
+                        points.add(insert);
+                    }
+
+                    if(checkColorInList(dumpFile, points)) {
+                        Log.d(TAG, "findColorSegmentGlobal: Found! ");
+                        ret.x = x;
+                        ret.y = y;
+                        ret.orientation = start.orientation;
+                        found = true;
+                        break;
+                    }
+                }
+
+                if (found)
+                    break;
+            }
+        } else {
+            for(int y = 1; y < yBound; y++) {
+                points.clear();
+
+                for(int x = 1; x < xBound - (end.x - start.x); x++) {
+                    for(int i = 0; i < colorPoints.size(); i++) {
+                        ScreenPoint pointInList = colorPoints.get(i);
+                        ScreenPoint insert = new ScreenPoint();
+                        insert.coord.y = y;
+                        if (i != 0)
+                            insert.coord.x = x + (pointInList.coord.x - colorPoints.get(0).coord.x);
+                        else
+                            insert.coord.x = x;
+                        insert.coord.orientation = pointInList.coord.orientation;
+                        insert.color = pointInList.color;
+                        points.add(insert);
+                    }
+
+                    if(checkColorInList(dumpFile, points)) {
+                        Log.d(TAG, "findColorSegmentGlobal: Found! ");
+                        ret.y = y;
+                        ret.x = x;
+                        ret.orientation = start.orientation;
+                        found = true;
+                        break;
+                    }
+                }
+
+                if (found)
+                    break;
+            }
+        }
+
+        try {
+            dumpFile.close();
+        } catch (Exception e) {
+            Log.d(TAG, "findColorSegmentGlobal: File close failed: " + e.toString());
+        }
+
+        if (found)
+            return ret;
+
+        return null;
+    }
 
     /*
      * waitOnColor

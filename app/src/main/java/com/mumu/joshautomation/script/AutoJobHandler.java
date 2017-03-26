@@ -3,6 +3,7 @@ package com.mumu.joshautomation.script;
 import android.util.Log;
 
 import com.mumu.joshautomation.fgo.AutoBattleJob;
+import com.mumu.joshautomation.fgo.PureBattleJob;
 
 /**
  * AutoJobHandler
@@ -14,7 +15,8 @@ public class AutoJobHandler {
     private static AutoJobHandler mHandler;
     public static final int AUTO_TRAVERSE_JOB = 0;
     public static final int FGO_BATTLE_JOB = 1;
-    public static final int TOTAL_JOB = 2;
+    public static final int FGO_PURE_BATTLE_JOB = 2;
+    public static final int TOTAL_JOB = 3;
 
     private AutoJob[] mJobList;
 
@@ -22,6 +24,7 @@ public class AutoJobHandler {
         mJobList = new AutoJob[TOTAL_JOB];
         mJobList[0] = new AutoJobExample("example_job", AUTO_TRAVERSE_JOB);
         mJobList[1] = new AutoBattleJob("fgo_battle_job", FGO_BATTLE_JOB);
+        mJobList[2] = new PureBattleJob("fgo_pure_battle_job", FGO_PURE_BATTLE_JOB);
     }
 
     public static AutoJobHandler getHandler() {
