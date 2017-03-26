@@ -136,7 +136,6 @@ public class HeadService extends Service implements AutoJobEventListener{
         mAutoJobHandler = AutoJobHandler.getHandler();
         mAutoJobHandler.setJobEventListener(AutoJobHandler.FGO_BATTLE_JOB, this);
         mAutoJobHandler.setJobEventListener(AutoJobHandler.FGO_PURE_BATTLE_JOB, this);
-        mAutoJobHandler.setExtra(AutoJobHandler.FGO_PURE_BATTLE_JOB, new BattleArgument("bc6#eg7#j8"));
     }
 
     private void initGamePanelViews() {
@@ -388,6 +387,21 @@ public class HeadService extends Service implements AutoJobEventListener{
     public void onEventReceived(String msg, Object extra) {
         Log.d(TAG, "Get event message " + msg);
         mMessageText = msg;
+    }
+
+    @Override
+    public void onJobDone(String job) {
+        Log.d(TAG, "Job " + job + " has done");
+
+        if (job.equals(mAutoJobHandler.getJobName(AutoJobHandler.FGO_PURE_BATTLE_JOB))) {
+            mHomeRunning = false;
+            mHeadIconList.get(IDX_HOME_ICON).getImageView().setImageResource(R.drawable.ic_menu_home_outline);
+            mMessageText = "完成單次戰鬥";
+        } else if (job.equals(mAutoJobHandler.getJobName(AutoJobHandler.FGO_BATTLE_JOB))) {
+            mScriptRunning = false;
+            mHeadIconList.get(IDX_PLAY_ICON).getImageView().setImageResource(R.drawable.ic_play);
+            mMessageText = "循環戰鬥結束";
+        }
     }
 
     class GetMessageThread extends Thread {

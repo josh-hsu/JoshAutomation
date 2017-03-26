@@ -14,6 +14,7 @@ public class AutoBattleJob extends AutoJobHandler.AutoJob implements AutoJobEven
     private AutoJobEventListener mListener;
 
     private FGORoutine mFGO;
+    private AutoBattleJob mSelf;
 
     public AutoBattleJob(String jobName, int jobIndex) {
         super(jobName, jobIndex);
@@ -24,6 +25,7 @@ public class AutoBattleJob extends AutoJobHandler.AutoJob implements AutoJobEven
         mGL.setScreenDimension(1080, 1920);
 
         mFGO = new FGORoutine(mGL, this);
+        mSelf = this;
     }
 
     @Override
@@ -52,6 +54,12 @@ public class AutoBattleJob extends AutoJobHandler.AutoJob implements AutoJobEven
     @Override
     public void onEventReceived(String msg, Object extra) {
         sendMessage(msg);
+    }
+
+    // ignored, there is not job done event from mFGO
+    @Override
+    public void onJobDone(String obj) {
+
     }
 
     public void setJobEventListener(AutoJobEventListener el) {
@@ -133,6 +141,8 @@ public class AutoBattleJob extends AutoJobHandler.AutoJob implements AutoJobEven
 
                 sleep(1000);
             }
+
+            mListener.onJobDone(mSelf.getJobName());
         }
 
         public void run() {

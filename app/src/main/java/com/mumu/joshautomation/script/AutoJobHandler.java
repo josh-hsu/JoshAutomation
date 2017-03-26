@@ -13,7 +13,7 @@ import com.mumu.joshautomation.fgo.PureBattleJob;
 public class AutoJobHandler {
     public static final String TAG = "AutoJobHandler";
     private static AutoJobHandler mHandler;
-    public static final int AUTO_TRAVERSE_JOB = 0;
+    public static final int EXAMPLE_JOB = 0;
     public static final int FGO_BATTLE_JOB = 1;
     public static final int FGO_PURE_BATTLE_JOB = 2;
     public static final int TOTAL_JOB = 3;
@@ -22,7 +22,7 @@ public class AutoJobHandler {
 
     private AutoJobHandler() {
         mJobList = new AutoJob[TOTAL_JOB];
-        mJobList[0] = new AutoJobExample("example_job", AUTO_TRAVERSE_JOB);
+        mJobList[0] = new AutoJobExample("example_job", EXAMPLE_JOB);
         mJobList[1] = new AutoBattleJob("fgo_battle_job", FGO_BATTLE_JOB);
         mJobList[2] = new PureBattleJob("fgo_pure_battle_job", FGO_PURE_BATTLE_JOB);
     }
@@ -63,6 +63,15 @@ public class AutoJobHandler {
             Log.d(TAG, "Setting AutoJobEventListener for job " + idx + " failed, no such index.");
         } else {
             mJobList[idx].setJobEventListener(el);
+        }
+    }
+
+    public String getJobName(int idx) {
+        if (idx >= TOTAL_JOB) {
+            Log.d(TAG, "Fail to start job " + idx + ", no such index.");
+            return null;
+        } else {
+            return mJobList[idx].getJobName();
         }
     }
 

@@ -37,6 +37,10 @@ public class BattleArgument {
         mCmdString = "";
     }
 
+    public String toString() {
+        return mCmdString;
+    }
+
     private void parse() {
         mParsedCmd = mCmdString.split("#");
         for(int i = 0; i < mParsedCmd.length; i++) {

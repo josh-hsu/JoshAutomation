@@ -14,6 +14,7 @@ public class PureBattleJob extends AutoJobHandler.AutoJob implements AutoJobEven
     private AutoJobEventListener mListener;
 
     private FGORoutine mFGO;
+    private PureBattleJob mSelf;
     private BattleArgument mBattleArg;
 
     public PureBattleJob(String jobName, int jobIndex) {
@@ -25,6 +26,7 @@ public class PureBattleJob extends AutoJobHandler.AutoJob implements AutoJobEven
         mGL.setScreenDimension(1080, 1920);
 
         mFGO = new FGORoutine(mGL, this);
+        mSelf = this;
     }
 
     @Override
@@ -55,6 +57,12 @@ public class PureBattleJob extends AutoJobHandler.AutoJob implements AutoJobEven
         }
     }
 
+    // ignored, there is not job done event from mFGO
+    @Override
+    public void onJobDone(String obj) {
+
+    }
+
     @Override
     public void onEventReceived(String msg, Object extra) {
         sendMessage(msg);
@@ -83,30 +91,30 @@ public class PureBattleJob extends AutoJobHandler.AutoJob implements AutoJobEven
             mGL.setGameOrientation(ScreenPoint.SO_Landscape);
             mGL.setAmbiguousRange(0x0A);
 
-            while (isShouldJobRunning()) {
-
-                if (mFGO.waitForSkip(30, this) < 0) { //wait skip 7 seconds
-                    sendMessage("等不到SKIP，當作正常");
-                }
-
-                if (mFGO.battleRoutine(this, mBattleArg) < 0) {
-                    sendMessage("戰鬥出現錯誤");
-                    mShouldJobRunning = false;
-                    return;
-                }
-
-                sleep(1000);
-                if (mFGO.battleHandleFriendRequest(this) < 0) {
-                    sendMessage("沒有朋友請求，可能正常");
-                }
-
-                if (mFGO.waitForSkip(30, this) < 0) { //wait skip 7 seconds
-                    sendMessage("等不到SKIP，當作正常");
-                }
-
-                mShouldJobRunning = false;
-                sleep(1000);
+            sendMessage("開始單次戰鬥");
+            if (mFGO.waitForSkip(30, this) < 0) { //wait skip 7 seconds
+                sendMessage("等不到SKIP，當作正常");
             }
+
+            if (mFGO.battleRoutine(this, mBattleArg) < 0) {
+                sendMessage("戰鬥出現錯誤");
+                mShouldJobRunning = false;
+                return;
+            }
+
+            sleep(1000);
+            if (mFGO.battleHandleFriendRequest(this) < 0) {
+                sendMessage("沒有朋友請求，可能正常");
+            }
+
+            if (mFGO.waitForSkip(30, this) < 0) { //wait skip 7 seconds
+                sendMessage("等不到SKIP，當作正常");
+            }
+
+            mShouldJobRunning = false;
+            sleep(1000);
+            sendMessage("結束啦");
+            mListener.onJobDone(mSelf.getJobName());
         }
 
         public void run() {

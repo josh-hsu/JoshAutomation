@@ -13,27 +13,25 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.Toast;
 
+import com.mumu.joshautomation.fgo.BattleArgument;
 import com.mumu.joshautomation.script.AutoJobHandler;
 import com.mumu.joshautomation.script.AutoJobEventListener;
 
-public class OutlineFragment extends MainFragment implements AutoJobEventListener {
+public class OutlineFragment extends MainFragment {
     private static final String TAG = "JATool";
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
-    private AutoJobHandler mFGOJobs;
 
     private Button mRunJoshCmdButton;
     private Button mStartServiceButton;
+    private Button mSetParameterButton;
+    private EditText mBattleParameterText;
 
     private OnFragmentInteractionListener mListener;
-    private final Handler mHandler = new Handler();
-    final Runnable mUpdateRunnable = new Runnable() {
-        public void run() {
-            updateView();
-        }
-    };
 
     public OutlineFragment() {
         // Required empty public constructor
@@ -55,9 +53,6 @@ public class OutlineFragment extends MainFragment implements AutoJobEventListene
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
-        mFGOJobs = AutoJobHandler.getHandler();
-        mFGOJobs.setJobEventListener(AutoJobHandler.AUTO_TRAVERSE_JOB, this);
     }
 
     @Override
@@ -107,6 +102,8 @@ public class OutlineFragment extends MainFragment implements AutoJobEventListene
     private void prepareView(View view) {
         mRunJoshCmdButton = (Button) view.findViewById(R.id.button_test_game);
         mStartServiceButton = (Button) view.findViewById(R.id.button_start_service);
+        mSetParameterButton = (Button) view.findViewById(R.id.button_set_battle_parameter);
+        mBattleParameterText = (EditText) view.findViewById(R.id.edit_text_battle_parameter);
 
         mRunJoshCmdButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -121,6 +118,14 @@ public class OutlineFragment extends MainFragment implements AutoJobEventListene
                 startChatHeadService();
             }
         });
+
+        mSetParameterButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                BattleArgument sBA = new BattleArgument(mBattleParameterText.getText().toString());
+                AutoJobHandler.getHandler().setExtra(AutoJobHandler.FGO_PURE_BATTLE_JOB, sBA);
+            }
+        });
     }
 
     /*
@@ -128,12 +133,6 @@ public class OutlineFragment extends MainFragment implements AutoJobEventListene
      */
     private void updateView() {
 
-    }
-
-    @Override
-    public void onEventReceived(String msg, Object extra) {
-        Log.d(TAG, "Message Received " + msg);
-        mHandler.post(mUpdateRunnable);
     }
 
     public interface OnFragmentInteractionListener {

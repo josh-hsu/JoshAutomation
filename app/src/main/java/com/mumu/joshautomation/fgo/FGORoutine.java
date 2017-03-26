@@ -190,9 +190,10 @@ class FGORoutine {
         int checkCardTry = 20; // fail retry of waiting card recognize
         int battleRound = 1; //indicate which round of battle
 
+        sendMessage("這次戰鬥參數：" + (arg == null ?  "無" : arg.toString() ) );
         while(!mGL.getCaptureService().colorIs(pointBattleResult) && battleTry > 0) {
             sleep(500);
-            sendMessage("在等Battle按鈕");
+            sendMessage("在等Battle按鈕" + (150 - battleTry));
             checkCardTry = 20;
 
             if (mGL.getCaptureService().waitOnColor(pointBattleButton, 10, kThread) < 0) {
@@ -200,6 +201,9 @@ class FGORoutine {
                 battleTry--;
                 continue;
             }
+
+            //found battle button
+            battleTry = 150;
 
             //check skill
             if (arg != null) {
