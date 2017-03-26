@@ -70,7 +70,7 @@ class AutoJobExample extends AutoJobHandler.AutoJob {
 
     /*
      * SendEvent
-     * Your can send anything back to caller (i.e., AutoJobHandler)
+     * Your can send anything back to caller whoever register listener
      */
     private void sendEvent(String msg, Object extra) {
         if (mListener != null) {
