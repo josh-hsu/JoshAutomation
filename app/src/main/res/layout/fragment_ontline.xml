@@ -24,7 +24,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/outline_title"
+                android:text="自動化流程"
                 android:textColor="#FFFFFF"
                 android:textSize="18sp"
                 android:textAlignment="center"
@@ -37,7 +37,7 @@
                 android:layout_alignParentStart="true" />
 
             <Button
-                android:text="@string/outline_list_all_scripts"
+                android:text="列出腳本"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_below="@+id/textViewElectricBarView"
@@ -46,11 +46,11 @@
                 android:layout_alignParentStart="true" />
 
             <Button
-                android:text="@string/outline_start_screen_capture"
+                android:text="啟動服務"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_below="@+id/button_test_game"
-                android:id="@+id/button_screenshot"
+                android:id="@+id/button_start_service"
                 android:layout_alignParentEnd="true"
                 android:layout_alignParentStart="true" />
 
@@ -59,10 +59,10 @@
                 android:layout_height="wrap_content"
                 android:textAppearance="?android:attr/textAppearanceMedium"
                 android:layout_marginTop="10dp"
-                android:text="目前保存 0 個帳號"
+                android:text="點擊上方按鈕啟動服務，長壓圖示以結束"
                 android:id="@+id/textViewAccountNum"
                 android:textAlignment="center"
-                android:layout_below="@+id/button_screenshot"
+                android:layout_below="@+id/button_start_service"
                 android:layout_alignParentStart="true"
                 android:layout_alignParentEnd="true" />
 

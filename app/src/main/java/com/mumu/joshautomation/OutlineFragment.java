@@ -8,26 +8,15 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.provider.Settings;
-import android.support.annotation.NonNull;
-import android.text.InputType;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.TextView;
 import android.widget.Toast;
 
-import com.afollestad.materialdialogs.MaterialDialog;
-import com.mumu.joshautomation.records.UserRecordHandler;
-import com.mumu.joshautomation.records.UserRecordParser;
 import com.mumu.joshautomation.script.AutoJobHandler;
 import com.mumu.joshautomation.script.AutoJobEventListener;
-
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
-import java.util.Calendar;
-import java.util.Locale;
 
 public class OutlineFragment extends MainFragment implements AutoJobEventListener {
     private static final String TAG = "JATool";
@@ -35,12 +24,8 @@ public class OutlineFragment extends MainFragment implements AutoJobEventListene
     private static final String ARG_PARAM2 = "param2";
     private AutoJobHandler mFGOJobs;
 
-    // Data Holder
-    private UserRecordHandler mRecordHandler;
-
     private Button mRunJoshCmdButton;
-    private Button mScreenCaptureButton;
-    private TextView mAccountNumText;
+    private Button mStartServiceButton;
 
     private OnFragmentInteractionListener mListener;
     private final Handler mHandler = new Handler();
@@ -111,29 +96,26 @@ public class OutlineFragment extends MainFragment implements AutoJobEventListene
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
         prepareView(view);
-        prepareData();
         updateView();
     }
 
     @Override
     public void onDetailClick() {
         Log.d(TAG, "Detail click on electricity fragment");
-        showBottomSheet();
     }
 
     private void prepareView(View view) {
         mRunJoshCmdButton = (Button) view.findViewById(R.id.button_test_game);
-        mAccountNumText = (TextView) view.findViewById(R.id.textViewAccountNum);
-        mScreenCaptureButton = (Button) view.findViewById(R.id.button_screenshot);
+        mStartServiceButton = (Button) view.findViewById(R.id.button_start_service);
 
         mRunJoshCmdButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                runAutoLoginRoutine();
+
             }
         });
 
-        mScreenCaptureButton.setOnClickListener(new View.OnClickListener() {
+        mStartServiceButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 startChatHeadService();
@@ -141,31 +123,11 @@ public class OutlineFragment extends MainFragment implements AutoJobEventListene
         });
     }
 
-    private void prepareData() {
-        mRecordHandler = UserRecordHandler.getHandler();
-        mRecordHandler.initOnce(getActivity().getResources(), getActivity().getFilesDir().getAbsolutePath());
-    }
-
     /*
      * updateView will be called when mUpdateRunnable is triggered
      */
     private void updateView() {
-        String accountNumText = getString(R.string.outline_account_num);
-        accountNumText = accountNumText + " " + mRecordHandler.getCount();
 
-        mAccountNumText.setText(accountNumText);
-        mRunJoshCmdButton.setText(R.string.outline_list_all_scripts);
-    }
-
-    private void showBottomSheet() {
-        SheetBottomSheet ebs = new SheetBottomSheet();
-        ebs.show(getFragmentManager(), ebs.getTag());
-    }
-
-    private void runAutoLoginRoutine() {
-        mFGOJobs.setExtra(AutoJobHandler.AUTO_TRAVERSE_JOB, UserRecordHandler.getHandler());
-        mFGOJobs.startJob(AutoJobHandler.AUTO_TRAVERSE_JOB);
-        mFGOJobs.stopJob(AutoJobHandler.AUTO_TRAVERSE_JOB);
     }
 
     @Override
@@ -205,47 +167,4 @@ public class OutlineFragment extends MainFragment implements AutoJobEventListene
         startActivity(intent);
     }
 
-    /*
-     *  Add record
-     */
-    private void showAddDialog() {
-        new MaterialDialog.Builder(getContext())
-                .title(getString(R.string.electric_add))
-                .inputType(InputType.TYPE_CLASS_TEXT)
-                .input(getString(R.string.electric_add_field_holder), mRecordHandler.getTitle(0), new MaterialDialog.InputCallback() {
-                    @Override
-                    public void onInput(@NonNull MaterialDialog dialog, CharSequence input) {
-                        Log.d(TAG, "Get input " + input);
-                        try {
-                            String nextSerial = mRecordHandler.getNextSerial();
-                            addNewRecordFromUser("account" + nextSerial, "NOW", input.toString());
-                            updateView();
-                        } catch (Exception e) {
-                            Log.e(TAG, e.getMessage());
-                        }
-                    }
-                }).negativeText(getString(R.string.electric_add_cancel)).show();
-    }
-
-    private int addNewRecordFromUser(String record, String date, String title) {
-        String targetDate;
-
-        if (date.equals("NOW")) {
-            DateFormat df = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ssZ", Locale.US);
-            targetDate = df.format(Calendar.getInstance().getTime());
-        } else {
-            targetDate = date;
-        }
-
-        try {
-            mRecordHandler.addRecord(new UserRecordParser.Entry(mRecordHandler.getNextSerial(), targetDate, record, title));
-            mRecordHandler.refreshFromFile();
-            return 0;
-        } catch (Exception e) {
-            e.printStackTrace();
-            Log.e(TAG, "Fail to add record " + e.getMessage());
-        }
-
-        return -1;
-    }
 }

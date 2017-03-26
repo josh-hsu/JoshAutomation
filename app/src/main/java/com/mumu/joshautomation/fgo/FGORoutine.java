@@ -310,7 +310,7 @@ class FGORoutine {
         return mGL.getCaptureService().colorIs(pointHomeApAdd);
     }
 
-    public int findNextAndClick(int retry) {
+    public int findNextAndClick(int retry, boolean enableGlobal) {
         ScreenCoord coordFound;
         int maxTry = retry;
 
@@ -343,7 +343,7 @@ class FGORoutine {
         do {
             coordFound = mGL.getCaptureService().findColorSegment(pointMapNextStart,
                     pointMapNextEnd, pointMapNextPoints);
-            if (coordFound == null) {
+            if (coordFound == null && enableGlobal) {
                 sendMessage("從中間找不到，試看看全域");
                 coordFound = mGL.getCaptureService().findColorSegmentGlobal(pointMapNextPoints);
             }

@@ -315,6 +315,8 @@ public class CaptureService extends JoshGameLibrary.GLService {
     /*
      * findColorSegment
      * colorPoints: segment of colors
+     * start: start point
+     * end: end point
      *
      * return: the coordination of segment started or null if not found
      *
@@ -415,6 +417,11 @@ public class CaptureService extends JoshGameLibrary.GLService {
         return null;
     }
 
+    /*
+     * findColorSegmentGlobal
+     *
+     * colorPoints: segment of colors and coordination used to find in entire screen
+     */
     public ScreenCoord findColorSegmentGlobal(ArrayList<ScreenPoint> colorPoints) {
         boolean searchX;
         boolean found = false;
