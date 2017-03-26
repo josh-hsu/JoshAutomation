@@ -418,7 +418,7 @@ public class CaptureService extends JoshGameLibrary.GLService {
     public ScreenCoord findColorSegmentGlobal(ArrayList<ScreenPoint> colorPoints) {
         boolean searchX;
         boolean found = false;
-        int orientation = 0;
+        int orientation;
         RandomAccessFile dumpFile;
         ScreenCoord ret = new ScreenCoord();
 

@@ -64,6 +64,7 @@ public class HeadService extends Service implements AutoJobEventListener{
     private String mMessageText = "";
     private String mLastMessage = "";
     private boolean mScriptRunning = false;
+    private boolean mHomeRunning = false;
     private boolean mMessageThreadRunning = false;
     private static int mDumpCount = 0;
 
@@ -276,6 +277,10 @@ public class HeadService extends Service implements AutoJobEventListener{
         return START_NOT_STICKY;
     }
 
+    /* ==========================
+     * Icon visibility
+     * ==========================
+     */
     public int getCurrentHeadIconVisibility() {
         if (mTouchHeadIconCount % 2 == 0)
             return HeadIconView.INVISIBLE;
@@ -326,6 +331,10 @@ public class HeadService extends Service implements AutoJobEventListener{
         alert.show();
     }
 
+    /* ==========================
+     * Tap behavior of icons
+     * ==========================
+     */
     private void configCapture() {
         // head service is responsible for setting orientation
         int orientation = getResources().getConfiguration().orientation;
@@ -339,7 +348,16 @@ public class HeadService extends Service implements AutoJobEventListener{
     }
 
     private void configHome() {
-        mAutoJobHandler.startJob(AutoJobHandler.FGO_PURE_BATTLE_JOB);
+
+        if(!mHomeRunning) {
+            mAutoJobHandler.startJob(AutoJobHandler.FGO_PURE_BATTLE_JOB);
+            mHeadIconList.get(IDX_HOME_ICON).getImageView().setImageResource(R.drawable.ic_pause);
+        } else {
+            mAutoJobHandler.stopJob(AutoJobHandler.FGO_PURE_BATTLE_JOB);
+            mHeadIconList.get(IDX_HOME_ICON).getImageView().setImageResource(R.drawable.ic_menu_home_outline);
+        }
+
+        mHomeRunning = !mHomeRunning;
     }
 
     private void configSettings() {
@@ -362,6 +380,10 @@ public class HeadService extends Service implements AutoJobEventListener{
         mScriptRunning = !mScriptRunning;
     }
 
+    /* ==========================
+     * Message handler
+     * ==========================
+     */
     @Override
     public void onEventReceived(String msg, Object extra) {
         Log.d(TAG, "Get event message " + msg);
