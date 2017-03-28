@@ -29,7 +29,7 @@ public class CaptureService extends JoshGameLibrary.GLService {
     private int mScreenWidth = -1;
     private int mScreenHeight = -1;
     private int mCurrentGameOrientation = ScreenPoint.SO_Portrait;
-    private int mAmbiguousRange = 0x05;
+    private int[] mAmbiguousRange = {0x05, 0x05, 0x06};
     private final int mMaxColorFinding = 10;
     
     CaptureService() {
@@ -45,7 +45,7 @@ public class CaptureService extends JoshGameLibrary.GLService {
         mCurrentGameOrientation = o;
     }
 
-    void setAmbiguousRange(int range) {
+    void setAmbiguousRange(int[] range) {
         mAmbiguousRange = range;
     }
 
@@ -613,11 +613,15 @@ public class CaptureService extends JoshGameLibrary.GLService {
         return colorCompare(currentPoint.color, point.color);
     }
 
+    public int[] getCurrentAmbiguousRange() {
+        return mAmbiguousRange;
+    }
+
     public boolean colorCompare(ScreenColor src, ScreenColor dest) {
         //Log.d(TAG, "compare " + src.toString() + " with " + dest.toString());
-        return colorWithinRange(src.r, dest.r, mAmbiguousRange) &&
-                colorWithinRange(src.b, dest.b, mAmbiguousRange) &&
-                colorWithinRange(src.g, dest.g, mAmbiguousRange);
+        return colorWithinRange(src.r, dest.r, mAmbiguousRange[0]) &&
+                colorWithinRange(src.b, dest.b, mAmbiguousRange[1]) &&
+                colorWithinRange(src.g, dest.g, mAmbiguousRange[2]);
     }
 
     private boolean colorWithinRange(byte a, byte b, int range) {

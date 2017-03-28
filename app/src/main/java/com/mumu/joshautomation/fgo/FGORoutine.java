@@ -433,6 +433,12 @@ class FGORoutine {
     public int findNextAndClick(int retry, boolean enableGlobal) {
         ScreenCoord coordFound;
         int maxTry = retry;
+        int[] oldAmbiguousRange;
+        int[] findNextAmbRange = new int[] {0x0A, 0x0A, 0x40};
+
+        //change ambiguous range
+        oldAmbiguousRange = mGL.getCaptureService().getCurrentAmbiguousRange();
+        mGL.setAmbiguousRange(findNextAmbRange);
 
         sendMessage("尋找NEXT");
         do {
@@ -449,6 +455,7 @@ class FGORoutine {
             }
 
             if(retry-- < 0 && coordFound == null) {
+                mGL.setAmbiguousRange(oldAmbiguousRange);
                 return -1;
             }
         } while (coordFound == null);
@@ -470,6 +477,7 @@ class FGORoutine {
             sleep(1000);
 
             if(retry-- < 0 && coordFound == null) {
+                mGL.setAmbiguousRange(oldAmbiguousRange);
                 return -1;
             }
         } while (coordFound == null);
@@ -487,6 +495,7 @@ class FGORoutine {
             sleep(1000);
 
             if(retry-- < 0 && coordFound == null) {
+                mGL.setAmbiguousRange(oldAmbiguousRange);
                 return -1;
             }
         } while (coordFound == null);
@@ -494,6 +503,7 @@ class FGORoutine {
         sendMessage("找到子關卡");
         coordFound.y += 150;
         mGL.getInputService().tapOnScreen(coordFound);
+        mGL.setAmbiguousRange(oldAmbiguousRange);
 
         return 0;
     }

@@ -88,9 +88,10 @@ public class PureBattleJob extends AutoJobHandler.AutoJob implements AutoJobEven
     private class MainJobRoutine extends Thread {
 
         private void main() throws Exception {
+            int[] ambRange = new int[] {0x0A, 0x0A, 0x0A};
 
             mGL.setGameOrientation(ScreenPoint.SO_Landscape);
-            mGL.setAmbiguousRange(0x0A);
+            mGL.setAmbiguousRange(ambRange);
 
             sendMessage("開始單次戰鬥");
             if (mFGO.waitForSkip(30, this) < 0) { //wait skip 7 seconds

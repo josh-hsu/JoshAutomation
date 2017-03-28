@@ -85,9 +85,10 @@ public class AutoBattleJob extends AutoJobHandler.AutoJob implements AutoJobEven
 
         private void main() throws Exception {
             int ret;
+            int[] ambRange = new int[] {0x0A, 0x0A, 0x0A};
 
             mGL.setGameOrientation(ScreenPoint.SO_Landscape);
-            mGL.setAmbiguousRange(0x0A);
+            mGL.setAmbiguousRange(ambRange);
             mFGO.setUseRoyalIfAvailable(true);
 
             while (isShouldJobRunning()) {
