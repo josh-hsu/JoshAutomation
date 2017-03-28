@@ -137,7 +137,7 @@ class FGORoutineDefine {
     static ArrayList<ScreenPoint> pointMapNextPoints = new ArrayList<ScreenPoint>() {{
         add(pointMapNextPoint1);add(pointMapNextPoint3);add(pointMapNextPoint4);}};
 
-    static ScreenCoord pointSwipeStart = new ScreenCoord(1440,913,ScreenPoint.SO_Landscape);
+    static ScreenCoord pointSwipeStart = new ScreenCoord(1440,700,ScreenPoint.SO_Landscape);
     static ScreenCoord pointSwipeEnd = new ScreenCoord(1440,508,ScreenPoint.SO_Landscape);
 
     //Battle Pre-setup
