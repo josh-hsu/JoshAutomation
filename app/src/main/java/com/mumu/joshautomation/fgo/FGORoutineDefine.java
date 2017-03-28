@@ -84,6 +84,14 @@ class FGORoutineDefine {
         add(cardRoyal1);add(cardRoyal2);add(cardRoyal3);
     }};
 
+    // NP 100% detect
+    static private ScreenPoint char100NPChar1 = new ScreenPoint(0xFF,0xFF,0xFF,0xFF,362 , 1000, ScreenPoint.SO_Landscape);
+    static private ScreenPoint char100NPChar2 = new ScreenPoint(0xFF,0xFF,0xFF,0xFF,838 , 1000, ScreenPoint.SO_Landscape);
+    static private ScreenPoint char100NPChar3 = new ScreenPoint(0xFF,0xFF,0xFF,0xFF,1317, 1000, ScreenPoint.SO_Landscape);
+    static ArrayList<ScreenPoint> char100NPChars = new ArrayList<ScreenPoint>() {{
+        add(char100NPChar1);add(char100NPChar2);add(char100NPChar3);
+    }};
+
     // home screen
     static ScreenPoint pointHomeGiftBox = new ScreenPoint(229,64,39,0xff,646,1013,ScreenPoint.SO_Landscape);
     static ScreenPoint pointHomeOSiRaSe = new ScreenPoint(0,0,4,0xff,219,78,ScreenPoint.SO_Landscape);
@@ -130,6 +138,15 @@ class FGORoutineDefine {
     //Battle Pre-setup
     static ScreenCoord pointFriendSelect = new ScreenCoord(979,746,ScreenPoint.SO_Landscape);
     static ScreenPoint pointEnterStage = new ScreenPoint(37,47,75,0xff,1735,1010,ScreenPoint.SO_Landscape);
+
+    //Friend Select
+    static ScreenCoord pointFriendSupStart = new ScreenCoord(1558, 300,  ScreenPoint.SO_Landscape);
+    static ScreenCoord pointFriendSupEnd   = new ScreenCoord(1558, 1000, ScreenPoint.SO_Landscape);
+    static private ScreenPoint pointFriendSupPoint1 = new ScreenPoint(232,178,59,0xff,1558,713,ScreenPoint.SO_Landscape);
+    static private ScreenPoint pointFriendSupPoint3 = new ScreenPoint(250,191,63,0xff,1589,713,ScreenPoint.SO_Landscape);
+    static private ScreenPoint pointFriendSupPoint4 = new ScreenPoint(240,185,62,0xff,1609,713,ScreenPoint.SO_Landscape);
+    static ArrayList<ScreenPoint> pointFriendSupPoints = new ArrayList<ScreenPoint>() {{
+        add(pointFriendSupPoint1);add(pointFriendSupPoint3);add(pointFriendSupPoint4);}};
 
     //battle results
     static ScreenPoint pointBattleResult = new ScreenPoint(236,236,235,0xff,832,74,ScreenPoint.SO_Landscape);

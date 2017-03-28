@@ -6,12 +6,16 @@ import com.mumu.joshautomation.script.AutoJobEventListener;
 import com.mumu.libjoshgame.JoshGameLibrary;
 import com.mumu.libjoshgame.ScreenCoord;
 
+import java.util.ArrayList;
+
 import static com.mumu.joshautomation.fgo.FGORoutineDefine.*;
 
 class FGORoutine {
     private static final String TAG = "FGORoutine";
     private JoshGameLibrary mGL;
     private AutoJobEventListener mCallbacks;
+
+    private boolean mBattleUseRoyalIfAvailable = false;
 
     FGORoutine(JoshGameLibrary gl, AutoJobEventListener el) {
         mGL = gl;
@@ -31,8 +35,12 @@ class FGORoutine {
         }
     }
 
+    public void setUseRoyalIfAvailable(boolean use) {
+        mBattleUseRoyalIfAvailable = use;
+    }
+
     /* =======================
-     * Battle Card Checking
+     * Battle Card Checking and Tapping
      * =======================
      */
     private int[] getCurrentCardPresent() {
@@ -130,6 +138,27 @@ class FGORoutine {
         return null;
     }
 
+    /*
+     * getRoyalAvailability
+     * returns the index array of which char has royal ready to use
+     */
+    private int[] getRoyalAvailability() {
+        ArrayList<Integer> retSet = new ArrayList<>();
+        for(int i = 0; i < 3; i++) {
+            if (mGL.getCaptureService().colorIs(char100NPChars.get(i)))
+                retSet.add(i);
+        }
+
+        if (retSet.size() > 0) {
+            int[] ret = new int[retSet.size()];
+            for(int i = 0; i < retSet.size(); i++)
+                ret[i] = retSet.get(i);
+            return ret;
+        } else {
+            return new int[] {};
+        }
+    }
+
     private void tapOnCard(int[] cardIndex) {
         for(int i : cardIndex) {
             ScreenCoord coord = ScreenCoord.getTwoPointCenter(cardPositionStart.get(i),
@@ -159,6 +188,30 @@ class FGORoutine {
         }
     }
 
+    private int selectFriendSupport(int maxSwipe) {
+        ScreenCoord coordFound;
+
+        do {
+            coordFound = mGL.getCaptureService().findColorSegment(pointFriendSupStart,
+                    pointFriendSupEnd, pointFriendSupPoints);
+
+            sleep(500);
+            if (coordFound == null) {
+                mGL.getInputService().swipeOnScreen(pointSwipeStart, pointSwipeEnd);
+            }
+
+            if(maxSwipe-- < 0 && coordFound == null) {
+                return -1;
+            }
+        } while (coordFound == null);
+
+        sendMessage("找到+25朋友");
+        coordFound.x = pointFriendSelect.x;
+        mGL.getInputService().tapOnScreen(coordFound);
+
+        return 0;
+    }
+
     /* =======================
      * Battle Info
      * =======================
@@ -166,12 +219,17 @@ class FGORoutine {
 
     public int battlePreSetup(Thread kThread, boolean swipeFriend) {
         sleep(3000);
-        if (swipeFriend) {
-            mGL.getInputService().swipeOnScreen(pointSwipeStart, pointSwipeEnd);
+
+        //try to find friend's servant, if not found, touch first one
+        if (selectFriendSupport(2) < 0) {
+            mGL.getInputService().swipeOnScreen(pointSwipeEnd, pointSwipeStart);
+            sleep(200);
+            mGL.getInputService().swipeOnScreen(pointSwipeEnd, pointSwipeStart);
+            sleep(200);
+            mGL.getInputService().tapOnScreen(pointFriendSelect);
         }
 
-        mGL.getInputService().tapOnScreen(pointFriendSelect);
-        sleep(1000);
+        sleep(1500);
         if (mGL.getCaptureService().waitOnColor(pointEnterStage, 20, kThread) < 0) {
             return -1;
         }
@@ -185,12 +243,14 @@ class FGORoutine {
     public int battleRoutine(Thread kThread, BattleArgument arg) {
         String cardInfo;
         int[] optimizedDraw, cardStatusNow, skillDraw, royalDraw;
+        int[] royalAvail = new int[0];
         int resultTry = 20; //fail retry of waiting result
         int battleTry = 150; // fail retry of waiting battle button (150 * 1 = 150 secs)
         int checkCardTry = 20; // fail retry of waiting card recognize
         int battleRound = 1; //indicate which round of battle
 
         sendMessage("這次戰鬥參數：" + (arg == null ?  "無" : arg.toString() ) );
+        sleep(500);
         while(!mGL.getCaptureService().colorIs(pointBattleResult) && battleTry > 0) {
             sleep(500);
             sendMessage("在等Battle按鈕" + (150 - battleTry));
@@ -202,7 +262,7 @@ class FGORoutine {
                 continue;
             }
 
-            //found battle button
+            //found battle button, reset try count
             battleTry = 150;
 
             //check skill
@@ -212,6 +272,13 @@ class FGORoutine {
                 tapOnSkill(skillDraw);
             }
 
+            //check royal available
+            if (mBattleUseRoyalIfAvailable) {
+                royalAvail = getRoyalAvailability();
+                sendMessage("寶具可用數" + royalAvail.length);
+            }
+
+            //tap battle
             mGL.getInputService().tapOnScreen(pointBattleButton.coord);
             sendMessage("辨識卡片");
             cardStatusNow = getCurrentCardPresent();
@@ -232,6 +299,8 @@ class FGORoutine {
             if (arg != null) {
                 royalDraw = arg.getRoyalIndexOfRound(battleRound);
                 tapOnRoyal(royalDraw);
+            } else if (mBattleUseRoyalIfAvailable) {
+                tapOnRoyal(royalAvail);
             }
 
             optimizedDraw = getOptimizeDraw(cardStatusNow);

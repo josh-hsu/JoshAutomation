@@ -26,6 +26,7 @@ public class PureBattleJob extends AutoJobHandler.AutoJob implements AutoJobEven
         mGL.setScreenDimension(1080, 1920);
 
         mFGO = new FGORoutine(mGL, this);
+        mFGO.setUseRoyalIfAvailable(true);
         mSelf = this;
     }
 
