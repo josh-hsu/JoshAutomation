@@ -136,7 +136,9 @@ public class HeadService extends Service implements AutoJobEventListener{
         mAutoJobHandler = AutoJobHandler.getHandler();
         mAutoJobHandler.setJobEventListener(AutoJobHandler.FGO_BATTLE_JOB, this);
         mAutoJobHandler.setJobEventListener(AutoJobHandler.FGO_PURE_BATTLE_JOB, this);
-        mAutoJobHandler.setExtra(AutoJobHandler.FGO_BATTLE_JOB, new BattleArgument("###i#j#k"));
+
+        String battleString = "j#####ijk#####j#####ijk#####j#####ijk";
+        mAutoJobHandler.setExtra(AutoJobHandler.FGO_BATTLE_JOB, new BattleArgument(battleString));
     }
 
     private void initGamePanelViews() {

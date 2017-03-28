@@ -14,6 +14,11 @@ class FGORoutineDefine {
     static final int sCardQuick = 2;
     static final int sCardUnknown = 3;
 
+    static final int sBattleDone = 0;
+    static final int sBattleWaitTimeout = -1;
+    static final int sBattleWaitResultTimeout = -2;
+    static final int sBattleDie = -3;
+
     static ScreenPoint pointIntroPage = new ScreenPoint(0x44,0x44,0x75,0xFF,824,1035,ScreenPoint.SO_Portrait);
 
     //intro
@@ -147,6 +152,12 @@ class FGORoutineDefine {
     static private ScreenPoint pointFriendSupPoint4 = new ScreenPoint(240,185,62,0xff,1609,713,ScreenPoint.SO_Landscape);
     static ArrayList<ScreenPoint> pointFriendSupPoints = new ArrayList<ScreenPoint>() {{
         add(pointFriendSupPoint1);add(pointFriendSupPoint3);add(pointFriendSupPoint4);}};
+
+    //Battle Die Detect
+    static ScreenPoint pointBattleDieDetect  = new ScreenPoint(255,0  ,0  ,0xff,1586,131,ScreenPoint.SO_Landscape);
+    static ScreenPoint pointBattleDieBackoff = new ScreenPoint(0  ,0  ,0  ,0xff, 492,475,ScreenPoint.SO_Landscape);
+    static ScreenPoint pointBattleDieConfirm = new ScreenPoint(250,250,250,0xff,1301,543,ScreenPoint.SO_Landscape);
+    static ScreenPoint pointBattleDieClose   = new ScreenPoint(217,217,217,0xff, 960,843,ScreenPoint.SO_Landscape);
 
     //battle results
     static ScreenPoint pointBattleResult = new ScreenPoint(236,236,235,0xff,832,74,ScreenPoint.SO_Landscape);

@@ -255,8 +255,14 @@ class FGORoutine {
         while(!mGL.getCaptureService().colorIs(pointBattleResult) && battleTry > 0) {
             sleep(500);
             sendMessage("在等Battle按鈕" + (150 - battleTry));
-            checkCardTry = 20;
 
+            //detect die
+            if (battleDieCheckAndHandle() == 0) {
+                Log.d(TAG, "Battle failed. return here");
+                return sBattleDie;
+            }
+
+            //wait for battle button
             if (mGL.getCaptureService().waitOnColor(pointBattleButton, 10, kThread) < 0) {
                 Log.d(TAG, "Cannot find battle button, checking if finished");
                 battleTry--;
@@ -265,6 +271,7 @@ class FGORoutine {
 
             //found battle button, reset try count
             battleTry = 150;
+            checkCardTry = 20;
 
             //check skill
             if (arg != null) {
@@ -318,8 +325,8 @@ class FGORoutine {
         }
 
         // check if this is a timeout
-        if (battleTry == 0 || checkCardTry == 0)
-            return -2;
+        if (battleTry == 0)
+            return sBattleWaitTimeout;
 
         // tap on screen until NEXT button to exit battle
         while (!mGL.getCaptureService().colorIs(pointBattleNext) && resultTry > 0) {
@@ -329,12 +336,30 @@ class FGORoutine {
         }
 
         if (resultTry == 0)
-            return -1;
+            return sBattleWaitResultTimeout;
 
         mGL.getInputService().tapOnScreen(pointBattleNext.coord);
         sleep(1000);
 
-        return 0;
+        return sBattleDone;
+    }
+
+    public int battleDieCheckAndHandle() {
+        if (mGL.getCaptureService().colorIs(pointBattleDieDetect)) {
+            //double confirm backoff button present
+            sendMessage("似乎全軍覆沒了");
+            if (mGL.getCaptureService().colorIs(pointBattleDieBackoff)) {
+                mGL.getInputService().tapOnScreen(pointBattleDieBackoff.coord);
+                sleep(1000);
+                mGL.getInputService().tapOnScreen(pointBattleDieConfirm.coord);
+                sleep(1000);
+                mGL.getInputService().tapOnScreen(pointBattleDieClose.coord);
+                sleep(1000);
+                return 0;
+            }
+        }
+
+        return -1;
     }
 
     public int battleHandleFriendRequest(Thread kThread) {
@@ -359,6 +384,21 @@ class FGORoutine {
         return 0;
     }
 
+    public String battleGetErrorMsg(int errorCode) {
+        switch (errorCode) {
+            case sBattleDone:
+                return "戰鬥完成";
+            case sBattleWaitTimeout:
+                return "戰鬥逾時";
+            case sBattleWaitResultTimeout:
+                return "等不到戰鬥結果";
+            case sBattleDie:
+                return "全軍覆沒";
+            default:
+                return "未知錯誤";
+        }
+    }
+
     /* =======================
      * Story Info
      * =======================
@@ -373,6 +413,7 @@ class FGORoutine {
             mGL.getInputService().tapOnScreen(pointSkipDialog.coord);
             sleep(1000);
             mGL.getInputService().tapOnScreen(pointSkipConfirm.coord);
+            sleep(3000);
             return 0;
         }
     }
@@ -461,14 +502,14 @@ class FGORoutine {
         int maxRetry = retry;
 
         while(!isInUserMode() && retry >= 0) {
-            sleep(1000);
+            sleep(700);
             retry--;
         }
 
         retry = maxRetry;
         while(!isInHomeScreen() && retry >= 0) {
             mGL.getInputService().tapOnScreen(pointCloseButton.coord);
-            sleep(1000);
+            sleep(700);
             retry--;
         }
 

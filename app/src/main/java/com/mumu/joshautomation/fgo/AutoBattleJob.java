@@ -84,6 +84,7 @@ public class AutoBattleJob extends AutoJobHandler.AutoJob implements AutoJobEven
     private class MainJobRoutine extends Thread {
 
         private void main() throws Exception {
+            int ret;
 
             mGL.setGameOrientation(ScreenPoint.SO_Landscape);
             mGL.setAmbiguousRange(0x0A);
@@ -113,13 +114,13 @@ public class AutoBattleJob extends AutoJobHandler.AutoJob implements AutoJobEven
                     sendMessage("等不到SKIP，當作正常");
                 }
 
-                if (mFGO.battleRoutine(this, mBattleArg) < 0) {
-                    sendMessage("戰鬥出現錯誤");
+                ret = mFGO.battleRoutine(this, mBattleArg);
+                if (ret < 0) {
+                    sendMessage("戰鬥錯誤:" + mFGO.battleGetErrorMsg(ret));
                     mShouldJobRunning = false;
                     return;
                 }
 
-                sleep(1000);
                 if (mFGO.battleHandleFriendRequest(this) < 0) {
                     sendMessage("沒有朋友請求，可能正常");
                 }
@@ -128,7 +129,6 @@ public class AutoBattleJob extends AutoJobHandler.AutoJob implements AutoJobEven
                     sendMessage("等不到SKIP，當作正常");
                 }
 
-                sleep(3000);
                 if (mFGO.battlePostSetup(this) < 0) {
                     sendMessage("離開戰鬥錯誤");
                     mShouldJobRunning = false;
