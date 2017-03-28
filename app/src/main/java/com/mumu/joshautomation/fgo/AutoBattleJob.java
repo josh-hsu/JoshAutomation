@@ -15,6 +15,7 @@ public class AutoBattleJob extends AutoJobHandler.AutoJob implements AutoJobEven
 
     private FGORoutine mFGO;
     private AutoBattleJob mSelf;
+    private BattleArgument mBattleArg;
 
     public AutoBattleJob(String jobName, int jobIndex) {
         super(jobName, jobIndex);
@@ -48,7 +49,9 @@ public class AutoBattleJob extends AutoJobHandler.AutoJob implements AutoJobEven
 
     @Override
     public void setExtra(Object object) {
-
+        if (object instanceof BattleArgument) {
+            mBattleArg = (BattleArgument)object;
+        }
     }
 
     @Override
@@ -110,7 +113,7 @@ public class AutoBattleJob extends AutoJobHandler.AutoJob implements AutoJobEven
                     sendMessage("等不到SKIP，當作正常");
                 }
 
-                if (mFGO.battleRoutine(this, null) < 0) {
+                if (mFGO.battleRoutine(this, mBattleArg) < 0) {
                     sendMessage("戰鬥出現錯誤");
                     mShouldJobRunning = false;
                     return;

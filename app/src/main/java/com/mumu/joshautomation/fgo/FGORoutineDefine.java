@@ -9,7 +9,7 @@ import java.util.ArrayList;
 //static ScreenPoint pointSkipDialog = new ScreenPoint(0x,0x,0x,0xff,,,ScreenPoint.SO_Portrait);
 
 class FGORoutineDefine {
-    static final int sCardBust = 0;
+    static final int sCardBurst = 0;
     static final int sCardArt = 1;
     static final int sCardQuick = 2;
     static final int sCardUnknown = 3;

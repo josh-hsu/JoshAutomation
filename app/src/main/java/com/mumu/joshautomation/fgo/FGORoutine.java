@@ -56,7 +56,7 @@ class FGORoutine {
                     cardPositionStart.get(i),
                     cardPositionEnd.get(i),
                     cardBurst)) {
-                ret[i] = sCardBust;
+                ret[i] = sCardBurst;
             } else if (mGL.getCaptureService().findColorInRange(
                     cardPositionStart.get(i),
                     cardPositionEnd.get(i),
@@ -82,7 +82,7 @@ class FGORoutine {
         switch (i) {
             case sCardArt:
                 return "A";
-            case sCardBust:
+            case sCardBurst:
                 return "B";
             case sCardQuick:
                 return "Q";
@@ -110,7 +110,7 @@ class FGORoutine {
         int selected = 0;
 
         for(int i = 0; i < pattern.length; i++) {
-            if (pattern[i] == sCardBust) {
+            if (pattern[i] == sCardBurst) {
                 select[selected] = i;
                 selected++;
 
@@ -242,7 +242,8 @@ class FGORoutine {
 
     public int battleRoutine(Thread kThread, BattleArgument arg) {
         String cardInfo;
-        int[] optimizedDraw, cardStatusNow, skillDraw, royalDraw;
+        int[] optimizedDraw, cardStatusNow, skillDraw;
+        int[] royalDraw = new int[0];
         int[] royalAvail = new int[0];
         int resultTry = 20; //fail retry of waiting result
         int battleTry = 150; // fail retry of waiting battle button (150 * 1 = 150 secs)
@@ -292,15 +293,21 @@ class FGORoutine {
                 sendMessage(cardInfo);
             } else {
                 sendMessage("卡片無法辨識，隨便按");
-                cardStatusNow = new int[] {sCardBust, sCardBust,sCardBust,sCardBust,sCardBust};
+                cardStatusNow = new int[] {sCardBurst, sCardBurst, sCardBurst, sCardBurst, sCardBurst};
             }
 
             //check royal request if any
             if (arg != null) {
                 royalDraw = arg.getRoyalIndexOfRound(battleRound);
                 tapOnRoyal(royalDraw);
-            } else if (mBattleUseRoyalIfAvailable) {
-                tapOnRoyal(royalAvail);
+            }
+
+            //if arg doesn't specific royal at all
+            if (mBattleUseRoyalIfAvailable) {
+                if (royalDraw.length == 0 && royalAvail.length > 0) {
+                    sendMessage("沒有寶具指定，自動使用寶具");
+                    tapOnRoyal(royalAvail);
+                }
             }
 
             optimizedDraw = getOptimizeDraw(cardStatusNow);
@@ -369,7 +376,6 @@ class FGORoutine {
             return 0;
         }
     }
-
 
     /* =======================
      * Home Info
@@ -471,6 +477,5 @@ class FGORoutine {
 
         return 0;
     }
-
 
 }
