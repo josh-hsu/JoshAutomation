@@ -445,12 +445,12 @@ public class CaptureService extends JoshGameLibrary.GLService {
         // Use two points to decide search direction
         ScreenCoord start = colorPoints.get(0).coord;
         ScreenCoord end = colorPoints.get(colorPoints.size()-1).coord;
-        if(start.x == end.x) {
-            Log.d(TAG, "findColorSegmentGlobal: X axis is fixed, colorPoints is y determined");
-            searchX = false;
-        } else if (start.y == end.y) {
-            Log.d(TAG, "findColorSegmentGlobal: Y axis is fixed, colorPoints is x determined");
+        if(start.x == end.x) { //find vertical segment
+            Log.d(TAG, "findColorSegmentGlobal: X axis is fixed, search vertical");
             searchX = true;
+        } else if (start.y == end.y) { //find horizontal segment
+            Log.d(TAG, "findColorSegmentGlobal: Y axis is fixed, search horizontal");
+            searchX = false;
         } else {
             Log.e(TAG, "findColorSegmentGlobal: No axis is fixed, abort here.");
             return null;
@@ -501,10 +501,10 @@ public class CaptureService extends JoshGameLibrary.GLService {
                     break;
             }
         } else {
-            for(int y = 1; y < yBound; y++) {
+            for(int x = 1; x < xBound - (end.x - start.x); x++) {
                 points.clear();
 
-                for(int x = 1; x < xBound - (end.x - start.x); x++) {
+                for(int y = 1; y < yBound; y++) {
                     for(int i = 0; i < colorPoints.size(); i++) {
                         ScreenPoint pointInList = colorPoints.get(i);
                         ScreenPoint insert = new ScreenPoint();

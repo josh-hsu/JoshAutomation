@@ -432,9 +432,10 @@ class FGORoutine {
 
     public int findNextAndClick(int retry, boolean enableGlobal) {
         ScreenCoord coordFound;
+        boolean searchGlobalFailOnce = false;
         int maxTry = retry;
         int[] oldAmbiguousRange;
-        int[] findNextAmbRange = new int[] {0x0A, 0x0A, 0x40};
+        int[] findNextAmbRange = new int[] {0x06, 0x06, 0x35};
 
         //change ambiguous range
         oldAmbiguousRange = mGL.getCaptureService().getCurrentAmbiguousRange();
@@ -470,9 +471,14 @@ class FGORoutine {
         do {
             coordFound = mGL.getCaptureService().findColorSegment(pointMapNextStart,
                     pointMapNextEnd, pointMapNextPoints);
-            if (coordFound == null && enableGlobal) {
-                sendMessage("從中間找不到，試看看全域");
+            if (coordFound == null && enableGlobal && !searchGlobalFailOnce) {
+                sendMessage("不在中間，全域搜尋一次");
                 coordFound = mGL.getCaptureService().findColorSegmentGlobal(pointMapNextPoints);
+
+                if (coordFound == null) {
+                    searchGlobalFailOnce = true;
+                    sendMessage("中間搜尋也失敗了");
+                }
             }
             sleep(1000);
 
@@ -496,6 +502,7 @@ class FGORoutine {
 
             if(retry-- < 0 && coordFound == null) {
                 mGL.setAmbiguousRange(oldAmbiguousRange);
+                sendMessage("找不到子關卡");
                 return -1;
             }
         } while (coordFound == null);

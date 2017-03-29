@@ -99,7 +99,7 @@ public class AutoBattleJob extends AutoJobHandler.AutoJob implements AutoJobEven
                     return;
                 }
 
-                if (mFGO.findNextAndClick(20, false) < 0) {
+                if (mFGO.findNextAndClick(20, true) < 0) {
                     sendMessage("找不到下一關");
                     mShouldJobRunning = false;
                     return;
