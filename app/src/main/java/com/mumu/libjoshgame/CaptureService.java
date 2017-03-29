@@ -179,7 +179,7 @@ public class CaptureService extends JoshGameLibrary.GLService {
     }
 
     /*
-     * checkColorInList
+     * checkColorInList (added in 1.15)
      * this function requires file opened to improve performance
      * i.e., the file open/close should be handled outside
      */
@@ -228,12 +228,16 @@ public class CaptureService extends JoshGameLibrary.GLService {
     }
 
     /*
-     * findColorInRange (added in 1.20)
+     * checkColorIsInRegion (added in 1.20)
+     * Check if the colors set is in the range of src <=> dest
+     * This function doesn't check the position of color, it only checks
+     * its existence
+     *
      * src: Source ScreenCoord (must smaller than dest)
      * dest: Destination ScreenCoord
      * colors: ScreenColor array to be found
      */
-    public boolean findColorInRange(ScreenCoord src, ScreenCoord dest, ArrayList<ScreenColor> colors) {
+    public boolean checkColorIsInRegion(ScreenCoord src, ScreenCoord dest, ArrayList<ScreenColor> colors) {
         ArrayList<ScreenCoord> coordList = new ArrayList<>();
         ArrayList<ScreenColor> colorsReturned = new ArrayList<>();
         ArrayList<Boolean> checkList = new ArrayList<>();
@@ -243,7 +247,7 @@ public class CaptureService extends JoshGameLibrary.GLService {
 
         // sanity check
         if (colors == null || src == null || dest == null) {
-            Log.w(TAG, "findColorInRange: colors cannot be null");
+            Log.w(TAG, "checkColorIsInRegion: colors cannot be null");
             return false;
         } else {
             orientation = src.orientation;
@@ -251,12 +255,12 @@ public class CaptureService extends JoshGameLibrary.GLService {
         }
 
         if (src.orientation != dest.orientation) {
-            Log.w(TAG, "findColorInRange: Src and Dest must in same orientation");
+            Log.w(TAG, "checkColorIsInRegion: Src and Dest must in same orientation");
             return false;
         }
 
         if (colorCount < 1 || colorCount > mMaxColorFinding) {
-            Log.w(TAG, "findColorInRange: colors size should be bigger than 0 and smaller than " +
+            Log.w(TAG, "checkColorIsInRegion: colors size should be bigger than 0 and smaller than " +
                     mMaxColorFinding);
             return false;
         }
@@ -313,7 +317,7 @@ public class CaptureService extends JoshGameLibrary.GLService {
     }
 
     /*
-     * findColorSegment
+     * findColorSegment (added in 1.15)
      * colorPoints: segment of colors
      * start: start point
      * end: end point
@@ -418,7 +422,8 @@ public class CaptureService extends JoshGameLibrary.GLService {
     }
 
     /*
-     * findColorSegmentGlobal
+     * findColorSegmentGlobal (added in 1.20)
+     * WARNING: BUGGY
      *
      * colorPoints: segment of colors and coordination used to find in entire screen
      */

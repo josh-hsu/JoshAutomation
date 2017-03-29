@@ -47,17 +47,17 @@ class FGORoutine {
         int ret[] = new int[5];
 
         for(int i = 0; i < 5; i++) {
-            if (mGL.getCaptureService().findColorInRange(
+            if (mGL.getCaptureService().checkColorIsInRegion(
                     cardPositionStart.get(i),
                     cardPositionEnd.get(i),
                     cardArt)) {
                 ret[i] = sCardArt;
-            } else if (mGL.getCaptureService().findColorInRange(
+            } else if (mGL.getCaptureService().checkColorIsInRegion(
                     cardPositionStart.get(i),
                     cardPositionEnd.get(i),
                     cardBurst)) {
                 ret[i] = sCardBurst;
-            } else if (mGL.getCaptureService().findColorInRange(
+            } else if (mGL.getCaptureService().checkColorIsInRegion(
                     cardPositionStart.get(i),
                     cardPositionEnd.get(i),
                     cardQuick)) {
