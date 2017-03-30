@@ -7,7 +7,7 @@ import com.mumu.joshautomation.script.AutoJobEventListener;
 import com.mumu.libjoshgame.JoshGameLibrary;
 import com.mumu.libjoshgame.ScreenPoint;
 
-public class PureBattleJob extends AutoJob implements AutoJobEventListener {
+public class PureBattleJob extends AutoJob {
     private static final String TAG = "PureBattleJob";
     private MainJobRoutine mRoutine;
     private JoshGameLibrary mGL;
@@ -25,7 +25,7 @@ public class PureBattleJob extends AutoJob implements AutoJobEventListener {
         mGL.setGameOrientation(ScreenPoint.SO_Landscape);
         mGL.setScreenDimension(1080, 1920);
 
-        mFGO = new FGORoutine(mGL, this);
+        mFGO = new FGORoutine(mGL, mListener);
         mFGO.setUseRoyalIfAvailable(true);
         mSelf = this;
     }
@@ -56,17 +56,6 @@ public class PureBattleJob extends AutoJob implements AutoJobEventListener {
         if (object instanceof BattleArgument) {
             mBattleArg = (BattleArgument)object;
         }
-    }
-
-    // ignored, there is not job done event from mFGO
-    @Override
-    public void onJobDone(String obj) {
-
-    }
-
-    @Override
-    public void onEventReceived(String msg, Object extra) {
-        sendMessage(msg);
     }
 
     public void setJobEventListener(AutoJobEventListener el) {
