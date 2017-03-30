@@ -6,8 +6,20 @@ import com.mumu.joshautomation.fgo.AutoBattleJob;
 import com.mumu.joshautomation.fgo.PureBattleJob;
 
 /**
- * AutoJobHandler
- * Start or Stop any Job of FGO
+ * AutoJobHandler (see also AutoJob)
+ * Controller of jobs
+ *
+ * To add your job (you can copy an example from AutoJobExample.java)
+ * 1. Make your job class extends AutoJob
+ * 2. Override these three method: start(), stop(), setExtra()
+ * 3. Initial your job by give it an index, such as
+ *    public static final int YOUR_JOB = 3;
+ *    and you will need to increase TOTAL_JOB by 1
+ * 4. add mJobList[YOUR_JOB] = new YourJob("your_great_job", YOUR_JOB);
+ *
+ * To get AutoJobHandler
+ * You can simply use AutoJobHandler h = AutoJobHandler.getHandler() to get a handler instance
+ * And use h.start(job_index) to start any job you want
  */
 
 public class AutoJobHandler {
@@ -22,9 +34,9 @@ public class AutoJobHandler {
 
     private AutoJobHandler() {
         mJobList = new AutoJob[TOTAL_JOB];
-        mJobList[0] = new AutoJobExample("example_job", EXAMPLE_JOB);
-        mJobList[1] = new AutoBattleJob("fgo_battle_job", FGO_BATTLE_JOB);
-        mJobList[2] = new PureBattleJob("fgo_pure_battle_job", FGO_PURE_BATTLE_JOB);
+        mJobList[EXAMPLE_JOB] = new AutoJobExample("example_job", EXAMPLE_JOB);
+        mJobList[FGO_BATTLE_JOB] = new AutoBattleJob("fgo_battle_job", FGO_BATTLE_JOB);
+        mJobList[FGO_PURE_BATTLE_JOB] = new PureBattleJob("fgo_pure_battle_job", FGO_PURE_BATTLE_JOB);
     }
 
     public static AutoJobHandler getHandler() {
@@ -72,48 +84,6 @@ public class AutoJobHandler {
             return null;
         } else {
             return mJobList[idx].getJobName();
-        }
-    }
-
-    static public class AutoJob {
-        private String mJobName;
-        private int mJobIndex;
-        public boolean mShouldJobRunning;
-
-        public AutoJob(String name, int idx) {
-            mJobIndex = idx;
-            mJobName = name;
-            mShouldJobRunning = false;
-        }
-
-        public String getJobName() {
-            return mJobName;
-        }
-
-        public int getJobIndex() {
-            return mJobIndex;
-        }
-
-        public boolean isShouldJobRunning() {
-            return mShouldJobRunning;
-        }
-
-        public void start() {
-            mShouldJobRunning = true;
-            Log.d(TAG, "calling super start");
-        }
-
-        public void stop() {
-            mShouldJobRunning = false;
-            Log.d(TAG, "calling super stop");
-        }
-
-        public void setExtra(Object object) {
-            Log.d(TAG, "calling super setExtra");
-        }
-
-        public void setJobEventListener(AutoJobEventListener el) {
-            Log.d(TAG, "calling super setJobEventListener");
         }
     }
 }

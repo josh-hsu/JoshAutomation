@@ -2,12 +2,12 @@ package com.mumu.joshautomation.fgo;
 
 import android.util.Log;
 
+import com.mumu.joshautomation.script.AutoJob;
 import com.mumu.joshautomation.script.AutoJobEventListener;
-import com.mumu.joshautomation.script.AutoJobHandler;
 import com.mumu.libjoshgame.JoshGameLibrary;
 import com.mumu.libjoshgame.ScreenPoint;
 
-public class AutoBattleJob extends AutoJobHandler.AutoJob implements AutoJobEventListener {
+public class AutoBattleJob extends AutoJob implements AutoJobEventListener {
     private static final String TAG = "AutoBattleJob";
     private MainJobRoutine mRoutine;
     private JoshGameLibrary mGL;

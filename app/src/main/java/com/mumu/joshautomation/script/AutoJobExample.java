@@ -11,7 +11,7 @@ import com.mumu.libjoshgame.ScreenPoint;
  * An example workable script implementation
  */
 
-class AutoJobExample extends AutoJobHandler.AutoJob {
+class AutoJobExample extends AutoJob {
     private static final String TAG = "AutoJobExample";
     private MainJobRoutine mRoutine;
     private JoshGameLibrary mGL;
