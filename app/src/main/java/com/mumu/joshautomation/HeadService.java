@@ -45,8 +45,9 @@ import java.util.ArrayList;
 public class HeadService extends Service implements AutoJobEventListener{
     private static final String TAG = "JATool";
     private final Handler mHandler = new Handler();
-    private String mPngFilePath = Environment.getExternalStorageDirectory().toString() + "/select.png";
-    private String mDumpFilePath = Environment.getExternalStorageDirectory().toString() + "/select.dump";
+    private final String mPngFilePath = Environment.getExternalStorageDirectory().toString() + "/select.png";
+    private final String mDumpFilePath = Environment.getExternalStorageDirectory().toString() + "/select.dump";
+    private static final int mUpdateUIInterval = 100;
     private Context mContext;
 
     // View objects
@@ -71,8 +72,9 @@ public class HeadService extends Service implements AutoJobEventListener{
     private JoshGameLibrary mGL;
     private AutoJobHandler mAutoJobHandler;
 
-    /*
-     * Runnable threads
+    /* ==========================
+     * Update UI Thread
+     * ==========================
      */
     private final Runnable updateRunnable = new Runnable() {
         public void run() {
@@ -90,6 +92,14 @@ public class HeadService extends Service implements AutoJobEventListener{
             mLastMessage = mMessageText;
             mSameMsgCount = 0;
             ((TextView) mHeadIconList.get(IDX_MSG_TEXT).getView()).setText(mMessageText);
+        }
+
+        if (!mHomeRunning) {
+            mHeadIconList.get(IDX_HOME_ICON).getImageView().setImageResource(R.drawable.ic_menu_home_outline);
+        }
+
+        if (!mScriptRunning) {
+            mHeadIconList.get(IDX_PLAY_ICON).getImageView().setImageResource(R.drawable.ic_play);
         }
     }
 
@@ -111,6 +121,10 @@ public class HeadService extends Service implements AutoJobEventListener{
         }
     };
 
+    /* ==========================
+     * Service Basic
+     * ==========================
+     */
     @Override
     public IBinder onBind(Intent intent) {
         // Not used
@@ -388,7 +402,6 @@ public class HeadService extends Service implements AutoJobEventListener{
      */
     @Override
     public void onEventReceived(String msg, Object extra) {
-        Log.d(TAG, "Get event message " + msg);
         mMessageText = msg;
     }
 
@@ -398,11 +411,9 @@ public class HeadService extends Service implements AutoJobEventListener{
 
         if (job.equals(mAutoJobHandler.getJobName(AutoJobHandler.FGO_PURE_BATTLE_JOB))) {
             mHomeRunning = false;
-            mHeadIconList.get(IDX_HOME_ICON).getImageView().setImageResource(R.drawable.ic_menu_home_outline);
             mMessageText = "完成單次戰鬥";
         } else if (job.equals(mAutoJobHandler.getJobName(AutoJobHandler.FGO_BATTLE_JOB))) {
             mScriptRunning = false;
-            mHeadIconList.get(IDX_PLAY_ICON).getImageView().setImageResource(R.drawable.ic_play);
             mMessageText = "循環戰鬥結束";
         }
     }
@@ -412,7 +423,7 @@ public class HeadService extends Service implements AutoJobEventListener{
             while(mMessageThreadRunning) {
                 mHandler.post(updateRunnable);
                 try {
-                    Thread.sleep(100);
+                    Thread.sleep(mUpdateUIInterval);
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
