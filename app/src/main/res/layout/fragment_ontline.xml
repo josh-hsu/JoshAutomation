@@ -83,9 +83,16 @@
                 android:text="點擊上方按鈕啟動服務，長壓圖示以結束"
                 android:id="@+id/textViewAccountNum"
                 android:textAlignment="center"
-                android:layout_below="@+id/button_set_battle_parameter"
+                android:layout_below="@+id/spinner"
                 android:layout_alignParentStart="true"
                 android:layout_alignParentEnd="true" />
+
+            <Spinner
+                android:id="@+id/spinner"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_alignParentStart="true"
+                android:layout_below="@+id/button_set_battle_parameter" />
 
         </RelativeLayout>
     </ScrollView>

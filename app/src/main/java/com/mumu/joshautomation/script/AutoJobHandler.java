@@ -5,6 +5,8 @@ import android.util.Log;
 import com.mumu.joshautomation.fgo.AutoBattleJob;
 import com.mumu.joshautomation.fgo.PureBattleJob;
 
+import java.util.ArrayList;
+
 /**
  * AutoJobHandler (see also AutoJob)
  * Controller of jobs
@@ -28,15 +30,14 @@ public class AutoJobHandler {
     public static final int EXAMPLE_JOB = 0;
     public static final int FGO_BATTLE_JOB = 1;
     public static final int FGO_PURE_BATTLE_JOB = 2;
-    public static final int TOTAL_JOB = 3;
 
-    private AutoJob[] mJobList;
+    private ArrayList<AutoJob> mJobList;
 
     private AutoJobHandler() {
-        mJobList = new AutoJob[TOTAL_JOB];
-        mJobList[EXAMPLE_JOB] = new AutoJobExample("example_job", EXAMPLE_JOB);
-        mJobList[FGO_BATTLE_JOB] = new AutoBattleJob("fgo_battle_job", FGO_BATTLE_JOB);
-        mJobList[FGO_PURE_BATTLE_JOB] = new PureBattleJob("fgo_pure_battle_job", FGO_PURE_BATTLE_JOB);
+        mJobList = new ArrayList<>();
+        mJobList.add(new AutoJobExample("example_job", EXAMPLE_JOB));
+        mJobList.add(new AutoBattleJob("fgo_battle_job", FGO_BATTLE_JOB));
+        mJobList.add(new PureBattleJob("fgo_pure_battle_job", FGO_PURE_BATTLE_JOB));
     }
 
     public static AutoJobHandler getHandler() {
@@ -46,44 +47,56 @@ public class AutoJobHandler {
         return mHandler;
     }
 
+    public int getJobCount() {
+        return mJobList.size();
+    }
+
+    public AutoJob getJob(int idx) {
+        if (idx >= getJobCount()) {
+            return null;
+        } else {
+            return mJobList.get(idx);
+        }
+    }
+
     public void startJob(int idx) {
-        if (idx >= TOTAL_JOB) {
+        if (idx >= getJobCount()) {
             Log.d(TAG, "Fail to start job " + idx + ", no such index.");
         } else {
-            mJobList[idx].start();
+            getJob(idx).start();
         }
     }
 
     public void stopJob(int idx) {
-        if (idx >= TOTAL_JOB) {
+        if (idx >= getJobCount()) {
             Log.d(TAG, "Fail to stop job " + idx + ", no such index.");
         } else {
-            mJobList[idx].stop();
+            getJob(idx).stop();
         }
     }
 
     public void setExtra(int idx, Object object) {
-        if (idx >= TOTAL_JOB) {
+        if (idx >= getJobCount()) {
             Log.d(TAG, "Setting extra data for job " + idx + " failed, no such index.");
         } else {
-            mJobList[idx].setExtra(object);
+            getJob(idx).setExtra(object);
         }
     }
 
     public void setJobEventListener(int idx, AutoJobEventListener el) {
-        if (idx >= TOTAL_JOB) {
+        if (idx >= getJobCount()) {
             Log.d(TAG, "Setting AutoJobEventListener for job " + idx + " failed, no such index.");
         } else {
-            mJobList[idx].setJobEventListener(el);
+            getJob(idx).setJobEventListener(el);
         }
     }
 
     public String getJobName(int idx) {
-        if (idx >= TOTAL_JOB) {
+        if (idx >= getJobCount()) {
             Log.d(TAG, "Fail to start job " + idx + ", no such index.");
             return null;
         } else {
-            return mJobList[idx].getJobName();
+            return getJob(idx).getJobName();
         }
     }
 }
