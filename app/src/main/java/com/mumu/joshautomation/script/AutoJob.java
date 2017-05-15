@@ -6,7 +6,6 @@ package com.mumu.joshautomation.script;
  */
 public class AutoJob {
     private String mJobName;
-    private int mJobIndex;
     public boolean mShouldJobRunning;
 
     /*
@@ -14,18 +13,13 @@ public class AutoJob {
      * constructor of AutoJob
      * Assign it a name and an index for easy access for your job
      */
-    public AutoJob(String name, int idx) {
-        mJobIndex = idx;
+    public AutoJob(String name) {
         mJobName = name;
         mShouldJobRunning = false;
     }
 
     public String getJobName() {
         return mJobName;
-    }
-
-    public int getJobIndex() {
-        return mJobIndex;
     }
 
     public boolean isShouldJobRunning() {

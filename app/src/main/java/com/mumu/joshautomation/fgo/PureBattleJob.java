@@ -17,8 +17,10 @@ public class PureBattleJob extends AutoJob {
     private PureBattleJob mSelf;
     private BattleArgument mBattleArg;
 
-    public PureBattleJob(String jobName, int jobIndex) {
-        super(jobName, jobIndex);
+    public static final String jobName = "FGO one time battle job";
+
+    public PureBattleJob() {
+        super(jobName);
 
         /* JoshGameLibrary basic initial */
         mGL = JoshGameLibrary.getInstance();

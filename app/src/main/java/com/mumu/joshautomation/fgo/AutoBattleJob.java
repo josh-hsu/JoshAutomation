@@ -17,8 +17,10 @@ public class AutoBattleJob extends AutoJob {
     private AutoBattleJob mSelf;
     private BattleArgument mBattleArg;
 
-    public AutoBattleJob(String jobName, int jobIndex) {
-        super(jobName, jobIndex);
+    public static final String jobName = "FGO main story battle job";
+
+    public AutoBattleJob() {
+        super(jobName);
 
         /* JoshGameLibrary basic initial */
         mGL = JoshGameLibrary.getInstance();

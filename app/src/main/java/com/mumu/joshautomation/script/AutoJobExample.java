@@ -17,8 +17,10 @@ class AutoJobExample extends AutoJob {
     private JoshGameLibrary mGL;
     private AutoJobEventListener mListener;
 
-    AutoJobExample(String jobName, int jobIndex) {
-        super(jobName, jobIndex);
+    public static final String jobName = "Example job"; //give your job a name
+
+    AutoJobExample() {
+        super(jobName);
 
         /* JoshGameLibrary basic initial */
         mGL = JoshGameLibrary.getInstance();

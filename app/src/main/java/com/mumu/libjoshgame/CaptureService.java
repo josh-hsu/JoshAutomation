@@ -573,6 +573,7 @@ public class CaptureService extends JoshGameLibrary.GLService {
                     kThread.sleep(100);
                 } catch (InterruptedException e) {
                     e.printStackTrace();
+                    return -1;
                 }
 
             }
@@ -601,6 +602,7 @@ public class CaptureService extends JoshGameLibrary.GLService {
                     kThread.sleep(100);
                 } catch (InterruptedException e) {
                     e.printStackTrace();
+                    return -1;
                 }
             }
         }

@@ -33,7 +33,9 @@ import android.view.WindowManager;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.mumu.joshautomation.fgo.AutoBattleJob;
 import com.mumu.joshautomation.fgo.BattleArgument;
+import com.mumu.joshautomation.fgo.PureBattleJob;
 import com.mumu.joshautomation.screencapture.PointSelectionActivity;
 import com.mumu.joshautomation.script.AutoJobEventListener;
 import com.mumu.joshautomation.script.AutoJobHandler;
@@ -148,11 +150,13 @@ public class HeadService extends Service implements AutoJobEventListener{
         mGL.setGameOrientation(ScreenPoint.SO_Portrait);
 
         mAutoJobHandler = AutoJobHandler.getHandler();
-        mAutoJobHandler.setJobEventListener(AutoJobHandler.FGO_BATTLE_JOB, this);
-        mAutoJobHandler.setJobEventListener(AutoJobHandler.FGO_PURE_BATTLE_JOB, this);
+        mAutoJobHandler.addJob(new AutoBattleJob());
+        mAutoJobHandler.addJob(new PureBattleJob());
+        mAutoJobHandler.setJobEventListener(PureBattleJob.jobName, this);
+        mAutoJobHandler.setJobEventListener(AutoBattleJob.jobName, this);
 
         String battleString = "j#####ijk#####j#####ijk#####j#####ijk";
-        mAutoJobHandler.setExtra(AutoJobHandler.FGO_BATTLE_JOB, new BattleArgument(battleString));
+        mAutoJobHandler.setExtra("FGO main story battle job", new BattleArgument(battleString));
     }
 
     private void initGamePanelViews() {
@@ -366,10 +370,10 @@ public class HeadService extends Service implements AutoJobEventListener{
     private void configHome() {
 
         if(!mHomeRunning) {
-            mAutoJobHandler.startJob(AutoJobHandler.FGO_PURE_BATTLE_JOB);
+            mAutoJobHandler.startJob(PureBattleJob.jobName);
             mHeadIconList.get(IDX_HOME_ICON).getImageView().setImageResource(R.drawable.ic_pause);
         } else {
-            mAutoJobHandler.stopJob(AutoJobHandler.FGO_PURE_BATTLE_JOB);
+            mAutoJobHandler.stopJob(PureBattleJob.jobName);
             mHeadIconList.get(IDX_HOME_ICON).getImageView().setImageResource(R.drawable.ic_menu_home_outline);
         }
 
@@ -386,10 +390,10 @@ public class HeadService extends Service implements AutoJobEventListener{
 
     private void configScriptStatus() {
         if(!mScriptRunning) {
-            mAutoJobHandler.startJob(AutoJobHandler.FGO_BATTLE_JOB);
+            mAutoJobHandler.startJob(AutoBattleJob.jobName);
             mHeadIconList.get(IDX_PLAY_ICON).getImageView().setImageResource(R.drawable.ic_pause);
         } else {
-            mAutoJobHandler.stopJob(AutoJobHandler.FGO_BATTLE_JOB);
+            mAutoJobHandler.stopJob(AutoBattleJob.jobName);
             mHeadIconList.get(IDX_PLAY_ICON).getImageView().setImageResource(R.drawable.ic_play);
         }
 
@@ -409,10 +413,10 @@ public class HeadService extends Service implements AutoJobEventListener{
     public void onJobDone(String job) {
         Log.d(TAG, "Job " + job + " has done");
 
-        if (job.equals(mAutoJobHandler.getJobName(AutoJobHandler.FGO_PURE_BATTLE_JOB))) {
+        if (job.equals(PureBattleJob.jobName)) {
             mHomeRunning = false;
             mMessageText = "完成單次戰鬥";
-        } else if (job.equals(mAutoJobHandler.getJobName(AutoJobHandler.FGO_BATTLE_JOB))) {
+        } else if (job.equals(AutoBattleJob.jobName)) {
             mScriptRunning = false;
             mMessageText = "循環戰鬥結束";
         }

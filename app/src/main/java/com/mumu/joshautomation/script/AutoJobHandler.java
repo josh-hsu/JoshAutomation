@@ -27,17 +27,11 @@ import java.util.ArrayList;
 public class AutoJobHandler {
     public static final String TAG = "AutoJobHandler";
     private static AutoJobHandler mHandler;
-    public static final int EXAMPLE_JOB = 0;
-    public static final int FGO_BATTLE_JOB = 1;
-    public static final int FGO_PURE_BATTLE_JOB = 2;
 
     private ArrayList<AutoJob> mJobList;
 
     private AutoJobHandler() {
         mJobList = new ArrayList<>();
-        mJobList.add(new AutoJobExample("example_job", EXAMPLE_JOB));
-        mJobList.add(new AutoBattleJob("fgo_battle_job", FGO_BATTLE_JOB));
-        mJobList.add(new PureBattleJob("fgo_pure_battle_job", FGO_PURE_BATTLE_JOB));
     }
 
     public static AutoJobHandler getHandler() {
@@ -45,6 +39,10 @@ public class AutoJobHandler {
             mHandler = new AutoJobHandler();
 
         return mHandler;
+    }
+
+    public void addJob(AutoJob job) {
+        mJobList.add(job);
     }
 
     public int getJobCount() {
@@ -59,12 +57,29 @@ public class AutoJobHandler {
         }
     }
 
+    public AutoJob getJob(String name) {
+        for(AutoJob a: mJobList) {
+            if (a.getJobName().equals(name))
+                return a;
+        }
+
+        return null;
+    }
+
     public void startJob(int idx) {
         if (idx >= getJobCount()) {
             Log.d(TAG, "Fail to start job " + idx + ", no such index.");
         } else {
             getJob(idx).start();
         }
+    }
+
+    public void startJob(String name) {
+        AutoJob a = getJob(name);
+        if (a != null)
+            a.start();
+        else
+            Log.d(TAG, "Fail to start job " + name + ", no such job.");
     }
 
     public void stopJob(int idx) {
@@ -75,12 +90,28 @@ public class AutoJobHandler {
         }
     }
 
+    public void stopJob(String name) {
+        AutoJob a = getJob(name);
+        if (a != null)
+            a.stop();
+        else
+            Log.d(TAG, "Fail to stop job " + name + ", no such job.");
+    }
+
     public void setExtra(int idx, Object object) {
         if (idx >= getJobCount()) {
             Log.d(TAG, "Setting extra data for job " + idx + " failed, no such index.");
         } else {
             getJob(idx).setExtra(object);
         }
+    }
+
+    public void setExtra(String job, Object obj) {
+        AutoJob a = getJob(job);
+        if (a != null)
+            a.stop();
+        else
+            Log.d(TAG, "Setting extra data for job " + job + " failed, no such job.");
     }
 
     public void setJobEventListener(int idx, AutoJobEventListener el) {
@@ -91,6 +122,15 @@ public class AutoJobHandler {
         }
     }
 
+    public void setJobEventListener(String name, AutoJobEventListener el) {
+        AutoJob a = getJob(name);
+        if (a != null) {
+            a.setJobEventListener(el);
+        } else {
+            Log.d(TAG, "Setting AutoJobEventListener for job " + name + " failed, no such index.");
+        }
+    }
+
     public String getJobName(int idx) {
         if (idx >= getJobCount()) {
             Log.d(TAG, "Fail to start job " + idx + ", no such index.");
@@ -98,5 +138,13 @@ public class AutoJobHandler {
         } else {
             return getJob(idx).getJobName();
         }
+    }
+
+    public int getJobIndex(String name) {
+        AutoJob a = getJob(name);
+        if (a != null)
+            return mJobList.indexOf(a);
+        else
+            return -1;
     }
 }

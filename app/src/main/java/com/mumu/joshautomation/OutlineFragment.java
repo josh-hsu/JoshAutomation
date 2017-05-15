@@ -18,6 +18,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.mumu.joshautomation.fgo.BattleArgument;
+import com.mumu.joshautomation.fgo.PureBattleJob;
 import com.mumu.joshautomation.script.AutoJobHandler;
 import com.mumu.joshautomation.script.AutoJobEventListener;
 
@@ -123,7 +124,7 @@ public class OutlineFragment extends MainFragment {
             @Override
             public void onClick(View view) {
                 BattleArgument sBA = new BattleArgument(mBattleParameterText.getText().toString());
-                AutoJobHandler.getHandler().setExtra(AutoJobHandler.FGO_PURE_BATTLE_JOB, sBA);
+                AutoJobHandler.getHandler().setExtra(PureBattleJob.jobName, sBA);
             }
         });
     }
