@@ -1,83 +1,88 @@
 <resources>
-    <string name="app_name">Josh Auto</string>
-
-    <string name="navigation_drawer_open">Open navigation drawer</string>
-    <string name="navigation_drawer_close">Close navigation drawer</string>
-    <string name="action_settings">Settings</string>
-    <string name="action_detail">Detail</string>
-    <string name="action_yes">Yes</string>
-    <string name="action_no">No</string>
-    <string name="action_confirm">Confirm</string>
-    <string name="action_cancel">Cancel</string>
 
     <!-- project parameters -->
     <string name="electric_data_file_name">electric_records.xml</string>
 
+    <string name="app_name">JA自動腳本</string>
+
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
+
+    <string name="action_settings">設定</string>
+    <string name="action_detail">所有資料</string>
+    <string name="action_yes">是</string>
+    <string name="action_no">否</string>
+    <string name="action_confirm">確定</string>
+    <string name="action_cancel">取消</string>
+
     <!-- drawer -->
-    <string name="drawer_title">User Name</string>
-    <string name="drawer_subtitle">User Email</string>
-    <string name="drawer_outline">Outline Function</string>
-    <string name="drawer_electricity">Accounts</string>
-    <string name="drawer_menu_social">Social</string>
-    <string name="drawer_send">Send Mail to developer</string>
-    <string name="drawer_share">Share to ..</string>
+    <string name="drawer_title">您</string>
+    <string name="drawer_subtitle">lazypig1226@gmail.com</string>
+    <string name="drawer_outline">概覽與功能</string>
+    <string name="drawer_electricity">帳號管理</string>
+    <string name="drawer_menu_social">社群</string>
+    <string name="drawer_send">問題回報</string>
+    <string name="drawer_share">分享給 </string>
 
     <!-- home activity -->
-    <string name="bugreport_permission_request">We need permission to access external storage.</string>
-    <string name="bugreport_permission_not_grant">Your record is not sent to developer because you denied the permission request.</string>
-    <string name="bugreport_subject">Bugreport</string>
-    <string name="bugreport_send_out_via">Send out mail via ..</string>
-    <string name="bugreport_context">Briefly describe the bug you found or suggestions to this APP: \n</string>
-    
+    <string name="bugreport_permission_request">需要外部儲存空間權限以便寄出錯誤報告</string>
+    <string name="bugreport_permission_not_grant">您的資料無法寄給開發者因為您拒絕了外部儲存空間權限要求</string>
+    <string name="bugreport_subject">問題回報</string>
+    <string name="bugreport_send_out_via">選擇 APP 來寄出 ..</string>
+    <string name="bugreport_context">簡單陳述您遇到的問題或是任何意見：\n</string>
+
     <!-- Electricity activity -->
-    <string name="electric_edit">Restore Account</string>
-    <string name="electric_update">Update Account</string>
-    <string name="electric_delete">Delete Account</string>
+    <string name="electric_edit">復原此帳號</string>
+    <string name="electric_update">更新此帳號遊戲設定</string>
+    <string name="electric_delete">刪除此帳號(尚未開放)</string>
 
-    <string name="electric_add">Give an account name</string>
-    <string name="electric_add_info">Please add a new account</string>
-    <string name="electric_add_next">Add new one to compare</string>
-    <string name="electric_add_field_holder">Current number</string>
-    <string name="electric_add_cancel">Cancel</string>
+    <string name="electric_add">給一個帳號名稱</string>
+    <string name="electric_add_info">請輸入您現在的數值</string>
+    <string name="electric_add_next">再新增一筆來比較</string>
+    <string name="electric_add_field_holder">上個帳號名稱</string>
+    <string name="electric_add_cancel">取消</string>
 
-    <string name="electric_graphic_today">Today</string>
-    <string name="electric_graphic_yesterday">Yesterday</string>
-    <string name="electric_sheet_button_assistant">Inverse the table</string>
+    <string name="electric_graphic_today">今天</string>
+    <string name="electric_graphic_yesterday">昨天</string>
+    <string name="electric_sheet_button_assistant">反向列出資料</string>
 
-    <!-- Outline fragment -->
-    <string name="outline_title">Josh Automation</string>
-    <string name="outline_account_num">Current number of accounts: </string>
-    <string name="outline_list_all_scripts">List All Scripts</string>
-    <string name="outline_stop_auto_traverse">Stop Auto Login Routine</string>
-    <string name="outline_current_progress">Auto Login: </string>
-    <string name="outline_current_finish">Finished: </string>
-    <string name="outline_start_screen_capture">Capture Screen Color</string>
+    <!-- Outline -->
+    <string name="outline_title">JA 自動化腳本服務</string>
+    <string name="outline_account_num">目前保存帳號數：</string>
+    <string name="outline_list_all_scripts">列出所有腳本</string>
+    <string name="outline_stop_auto_traverse">停止自動登入帳號</string>
+    <string name="outline_current_progress">登入進度(按此停止): </string>
+    <string name="outline_current_finish">已完成第 </string>
+    <string name="outline_start_screen_capture">啟用抓點抓色</string>
 
     <!-- Settings -->
-    <string name="settings_fragment_title_1">Account Setting</string>
-    <string name="settings_fragment_summary_1">Link your Google account or Dropbox account to App</string>
-    <string name="settings_restore_data_from_sdcard">Restore Data from external Storage</string>
-    <string name="settings_restore_title">Restore Saved Data</string>
-    <string name="settings_restore_subtitle">Warning: restore recently backup data will erase all the data you add after last backup. Continue?</string>
-    <string name="settings_restore_failed">Restore Failed</string>
-    <string name="settings_restore_not_found">Sorry, no backup data found in your device.</string>
-    <string name="settings_restore_finished">Restore has finished successfully.</string>
+    <string name="settings_fragment_title_1">FGO 設定</string>
+    <string name="settings_fragment_summary_1">在程式 FGO 底下的腳本設定</string>
+    <string name="settings_fragment_title_2">腳本選擇設定</string>
+    <string name="settings_fragment_summary_2">決定按下 Play 後要執行哪一個任務</string>
+    <string name="settings_restore_data_from_sdcard">恢復帳號表\n(使用問題回報來備份)</string>
+    <string name="settings_restore_title">恢復上次備份</string>
+    <string name="settings_restore_subtitle">注意！您即將恢復上次備份資料，從上個備份至今你輸入的資料將會遺失。確定嗎？</string>
+    <string name="settings_restore_failed">備份失敗</string>
+    <string name="settings_restore_not_found">抱歉，在裝置上找不到任何備份資料。</string>
+    <string name="settings_restore_finished">備份資料已成功復原。</string>
+    <string name="settings_default_battle_arg">bc6#eg7#j8</string>
 
     <!-- HeadService -->
-    <string name="headservice_how_to_stop">Service started, you can long press the icon to stop it.</string>
-    <string name="headservice_stop_title">Stop Service</string>
-    <string name="headservice_stop_info">Are you sure you want to stop Josh Auto Script service?</string>
-    <string name="headservice_stop_button">Stop</string>
+    <string name="headservice_how_to_stop">服務已啟動，長按圖示可終止服務</string>
+    <string name="headservice_stop_title">停止服務</string>
+    <string name="headservice_stop_info">確定要停止JA自動腳本服務嗎？</string>
+    <string name="headservice_stop_button">停止</string>
 
     <!-- Start up dialog -->
-    <string name="startup_confirm">Proceed</string>
-    <string name="startup_cancel">Cancel</string>
-    <string name="startup_cancel_warn">Warning</string>
-    <string name="startup_cancel_exit">Exit</string>
-    <string name="startup_permit_system_alarm">Please allow to draw on screen permission.</string>
-    <string name="startup_permit_system_alarm_failed">No permission, this App will not run.</string>
+    <string name="startup_confirm">確定</string>
+    <string name="startup_cancel">取消</string>
+    <string name="startup_cancel_warn">警告</string>
+    <string name="startup_cancel_exit">離開</string>
+    <string name="startup_permit_system_alarm">請允許使用系統繪圖</string>
+    <string name="startup_permit_system_alarm_failed">您未允許設定，程式將不會正常運作</string>
 
     <!-- Capture view -->
-    <string name="capture_point_default_info">Touch screen to get info</string>
+    <string name="capture_point_default_info">觸碰位置取得資訊</string>
 
 </resources>

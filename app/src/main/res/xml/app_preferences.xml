@@ -8,9 +8,9 @@
             android:summary="服務自動服務平台"/>
         <CheckBoxPreference
             android:title="顏色判定放寬"
+            android:key="ambiguousColorMatching"
             android:defaultValue="true"
-            android:summary="由於各個裝置的顯示顏色會有落差，如果使用上有問題，請確保此選項開啟"
-            android:key="ambiguousColorMatching" />
+            android:summary="由於各個裝置的顯示顏色會有落差，如果使用上有問題，請確保此選項開啟"/>
     </PreferenceCategory>
 
     <PreferenceCategory android:title="戰鬥設定">
@@ -18,7 +18,7 @@
             android:key="battleAutoPref"
             android:title="判斷最佳化抽卡"
             android:defaultValue="true"
-            android:summary="會盡量 B 卡優先" />
+            android:summary="會盡量 B 卡優先"/>
         <EditTextPreference
             android:key="battleArgPref"
             android:title="戰鬥參數"
@@ -29,12 +29,12 @@
             android:key="battleUseRoyal"
             android:title="自動使用寶具"
             android:summary="從開始到換LV1寵的場數"
-            android:defaultValue="true" />
+            android:defaultValue="true"/>
         <CheckBoxPreference
             android:key="battleSpeedUp"
             android:title="腳本加速"
             android:summary="減少 sleep 的時間"
-            android:defaultValue="false" />
+            android:defaultValue="false"/>
     </PreferenceCategory>
 
 </PreferenceScreen>

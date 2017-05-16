@@ -1,8 +1,13 @@
 <preference-headers
     xmlns:android="http://schemas.android.com/apk/res/android">
 
-    <header android:fragment="com.mumu.projectli.utility.AppPreferenceActivity$Prefs1Fragment"
-        android:icon="@mipmap/ic_drawer_image"
+    <header android:fragment="com.mumu.joshautomation.AppPreferenceActivity$Prefs2Fragment"
+        android:icon="@mipmap/ic_script_select"
+        android:title="@string/settings_fragment_title_2"
+        android:summary="@string/settings_fragment_summary_2" />
+
+    <header android:fragment="com.mumu.joshautomation.AppPreferenceActivity$Prefs1Fragment"
+        android:icon="@mipmap/ic_fgo"
         android:title="@string/settings_fragment_title_1"
         android:summary="@string/settings_fragment_summary_1" />
 

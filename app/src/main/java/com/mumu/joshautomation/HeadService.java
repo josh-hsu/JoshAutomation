@@ -58,16 +58,14 @@ public class HeadService extends Service implements AutoJobEventListener{
     private static final int IDX_HEAD_ICON = 0;
     private static final int IDX_MSG_TEXT = 1;
     private static final int IDX_CAPTURE_ICON = 2;
-    private static final int IDX_HOME_ICON = 3;
-    private static final int IDX_SETTING_ICON = 4;
-    private static final int IDX_PLAY_ICON = 5;
+    private static final int IDX_SETTING_ICON = 3;
+    private static final int IDX_PLAY_ICON = 4;
 
     private int mTouchHeadIconCount = 0;
     private int mSameMsgCount = 0;
     private String mMessageText = "";
     private String mLastMessage = "";
     private boolean mScriptRunning = false;
-    private boolean mHomeRunning = false;
     private boolean mMessageThreadRunning = false;
     private static int mDumpCount = 0;
 
@@ -94,10 +92,6 @@ public class HeadService extends Service implements AutoJobEventListener{
             mLastMessage = mMessageText;
             mSameMsgCount = 0;
             ((TextView) mHeadIconList.get(IDX_MSG_TEXT).getView()).setText(mMessageText);
-        }
-
-        if (!mHomeRunning) {
-            mHeadIconList.get(IDX_HOME_ICON).getImageView().setImageResource(R.drawable.ic_menu_home_outline);
         }
 
         if (!mScriptRunning) {
@@ -202,42 +196,25 @@ public class HeadService extends Service implements AutoJobEventListener{
         });
         mHeadIconList.add(captureIcon);
 
-        // Home Icon
-        HeadIconView homeIcon = new HeadIconView(new ImageView(this), mWindowManager, 120, 120);
-        homeIcon.getImageView().setImageResource(R.drawable.ic_menu_home_outline);
-        homeIcon.setOnTapListener(new HeadIconView.OnTapListener() {
-            @Override
-            public void onTap(View view) {
-                Log.d(TAG, "config home icon");
-                configHome();
-            }
-
-            @Override
-            public void onLongPress(View view) {
-
-            }
-        });
-        mHeadIconList.add(homeIcon);
-
         // Setting Icon
-        HeadIconView settingIcon = new HeadIconView(new ImageView(this), mWindowManager, 240, 120);
+        HeadIconView settingIcon = new HeadIconView(new ImageView(this), mWindowManager, 120, 120);
         settingIcon.getImageView().setImageResource(R.drawable.ic_menu_settings);
         settingIcon.setOnTapListener(new HeadIconView.OnTapListener() {
             @Override
             public void onTap(View view) {
-                Log.d(TAG, "config setting icon");
-                configSettings();
+                configSettings(false);
             }
 
             @Override
             public void onLongPress(View view) {
-
+                Log.d(TAG, "config setting icon");
+                configSettings(true);
             }
         });
         mHeadIconList.add(settingIcon);
 
         // Start and Stop control Icon
-        HeadIconView startIcon = new HeadIconView(new ImageView(this), mWindowManager, 360, 120);
+        HeadIconView startIcon = new HeadIconView(new ImageView(this), mWindowManager, 240, 120);
         startIcon.getImageView().setImageResource(R.drawable.ic_play);
         startIcon.setOnTapListener(new HeadIconView.OnTapListener() {
             @Override
@@ -368,24 +345,22 @@ public class HeadService extends Service implements AutoJobEventListener{
     }
 
     private void configHome() {
-
-        if(!mHomeRunning) {
-            mAutoJobHandler.startJob(PureBattleJob.jobName);
-            mHeadIconList.get(IDX_HOME_ICON).getImageView().setImageResource(R.drawable.ic_pause);
-        } else {
-            mAutoJobHandler.stopJob(PureBattleJob.jobName);
-            mHeadIconList.get(IDX_HOME_ICON).getImageView().setImageResource(R.drawable.ic_menu_home_outline);
-        }
-
-        mHomeRunning = !mHomeRunning;
+        mAutoJobHandler.startJob(PureBattleJob.jobName);
     }
 
-    private void configSettings() {
-        String filename = mDumpFilePath + mDumpCount;
-        mGL.getCaptureService().dumpScreen(filename);
-        mMessageText = "Dump count = " + mDumpCount;
-        mDumpCount++;
-
+    private void configSettings(boolean isLongPress) {
+        if (isLongPress) {
+            String filename = mDumpFilePath + mDumpCount;
+            mGL.getCaptureService().dumpScreen(filename);
+            mMessageText = "Dump count = " + mDumpCount;
+            mDumpCount++;
+        } else {
+            mMessageText = "開啟中";
+            Intent intent = new Intent();
+            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            intent.setClass(HeadService.this, AppPreferenceActivity.class);
+            startActivity(intent);
+        }
     }
 
     private void configScriptStatus() {
@@ -414,7 +389,6 @@ public class HeadService extends Service implements AutoJobEventListener{
         Log.d(TAG, "Job " + job + " has done");
 
         if (job.equals(PureBattleJob.jobName)) {
-            mHomeRunning = false;
             mMessageText = "完成單次戰鬥";
         } else if (job.equals(AutoBattleJob.jobName)) {
             mScriptRunning = false;
