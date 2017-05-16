@@ -2,6 +2,7 @@ package com.mumu.joshautomation.fgo;
 
 import android.util.Log;
 
+import com.mumu.joshautomation.AppPreferenceValue;
 import com.mumu.joshautomation.script.AutoJobEventListener;
 import com.mumu.libjoshgame.JoshGameLibrary;
 import com.mumu.libjoshgame.ScreenCoord;
@@ -14,8 +15,6 @@ class FGORoutine {
     private static final String TAG = "FGORoutine";
     private JoshGameLibrary mGL;
     private AutoJobEventListener mCallbacks;
-
-    private boolean mBattleUseRoyalIfAvailable = false;
 
     FGORoutine(JoshGameLibrary gl, AutoJobEventListener el) {
         mGL = gl;
@@ -33,10 +32,6 @@ class FGORoutine {
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
-    }
-
-    public void setUseRoyalIfAvailable(boolean use) {
-        mBattleUseRoyalIfAvailable = use;
     }
 
     /* =======================
@@ -249,6 +244,8 @@ class FGORoutine {
         int battleTry = 150; // fail retry of waiting battle button (150 * 1 = 150 secs)
         int checkCardTry = 20; // fail retry of waiting card recognize
         int battleRound = 1; //indicate which round of battle
+        boolean useRoyalIfAvailable = AppPreferenceValue.getInstance().getPrefs().getBoolean("battleUseRoyal", true);
+        boolean useOptimizeDraw = AppPreferenceValue.getInstance().getPrefs().getBoolean("battleOptPref", true);
 
         sendMessage("這次戰鬥參數：" + (arg == null ?  "無" : arg.toString() ) );
         sleep(500);
@@ -281,7 +278,7 @@ class FGORoutine {
             }
 
             //check royal available
-            if (mBattleUseRoyalIfAvailable) {
+            if (useRoyalIfAvailable) {
                 royalAvail = getRoyalAvailability();
                 sendMessage("寶具可用數" + royalAvail.length);
             }
@@ -289,18 +286,25 @@ class FGORoutine {
             //tap battle
             mGL.getInputService().tapOnScreen(pointBattleButton.coord);
             sendMessage("辨識卡片");
-            cardStatusNow = getCurrentCardPresent();
-            while (!isCardValid(cardStatusNow) && checkCardTry > 0) {
-                cardStatusNow = getCurrentCardPresent();
-                checkCardTry--;
-            }
 
-            if (isCardValid(cardStatusNow)) {
-                cardInfo = getCardNameSeries(cardStatusNow);
-                sendMessage(cardInfo);
+            if (useOptimizeDraw) {
+                cardStatusNow = getCurrentCardPresent();
+                while (!isCardValid(cardStatusNow) && checkCardTry > 0) {
+                    cardStatusNow = getCurrentCardPresent();
+                    checkCardTry--;
+                }
+
+                if (isCardValid(cardStatusNow)) {
+                    cardInfo = getCardNameSeries(cardStatusNow);
+                    sendMessage(cardInfo);
+                } else {
+                    sendMessage("卡片無法辨識，隨便按");
+                    cardStatusNow = new int[] {sCardBurst, sCardBurst, sCardBurst, sCardBurst, sCardBurst};
+                }
             } else {
-                sendMessage("卡片無法辨識，隨便按");
+                sendMessage("不辨識卡片，按照順序按");
                 cardStatusNow = new int[] {sCardBurst, sCardBurst, sCardBurst, sCardBurst, sCardBurst};
+                sleep(1500);
             }
 
             //check royal request if any
@@ -310,7 +314,7 @@ class FGORoutine {
             }
 
             //if arg doesn't specific royal at all
-            if (mBattleUseRoyalIfAvailable) {
+            if (useRoyalIfAvailable) {
                 if (royalDraw.length == 0 && royalAvail.length > 0) {
                     sendMessage("沒有寶具指定，自動使用寶具");
                     tapOnRoyal(royalAvail);

@@ -22,11 +22,8 @@ import android.content.SharedPreferences;
 public class AppPreferenceValue {
     private static AppPreferenceValue mAppPreferenceValue = new AppPreferenceValue();
     private static boolean mInitialized = false;
-    public static final int PREF_APP = 0;
-    public static final int PREF_FGO = 1;
 
     private Context mContext;
-    private SharedPreferences mAppPrefs;
     private SharedPreferences mFgoPrefs;
 
     private AppPreferenceValue() {
@@ -40,22 +37,13 @@ public class AppPreferenceValue {
     public void init(Context ctx) {
         if (ctx != null) {
             mContext = ctx;
-            mAppPrefs = mContext.getSharedPreferences("com.mumu.joshautomation_app_preferences", Context.MODE_PRIVATE);
             mFgoPrefs = mContext.getSharedPreferences("com.mumu.joshautomation_preferences", Context.MODE_PRIVATE);
             mInitialized = true;
         }
     }
 
-    public SharedPreferences getPrefs(int pref_type) {
-        switch (pref_type) {
-            case PREF_APP:
-                return mAppPrefs;
-            case PREF_FGO:
-                return mFgoPrefs;
-            default:
-                break;
-        }
-
-        return null;
+    public SharedPreferences getPrefs() {
+        mFgoPrefs = mContext.getSharedPreferences("com.mumu.joshautomation_preferences", Context.MODE_PRIVATE);
+        return mFgoPrefs;
     }
 }

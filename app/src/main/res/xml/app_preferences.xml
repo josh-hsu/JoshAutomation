@@ -6,13 +6,13 @@
         <ListPreference
             android:key="scriptSelectPref"
             android:title="選擇腳本"
-            android:summary="default script select"
+            android:summary="點擊選擇"
             android:defaultValue="0"/>
         <CheckBoxPreference
             android:key="scriptExecuteLoopPref"
             android:title="重複執行"
             android:summary="是否自動重複執行"
-            android:defaultValue="true"/>
+            android:defaultValue="false"/>
         <EditTextPreference
             android:key="scriptExecuteTimePref"
             android:title="腳本執行次數"

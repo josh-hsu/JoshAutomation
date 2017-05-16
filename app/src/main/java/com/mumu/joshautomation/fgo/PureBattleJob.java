@@ -29,7 +29,6 @@ public class PureBattleJob extends AutoJob {
         mGL.setScreenDimension(1080, 1920);
 
         mFGO = new FGORoutine(mGL, mListener);
-        mFGO.setUseRoyalIfAvailable(true);
         mSelf = this;
     }
 
@@ -39,7 +38,7 @@ public class PureBattleJob extends AutoJob {
         Log.d(TAG, "starting job " + getJobName());
 
         String battleString = AppPreferenceValue.getInstance().
-                getPrefs(AppPreferenceValue.PREF_FGO).getString("battleArgPref", "");
+                getPrefs().getString("battleArgPref", "");
         mBattleArg = new BattleArgument(battleString);
 
         mRoutine = null;

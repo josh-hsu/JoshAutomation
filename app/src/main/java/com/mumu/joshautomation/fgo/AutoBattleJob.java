@@ -38,7 +38,7 @@ public class AutoBattleJob extends AutoJob {
         Log.d(TAG, "starting job " + getJobName());
 
         String battleString = AppPreferenceValue.getInstance().
-                getPrefs(AppPreferenceValue.PREF_FGO).getString("battleArgPref", "j#####ijk#####j#####ijk#####j#####ijk");
+                getPrefs().getString("battleArgPref", "j#####ijk#####j#####ijk#####j#####ijk");
         mBattleArg = new BattleArgument(battleString);
 
         mRoutine = null;
@@ -86,7 +86,6 @@ public class AutoBattleJob extends AutoJob {
 
             mGL.setGameOrientation(ScreenPoint.SO_Landscape);
             mGL.setAmbiguousRange(ambRange);
-            mFGO.setUseRoyalIfAvailable(true);
 
             while (isShouldJobRunning()) {
 

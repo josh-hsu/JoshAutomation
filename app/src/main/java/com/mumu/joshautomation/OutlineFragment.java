@@ -24,7 +24,7 @@ public class OutlineFragment extends MainFragment {
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
 
-    private Button mRunJoshCmdButton;
+    private Button mSettingButton;
     private Button mStartServiceButton;
 
     private OnFragmentInteractionListener mListener;
@@ -96,13 +96,13 @@ public class OutlineFragment extends MainFragment {
     }
 
     private void prepareView(View view) {
-        mRunJoshCmdButton = (Button) view.findViewById(R.id.button_test_game);
+        mSettingButton = (Button) view.findViewById(R.id.button_setting);
         mStartServiceButton = (Button) view.findViewById(R.id.button_start_service);
 
-        mRunJoshCmdButton.setOnClickListener(new View.OnClickListener() {
+        mSettingButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
+                startPreferenceActivity();
             }
         });
 
@@ -145,6 +145,12 @@ public class OutlineFragment extends MainFragment {
             getContext().startService(new Intent(getContext(), HeadService.class));
             //returnHomeScreen();
         }
+    }
+
+    private void startPreferenceActivity() {
+        Intent intent = new Intent();
+        intent.setClass(this.getActivity(), AppPreferenceActivity.class);
+        startActivity(intent);
     }
 
     private void returnHomeScreen() {

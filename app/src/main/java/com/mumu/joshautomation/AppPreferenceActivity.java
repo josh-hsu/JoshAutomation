@@ -19,6 +19,7 @@ package com.mumu.joshautomation;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Environment;
+import android.preference.ListPreference;
 import android.preference.PreferenceActivity;
 import android.preference.PreferenceFragment;
 import android.preference.PreferenceManager;
@@ -33,6 +34,7 @@ import android.widget.LinearLayout;
 import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.mumu.joshautomation.R;
+import com.mumu.joshautomation.script.AutoJobHandler;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -41,6 +43,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.util.ArrayList;
 import java.util.List;
 
 public class AppPreferenceActivity extends PreferenceActivity {
@@ -131,6 +134,26 @@ public class AppPreferenceActivity extends PreferenceActivity {
 
             // Load the preferences from an XML resource
             addPreferencesFromResource(R.xml.app_preferences);
+
+            // Fill out script
+            ListPreference scriptSelectPref = (ListPreference) findPreference("scriptSelectPref");
+            AutoJobHandler jobHandler = AutoJobHandler.getHandler();
+            ArrayList<CharSequence> entriesArray = new ArrayList<>();
+            ArrayList<CharSequence> entriesValueArray = new ArrayList<>();
+
+            if (jobHandler.getJobCount() <= 0) {
+                entriesArray.add("沒有工作，請確定服務打開");
+                entriesValueArray.add("0");
+            } else {
+                for(int i = 0; i < jobHandler.getJobCount(); i++) {
+                    entriesArray.add(jobHandler.getJobName(i));
+                    entriesValueArray.add(""+i);
+                }
+            }
+
+            scriptSelectPref.setEntries(entriesArray.toArray(new CharSequence[entriesArray.size()]));
+            scriptSelectPref.setDefaultValue("0");
+            scriptSelectPref.setEntryValues(entriesValueArray.toArray(new CharSequence[entriesValueArray.size()]));
         }
     }
 

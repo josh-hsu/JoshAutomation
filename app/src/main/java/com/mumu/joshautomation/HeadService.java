@@ -34,10 +34,8 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.mumu.joshautomation.fgo.AutoBattleJob;
-import com.mumu.joshautomation.fgo.BattleArgument;
 import com.mumu.joshautomation.fgo.PureBattleJob;
 import com.mumu.joshautomation.screencapture.PointSelectionActivity;
-import com.mumu.joshautomation.script.AutoJob;
 import com.mumu.joshautomation.script.AutoJobEventListener;
 import com.mumu.joshautomation.script.AutoJobHandler;
 import com.mumu.libjoshgame.JoshGameLibrary;
@@ -346,10 +344,6 @@ public class HeadService extends Service implements AutoJobEventListener{
         mHandler.postDelayed(mDumpScreenRunnable, 100);
     }
 
-    private void configHome() {
-        mAutoJobHandler.startJob(PureBattleJob.jobName);
-    }
-
     private void configSettings(boolean isLongPress) {
         if (isLongPress) {
             String filename = mDumpFilePath + mDumpCount;
@@ -366,8 +360,9 @@ public class HeadService extends Service implements AutoJobEventListener{
     }
 
     private void configScriptStatus() {
-        String currentSelectIndexPref = mAPV.getPrefs(AppPreferenceValue.PREF_APP).getString("scriptSelectPref", "0");
+        String currentSelectIndexPref = mAPV.getPrefs().getString("scriptSelectPref", "0");
         int currentSelectIndex = Integer.parseInt(currentSelectIndexPref);
+        Log.d(TAG, "select " + currentSelectIndex);
 
         if(!mScriptRunning) {
             mAutoJobHandler.startJob(currentSelectIndex);
@@ -401,7 +396,7 @@ public class HeadService extends Service implements AutoJobEventListener{
         }
     }
 
-    class GetMessageThread extends Thread {
+    private class GetMessageThread extends Thread {
         public void run() {
             while(mMessageThreadRunning) {
                 mHandler.post(updateRunnable);
