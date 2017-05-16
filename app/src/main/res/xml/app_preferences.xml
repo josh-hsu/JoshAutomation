@@ -1,40 +1,24 @@
 <?xml version="1.0" encoding="utf-8"?>
 <PreferenceScreen
     xmlns:android="http://schemas.android.com/apk/res/android">
-    <PreferenceCategory android:title="服務設定">
-        <Preference
-            android:title="開啟服務"
-            android:key="enableServicePref"
-            android:summary="服務自動服務平台"/>
-        <CheckBoxPreference
-            android:title="顏色判定放寬"
-            android:key="ambiguousColorMatching"
-            android:defaultValue="true"
-            android:summary="由於各個裝置的顯示顏色會有落差，如果使用上有問題，請確保此選項開啟"/>
-    </PreferenceCategory>
 
-    <PreferenceCategory android:title="戰鬥設定">
+    <PreferenceCategory android:title="腳本設定">
+        <ListPreference
+            android:key="scriptSelectPref"
+            android:title="選擇腳本"
+            android:summary="default script select"
+            android:defaultValue="0"/>
         <CheckBoxPreference
-            android:key="battleAutoPref"
-            android:title="判斷最佳化抽卡"
-            android:defaultValue="true"
-            android:summary="會盡量 B 卡優先"/>
-        <EditTextPreference
-            android:key="battleArgPref"
-            android:title="戰鬥參數"
-            android:summary="技能為adb,efd,ijk，寶具為6,7,8，#是回合分隔符號。\n例如bc6#eg7#j8：第一回合放第一個英雄技能2與3，以及選擇第一英雄的寶具，以此列推。"
-            android:defaultValue="@string/settings_default_battle_arg"
-            android:maxLength="40"/>
-        <CheckBoxPreference
-            android:key="battleUseRoyal"
-            android:title="自動使用寶具"
-            android:summary="從開始到換LV1寵的場數"
+            android:key="scriptExecuteLoopPref"
+            android:title="重複執行"
+            android:summary="是否自動重複執行"
             android:defaultValue="true"/>
-        <CheckBoxPreference
-            android:key="battleSpeedUp"
-            android:title="腳本加速"
-            android:summary="減少 sleep 的時間"
-            android:defaultValue="false"/>
+        <EditTextPreference
+            android:key="scriptExecuteTimePref"
+            android:title="腳本執行次數"
+            android:summary="1 次"
+            android:defaultValue="1"
+            android:maxLength="40"/>
     </PreferenceCategory>
 
 </PreferenceScreen>

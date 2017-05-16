@@ -6,7 +6,6 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
-import android.os.Handler;
 import android.provider.Settings;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -14,13 +13,11 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import com.mumu.joshautomation.fgo.BattleArgument;
 import com.mumu.joshautomation.fgo.PureBattleJob;
 import com.mumu.joshautomation.script.AutoJobHandler;
-import com.mumu.joshautomation.script.AutoJobEventListener;
 
 public class OutlineFragment extends MainFragment {
     private static final String TAG = "JATool";
@@ -29,8 +26,6 @@ public class OutlineFragment extends MainFragment {
 
     private Button mRunJoshCmdButton;
     private Button mStartServiceButton;
-    private Button mSetParameterButton;
-    private EditText mBattleParameterText;
 
     private OnFragmentInteractionListener mListener;
 
@@ -103,8 +98,6 @@ public class OutlineFragment extends MainFragment {
     private void prepareView(View view) {
         mRunJoshCmdButton = (Button) view.findViewById(R.id.button_test_game);
         mStartServiceButton = (Button) view.findViewById(R.id.button_start_service);
-        mSetParameterButton = (Button) view.findViewById(R.id.button_set_battle_parameter);
-        mBattleParameterText = (EditText) view.findViewById(R.id.edit_text_battle_parameter);
 
         mRunJoshCmdButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -120,13 +113,6 @@ public class OutlineFragment extends MainFragment {
             }
         });
 
-        mSetParameterButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                BattleArgument sBA = new BattleArgument(mBattleParameterText.getText().toString());
-                AutoJobHandler.getHandler().setExtra(PureBattleJob.jobName, sBA);
-            }
-        });
     }
 
     /*

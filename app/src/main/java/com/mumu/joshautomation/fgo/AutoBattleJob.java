@@ -2,6 +2,7 @@ package com.mumu.joshautomation.fgo;
 
 import android.util.Log;
 
+import com.mumu.joshautomation.AppPreferenceValue;
 import com.mumu.joshautomation.script.AutoJob;
 import com.mumu.joshautomation.script.AutoJobEventListener;
 import com.mumu.libjoshgame.JoshGameLibrary;
@@ -35,6 +36,11 @@ public class AutoBattleJob extends AutoJob {
     public void start() {
         super.start();
         Log.d(TAG, "starting job " + getJobName());
+
+        String battleString = AppPreferenceValue.getInstance().
+                getPrefs(AppPreferenceValue.PREF_FGO).getString("battleArgPref", "j#####ijk#####j#####ijk#####j#####ijk");
+        mBattleArg = new BattleArgument(battleString);
+
         mRoutine = null;
         mRoutine = new MainJobRoutine();
         mRoutine.start();

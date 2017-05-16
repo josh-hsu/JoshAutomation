@@ -37,6 +37,7 @@ import com.mumu.joshautomation.fgo.AutoBattleJob;
 import com.mumu.joshautomation.fgo.BattleArgument;
 import com.mumu.joshautomation.fgo.PureBattleJob;
 import com.mumu.joshautomation.screencapture.PointSelectionActivity;
+import com.mumu.joshautomation.script.AutoJob;
 import com.mumu.joshautomation.script.AutoJobEventListener;
 import com.mumu.joshautomation.script.AutoJobHandler;
 import com.mumu.libjoshgame.JoshGameLibrary;
@@ -70,6 +71,7 @@ public class HeadService extends Service implements AutoJobEventListener{
     private static int mDumpCount = 0;
 
     private JoshGameLibrary mGL;
+    private AppPreferenceValue mAPV;
     private AutoJobHandler mAutoJobHandler;
 
     /* ==========================
@@ -138,6 +140,9 @@ public class HeadService extends Service implements AutoJobEventListener{
         mMessageThreadRunning = true;
         new GetMessageThread().start();
 
+        mAPV = AppPreferenceValue.getInstance();
+        mAPV.init(mContext);
+
         mGL = JoshGameLibrary.getInstance();
         mGL.setContext(mContext);
         mGL.setScreenDimension(1080, 1920);
@@ -148,9 +153,6 @@ public class HeadService extends Service implements AutoJobEventListener{
         mAutoJobHandler.addJob(new PureBattleJob());
         mAutoJobHandler.setJobEventListener(PureBattleJob.jobName, this);
         mAutoJobHandler.setJobEventListener(AutoBattleJob.jobName, this);
-
-        String battleString = "j#####ijk#####j#####ijk#####j#####ijk";
-        mAutoJobHandler.setExtra("FGO main story battle job", new BattleArgument(battleString));
     }
 
     private void initGamePanelViews() {
@@ -364,11 +366,14 @@ public class HeadService extends Service implements AutoJobEventListener{
     }
 
     private void configScriptStatus() {
+        String currentSelectIndexPref = mAPV.getPrefs(AppPreferenceValue.PREF_APP).getString("scriptSelectPref", "0");
+        int currentSelectIndex = Integer.parseInt(currentSelectIndexPref);
+
         if(!mScriptRunning) {
-            mAutoJobHandler.startJob(AutoBattleJob.jobName);
+            mAutoJobHandler.startJob(currentSelectIndex);
             mHeadIconList.get(IDX_PLAY_ICON).getImageView().setImageResource(R.drawable.ic_pause);
         } else {
-            mAutoJobHandler.stopJob(AutoBattleJob.jobName);
+            mAutoJobHandler.stopJob(currentSelectIndex);
             mHeadIconList.get(IDX_PLAY_ICON).getImageView().setImageResource(R.drawable.ic_play);
         }
 
