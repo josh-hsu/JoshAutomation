@@ -19,7 +19,6 @@ public class NewFlushJob extends AutoJob {
 
     private FGORoutine mFGO;
     private NewFlushJob mSelf;
-    private BattleArgument mBattleArg;
 
     public static final String jobName = "FGO New Flush Job";
 
@@ -42,7 +41,6 @@ public class NewFlushJob extends AutoJob {
 
         String battleString = AppPreferenceValue.getInstance().
                 getPrefs().getString("battleArgPref", "");
-        mBattleArg = new BattleArgument(battleString);
 
         mRoutine = null;
         mRoutine = new MainJobRoutine();
@@ -59,13 +57,11 @@ public class NewFlushJob extends AutoJob {
     }
 
     /*
-     * In PureBattleJob, extra data will be BattleArgument
+     * In NewFlushJob, we don't need extra data provided
      */
     @Override
     public void setExtra(Object object) {
-        if (object instanceof BattleArgument) {
-            mBattleArg = (BattleArgument)object;
-        }
+
     }
 
     public void setJobEventListener(AutoJobEventListener el) {
@@ -169,7 +165,7 @@ public class NewFlushJob extends AutoJob {
         mGL.getInputService().tapOnScreen(FGORoutineDefineTW.nameFieldScreenPoint.coord);
 
         sendMessage("取名...");
-        mGL.getInputService().inputText("c" + ((int)(Math.random()*1000)) + "new" + ((int)(Math.random()*100)));
+        mGL.getInputService().inputText("n" + ((int)(Math.random()*1000)) + "new" + ((int)(Math.random()*1000)));
         Thread.sleep(2000);
         mGL.getInputService().tapOnScreen(nameConfirmScreenPoint.coord);
         Thread.sleep(2000);
@@ -494,7 +490,7 @@ public class NewFlushJob extends AutoJob {
                 mShouldJobRunning = false;
                 return;
             }
-            sleep(5000);
+            sleep(10000);
 
             if (battleXCRoutine(3) < 0) {
                 mShouldJobRunning = false;
