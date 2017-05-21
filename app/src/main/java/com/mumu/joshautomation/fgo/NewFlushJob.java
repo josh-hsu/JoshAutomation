@@ -169,7 +169,7 @@ public class NewFlushJob extends AutoJob {
         mGL.getInputService().tapOnScreen(FGORoutineDefineTW.nameFieldScreenPoint.coord);
 
         sendMessage("取名...");
-        mGL.getInputService().inputText("c5" + ((int)(Math.random()*10)) + "new" + ((int)(Math.random()*100)));
+        mGL.getInputService().inputText("c" + ((int)(Math.random()*1000)) + "new" + ((int)(Math.random()*100)));
         Thread.sleep(2000);
         mGL.getInputService().tapOnScreen(nameConfirmScreenPoint.coord);
         Thread.sleep(2000);
@@ -253,6 +253,7 @@ public class NewFlushJob extends AutoJob {
         if (mGL.getCaptureService().waitOnColor(FGORoutineDefineTW.pointChangeHint, 500, mRoutine) < 0) {
             return -1;
         }
+        Thread.sleep(1000);
         mGL.getInputService().tapOnScreen(FGORoutineDefineTW.pointChangeButton.coord);
 
         if(mFGO.battleRoutine(mRoutine, null) < 0) {
