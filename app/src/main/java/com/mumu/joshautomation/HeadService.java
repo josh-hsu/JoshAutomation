@@ -34,6 +34,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.mumu.joshautomation.fgo.AutoBattleJob;
+import com.mumu.joshautomation.fgo.NewFlushJob;
 import com.mumu.joshautomation.fgo.PureBattleJob;
 import com.mumu.joshautomation.screencapture.PointSelectionActivity;
 import com.mumu.joshautomation.script.AutoJobEventListener;
@@ -149,8 +150,10 @@ public class HeadService extends Service implements AutoJobEventListener{
         mAutoJobHandler = AutoJobHandler.getHandler();
         mAutoJobHandler.addJob(new AutoBattleJob());
         mAutoJobHandler.addJob(new PureBattleJob());
+        mAutoJobHandler.addJob(new NewFlushJob());
         mAutoJobHandler.setJobEventListener(PureBattleJob.jobName, this);
         mAutoJobHandler.setJobEventListener(AutoBattleJob.jobName, this);
+        mAutoJobHandler.setJobEventListener(NewFlushJob.jobName, this);
     }
 
     private void initGamePanelViews() {

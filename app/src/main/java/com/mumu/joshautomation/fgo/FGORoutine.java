@@ -154,7 +154,7 @@ class FGORoutine {
         }
     }
 
-    private void tapOnCard(int[] cardIndex) {
+    public void tapOnCard(int[] cardIndex) {
         for(int i : cardIndex) {
             ScreenCoord coord = ScreenCoord.getTwoPointCenter(cardPositionStart.get(i),
                     cardPositionEnd.get(i));
@@ -163,7 +163,7 @@ class FGORoutine {
         }
     }
 
-    private void tapOnSkill(int[] skillIndex) {
+    public void tapOnSkill(int[] skillIndex) {
         if (skillIndex.length < 1)
             return;
 
@@ -173,7 +173,7 @@ class FGORoutine {
         }
     }
 
-    private void tapOnRoyal(int[] royal) {
+    public void tapOnRoyal(int[] royal) {
         if (royal.length < 1)
             return;
 
@@ -333,7 +333,9 @@ class FGORoutine {
             return sBattleWaitTimeout;
 
         // tap on screen until NEXT button to exit battle
-        while (!mGL.getCaptureService().colorIs(pointBattleNext) && resultTry > 0) {
+        while (!mGL.getCaptureService().colorIs(FGORoutineDefine.pointBattleNext)
+                && !mGL.getCaptureService().colorIs(FGORoutineDefineTW.pointBattleNext)
+                && resultTry > 0) {
             mGL.getInputService().tapOnScreen(pointBattleResult.coord);
             resultTry--;
             sleep(500);
@@ -377,12 +379,34 @@ class FGORoutine {
         return 0;
     }
 
+    public int battleHandleFriendRequestTW(Thread kThread) {
+        sleep(500);
+        if (mGL.getCaptureService().waitOnColor(FGORoutineDefineTW.pointDenyFriend, 20, kThread) < 0) {
+            sendMessage("沒出現朋友請求");
+        } else {
+            mGL.getInputService().tapOnScreen(FGORoutineDefineTW.pointDenyFriend.coord);
+            sleep(500);
+        }
+        return 0;
+    }
+
     public int battlePostSetup(Thread kThread) {
 
         if (mGL.getCaptureService().waitOnColor(pointQuestClear, 30, kThread) < 0) {
             sendMessage("沒出現破關魔法石");
         } else {
             mGL.getInputService().tapOnScreen(pointQuestClear.coord);
+        }
+
+        return 0;
+    }
+
+    public int battlePostSetupTW(Thread kThread) {
+
+        if (mGL.getCaptureService().waitOnColor(FGORoutineDefineTW.pointQuestClear, 60, kThread) < 0) {
+            sendMessage("沒出現破關魔法石");
+        } else {
+            mGL.getInputService().tapOnScreen(FGORoutineDefineTW.pointQuestClear.coord);
         }
 
         return 0;

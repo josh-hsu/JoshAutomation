@@ -138,13 +138,21 @@ public class InputService extends JoshGameLibrary.GLService {
             }
             if (mCaptureService.colorIs(to)) {
                 Log.d(TAG, "color changed to specific point. exiting..");
+                return 0;
             } else {
                 Log.d(TAG, "color didn't change to specific point, try again");
-                return 0;
             }
         }
 
         return -1;
+    }
+
+    public void inputText(String text) {
+        super.runCommand("input text " + text);
+    }
+
+    public void playSound() {
+        super.runCommand("am start -a \"android.intent.action.VIEW\" -t \"audio/ogg\" -d \"file:///storage/emulated/0/Ringtones/hangouts_incoming_call.ogg\"");
     }
 
     public void setBacklightLow() {
