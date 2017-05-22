@@ -251,6 +251,9 @@ public class NewFlushJob extends AutoJob {
         }
         Thread.sleep(1000);
         mGL.getInputService().tapOnScreen(FGORoutineDefineTW.pointChangeButton.coord);
+        //dummy touch for this bad-designed game
+        Thread.sleep(1000);
+        mGL.getInputService().tapOnScreen(FGORoutineDefineTW.pointChangeButton.coord);
 
         if(mFGO.battleRoutine(mRoutine, null) < 0) {
             return -1;
