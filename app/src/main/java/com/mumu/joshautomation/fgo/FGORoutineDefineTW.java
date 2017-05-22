@@ -97,4 +97,20 @@ public class FGORoutineDefineTW {
     //x-c3
     //tap XASub
 
+    static ScreenPoint pointBulletinExit = new ScreenPoint(0x0a, 0x23, 0x33, 0xff,999,1837,ScreenPoint.SO_Portrait);
+    static ScreenPoint pointLoginBonusButton = new ScreenPoint(0xd6, 0xd6, 0xd7, 0xff,225,1070,ScreenPoint.SO_Portrait);
+
+    //tap until menu show
+    static ScreenPoint pointMyRoom = new ScreenPoint(0x20, 0x30, 0x9c, 0xff,141,1646,ScreenPoint.SO_Portrait);
+    //wait 8 seconds
+    static ScreenPoint pointMyRoomBarEnd = new ScreenPoint(0x66, 0x68, 0x71, 0xff,189,1895,ScreenPoint.SO_Portrait);
+    //tap return to title (no color)
+    static ScreenPoint pointMyRoomReturnTitle = new ScreenPoint(0x00, 0x00, 0x00, 0xff,318,1467,ScreenPoint.SO_Portrait);
+    static ScreenPoint pointMyRoomReturnTitleConfirm = new ScreenPoint(0xdf, 0xe0, 0xe0, 0xff,211,1177,ScreenPoint.SO_Portrait);
+
+    //wait until
+    static ScreenPoint loginAccountID = new ScreenPoint(0xf2, 0xf2, 0xf2, 0xff,771,899,ScreenPoint.SO_Portrait);
+    static ScreenPoint loginKeyBackspace = new ScreenPoint(0x48, 0xa5, 0xd4, 0xff,139,1685,ScreenPoint.SO_Portrait);
+    static ScreenPoint loginKeyNext = new ScreenPoint(0xd6, 0xd7, 0xd7, 0xff,836,1677,ScreenPoint.SO_Portrait);
+    static ScreenPoint loginLogin = new ScreenPoint(0x23, 0xad, 0xe5, 0xff,514,1259,ScreenPoint.SO_Portrait);
 }
