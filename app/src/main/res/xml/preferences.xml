@@ -37,4 +37,13 @@
             android:defaultValue="false" />
     </PreferenceCategory>
 
+    <PreferenceCategory android:title="戰鬥設定">
+        <EditTextPreference
+            android:key="twLoginStart"
+            android:title="台版自動登入開始序號"
+            android:summary="從這個號碼開始自動登入"
+            android:defaultValue="2"
+            android:maxLength="3"/>
+    </PreferenceCategory>
+
 </PreferenceScreen>

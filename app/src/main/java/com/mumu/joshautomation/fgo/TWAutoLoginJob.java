@@ -2,6 +2,7 @@ package com.mumu.joshautomation.fgo;
 
 import android.util.Log;
 
+import com.mumu.joshautomation.AppPreferenceValue;
 import com.mumu.joshautomation.script.AutoJob;
 import com.mumu.joshautomation.script.AutoJobEventListener;
 import com.mumu.libjoshgame.JoshGameLibrary;
@@ -75,6 +76,7 @@ public class TWAutoLoginJob extends AutoJob {
     }
 
     private void sendMessage(String msg) {
+        Log.d(TAG, "MSG: " + msg);
         sendEvent(msg, this);
     }
 
@@ -82,76 +84,75 @@ public class TWAutoLoginJob extends AutoJob {
 
         private void main() throws Exception {
             int[] ambRange = new int[] {0x0A, 0x0A, 0x0A};
+            boolean skipBulletin = false;
+            int startSerial = Integer.parseInt(AppPreferenceValue.getInstance().getPrefs().getString("twLoginStart", "2"));
 
             mGL.setGameOrientation(ScreenPoint.SO_Landscape);
             mGL.setAmbiguousRange(ambRange);
 
             sendMessage("開始自動登入_台版");
-            for(int i = 2; i <= mTotalIndex + 1; i++) {
+            for(int i = startSerial; i <= mTotalIndex + 1; i++) {
                 //in title screen
-                if(!mGL.getCaptureService().colorIs(titleScreenPoint)) {
+                if (mGL.getCaptureService().waitOnColor(titleScreenPoint, 50, mRoutine) < 0) {
                     sendMessage("不是登入畫面捏");
                     mShouldJobRunning = false;
                     return;
                 }
                 mGL.getInputService().tapOnScreen(titleScreenPoint.coord);
-                Thread.sleep(2000);
+                Thread.sleep(4000);
+                sendMessage("開始 i = " + i);
 
-                if (mGL.getCaptureService().waitOnColor(pointBulletinExit, 50, mRoutine) < 0) {
-                    sendMessage("沒公告，跳過");
-                } else {
-                    mGL.getInputService().tapOnScreen(pointBulletinExit.coord);
+                if (!skipBulletin) {
+                    if (mGL.getCaptureService().waitOnColor(pointBulletinExit, 30, mRoutine) < 0) {
+                        sendMessage("沒公告，跳過");
+                    } else {
+                        mGL.getInputService().tapOnScreen(pointBulletinExit.coord);
+                    }
+                    skipBulletin = true;
                 }
 
-                if (mGL.getCaptureService().waitOnColor(pointLoginBonusButton, 20, mRoutine) < 0) {
-                    sendMessage("公告點完");
-                } else {
-                    mGL.getInputService().tapOnScreen(pointLoginBonusButton.coord);
+                while(true) {
+                    if (mGL.getCaptureService().waitOnColor(pointLoginBonusButton, 12, mRoutine) < 0) {
+                        sendMessage("公告點完");
+                        break;
+                    } else {
+                        mGL.getInputService().tapOnScreen(pointLoginBonusButton.coord);
+                    }
                 }
 
-                if (mGL.getCaptureService().waitOnColor(pointLoginBonusButton, 20, mRoutine) < 0) {
-                    sendMessage("公告點完");
-                } else {
-                    mGL.getInputService().tapOnScreen(pointLoginBonusButton.coord);
-                }
-
-                if (mGL.getCaptureService().waitOnColor(pointLoginBonusButton, 20, mRoutine) < 0) {
-                    sendMessage("公告點完");
-                } else {
-                    mGL.getInputService().tapOnScreen(pointLoginBonusButton.coord);
-                }
-
-                if (i == mTotalIndex) {
+                if (i > mTotalIndex) {
                     sendMessage("結束囉");
                     mShouldJobRunning = false;
                     return;
                 }
 
                 //press menu
-                if(!mGL.getCaptureService().colorIs(pointMenuButton)) {
+                if (mGL.getCaptureService().waitOnColor(pointMenuButton, 10, mRoutine) < 0) {
                     sendMessage("找不到MENU");
                     mShouldJobRunning = false;
                     return;
+                } else {
+                    mGL.getInputService().tapOnScreen(pointMenuButton.coord);
+                    Thread.sleep(1000);
                 }
-                mGL.getInputService().tapOnScreen(pointMenuButton.coord);
-                Thread.sleep(2000);
 
-                if(!mGL.getCaptureService().colorIs(pointMyRoom)) {
+                if (mGL.getCaptureService().waitOnColor(pointMyRoom, 10, mRoutine) < 0) {
                     sendMessage("找不到MY ROOM");
                     mShouldJobRunning = false;
                     return;
+                } else {
+                    mGL.getInputService().tapOnScreen(pointMyRoom.coord);
+                    Thread.sleep(1000);
                 }
-                mGL.getInputService().tapOnScreen(pointMyRoom.coord);
-                Thread.sleep(6000);
 
                 if (mGL.getCaptureService().waitOnColor(pointMyRoomBarEnd, 100, mRoutine) < 0) {
                     sendMessage("找不到MYROOMBAR");
                 } else {
                     mGL.getInputService().tapOnScreen(pointMyRoomBarEnd.coord);
                 }
-                Thread.sleep(2000);
-                mGL.getInputService().tapOnScreen(pointMyRoomReturnTitle.coord);
                 Thread.sleep(1000);
+                mGL.getInputService().tapOnScreen(pointMyRoomReturnTitle.coord);
+                Thread.sleep(500);
                 mGL.getInputService().tapOnScreen(pointMyRoomReturnTitle.coord);
 
                 if (mGL.getCaptureService().waitOnColor(pointMyRoomReturnTitleConfirm, 30, mRoutine) < 0) {
@@ -163,26 +164,32 @@ public class TWAutoLoginJob extends AutoJob {
                 }
 
                 //wait account
-                if (mGL.getCaptureService().waitOnColor(loginAccountID, 400, mRoutine) < 0) {
+                if (mGL.getCaptureService().waitOnColor(loginAccountID, 500, mRoutine) < 0) {
                     sendMessage("帳號輸入畫面沒出來");
                     mShouldJobRunning = false;
                     return;
                 } else {
                     mGL.getInputService().tapOnScreen(loginAccountID.coord);
                 }
-                Thread.sleep(2000);
+                Thread.sleep(1000);
 
-                if (mGL.getCaptureService().waitOnColor(loginKeyBackspace, 20, mRoutine) < 0) {
-                    sendMessage("帳號輸入畫面沒出來");
+                if (mGL.getCaptureService().waitOnColor(loginKeyBackspace, 40, mRoutine) < 0) {
+                    sendMessage("帳號輸入?");
                     mShouldJobRunning = false;
                     return;
                 } else {
                     mGL.getInputService().tapOnScreen(loginKeyBackspace.coord);
-                    Thread.sleep(500);
+                    Thread.sleep(200);
                     mGL.getInputService().tapOnScreen(loginKeyBackspace.coord);
-                    Thread.sleep(670);
+                    Thread.sleep(125);
                     mGL.getInputService().tapOnScreen(loginKeyBackspace.coord);
                 }
+
+                //skip accounts
+                if (i == 13)
+                    i+=2;
+                else if (i == 20 || i == 27)
+                    i+=1;
 
                 //input account number
                 String formattedAcc = String.format("%03d", i);
@@ -191,7 +198,7 @@ public class TWAutoLoginJob extends AutoJob {
                 mGL.getInputService().tapOnScreen(loginKeyNext.coord);
                 Thread.sleep(1000);
                 mGL.getInputService().tapOnScreen(loginKeyNext.coord);
-                Thread.sleep(3000);
+                Thread.sleep(1000);
 
                 if (mGL.getCaptureService().waitOnColor(loginLogin, 100, mRoutine) < 0) {
                     sendMessage("回不去LOGIN");
