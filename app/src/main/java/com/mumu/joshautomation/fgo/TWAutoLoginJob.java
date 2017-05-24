@@ -99,7 +99,7 @@ public class TWAutoLoginJob extends AutoJob {
                     return;
                 }
                 mGL.getInputService().tapOnScreen(titleScreenPoint.coord);
-                Thread.sleep(4000);
+                Thread.sleep(6000);
                 sendMessage("開始 i = " + i);
 
                 if (!skipBulletin) {
