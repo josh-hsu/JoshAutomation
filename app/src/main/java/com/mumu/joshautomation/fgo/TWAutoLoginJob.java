@@ -126,6 +126,8 @@ public class TWAutoLoginJob extends AutoJob {
                     return;
                 }
 
+                Thread.sleep(1500);
+
                 //press menu
                 if (mGL.getCaptureService().waitOnColor(pointMenuButton, 10, mRoutine) < 0) {
                     sendMessage("找不到MENU");
@@ -169,6 +171,7 @@ public class TWAutoLoginJob extends AutoJob {
                     mShouldJobRunning = false;
                     return;
                 } else {
+                    Thread.sleep(1000);
                     mGL.getInputService().tapOnScreen(loginAccountID.coord);
                 }
                 Thread.sleep(1000);
@@ -188,7 +191,7 @@ public class TWAutoLoginJob extends AutoJob {
                 //skip accounts
                 if (i == 13)
                     i+=2;
-                else if (i == 20 || i == 27)
+                else if (i == 20 || i == 32)
                     i+=1;
 
                 //input account number
