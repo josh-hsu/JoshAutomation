@@ -126,6 +126,8 @@ public class TWAutoLoginJob extends AutoJob {
                     return;
                 }
 
+                Thread.sleep(1500);
+
                 //press menu
                 if (mGL.getCaptureService().waitOnColor(pointMenuButton, 10, mRoutine) < 0) {
                     sendMessage("找不到MENU");
@@ -142,17 +144,19 @@ public class TWAutoLoginJob extends AutoJob {
                     return;
                 } else {
                     mGL.getInputService().tapOnScreen(pointMyRoom.coord);
-                    Thread.sleep(1000);
                 }
 
-                if (mGL.getCaptureService().waitOnColor(pointMyRoomBarEnd, 100, mRoutine) < 0) {
-                    sendMessage("找不到MYROOMBAR");
-                } else {
-                    mGL.getInputService().tapOnScreen(pointMyRoomBarEnd.coord);
+                //swipe menu
+                if (mGL.getCaptureService().waitOnColor(pointMyRoomDetect, 100, mRoutine) < 0) {
+                    sendMessage("進不去my room?");
+                    mShouldJobRunning = false;
+                    return;
                 }
-                Thread.sleep(1000);
+                mGL.getInputService().swipeOnScreen(pointMyRoomSwipeStart.coord, pointMyRoomSwipeEnd.coord);
+
+                Thread.sleep(1500);
                 mGL.getInputService().tapOnScreen(pointMyRoomReturnTitle.coord);
-                Thread.sleep(500);
+                Thread.sleep(200);
                 mGL.getInputService().tapOnScreen(pointMyRoomReturnTitle.coord);
 
                 if (mGL.getCaptureService().waitOnColor(pointMyRoomReturnTitleConfirm, 30, mRoutine) < 0) {
@@ -164,11 +168,12 @@ public class TWAutoLoginJob extends AutoJob {
                 }
 
                 //wait account
-                if (mGL.getCaptureService().waitOnColor(loginAccountID, 500, mRoutine) < 0) {
+                if (mGL.getCaptureService().waitOnColor(loginAccountID, 600, mRoutine) < 0) {
                     sendMessage("帳號輸入畫面沒出來");
                     mShouldJobRunning = false;
                     return;
                 } else {
+                    Thread.sleep(2000);
                     mGL.getInputService().tapOnScreen(loginAccountID.coord);
                 }
                 Thread.sleep(1000);
@@ -188,7 +193,7 @@ public class TWAutoLoginJob extends AutoJob {
                 //skip accounts
                 if (i == 13)
                     i+=2;
-                else if (i == 20 || i == 27)
+                else if (i == 20 || i == 32)
                     i+=1;
 
                 //input account number

@@ -51,6 +51,7 @@ public class HeadService extends Service implements AutoJobEventListener{
     private final String mPngFilePath = Environment.getExternalStorageDirectory().toString() + "/select.png";
     private final String mDumpFilePath = Environment.getExternalStorageDirectory().toString() + "/select.dump";
     private static final int mUpdateUIInterval = 100;
+    private static final int mMessageLastTime = 20; //20 seconds
     private Context mContext;
 
     // View objects
@@ -87,7 +88,7 @@ public class HeadService extends Service implements AutoJobEventListener{
     private void updateUI() {
         if (mLastMessage.equals(mMessageText)) {
             mSameMsgCount++;
-            if (mSameMsgCount > 20) { //a same message will last for 2 second on screen
+            if (mSameMsgCount > mMessageLastTime * 10) { //a same message will last for mMessageLastTime second on screen
                 ((TextView) mHeadIconList.get(IDX_MSG_TEXT).getView()).setText("");
             }
         } else {

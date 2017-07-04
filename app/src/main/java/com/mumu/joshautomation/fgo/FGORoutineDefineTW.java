@@ -103,7 +103,9 @@ public class FGORoutineDefineTW {
     //tap until menu show
     static ScreenPoint pointMyRoom = new ScreenPoint(0x20, 0x30, 0x9c, 0xff,141,1646,ScreenPoint.SO_Portrait);
     //wait 8 seconds
-    static ScreenPoint pointMyRoomBarEnd = new ScreenPoint(0x66, 0x68, 0x71, 0xff,189,1895,ScreenPoint.SO_Portrait);
+    static ScreenPoint pointMyRoomDetect = new ScreenPoint(0xE0, 0xD8, 0xC8, 0xff,832,1205,ScreenPoint.SO_Portrait);
+    static ScreenPoint pointMyRoomSwipeStart = new ScreenPoint(0xFF, 0xFF, 0xFF, 0xff,98,1365,ScreenPoint.SO_Portrait);
+    static ScreenPoint pointMyRoomSwipeEnd = new ScreenPoint(0xFF, 0xFF, 0xFF, 0xff,783,1477,ScreenPoint.SO_Portrait);
     //tap return to title (no color)
     static ScreenPoint pointMyRoomReturnTitle = new ScreenPoint(0x00, 0x00, 0x00, 0xff,318,1467,ScreenPoint.SO_Portrait);
     static ScreenPoint pointMyRoomReturnTitleConfirm = new ScreenPoint(0xdf, 0xe0, 0xe0, 0xff,211,1177,ScreenPoint.SO_Portrait);
