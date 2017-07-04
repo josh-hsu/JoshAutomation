@@ -111,9 +111,10 @@ public class TWAutoLoginJob extends AutoJob {
                     skipBulletin = true;
                 }
 
+                Thread.sleep(2000);
                 while(true) {
                     if (mGL.getCaptureService().waitOnColor(pointLoginBonusButton, 12, mRoutine) < 0) {
-                        sendMessage("公告點完");
+                        sendMessage("訊息點完");
                         break;
                     } else {
                         mGL.getInputService().tapOnScreen(pointLoginBonusButton.coord);
