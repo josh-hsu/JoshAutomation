@@ -22,7 +22,7 @@
         <EditTextPreference
             android:key="battleArgPref"
             android:title="戰鬥參數"
-            android:summary="技能為adb,efd,ijk，寶具為6,7,8，#是回合分隔符號。\n例如bc6#eg7#j8：第一回合放第一個英雄技能2與3，以及選擇第一英雄的寶具，以此列推。"
+            android:summary="技能為abc,efg,ijk，寶具為6,7,8，#是回合分隔符號。\n例如bc6#eg7#j8：第一回合放第一個英雄技能2與3，以及選擇第一英雄的寶具，以此列推。"
             android:defaultValue="@string/settings_default_battle_arg"
             android:maxLength="40"/>
         <CheckBoxPreference
@@ -34,6 +34,16 @@
             android:key="battleSpeedUp"
             android:title="腳本加速"
             android:summary="減少 sleep 的時間"
+            android:defaultValue="false" />
+        <CheckBoxPreference
+            android:key="battleWaitSkip"
+            android:title="等待 SKIP 劇情"
+            android:summary="如果戰鬥中屬於持續劇情類，請將此選項打開方便跳過"
+            android:defaultValue="false" />
+        <CheckBoxPreference
+            android:key="battleUseFriendOnly"
+            android:title="只使用朋友的支援從者"
+            android:summary="開啟此選項方便只用 +25 友情點數之從者"
             android:defaultValue="false" />
     </PreferenceCategory>
 

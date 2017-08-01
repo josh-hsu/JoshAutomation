@@ -216,12 +216,17 @@ class FGORoutine {
         sleep(3000);
 
         //try to find friend's servant, if not found, touch first one
-        if (selectFriendSupport(2) < 0) {
-            mGL.getInputService().swipeOnScreen(pointSwipeEnd, pointSwipeStart);
-            sleep(200);
-            mGL.getInputService().swipeOnScreen(pointSwipeEnd, pointSwipeStart);
-            sleep(200);
-            mGL.getInputService().tapOnScreen(pointFriendSelect);
+        boolean useFriendEnabled = AppPreferenceValue.getInstance().getPrefs().getBoolean("battleUseFriendOnly", false);
+        if (useFriendEnabled) {
+            if (selectFriendSupport(2) < 0) {
+                mGL.getInputService().swipeOnScreen(pointSwipeEnd, pointSwipeStart);
+                sleep(200);
+                mGL.getInputService().swipeOnScreen(pointSwipeEnd, pointSwipeStart);
+                sleep(200);
+                mGL.getInputService().tapOnScreen(pointFriendSelect);
+            }
+        } else {
+            mGL.getInputService().tapOnScreen(pointFriendSelectDefault);
         }
 
         sleep(1500);
@@ -230,7 +235,8 @@ class FGORoutine {
         }
 
         mGL.getInputService().tapOnScreen(pointEnterStage.coord);
-        sleep(100);
+        sleep(1000);
+        mGL.getInputService().tapOnScreen(pointEnterStage.coord); // just be safe
 
         return 0;
     }
@@ -444,6 +450,15 @@ class FGORoutine {
             sleep(3000);
             return 0;
         }
+    }
+
+    public int waitForUserMode(int maxTry, Thread kThread) {
+        if (mGL.getCaptureService().waitOnColor(pointHomeApAdd, maxTry, kThread) < 0) {
+            Log.w(TAG, "Skip not found.");
+            return -1;
+        }
+
+        return 0;
     }
 
     /* =======================

@@ -16,10 +16,13 @@
 
 package com.mumu.joshautomation;
 
+import android.content.Context;
+import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Environment;
 import android.preference.ListPreference;
+import android.preference.Preference;
 import android.preference.PreferenceActivity;
 import android.preference.PreferenceFragment;
 import android.preference.PreferenceManager;
@@ -48,10 +51,14 @@ import java.util.List;
 
 public class AppPreferenceActivity extends PreferenceActivity {
     public static final String TAG = "JATool";
+    public boolean mHideOption = true;
+
+    private static Context mContext; //this is a workaround, should be fixed later
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        mContext = this;
 
         // Add a button to the header list.
         if (hasHeaders()) {
@@ -61,7 +68,10 @@ public class AppPreferenceActivity extends PreferenceActivity {
             button.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    restoreDataFromSdcard();
+                    if (mHideOption)
+                        restoreDataFromSdcard();
+                    else
+                        openService();
                 }
             });
             setListFooter(button);
@@ -118,6 +128,15 @@ public class AppPreferenceActivity extends PreferenceActivity {
 
             // Load the preferences from an XML resource
             addPreferencesFromResource(R.xml.preferences);
+
+            // Add start service button listener
+            Preference myPref = (Preference) findPreference("enableServicePref");
+            myPref.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
+                public boolean onPreferenceClick(Preference preference) {
+                    openService();
+                    return true;
+                }
+            });
         }
     }
 
@@ -155,6 +174,12 @@ public class AppPreferenceActivity extends PreferenceActivity {
             scriptSelectPref.setDefaultValue("0");
             scriptSelectPref.setEntryValues(entriesValueArray.toArray(new CharSequence[entriesValueArray.size()]));
         }
+    }
+
+    static void openService() {
+        Intent intent = new Intent();
+        intent.setClass(mContext, AppPreferenceActivity.class);
+        mContext.startActivity(intent);
     }
 
     void restoreDataFromSdcard() {

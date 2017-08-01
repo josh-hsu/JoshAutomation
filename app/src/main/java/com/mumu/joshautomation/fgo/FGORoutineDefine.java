@@ -27,6 +27,7 @@ class FGORoutineDefine {
     static ScreenPoint pointSkipCancel = new ScreenPoint(0xD3,0xD4,0xD4,0xff,232,807,ScreenPoint.SO_Portrait);
 
     static ScreenPoint pointCloseButton = new ScreenPoint(45,61,108,0xff,156,63,ScreenPoint.SO_Landscape);
+    static ScreenPoint pointLoopBattleStage = new ScreenPoint(0xff,0xff,0xff,0xff,718,1420,ScreenPoint.SO_Portrait);
 
     //battle cards
     static ScreenPoint pointBattleButton = new ScreenPoint(0x01,0xCE,0xF0,0xFF,218,1699,ScreenPoint.SO_Portrait);
@@ -142,6 +143,7 @@ class FGORoutineDefine {
 
     //Battle Pre-setup
     static ScreenCoord pointFriendSelect = new ScreenCoord(979,746,ScreenPoint.SO_Landscape);
+    static ScreenCoord pointFriendSelectDefault = new ScreenCoord(624,787,ScreenPoint.SO_Portrait);
     static ScreenPoint pointEnterStage = new ScreenPoint(37,47,75,0xff,1735,1010,ScreenPoint.SO_Landscape);
 
     //Friend Select

@@ -60,7 +60,7 @@
     <string name="settings_fragment_summary_1">在程式 FGO 底下的腳本設定</string>
     <string name="settings_fragment_title_2">腳本選擇設定</string>
     <string name="settings_fragment_summary_2">決定按下 Play 後要執行哪一個任務</string>
-    <string name="settings_restore_data_from_sdcard">恢復帳號表\n(使用問題回報來備份)</string>
+    <string name="settings_restore_data_from_sdcard">開啟服務</string>
     <string name="settings_restore_title">恢復上次備份</string>
     <string name="settings_restore_subtitle">注意！您即將恢復上次備份資料，從上個備份至今你輸入的資料將會遺失。確定嗎？</string>
     <string name="settings_restore_failed">備份失敗</string>

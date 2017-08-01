@@ -34,6 +34,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.mumu.joshautomation.fgo.AutoBattleJob;
+import com.mumu.joshautomation.fgo.LoopBattleJob;
 import com.mumu.joshautomation.fgo.NewFlushJob;
 import com.mumu.joshautomation.fgo.PureBattleJob;
 import com.mumu.joshautomation.fgo.TWAutoLoginJob;
@@ -151,15 +152,20 @@ public class HeadService extends Service implements AutoJobEventListener{
 
         mAutoJobHandler = AutoJobHandler.getHandler();
 
+        mAutoJobHandler.addJob(new LoopBattleJob());
         mAutoJobHandler.addJob(new AutoBattleJob());
         mAutoJobHandler.addJob(new PureBattleJob());
         mAutoJobHandler.addJob(new NewFlushJob());
         mAutoJobHandler.addJob(new TWAutoLoginJob());
 
+        mAutoJobHandler.setJobEventListener(LoopBattleJob.jobName, this);
         mAutoJobHandler.setJobEventListener(PureBattleJob.jobName, this);
         mAutoJobHandler.setJobEventListener(AutoBattleJob.jobName, this);
         mAutoJobHandler.setJobEventListener(NewFlushJob.jobName, this);
         mAutoJobHandler.setJobEventListener(TWAutoLoginJob.jobName, this);
+
+        //add service itself to job
+        mAutoJobHandler.setExtra(LoopBattleJob.jobName, this);
     }
 
     private void initGamePanelViews() {
@@ -238,7 +244,7 @@ public class HeadService extends Service implements AutoJobEventListener{
         });
         mHeadIconList.add(startIcon);
 
-        // Share the same on move listener for moving in the same time
+        // Share the same on move listener for moving at the same time
         HeadIconView.OnMoveListener moveListener = new HeadIconView.OnMoveListener() {
             @Override
             public void onMove(HeadIconView view, int initialX, int initialY, float initialTouchX, float initialTouchY, MotionEvent event) {

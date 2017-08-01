@@ -109,7 +109,7 @@ public class AutoJobHandler {
     public void setExtra(String job, Object obj) {
         AutoJob a = getJob(job);
         if (a != null)
-            a.stop();
+            a.setExtra(obj);
         else
             Log.d(TAG, "Setting extra data for job " + job + " failed, no such job.");
     }
