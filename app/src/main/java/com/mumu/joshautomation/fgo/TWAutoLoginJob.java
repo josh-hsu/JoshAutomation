@@ -154,7 +154,8 @@ public class TWAutoLoginJob extends AutoJob {
                     return;
                 }
                 mGL.getInputService().swipeOnScreen(pointMyRoomSwipeStart.coord, pointMyRoomSwipeEnd.coord);
-
+                Thread.sleep(200);
+                mGL.getInputService().swipeOnScreen(pointMyRoomSwipeStart.coord, pointMyRoomSwipeEnd.coord);
                 Thread.sleep(1500);
                 mGL.getInputService().tapOnScreen(pointMyRoomReturnTitle.coord);
                 Thread.sleep(200);
@@ -194,7 +195,7 @@ public class TWAutoLoginJob extends AutoJob {
                 //skip accounts
                 if (i == 13)
                     i+=2;
-                else if (i == 20 || i == 32)
+                else if (i == 14 || i == 20 || i == 32)
                     i+=1;
 
                 //input account number
