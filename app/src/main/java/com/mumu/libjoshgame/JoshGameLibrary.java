@@ -75,6 +75,10 @@ public class JoshGameLibrary {
         mCaptureService.setAmbiguousRange(range);
     }
 
+    public void setTouchShift(int ran) {
+        mInputService.setTouchShift(ran);
+    }
+
     public CaptureService getCaptureService() {
         return mCaptureService;
     }

@@ -23,6 +23,7 @@ import com.mumu.libjoshgame.ScreenPoint.*;
 public class InputService extends JoshGameLibrary.GLService {
     private static final String TAG = "LibJG";
     private int mGameOrientation = ScreenPoint.SO_Landscape;
+    private int mRandomTouchShift = 0;
     private int mScreenWidth = -1;
     private int mScreenHeight = -1;
     public static final int INPUT_TYPE_TAP = 0;
@@ -47,12 +48,22 @@ public class InputService extends JoshGameLibrary.GLService {
         mGameOrientation = orientation;
     }
 
+    void setTouchShift(int ran) {
+        mRandomTouchShift = ran;
+    }
+
     /*
      * Touch on screen with type
      * This function will not consider the screen orientation
      * TODO: need to find out why input binary takes a long time to execute
      */
     public int touchOnScreen(int x, int y, int tx, int ty, int type) {
+        int x_shift = (int) Math.random() * mRandomTouchShift - mRandomTouchShift/2;
+        int y_shift = (int) Math.random() * mRandomTouchShift - mRandomTouchShift/2;
+
+        x = x + x_shift;
+        y = y + y_shift;
+
         switch (type) {
             case INPUT_TYPE_TAP:
                 super.runCommand("input tap " + x + " " + y);

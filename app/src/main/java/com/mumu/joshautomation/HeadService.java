@@ -15,6 +15,8 @@
  */
 package com.mumu.joshautomation;
 
+import android.app.Notification;
+import android.app.PendingIntent;
 import android.app.Service;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -24,6 +26,7 @@ import android.os.Environment;
 import android.os.Handler;
 import android.os.IBinder;
 import android.support.v7.app.AlertDialog;
+import android.support.v4.app.NotificationCompat;
 import android.support.v7.view.ContextThemeWrapper;
 import android.util.Log;
 import android.view.MotionEvent;
@@ -139,6 +142,7 @@ public class HeadService extends Service implements AutoJobEventListener{
         mWindowManager = (WindowManager) getSystemService(WINDOW_SERVICE);
 
         initGamePanelViews();
+        initNotification();
         mMessageThreadRunning = true;
         new GetMessageThread().start();
 
@@ -166,6 +170,21 @@ public class HeadService extends Service implements AutoJobEventListener{
 
         //add service itself to job
         mAutoJobHandler.setExtra(LoopBattleJob.jobName, this);
+    }
+
+    // provide our service not be able to kill
+    private void initNotification() {
+        Intent intent = new Intent(this, MainActivity.class);
+        PendingIntent contentIntent = PendingIntent.getActivity(this, 0, intent, 0);
+
+        NotificationCompat.Builder mBuilder =
+                new NotificationCompat.Builder(this)
+                        .setSmallIcon(R.drawable.ic_bookmarked)
+                        .setContentTitle("自動腳本服務")
+                        .setContentText("服務已經啟用")
+                        .setContentIntent(contentIntent); //Required on Gingerbread and below
+
+        startForeground(1235, mBuilder.build());
     }
 
     private void initGamePanelViews() {
@@ -286,7 +305,7 @@ public class HeadService extends Service implements AutoJobEventListener{
                 configHeadIconShowing(HeadIconView.VISIBLE);
             }
         }
-        return START_NOT_STICKY;
+        return START_STICKY;
     }
 
     /* ==========================

@@ -34,6 +34,7 @@ public class LoopBattleJob extends AutoJob {
         mGL = JoshGameLibrary.getInstance();
         mGL.setGameOrientation(ScreenPoint.SO_Landscape);
         mGL.setScreenDimension(1080, 1920);
+        mGL.setTouchShift(6);
 
         mFGO = new FGORoutine(mGL, mListener);
         mSelf = this;
