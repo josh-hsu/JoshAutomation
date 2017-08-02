@@ -1,7 +1,6 @@
 package com.mumu.joshautomation.fgo;
 
 import android.app.Service;
-import android.media.MediaPlayer;
 import android.media.Ringtone;
 import android.media.RingtoneManager;
 import android.net.Uri;
@@ -36,7 +35,7 @@ public class LoopBattleJob extends AutoJob {
         mGL.setScreenDimension(1080, 1920);
         mGL.setTouchShift(6);
 
-        mFGO = new FGORoutine(mGL, mListener);
+        mFGO = new FGORoutine(mGL, mListener); //listener might be null before assigning
         mSelf = this;
     }
 
@@ -45,9 +44,7 @@ public class LoopBattleJob extends AutoJob {
         super.start();
         Log.d(TAG, "starting job " + getJobName());
 
-        String battleString = AppPreferenceValue.getInstance().
-                getPrefs().getString("battleArgPref", "");
-        mBattleArg = new BattleArgument(battleString);
+        refreshSetting();
         mWaitSkip = AppPreferenceValue.getInstance().getPrefs().getBoolean("battleWaitSkip", false);
         mRoutine = null;
         mRoutine = new MainJobRoutine();
@@ -79,6 +76,7 @@ public class LoopBattleJob extends AutoJob {
 
     public void setJobEventListener(AutoJobEventListener el) {
         mListener = el;
+        mFGO = new FGORoutine(mGL, mListener);
     }
 
     private void sendEvent(String msg, Object extra) {
@@ -103,6 +101,12 @@ public class LoopBattleJob extends AutoJob {
         }
     }
 
+    private void refreshSetting() {
+        String battleString = AppPreferenceValue.getInstance().
+                getPrefs().getString("battleArgPref", "");
+        mBattleArg = new BattleArgument(battleString);
+    }
+
     private class MainJobRoutine extends Thread {
 
         private void main() throws Exception {
@@ -114,6 +118,8 @@ public class LoopBattleJob extends AutoJob {
             sendMessage("開始循環戰鬥");
 
             while (mShouldJobRunning) {
+                refreshSetting();
+
                 if (mFGO.waitForUserMode(40, this) < 0) {
                     sendMessage("錯誤:不在主畫面上");
                     playNotificationSound();

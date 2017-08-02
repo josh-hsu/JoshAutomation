@@ -9,6 +9,11 @@
             android:summary="點擊選擇"
             android:defaultValue="0"/>
         <CheckBoxPreference
+            android:key="debugLogPref"
+            android:title="偵錯模式"
+            android:summary="Log 全開模式"
+            android:defaultValue="false"/>
+        <CheckBoxPreference
             android:key="scriptExecuteLoopPref"
             android:title="重複執行"
             android:summary="是否自動重複執行"

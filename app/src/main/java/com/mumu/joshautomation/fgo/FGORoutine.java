@@ -26,6 +26,12 @@ class FGORoutine {
             mCallbacks.onEventReceived(msg, this);
     }
 
+    private void sendMessageVerbose(String msg) {
+        boolean verboseMode = AppPreferenceValue.getInstance().getPrefs().getBoolean("debugLogPref", false);
+        if (verboseMode)
+            sendMessage(msg);
+    }
+
     private void sleep(int time) {
         try {
             Thread.sleep(time);
@@ -169,7 +175,8 @@ class FGORoutine {
 
         for(int i : skillIndex) {
             mGL.getInputService().tapOnScreen(cardSkills.get(i));
-            sleep(2000);
+            sendMessage("點技能" + i);
+            sleep(2400);
         }
     }
 
@@ -179,6 +186,7 @@ class FGORoutine {
 
         for(int i : royal) {
             mGL.getInputService().tapOnScreen(cardRoyals.get(i));
+            sendMessage("點寶具" + i);
             sleep(500);
         }
     }
@@ -226,6 +234,7 @@ class FGORoutine {
                 mGL.getInputService().tapOnScreen(pointFriendSelect);
             }
         } else {
+            sendMessage("選擇第一位好友");
             mGL.getInputService().tapOnScreen(pointFriendSelectDefault);
         }
 
@@ -234,6 +243,7 @@ class FGORoutine {
             return -1;
         }
 
+        sendMessage("進入關卡");
         mGL.getInputService().tapOnScreen(pointEnterStage.coord);
         sleep(1000);
         mGL.getInputService().tapOnScreen(pointEnterStage.coord); // just be safe
@@ -291,6 +301,12 @@ class FGORoutine {
 
             //tap battle
             mGL.getInputService().tapOnScreen(pointBattleButton.coord);
+            sleep(500);
+            if (mGL.getCaptureService().colorIs(pointBattleButton)) {
+                sendMessage("沒點到戰鬥?再點一次");
+                mGL.getInputService().tapOnScreen(pointBattleButton.coord);
+                sleep(500);
+            }
             sendMessage("辨識卡片");
 
             if (useOptimizeDraw) {
@@ -339,6 +355,7 @@ class FGORoutine {
             return sBattleWaitTimeout;
 
         // tap on screen until NEXT button to exit battle
+        sendMessage("戰鬥結果出現點到下一步");
         while (!mGL.getCaptureService().colorIs(FGORoutineDefine.pointBattleNext)
                 && !mGL.getCaptureService().colorIs(FGORoutineDefineTW.pointBattleNext)
                 && resultTry > 0) {
@@ -350,6 +367,7 @@ class FGORoutine {
         if (resultTry == 0)
             return sBattleWaitResultTimeout;
 
+        sendMessage("點下一步");
         mGL.getInputService().tapOnScreen(pointBattleNext.coord);
         sleep(1000);
 

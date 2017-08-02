@@ -21,7 +21,7 @@ import android.content.pm.PackageManager;
 import android.util.Log;
 
 /*
- * Josh Game Library - Version 1.20
+ * Josh Game Library - Version 1.22
  */
 /*
  * JoshGameLibrary (GL)
@@ -32,6 +32,7 @@ import android.util.Log;
    mGL.setContext(this);                              //this can also be setPackageManager
    mGL.setGameOrientation(ScreenPoint.SO_Landscape);  //setting game orientation for point check
    mGL.setScreenDimension(1080, 1920);                //setting the dimension of screen for point check
+   mGL.setTouchShift(6)                               //setting the touch random shift size
 
  */
 public class JoshGameLibrary {

@@ -18,8 +18,6 @@ package com.mumu.libjoshgame;
 
 import android.util.Log;
 
-import com.mumu.libjoshgame.ScreenPoint.*;
-
 public class InputService extends JoshGameLibrary.GLService {
     private static final String TAG = "LibJG";
     private int mGameOrientation = ScreenPoint.SO_Landscape;
@@ -48,6 +46,11 @@ public class InputService extends JoshGameLibrary.GLService {
         mGameOrientation = orientation;
     }
 
+    /*
+     * setTouchShift (added in 1.22)
+     * this function can be called by JoshGameLibrary only
+     * any touch point will be slightly shift by  -ran/2 ~ ran/2 in both x and y axis
+     */
     void setTouchShift(int ran) {
         mRandomTouchShift = ran;
     }
@@ -167,7 +170,7 @@ public class InputService extends JoshGameLibrary.GLService {
     }
 
     public void setBacklightLow() {
-        super.runCommand("echo 0 > /sys/class/leds/lcd-backlight/brightness");
+        setBacklight(0);
     }
 
     public void setBacklight(int bl) {

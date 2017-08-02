@@ -66,6 +66,7 @@ public class NewFlushJob extends AutoJob {
 
     public void setJobEventListener(AutoJobEventListener el) {
         mListener = el;
+        mFGO = new FGORoutine(mGL, mListener);
     }
 
     private void sendEvent(String msg, Object extra) {

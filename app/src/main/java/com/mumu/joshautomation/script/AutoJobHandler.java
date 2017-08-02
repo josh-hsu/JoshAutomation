@@ -2,9 +2,6 @@ package com.mumu.joshautomation.script;
 
 import android.util.Log;
 
-import com.mumu.joshautomation.fgo.AutoBattleJob;
-import com.mumu.joshautomation.fgo.PureBattleJob;
-
 import java.util.ArrayList;
 
 /**
