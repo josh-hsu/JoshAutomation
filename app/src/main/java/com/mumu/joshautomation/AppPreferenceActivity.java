@@ -177,9 +177,7 @@ public class AppPreferenceActivity extends PreferenceActivity {
     }
 
     static void openService() {
-        Intent intent = new Intent();
-        intent.setClass(mContext, AppPreferenceActivity.class);
-        mContext.startActivity(intent);
+        mContext.startService(new Intent(mContext, HeadService.class));
     }
 
     void restoreDataFromSdcard() {

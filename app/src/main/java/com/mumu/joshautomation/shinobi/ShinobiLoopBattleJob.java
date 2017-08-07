@@ -1,4 +1,4 @@
-package com.mumu.joshautomation.fgo;
+package com.mumu.joshautomation.shinobi;
 
 import android.app.Service;
 import android.media.Ringtone;
@@ -12,21 +12,20 @@ import com.mumu.joshautomation.script.AutoJobEventListener;
 import com.mumu.libjoshgame.JoshGameLibrary;
 import com.mumu.libjoshgame.ScreenPoint;
 
-public class LoopBattleJob extends AutoJob {
-    private static final String TAG = "LoopBattleJob";
+public class ShinobiLoopBattleJob extends AutoJob {
+    private static final String TAG = "ShinobiLoopJob";
     private MainJobRoutine mRoutine;
     private JoshGameLibrary mGL;
     private AutoJobEventListener mListener;
 
-    private FGORoutine mFGO;
-    private LoopBattleJob mSelf;
-    private BattleArgument mBattleArg;
+    private ShinobiLoopBattleJob mSelf;
+    private ShinobiRoutine mSR;
     private Service mRootService;
     private boolean mWaitSkip = false;
 
-    public static final String jobName = "FGO Loop Battle Job";
+    public static final String jobName = "Shinobi Loop Battle Job";
 
-    public LoopBattleJob() {
+    public ShinobiLoopBattleJob() {
         super(jobName);
 
         /* JoshGameLibrary basic initial */
@@ -35,7 +34,7 @@ public class LoopBattleJob extends AutoJob {
         mGL.setScreenDimension(1080, 1920);
         mGL.setTouchShift(6);
 
-        mFGO = new FGORoutine(mGL, mListener); //listener might be null before assigning
+        mSR = new ShinobiRoutine(mGL, mListener); //listener might be null before assigning
         mSelf = this;
     }
 
@@ -65,10 +64,6 @@ public class LoopBattleJob extends AutoJob {
      */
     @Override
     public void setExtra(Object object) {
-        if (object instanceof BattleArgument) {
-            mBattleArg = (BattleArgument)object;
-        }
-
         if (object instanceof Service) {
             mRootService = (Service)object;
         }
@@ -76,7 +71,7 @@ public class LoopBattleJob extends AutoJob {
 
     public void setJobEventListener(AutoJobEventListener el) {
         mListener = el;
-        mFGO = new FGORoutine(mGL, mListener);
+        mSR = new ShinobiRoutine(mGL, mListener);
     }
 
     private void sendEvent(String msg, Object extra) {
@@ -102,16 +97,14 @@ public class LoopBattleJob extends AutoJob {
     }
 
     private void refreshSetting() {
-        String battleString = AppPreferenceValue.getInstance().
-                getPrefs().getString("battleArgPref", "");
-        mBattleArg = new BattleArgument(battleString);
+
     }
 
     private class MainJobRoutine extends Thread {
 
         private void main() throws Exception {
             int[] ambRange = new int[] {0x0A, 0x0A, 0x0A};
-            boolean stageCleared = false;
+            boolean firstTime = true;
 
             mGL.setGameOrientation(ScreenPoint.SO_Landscape);
             mGL.setAmbiguousRange(ambRange);
@@ -121,60 +114,29 @@ public class LoopBattleJob extends AutoJob {
             while (mShouldJobRunning) {
                 refreshSetting();
 
-                if (mFGO.waitForUserMode(40, this) < 0) {
-                    sendMessage("錯誤:不在主畫面上");
-                    playNotificationSound();
+                if (mSR.preBattleSetup(false, firstTime) < 0) {
                     mShouldJobRunning = false;
+                    playNotificationSound();
                     return;
                 }
 
-                mGL.getInputService().tapOnScreen(FGORoutineDefine.pointLoopBattleStage.coord);
-                sleep(2000);
-
-                if (mFGO.battlePreSetup(this, false) < 0) {
-                    sendMessage("進入關卡錯誤");
-                    playNotificationSound();
+                if (!mSR.waitForBattleStarted(200)) {
+                    sendMessage("戰鬥從未開始");
                     mShouldJobRunning = false;
+                    playNotificationSound();
                     return;
                 }
 
-                if (mWaitSkip) {
-                    if (mFGO.waitForSkip(30, this) < 0) {
-                        sendMessage("等不到SKIP，當作正常");
-                    }
-                }
-
-                if (mFGO.battleRoutine(this, mBattleArg) < 0) {
-                    sendMessage("戰鬥出現錯誤");
-                    playNotificationSound();
+                if (mSR.postBattleSetup(2000, ShinobiRoutineDefine.sBattleLoopModeAgain) < 0) {
                     mShouldJobRunning = false;
+                    playNotificationSound();
                     return;
                 }
 
-                sleep(1000);
-                if (mFGO.battleHandleFriendRequest(this) < 0) {
-                    sendMessage("沒有朋友請求，可能正常");
-                }
-
-                if (mWaitSkip) {
-                    if (mFGO.waitForSkip(30, this) < 0) { //wait skip 7 seconds
-                        sendMessage("等不到SKIP，當作正常");
-                    }
-                }
-
-
-                if (!stageCleared) {
-                    if (mFGO.battlePostSetup(this) < 0) {
-                        sendMessage("離開戰鬥錯誤");
-                        mShouldJobRunning = false;
-                        return;
-                    }
-                }
-
-                stageCleared = true;
+                firstTime = false;
             }
 
-            sleep(1000);
+            sleep(2000);
             sendMessage("結束循環戰鬥");
             playNotificationSound();
             mListener.onJobDone(mSelf.getJobName());

@@ -44,6 +44,7 @@ import com.mumu.joshautomation.fgo.TWAutoLoginJob;
 import com.mumu.joshautomation.screencapture.PointSelectionActivity;
 import com.mumu.joshautomation.script.AutoJobEventListener;
 import com.mumu.joshautomation.script.AutoJobHandler;
+import com.mumu.joshautomation.shinobi.ShinobiLoopBattleJob;
 import com.mumu.libjoshgame.JoshGameLibrary;
 import com.mumu.libjoshgame.ScreenPoint;
 
@@ -161,15 +162,18 @@ public class HeadService extends Service implements AutoJobEventListener{
         mAutoJobHandler.addJob(new PureBattleJob());
         mAutoJobHandler.addJob(new NewFlushJob());
         mAutoJobHandler.addJob(new TWAutoLoginJob());
+        mAutoJobHandler.addJob(new ShinobiLoopBattleJob());
 
         mAutoJobHandler.setJobEventListener(LoopBattleJob.jobName, this);
         mAutoJobHandler.setJobEventListener(PureBattleJob.jobName, this);
         mAutoJobHandler.setJobEventListener(AutoBattleJob.jobName, this);
         mAutoJobHandler.setJobEventListener(NewFlushJob.jobName, this);
         mAutoJobHandler.setJobEventListener(TWAutoLoginJob.jobName, this);
+        mAutoJobHandler.setJobEventListener(ShinobiLoopBattleJob.jobName, this);
 
         //add service itself to job
         mAutoJobHandler.setExtra(LoopBattleJob.jobName, this);
+        mAutoJobHandler.setExtra(ShinobiLoopBattleJob.jobName, this);
     }
 
     // provide our service not be able to kill

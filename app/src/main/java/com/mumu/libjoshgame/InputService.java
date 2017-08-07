@@ -49,7 +49,7 @@ public class InputService extends JoshGameLibrary.GLService {
     /*
      * setTouchShift (added in 1.22)
      * this function can be called by JoshGameLibrary only
-     * any touch point will be slightly shift by  -ran/2 ~ ran/2 in both x and y axis
+     * any touch point will be slightly shift by  -ran/2 ~ ran/2 in both x and y
      */
     void setTouchShift(int ran) {
         mRandomTouchShift = ran;
@@ -61,8 +61,8 @@ public class InputService extends JoshGameLibrary.GLService {
      * TODO: need to find out why input binary takes a long time to execute
      */
     public int touchOnScreen(int x, int y, int tx, int ty, int type) {
-        int x_shift = (int) Math.random() * mRandomTouchShift - mRandomTouchShift/2;
-        int y_shift = (int) Math.random() * mRandomTouchShift - mRandomTouchShift/2;
+        int x_shift = (int) (Math.random() * mRandomTouchShift) - mRandomTouchShift/2;
+        int y_shift = (int) (Math.random() * mRandomTouchShift) - mRandomTouchShift/2;
 
         x = x + x_shift;
         y = y + y_shift;
@@ -137,7 +137,7 @@ public class InputService extends JoshGameLibrary.GLService {
     }
 
     public int tapOnScreenUntilColorChangedTo(ScreenPoint point,
-                                       ScreenPoint to, int interval, int retry, Thread kThread) {
+                                       ScreenPoint to, int interval, int retry) {
         if ((point == null) || (to == null)) {
             Log.e(TAG, "InputService: null points.\n");
             return -1;
@@ -146,7 +146,7 @@ public class InputService extends JoshGameLibrary.GLService {
         while(retry-- > 0) {
             tapOnScreen(point.coord);
             try {
-                kThread.sleep(interval);
+                Thread.sleep(interval);
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
@@ -170,7 +170,7 @@ public class InputService extends JoshGameLibrary.GLService {
     }
 
     public void setBacklightLow() {
-        setBacklight(0);
+        super.runCommand("echo 0 > /sys/class/leds/lcd-backlight/brightness");
     }
 
     public void setBacklight(int bl) {

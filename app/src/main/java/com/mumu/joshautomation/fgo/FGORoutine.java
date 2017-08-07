@@ -417,7 +417,7 @@ class FGORoutine {
     public int battlePostSetup(Thread kThread) {
 
         if (mGL.getCaptureService().waitOnColor(pointQuestClear, 30, kThread) < 0) {
-            sendMessage("沒出現破關魔法石");
+            sendMessage("沒出現破關獎勵");
         } else {
             mGL.getInputService().tapOnScreen(pointQuestClear.coord);
         }

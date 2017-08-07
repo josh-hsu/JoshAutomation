@@ -357,14 +357,14 @@ public class NewFlushJob extends AutoJob {
 
         //start summoning, keep touching
         if (mGL.getInputService().tapOnScreenUntilColorChangedTo(pointSummonSkipButton,
-                pointSummonNextButton, 100, 700, mRoutine) < 0) {
+                pointSummonNextButton, 100, 700) < 0) {
             return -1;
         }
         mGL.getInputService().tapOnScreen(pointSummonNextButton.coord);
 
         //start servant talking
         if (mGL.getInputService().tapOnScreenUntilColorChangedTo(pointSummonSkipButton,
-                pointSummonSummonButton, 100, 700, mRoutine) < 0) {
+                pointSummonSummonButton, 100, 700) < 0) {
             return -1;
         }
         mGL.getInputService().tapOnScreen(pointSummonSummonButton.coord);
