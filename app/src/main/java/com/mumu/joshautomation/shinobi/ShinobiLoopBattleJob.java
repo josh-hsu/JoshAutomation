@@ -133,6 +133,8 @@ public class ShinobiLoopBattleJob extends AutoJob {
                     return;
                 }
 
+                sleep(4000);
+
                 firstTime = false;
             }
 

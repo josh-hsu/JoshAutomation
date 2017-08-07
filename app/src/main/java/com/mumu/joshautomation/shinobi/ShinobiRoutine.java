@@ -11,6 +11,7 @@ class ShinobiRoutine {
     private AutoJobEventListener mCallbacks;
 
     private int mDefaultMaxRetry = 50;
+    private boolean mPreviousDied = false;
 
     ShinobiRoutine(JoshGameLibrary gl, AutoJobEventListener el) {
         mGL = gl;
@@ -41,6 +42,23 @@ class ShinobiRoutine {
      */
     public int preBattleSetup(boolean useFriend, boolean firstTime) {
         int retry = mDefaultMaxRetry;
+
+        if (mPreviousDied) {
+            mPreviousDied = false;
+            while(retry > 0 && !mGL.getCaptureService().colorIs(pointBattleEnter)) {
+                sleep(100);
+                retry --;
+            }
+            if (retry < 0) {
+                sendMessage("找不到進關");
+                return -1;
+            }
+            sleep(1500);
+            mGL.getInputService().tapOnScreen(pointBattleEnter.coord);
+            sleep(500);
+            mGL.getInputService().tapOnScreen(pointBattleEnter.coord); //for safety
+            return 0;
+        }
 
         if (firstTime) {
             sendMessage("等待關卡按鈕");
@@ -108,12 +126,29 @@ class ShinobiRoutine {
                 mGL.getCaptureService().colorIs(pointBattleNext);
     }
 
+    public boolean isBattleDied() {
+        sleep(20);
+        if (mGL.getCaptureService().colorIs(pointBattleDied)) {
+            mGL.getInputService().tapOnScreen(pointBattleDied.coord);
+            sleep(2000);
+            mGL.getInputService().tapOnScreen(pointBattleDiedExit.coord);
+            sleep(2000);
+        }
+        return false;
+    }
+
     public int postBattleSetup(int retry, int loopMode) {
         while(retry > 0 && !isBattleResultShowed()) {
             int randomDelay = (int) (Math.random() * 120) + 70;
             sleep(randomDelay);
             mGL.getInputService().tapOnScreen(pointBattleResultClearReward.coord);
             retry --;
+
+            if (isBattleDied()) {
+                mPreviousDied = true;
+                sleep(8000);
+                return 0;
+            }
         }
 
         if (retry <= 0) {

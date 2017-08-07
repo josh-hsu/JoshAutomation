@@ -25,6 +25,8 @@ public class ShinobiRoutineDefine {
 
     // battle stage
     static ScreenPoint pointBattleOngoing = new ScreenPoint(0xED,0xCC,0x00,0xFF,965,1834,ScreenPoint.SO_Portrait);
+    static ScreenPoint pointBattleDied = new ScreenPoint(0x00,0x2F,0x82,0xFF,123,820,ScreenPoint.SO_Portrait);
+    static ScreenPoint pointBattleDiedExit = new ScreenPoint(0xD5,0x1A,0x4D,0xFF,89,1285,ScreenPoint.SO_Portrait);
 
     // post-battle configuration
     static ScreenPoint pointBattleResultClearReward = new ScreenPoint(0x5E,0x4F,0x03,0xFF,477,1688,ScreenPoint.SO_Portrait);
