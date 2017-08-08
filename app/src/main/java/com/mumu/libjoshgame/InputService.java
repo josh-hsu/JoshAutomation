@@ -67,6 +67,16 @@ public class InputService extends JoshGameLibrary.GLService {
         x = x + x_shift;
         y = y + y_shift;
 
+        if (mScreenHeight > 0 && y > mScreenHeight)
+            y = mScreenHeight;
+        else if (y < 0)
+            y = 0;
+
+        if (mScreenWidth > 0 && x > mScreenWidth)
+            x = mScreenWidth;
+        else if (x < 0)
+            x = 0;
+
         switch (type) {
             case INPUT_TYPE_TAP:
                 super.runCommand("input tap " + x + " " + y);
@@ -170,7 +180,7 @@ public class InputService extends JoshGameLibrary.GLService {
     }
 
     public void setBacklightLow() {
-        super.runCommand("echo 0 > /sys/class/leds/lcd-backlight/brightness");
+        setBacklight(0);
     }
 
     public void setBacklight(int bl) {

@@ -127,10 +127,19 @@ public class ShinobiLoopBattleJob extends AutoJob {
                     return;
                 }
 
-                if (mSR.postBattleSetup(2000, ShinobiRoutineDefine.sBattleLoopModeAgain) < 0) {
+                if (mSR.battleRoutine(2000) < 0) {
+                    sendMessage("戰鬥出問題");
                     mShouldJobRunning = false;
                     playNotificationSound();
                     return;
+                }
+
+                if (!mSR.isBattleDied()) {
+                    if (mSR.postBattleSetup(ShinobiRoutineDefine.sBattleLoopModeAgain) < 0) {
+                        mShouldJobRunning = false;
+                        playNotificationSound();
+                        return;
+                    }
                 }
 
                 sleep(4000);

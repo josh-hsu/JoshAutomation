@@ -112,12 +112,16 @@ class ShinobiRoutine {
 
     // wait for battle hint show once, wait for max retry*100 ms
     public boolean waitForBattleStarted(int retry) {
-        while(retry > 0 && !mGL.getCaptureService().colorIs(pointBattleOngoing)) {
+        while(retry > 0 && !isBattleOngoing()) {
             sleep(100);
             retry --;
         }
 
         return retry > 0;
+    }
+
+    public boolean isBattleOngoing() {
+        return mGL.getCaptureService().colorIs(pointBattleOngoing);
     }
 
     public boolean isBattleResultShowed() {
@@ -126,7 +130,7 @@ class ShinobiRoutine {
                 mGL.getCaptureService().colorIs(pointBattleNext);
     }
 
-    public boolean isBattleDied() {
+    private boolean isCurrentBattleDied() {
         sleep(20);
         if (mGL.getCaptureService().colorIs(pointBattleDied)) {
             mGL.getInputService().tapOnScreen(pointBattleDied.coord);
@@ -137,18 +141,30 @@ class ShinobiRoutine {
         return false;
     }
 
-    public int postBattleSetup(int retry, int loopMode) {
-        while(retry > 0 && !isBattleResultShowed()) {
-            int randomDelay = (int) (Math.random() * 120) + 70;
-            sleep(randomDelay);
-            mGL.getInputService().tapOnScreen(pointBattleResultClearReward.coord);
-            retry --;
+    public boolean isBattleDied() {
+        return mPreviousDied;
+    }
 
-            if (isBattleDied()) {
+    public int battleRoutine(int retry) {
+        while(retry > 0 && !isBattleResultShowed()) {
+            int randomDelay = (int) (Math.random() * 50) + 1000;
+
+            // is ongoing then wait for a while
+            if (isBattleOngoing()) {
+                sleep(randomDelay);
+            }
+            mGL.setTouchShift(800);
+            mGL.getInputService().tapOnScreen(pointBattleResultClearReward.coord);
+            mGL.setTouchShift(6);
+
+
+            if (isCurrentBattleDied()) {
                 mPreviousDied = true;
-                sleep(8000);
+                sleep(12000);
                 return 0;
             }
+
+            retry--;
         }
 
         if (retry <= 0) {
@@ -157,6 +173,11 @@ class ShinobiRoutine {
         }
 
         sendMessage("戰鬥結束");
+        return 0;
+    }
+
+    public int postBattleSetup(int loopMode) {
+
         if (mGL.getInputService().tapOnScreenUntilColorChangedTo(
                 pointBattleResultClearReward, pointBattleAgain, 70, 50) < 0) {
             sendMessage("結果skip失敗");
