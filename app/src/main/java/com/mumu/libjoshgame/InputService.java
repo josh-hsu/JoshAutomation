@@ -56,8 +56,9 @@ public class InputService extends JoshGameLibrary.GLService {
     }
 
     /*
-     * Touch on screen with type
+     * Touch on screen with type (added in 1.0)
      * This function will not consider the screen orientation
+     * apply random shift in touch point (added in 1.23)
      * TODO: need to find out why input binary takes a long time to execute
      */
     public int touchOnScreen(int x, int y, int tx, int ty, int type) {
@@ -67,12 +68,12 @@ public class InputService extends JoshGameLibrary.GLService {
         x = x + x_shift;
         y = y + y_shift;
 
-        if (mScreenHeight > 0 && y > mScreenHeight)
+        if (mScreenHeight > 0 && y > (mGameOrientation == ScreenPoint.SO_Portrait ? mScreenHeight : mScreenWidth))
             y = mScreenHeight;
         else if (y < 0)
             y = 0;
 
-        if (mScreenWidth > 0 && x > mScreenWidth)
+        if (mScreenWidth > 0 && x > (mGameOrientation == ScreenPoint.SO_Landscape ? mScreenHeight : mScreenWidth))
             x = mScreenWidth;
         else if (x < 0)
             x = 0;
