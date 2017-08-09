@@ -220,7 +220,7 @@ class FGORoutine {
      * =======================
      */
 
-    public int battlePreSetup(Thread kThread, boolean swipeFriend) {
+    public int battlePreSetup(boolean swipeFriend) throws InterruptedException {
         sleep(3000);
 
         //try to find friend's servant, if not found, touch first one
@@ -239,7 +239,7 @@ class FGORoutine {
         }
 
         sleep(1500);
-        if (mGL.getCaptureService().waitOnColor(pointEnterStage, 20, kThread) < 0) {
+        if (mGL.getCaptureService().waitOnColor(pointEnterStage, 20) < 0) {
             return -1;
         }
 
@@ -251,7 +251,7 @@ class FGORoutine {
         return 0;
     }
 
-    public int battleRoutine(Thread kThread, BattleArgument arg) {
+    public int battleRoutine(BattleArgument arg) throws InterruptedException {
         String cardInfo;
         int[] optimizedDraw, cardStatusNow, skillDraw;
         int[] royalDraw = new int[0];
@@ -276,7 +276,7 @@ class FGORoutine {
             }
 
             //wait for battle button
-            if (mGL.getCaptureService().waitOnColor(pointBattleButton, 10, kThread) < 0) {
+            if (mGL.getCaptureService().waitOnColor(pointBattleButton, 10) < 0) {
                 Log.d(TAG, "Cannot find battle button, checking if finished");
                 battleTry--;
                 continue;
@@ -392,9 +392,9 @@ class FGORoutine {
         return -1;
     }
 
-    public int battleHandleFriendRequest(Thread kThread) {
+    public int battleHandleFriendRequest() throws InterruptedException{
         sleep(500);
-        if (mGL.getCaptureService().waitOnColor(pointDenyFriend, 20, kThread) < 0) {
+        if (mGL.getCaptureService().waitOnColor(pointDenyFriend, 20) < 0) {
             sendMessage("沒出現朋友請求");
         } else {
             mGL.getInputService().tapOnScreen(pointDenyFriend.coord);
@@ -403,9 +403,9 @@ class FGORoutine {
         return 0;
     }
 
-    public int battleHandleFriendRequestTW(Thread kThread) {
+    public int battleHandleFriendRequestTW() throws InterruptedException {
         sleep(500);
-        if (mGL.getCaptureService().waitOnColor(FGORoutineDefineTW.pointDenyFriend, 20, kThread) < 0) {
+        if (mGL.getCaptureService().waitOnColor(FGORoutineDefineTW.pointDenyFriend, 20) < 0) {
             sendMessage("沒出現朋友請求");
         } else {
             mGL.getInputService().tapOnScreen(FGORoutineDefineTW.pointDenyFriend.coord);
@@ -414,9 +414,9 @@ class FGORoutine {
         return 0;
     }
 
-    public int battlePostSetup(Thread kThread) {
+    public int battlePostSetup() throws InterruptedException {
 
-        if (mGL.getCaptureService().waitOnColor(pointQuestClear, 30, kThread) < 0) {
+        if (mGL.getCaptureService().waitOnColor(pointQuestClear, 30) < 0) {
             sendMessage("沒出現破關獎勵");
         } else {
             mGL.getInputService().tapOnScreen(pointQuestClear.coord);
@@ -425,9 +425,9 @@ class FGORoutine {
         return 0;
     }
 
-    public int battlePostSetupTW(Thread kThread) {
+    public int battlePostSetupTW() throws InterruptedException {
 
-        if (mGL.getCaptureService().waitOnColor(FGORoutineDefineTW.pointQuestClear, 60, kThread) < 0) {
+        if (mGL.getCaptureService().waitOnColor(FGORoutineDefineTW.pointQuestClear, 60) < 0) {
             sendMessage("沒出現破關魔法石");
         } else {
             mGL.getInputService().tapOnScreen(FGORoutineDefineTW.pointQuestClear.coord);
@@ -455,8 +455,8 @@ class FGORoutine {
      * Story Info
      * =======================
      */
-    public int waitForSkip(int maxTry, Thread kThread) {
-        if (mGL.getCaptureService().waitOnColor(pointSkipDialog, maxTry, kThread) < 0) {
+    public int waitForSkip(int maxTry) throws InterruptedException {
+        if (mGL.getCaptureService().waitOnColor(pointSkipDialog, maxTry) < 0) {
             Log.w(TAG, "Skip not found.");
             return -1;
         } else {
@@ -470,8 +470,8 @@ class FGORoutine {
         }
     }
 
-    public int waitForUserMode(int maxTry, Thread kThread) {
-        if (mGL.getCaptureService().waitOnColor(pointHomeApAdd, maxTry, kThread) < 0) {
+    public int waitForUserMode(int maxTry) throws InterruptedException {
+        if (mGL.getCaptureService().waitOnColor(pointHomeApAdd, maxTry) < 0) {
             Log.w(TAG, "Skip not found.");
             return -1;
         }
@@ -576,7 +576,7 @@ class FGORoutine {
         return 0;
     }
 
-    public int returnToHome(Thread kThread, int retry) {
+    public int returnToHome(int retry) {
         int maxRetry = retry;
 
         while(!isInUserMode() && retry >= 0) {

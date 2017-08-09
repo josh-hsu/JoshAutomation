@@ -51,8 +51,9 @@ public class PureBattleJob extends AutoJob {
         super.stop();
         Log.d(TAG, "stopping job " + getJobName());
 
-        if (mRoutine != null)
+        if (mRoutine != null) {
             mRoutine.interrupt();
+        }
     }
 
     /*
@@ -91,22 +92,22 @@ public class PureBattleJob extends AutoJob {
             mGL.setAmbiguousRange(ambRange);
 
             sendMessage("開始單次戰鬥");
-            if (mFGO.waitForSkip(30, this) < 0) { //wait skip 7 seconds
+            if (mFGO.waitForSkip(30) < 0) { //wait skip 7 seconds
                 sendMessage("等不到SKIP，當作正常");
             }
 
-            if (mFGO.battleRoutine(this, mBattleArg) < 0) {
+            if (mFGO.battleRoutine(mBattleArg) < 0) {
                 sendMessage("戰鬥出現錯誤");
                 mShouldJobRunning = false;
                 return;
             }
 
             sleep(1000);
-            if (mFGO.battleHandleFriendRequest(this) < 0) {
+            if (mFGO.battleHandleFriendRequest() < 0) {
                 sendMessage("沒有朋友請求，可能正常");
             }
 
-            if (mFGO.waitForSkip(30, this) < 0) { //wait skip 7 seconds
+            if (mFGO.waitForSkip(30) < 0) { //wait skip 7 seconds
                 sendMessage("等不到SKIP，當作正常");
             }
 

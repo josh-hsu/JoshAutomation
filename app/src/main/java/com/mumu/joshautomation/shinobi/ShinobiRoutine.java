@@ -29,18 +29,14 @@ class ShinobiRoutine {
             sendMessage(msg);
     }
 
-    private void sleep(int time) {
-        try {
-            Thread.sleep(time);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
+    private void sleep(int time) throws InterruptedException {
+        Thread.sleep(time);
     }
 
     /*
      *  Battle session
      */
-    public int preBattleSetup(boolean useFriend, boolean firstTime) {
+    public int preBattleSetup(boolean useFriend, boolean firstTime) throws InterruptedException {
         int retry = mDefaultMaxRetry;
 
         if (mPreviousDied) {
@@ -111,7 +107,7 @@ class ShinobiRoutine {
     }
 
     // wait for battle hint show once, wait for max retry*100 ms
-    public boolean waitForBattleStarted(int retry) {
+    public boolean waitForBattleStarted(int retry) throws InterruptedException {
         while(retry > 0 && !isBattleOngoing()) {
             sleep(100);
             retry --;
@@ -124,13 +120,13 @@ class ShinobiRoutine {
         return mGL.getCaptureService().colorIs(pointBattleOngoing);
     }
 
-    public boolean isBattleResultShowed() {
+    public boolean isBattleResultShowed() throws InterruptedException {
         sleep(20);
         return mGL.getCaptureService().colorIs(pointBattleResultClearReward) ||
                 mGL.getCaptureService().colorIs(pointBattleNext);
     }
 
-    private boolean isCurrentBattleDied() {
+    private boolean isCurrentBattleDied() throws InterruptedException {
         sleep(20);
         if (mGL.getCaptureService().colorIs(pointBattleDied)) {
             mGL.getInputService().tapOnScreen(pointBattleDied.coord);
@@ -145,7 +141,7 @@ class ShinobiRoutine {
         return mPreviousDied;
     }
 
-    public int battleRoutine(int retry) {
+    public int battleRoutine(int retry) throws InterruptedException {
         while(retry > 0 && !isBattleResultShowed()) {
             int randomDelay = (int) (Math.random() * 50) + 1000;
 
@@ -176,7 +172,7 @@ class ShinobiRoutine {
         return 0;
     }
 
-    public int postBattleSetup(int loopMode) {
+    public int postBattleSetup(int loopMode) throws InterruptedException {
 
         if (mGL.getInputService().tapOnScreenUntilColorChangedTo(
                 pointBattleResultClearReward, pointBattleAgain, 70, 50) < 0) {

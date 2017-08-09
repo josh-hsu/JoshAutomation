@@ -21,11 +21,11 @@ import android.content.pm.PackageManager;
 import android.util.Log;
 
 /*
- * Josh Game Library - Version 1.23
+ * Josh Game Library - Version 1.3
  */
 /*
- * JoshGameLibrary (GL)
- * This game control library require the following initial phase
+   JoshGameLibrary (GL)
+   This game control library require the following initial phase
 
    JoshGameLibrary mGL;
    mGL = JoshGameLibrary.getInstance();               //this make sure there will be only one instance
@@ -34,6 +34,7 @@ import android.util.Log;
    mGL.setScreenDimension(1080, 1920);                //setting the dimension of screen for point check
    mGL.setTouchShift(6)                               //setting the touch random shift size
 
+   Note: with version 1.3 or higher, all the waiting functions are throwing InterruptExceptions
  */
 public class JoshGameLibrary {
     private InputService mInputService;

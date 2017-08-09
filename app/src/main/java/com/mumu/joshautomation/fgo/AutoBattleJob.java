@@ -51,8 +51,9 @@ public class AutoBattleJob extends AutoJob {
         super.stop();
         Log.d(TAG, "stopping job " + getJobName());
 
-        if (mRoutine != null)
+        if (mRoutine != null) {
             mRoutine.interrupt();
+        }
     }
 
     @Override
@@ -101,32 +102,32 @@ public class AutoBattleJob extends AutoJob {
                     return;
                 }
 
-                if (mFGO.battlePreSetup(this, false) < 0) {
+                if (mFGO.battlePreSetup(false) < 0) {
                     sendMessage("進入關卡錯誤");
                     mShouldJobRunning = false;
                     return;
                 }
 
-                if (mFGO.waitForSkip(70, this) < 0) { //wait skip 7 seconds
+                if (mFGO.waitForSkip(70) < 0) { //wait skip 7 seconds
                     sendMessage("等不到SKIP，當作正常");
                 }
 
-                ret = mFGO.battleRoutine(this, mBattleArg);
+                ret = mFGO.battleRoutine(mBattleArg);
                 if (ret < 0) {
                     sendMessage("戰鬥錯誤:" + mFGO.battleGetErrorMsg(ret));
                     mShouldJobRunning = false;
                     return;
                 }
 
-                if (mFGO.battleHandleFriendRequest(this) < 0) {
+                if (mFGO.battleHandleFriendRequest() < 0) {
                     sendMessage("沒有朋友請求，可能正常");
                 }
 
-                if (mFGO.waitForSkip(70, this) < 0) { //wait skip 7 seconds
+                if (mFGO.waitForSkip(70) < 0) { //wait skip 7 seconds
                     sendMessage("等不到SKIP，當作正常");
                 }
 
-                if (mFGO.battlePostSetup(this) < 0) {
+                if (mFGO.battlePostSetup() < 0) {
                     sendMessage("離開戰鬥錯誤");
                     mShouldJobRunning = false;
                     return;
@@ -134,7 +135,7 @@ public class AutoBattleJob extends AutoJob {
 
                 sleep(2000);
                 sendMessage("回到主畫面中");
-                if (mFGO.returnToHome(this, 5) < 0) {
+                if (mFGO.returnToHome(5) < 0) {
                     sendMessage("回主畫面出錯");
                     mShouldJobRunning = false;
                     return;

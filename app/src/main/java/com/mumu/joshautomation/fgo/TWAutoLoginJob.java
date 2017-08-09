@@ -8,6 +8,8 @@ import com.mumu.joshautomation.script.AutoJobEventListener;
 import com.mumu.libjoshgame.JoshGameLibrary;
 import com.mumu.libjoshgame.ScreenPoint;
 
+import java.util.Locale;
+
 import static com.mumu.joshautomation.fgo.FGORoutineDefineTW.*;
 
 public class TWAutoLoginJob extends AutoJob {
@@ -19,11 +21,6 @@ public class TWAutoLoginJob extends AutoJob {
     private TWAutoLoginJob mSelf;
 
     public static final String jobName = "FGO TW Auto Login";
-
-    private static int mCurrentIndex = 1;
-    private static int mTotalIndex = 40;
-    private static String mAccountIDPrefix = "lazypig";
-    private static String mAccountPassword = ""; //no need
 
     public TWAutoLoginJob() {
         super(jobName);
@@ -51,8 +48,9 @@ public class TWAutoLoginJob extends AutoJob {
         super.stop();
         Log.d(TAG, "stopping job " + getJobName());
 
-        if (mRoutine != null)
+        if (mRoutine != null) {
             mRoutine.interrupt();
+        }
     }
 
     /*
@@ -91,9 +89,10 @@ public class TWAutoLoginJob extends AutoJob {
             mGL.setAmbiguousRange(ambRange);
 
             sendMessage("開始自動登入_台版");
+            int mTotalIndex = 40;
             for(int i = startSerial; i <= mTotalIndex + 1; i++) {
                 //in title screen
-                if (mGL.getCaptureService().waitOnColor(titleScreenPoint, 50, mRoutine) < 0) {
+                if (mGL.getCaptureService().waitOnColor(titleScreenPoint, 50) < 0) {
                     sendMessage("不是登入畫面捏");
                     mShouldJobRunning = false;
                     return;
@@ -103,7 +102,7 @@ public class TWAutoLoginJob extends AutoJob {
                 sendMessage("開始 i = " + i);
 
                 if (!skipBulletin) {
-                    if (mGL.getCaptureService().waitOnColor(pointBulletinExit, 30, mRoutine) < 0) {
+                    if (mGL.getCaptureService().waitOnColor(pointBulletinExit, 30) < 0) {
                         sendMessage("沒公告，跳過");
                     } else {
                         mGL.getInputService().tapOnScreen(pointBulletinExit.coord);
@@ -113,7 +112,7 @@ public class TWAutoLoginJob extends AutoJob {
 
                 Thread.sleep(2000);
                 while(true) {
-                    if (mGL.getCaptureService().waitOnColor(pointLoginBonusButton, 12, mRoutine) < 0) {
+                    if (mGL.getCaptureService().waitOnColor(pointLoginBonusButton, 12) < 0) {
                         sendMessage("訊息點完");
                         break;
                     } else {
@@ -130,7 +129,7 @@ public class TWAutoLoginJob extends AutoJob {
                 Thread.sleep(1500);
 
                 //press menu
-                if (mGL.getCaptureService().waitOnColor(pointMenuButton, 10, mRoutine) < 0) {
+                if (mGL.getCaptureService().waitOnColor(pointMenuButton, 10) < 0) {
                     sendMessage("找不到MENU");
                     mShouldJobRunning = false;
                     return;
@@ -139,7 +138,7 @@ public class TWAutoLoginJob extends AutoJob {
                     Thread.sleep(1000);
                 }
 
-                if (mGL.getCaptureService().waitOnColor(pointMyRoom, 10, mRoutine) < 0) {
+                if (mGL.getCaptureService().waitOnColor(pointMyRoom, 10) < 0) {
                     sendMessage("找不到MY ROOM");
                     mShouldJobRunning = false;
                     return;
@@ -148,7 +147,7 @@ public class TWAutoLoginJob extends AutoJob {
                 }
 
                 //swipe menu
-                if (mGL.getCaptureService().waitOnColor(pointMyRoomDetect, 100, mRoutine) < 0) {
+                if (mGL.getCaptureService().waitOnColor(pointMyRoomDetect, 100) < 0) {
                     sendMessage("進不去my room?");
                     mShouldJobRunning = false;
                     return;
@@ -161,7 +160,7 @@ public class TWAutoLoginJob extends AutoJob {
                 Thread.sleep(200);
                 mGL.getInputService().tapOnScreen(pointMyRoomReturnTitle.coord);
 
-                if (mGL.getCaptureService().waitOnColor(pointMyRoomReturnTitleConfirm, 30, mRoutine) < 0) {
+                if (mGL.getCaptureService().waitOnColor(pointMyRoomReturnTitleConfirm, 30) < 0) {
                     sendMessage("沒有確定?");
                     mShouldJobRunning = false;
                     return;
@@ -170,7 +169,7 @@ public class TWAutoLoginJob extends AutoJob {
                 }
 
                 //wait account
-                if (mGL.getCaptureService().waitOnColor(loginAccountID, 600, mRoutine) < 0) {
+                if (mGL.getCaptureService().waitOnColor(loginAccountID, 600) < 0) {
                     sendMessage("帳號輸入畫面沒出來");
                     mShouldJobRunning = false;
                     return;
@@ -180,7 +179,7 @@ public class TWAutoLoginJob extends AutoJob {
                 }
                 Thread.sleep(1000);
 
-                if (mGL.getCaptureService().waitOnColor(loginKeyBackspace, 40, mRoutine) < 0) {
+                if (mGL.getCaptureService().waitOnColor(loginKeyBackspace, 40) < 0) {
                     sendMessage("帳號輸入?");
                     mShouldJobRunning = false;
                     return;
@@ -199,7 +198,7 @@ public class TWAutoLoginJob extends AutoJob {
                     i+=1;
 
                 //input account number
-                String formattedAcc = String.format("%03d", i);
+                String formattedAcc = String.format(Locale.ENGLISH, "%03d", i);
                 mGL.getInputService().inputText(formattedAcc);
                 Thread.sleep(1000);
                 mGL.getInputService().tapOnScreen(loginKeyNext.coord);
@@ -207,7 +206,7 @@ public class TWAutoLoginJob extends AutoJob {
                 mGL.getInputService().tapOnScreen(loginKeyNext.coord);
                 Thread.sleep(1000);
 
-                if (mGL.getCaptureService().waitOnColor(loginLogin, 100, mRoutine) < 0) {
+                if (mGL.getCaptureService().waitOnColor(loginLogin, 100) < 0) {
                     sendMessage("回不去LOGIN");
                 } else {
                     mGL.getInputService().tapOnScreen(loginLogin.coord);

@@ -2,7 +2,6 @@ package com.mumu.joshautomation.fgo;
 
 import android.util.Log;
 
-import com.mumu.joshautomation.AppPreferenceValue;
 import com.mumu.joshautomation.script.AutoJob;
 import com.mumu.joshautomation.script.AutoJobEventListener;
 import com.mumu.libjoshgame.JoshGameLibrary;
@@ -38,9 +37,6 @@ public class NewFlushJob extends AutoJob {
     public void start() {
         super.start();
         Log.d(TAG, "starting job " + getJobName());
-
-        String battleString = AppPreferenceValue.getInstance().
-                getPrefs().getString("battleArgPref", "");
 
         mRoutine = null;
         mRoutine = new MainJobRoutine();
@@ -82,7 +78,7 @@ public class NewFlushJob extends AutoJob {
     }
 
     private int battleOnce(int preWaitTime) throws Exception {
-        if (mGL.getCaptureService().waitOnColor(pointBattleButton, preWaitTime, mRoutine) < 0) {
+        if (mGL.getCaptureService().waitOnColor(pointBattleButton, preWaitTime) < 0) {
             Log.d(TAG, "Cannot find battle button, checking if finished");
             sendMessage("Cannot find battle button");
             return -1;
@@ -104,7 +100,7 @@ public class NewFlushJob extends AutoJob {
         mGL.getInputService().tapOnScreen(FGORoutineDefineTW.pointSelectFriendButton.coord);
 
         Thread.sleep(1500);
-        if (mGL.getCaptureService().waitOnColor(FGORoutineDefineTW.pointEnterStageButton, 20, mRoutine) < 0) {
+        if (mGL.getCaptureService().waitOnColor(FGORoutineDefineTW.pointEnterStageButton, 20) < 0) {
             return -1;
         }
         mGL.getInputService().tapOnScreen(FGORoutineDefineTW.pointEnterStageButton.coord);
@@ -130,7 +126,7 @@ public class NewFlushJob extends AutoJob {
         }
 
         //4th
-        if (mGL.getCaptureService().waitOnColor(pointBattleButton, 400, mRoutine) < 0) {
+        if (mGL.getCaptureService().waitOnColor(pointBattleButton, 400) < 0) {
             Log.d(TAG, "Cannot find battle button, checking if finished");
             sendMessage("Cannot find battle button");
             return -1;
@@ -142,7 +138,7 @@ public class NewFlushJob extends AutoJob {
         mFGO.tapOnCard(new int[]{1, 0, 2});
 
         //5th
-        if (mGL.getCaptureService().waitOnColor(pointBattleButton, 400, mRoutine) < 0) {
+        if (mGL.getCaptureService().waitOnColor(pointBattleButton, 400) < 0) {
             Log.d(TAG, "Cannot find battle button, checking if finished");
             sendMessage("Cannot find battle button");
             return -1;
@@ -184,7 +180,7 @@ public class NewFlushJob extends AutoJob {
         mGL.getInputService().tapOnScreen(FGORoutineDefineTW.XASubStageScreenPoint.coord);
         Thread.sleep(1500);
 
-        if (mFGO.waitForSkip(30, mRoutine) < 0) { //wait skip 3 seconds
+        if (mFGO.waitForSkip(30) < 0) { //wait skip 3 seconds
             sendMessage("等不到SKIP呢");
             return -1;
         }
@@ -202,7 +198,7 @@ public class NewFlushJob extends AutoJob {
         Thread.sleep(2000);
         mGL.getInputService().tapOnScreen(FGORoutineDefineTW.skillTargetScreenPoint.coord);
 
-        if (mGL.getCaptureService().waitOnColor(pointBattleButton, 100, mRoutine) < 0) {
+        if (mGL.getCaptureService().waitOnColor(pointBattleButton, 100) < 0) {
             Log.d(TAG, "Cannot find battle button, checking if finished");
             sendMessage("Cannot find battle button");
             return -1;
@@ -213,16 +209,16 @@ public class NewFlushJob extends AutoJob {
         Thread.sleep(1000);
         mFGO.tapOnCard(new int[]{1, 0, 2});
 
-        if(mFGO.battleRoutine(mRoutine, null) < 0) {
+        if(mFGO.battleRoutine(null) < 0) {
             return -1;
         }
 
-        if (mFGO.waitForSkip(70, mRoutine) < 0) { //wait skip 3 seconds
+        if (mFGO.waitForSkip(70) < 0) { //wait skip 3 seconds
             sendMessage("等不到SKIP呢");
             return -1;
         }
 
-        if (mFGO.battlePostSetupTW(mRoutine) < 0) {
+        if (mFGO.battlePostSetupTW() < 0) {
             sendMessage("離開戰鬥錯誤");
             return -1;
         }
@@ -237,7 +233,7 @@ public class NewFlushJob extends AutoJob {
         mGL.getInputService().tapOnScreen(FGORoutineDefineTW.XASubStageScreenPoint.coord);
         Thread.sleep(1500);
 
-        if (mFGO.waitForSkip(30, mRoutine) < 0) { //wait skip 3 seconds
+        if (mFGO.waitForSkip(30) < 0) { //wait skip 3 seconds
             sendMessage("等不到SKIP呢");
             return -1;
         }
@@ -247,7 +243,7 @@ public class NewFlushJob extends AutoJob {
         }
 
         //change target wait
-        if (mGL.getCaptureService().waitOnColor(FGORoutineDefineTW.pointChangeHint, 500, mRoutine) < 0) {
+        if (mGL.getCaptureService().waitOnColor(FGORoutineDefineTW.pointChangeHint, 500) < 0) {
             return -1;
         }
         Thread.sleep(1000);
@@ -256,16 +252,16 @@ public class NewFlushJob extends AutoJob {
         Thread.sleep(1000);
         mGL.getInputService().tapOnScreen(FGORoutineDefineTW.pointChangeButton.coord);
 
-        if(mFGO.battleRoutine(mRoutine, null) < 0) {
+        if(mFGO.battleRoutine(null) < 0) {
             return -1;
         }
 
-        if (mFGO.waitForSkip(70, mRoutine) < 0) { //wait skip 3 seconds
+        if (mFGO.waitForSkip(70) < 0) { //wait skip 3 seconds
             sendMessage("等不到SKIP呢");
             return -1;
         }
 
-        if (mFGO.battlePostSetupTW(mRoutine) < 0) {
+        if (mFGO.battlePostSetupTW() < 0) {
             sendMessage("離開戰鬥錯誤");
             return -1;
         }
@@ -287,14 +283,14 @@ public class NewFlushJob extends AutoJob {
             return -1;
         }
 
-        if (mFGO.waitForSkip(70, mRoutine) < 0) { //wait skip 7 seconds
+        if (mFGO.waitForSkip(70) < 0) { //wait skip 7 seconds
             sendMessage("等不到SKIP???");
             return -1;
         }
 
         if (level == 2) {
             Thread.sleep(7000);
-            if (mGL.getCaptureService().waitOnColor(pointBattleButton, 150, mRoutine) < 0) {
+            if (mGL.getCaptureService().waitOnColor(pointBattleButton, 150) < 0) {
                 Log.d(TAG, "Cannot find battle button, checking if finished");
                 sendMessage("Cannot find battle button");
                 return -1;
@@ -306,24 +302,24 @@ public class NewFlushJob extends AutoJob {
             mFGO.tapOnCard(new int[]{1, 0, 2});
         }
 
-        if (mFGO.battleRoutine(mRoutine, null) < 0) {
+        if (mFGO.battleRoutine(null) < 0) {
             sendMessage("戰鬥錯誤:");
             return -1;
         }
 
-        if (mFGO.battleHandleFriendRequestTW(mRoutine) < 0) {
+        if (mFGO.battleHandleFriendRequestTW() < 0) {
             sendMessage("沒有朋友請求?");
             return -1;
         }
 
         if (level != 2) {
-            if (mFGO.waitForSkip(70, mRoutine) < 0) { //wait skip 7 seconds
+            if (mFGO.waitForSkip(70) < 0) { //wait skip 7 seconds
                 sendMessage("等不到SKIP，當作正常");
             }
         }
 
         if (level == 3) {
-            if (mFGO.battlePostSetupTW(mRoutine) < 0) {
+            if (mFGO.battlePostSetupTW() < 0) {
                 sendMessage("離開戰鬥錯誤");
                 return -1;
             }
@@ -334,23 +330,23 @@ public class NewFlushJob extends AutoJob {
 
     private int doTenSummon() throws Exception {
         //wait for menu show up
-        if (mGL.getCaptureService().waitOnColor(FGORoutineDefineTW.pointMenuButton, 500, mRoutine) < 0) {
+        if (mGL.getCaptureService().waitOnColor(FGORoutineDefineTW.pointMenuButton, 500) < 0) {
             return -1;
         }
         Thread.sleep(3000);
         mGL.getInputService().tapOnScreen(FGORoutineDefineTW.pointMenuButton.coord);
 
-        if (mGL.getCaptureService().waitOnColor(FGORoutineDefineTW.pointSummonButton, 50, mRoutine) < 0) {
+        if (mGL.getCaptureService().waitOnColor(FGORoutineDefineTW.pointSummonButton, 50) < 0) {
             return -1;
         }
         mGL.getInputService().tapOnScreen(FGORoutineDefineTW.pointSummonButton.coord);
 
-        if (mGL.getCaptureService().waitOnColor(FGORoutineDefineTW.pointTenSummonButton, 50, mRoutine) < 0) {
+        if (mGL.getCaptureService().waitOnColor(FGORoutineDefineTW.pointTenSummonButton, 50) < 0) {
             return -1;
         }
         mGL.getInputService().tapOnScreen(FGORoutineDefineTW.pointTenSummonButton.coord);
 
-        if (mGL.getCaptureService().waitOnColor(FGORoutineDefineTW.pointSummonConfirmButton, 50, mRoutine) < 0) {
+        if (mGL.getCaptureService().waitOnColor(FGORoutineDefineTW.pointSummonConfirmButton, 50) < 0) {
             return -1;
         }
         mGL.getInputService().tapOnScreen(FGORoutineDefineTW.pointSummonConfirmButton.coord);
@@ -374,22 +370,22 @@ public class NewFlushJob extends AutoJob {
 
     private int doFormation() throws Exception {
         //wait for menu show up
-        if (mGL.getCaptureService().waitOnColor(FGORoutineDefineTW.pointMenuButton, 500, mRoutine) < 0) {
+        if (mGL.getCaptureService().waitOnColor(FGORoutineDefineTW.pointMenuButton, 500) < 0) {
             return -1;
         }
         mGL.getInputService().tapOnScreen(FGORoutineDefineTW.pointMenuButton.coord);
 
-        if (mGL.getCaptureService().waitOnColor(pointFormationButton, 50, mRoutine) < 0) {
+        if (mGL.getCaptureService().waitOnColor(pointFormationButton, 50) < 0) {
             return -1;
         }
         mGL.getInputService().tapOnScreen(pointFormationButton.coord);
 
-        if (mGL.getCaptureService().waitOnColor(pointTeamFormationButton, 50, mRoutine) < 0) {
+        if (mGL.getCaptureService().waitOnColor(pointTeamFormationButton, 50) < 0) {
             return -1;
         }
         mGL.getInputService().tapOnScreen(pointTeamFormationButton.coord);
 
-        if (mGL.getCaptureService().waitOnColor(pointTeamMem2Button, 50, mRoutine) < 0) {
+        if (mGL.getCaptureService().waitOnColor(pointTeamMem2Button, 50) < 0) {
             return -1;
         }
         mGL.getInputService().tapOnScreen(pointTeamMem2Button.coord);
@@ -399,7 +395,7 @@ public class NewFlushJob extends AutoJob {
         Thread.sleep(2000);
         mGL.getInputService().tapOnScreen(pointMemTargetButton.coord);
 
-        if (mGL.getCaptureService().waitOnColor(pointFormationConfirmButton, 50, mRoutine) < 0) {
+        if (mGL.getCaptureService().waitOnColor(pointFormationConfirmButton, 50) < 0) {
             return -1;
         }
         mGL.getInputService().tapOnScreen(pointFormationConfirmButton.coord);
@@ -427,7 +423,7 @@ public class NewFlushJob extends AutoJob {
             mGL.getInputService().tapOnScreen(titleScreenPoint.coord);
             Thread.sleep(6000);
 
-            if (mFGO.waitForSkip(60, this) < 0) { //wait skip 7 seconds
+            if (mFGO.waitForSkip(60) < 0) { //wait skip 7 seconds
                 sendMessage("等不到SKIP呢");
             }
 
@@ -440,7 +436,7 @@ public class NewFlushJob extends AutoJob {
             Thread.sleep(39000); //there's all white screen might mislead our script
 
             //wait for skip including last battle overhead
-            if (mFGO.waitForSkip(30, this) < 0) { //wait skip 3 seconds
+            if (mFGO.waitForSkip(30) < 0) { //wait skip 3 seconds
                 sendMessage("等不到SKIP呢");
                 mShouldJobRunning = false;
                 return;
@@ -454,7 +450,7 @@ public class NewFlushJob extends AutoJob {
             }
 
             //wait for skip including last battle overhead
-            if (mFGO.waitForSkip(100, this) < 0) { //wait skip 30 seconds
+            if (mFGO.waitForSkip(100) < 0) { //wait skip 30 seconds
                 sendMessage("等不到SKIP呢");
                 mShouldJobRunning = false;
                 return;

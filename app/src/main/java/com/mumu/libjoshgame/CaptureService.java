@@ -555,9 +555,8 @@ public class CaptureService extends JoshGameLibrary.GLService {
      * sc: ScreenColor used to be compared
      * coord: ScreenCoord used to get color
      * threshold: Timeout, 1 threshold equals to 100 ms
-     * kThread: Executing thread of your task
      */
-    public int waitOnColor(ScreenColor sc, ScreenCoord coord, int threshold, Thread kThread) {
+    public int waitOnColor(ScreenColor sc, ScreenCoord coord, int threshold) throws InterruptedException {
         ScreenPoint currentPoint = new ScreenPoint();
         Log.d(TAG, "now busy waiting for ( " + coord.x  + "," + coord.y + ") turn into 0x"
                 + Integer.toHexString(sc.r & 0xFF) + Integer.toHexString(sc.g & 0xFF)
@@ -569,12 +568,7 @@ public class CaptureService extends JoshGameLibrary.GLService {
                 Log.d(TAG, "CaptureService: Matched!");
                 return 0;
             } else {
-                try {
-                    kThread.sleep(100);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                    return -1;
-                }
+                Thread.sleep(100);
 
             }
         }
@@ -582,11 +576,11 @@ public class CaptureService extends JoshGameLibrary.GLService {
         return -1;
     }
 
-    public int waitOnColor(ScreenPoint sp, int threshold, Thread kThread) {
-        return waitOnColor(sp.color, sp.coord, threshold, kThread);
+    public int waitOnColor(ScreenPoint sp, int threshold) throws InterruptedException {
+        return waitOnColor(sp.color, sp.coord, threshold);
     }
 
-    public int waitOnColorNotEqual(ScreenColor sc, ScreenCoord coord, int threshold, Thread kThread) {
+    public int waitOnColorNotEqual(ScreenColor sc, ScreenCoord coord, int threshold) throws InterruptedException {
         ScreenPoint currentPoint = new ScreenPoint();
         Log.d(TAG, "now busy waiting for ( " + coord.x  + "," + coord.y + ") is not 0x"
                 + Integer.toHexString(sc.r & 0xFF) + Integer.toHexString(sc.g & 0xFF)
@@ -598,12 +592,7 @@ public class CaptureService extends JoshGameLibrary.GLService {
                 Log.d(TAG, "CaptureService: Matched!");
                 return 0;
             } else {
-                try {
-                    kThread.sleep(100);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                    return -1;
-                }
+                Thread.sleep(100);
             }
         }
 

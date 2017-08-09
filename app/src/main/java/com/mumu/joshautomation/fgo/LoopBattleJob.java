@@ -56,8 +56,9 @@ public class LoopBattleJob extends AutoJob {
         super.stop();
         Log.d(TAG, "stopping job " + getJobName());
 
-        if (mRoutine != null)
+        if (mRoutine != null) {
             mRoutine.interrupt();
+        }
     }
 
     /*
@@ -121,7 +122,7 @@ public class LoopBattleJob extends AutoJob {
             while (mShouldJobRunning) {
                 refreshSetting();
 
-                if (mFGO.waitForUserMode(40, this) < 0) {
+                if (mFGO.waitForUserMode(40) < 0) {
                     sendMessage("錯誤:不在主畫面上");
                     playNotificationSound();
                     mShouldJobRunning = false;
@@ -131,7 +132,7 @@ public class LoopBattleJob extends AutoJob {
                 mGL.getInputService().tapOnScreen(FGORoutineDefine.pointLoopBattleStage.coord);
                 sleep(2000);
 
-                if (mFGO.battlePreSetup(this, false) < 0) {
+                if (mFGO.battlePreSetup(false) < 0) {
                     sendMessage("進入關卡錯誤");
                     playNotificationSound();
                     mShouldJobRunning = false;
@@ -139,12 +140,12 @@ public class LoopBattleJob extends AutoJob {
                 }
 
                 if (mWaitSkip) {
-                    if (mFGO.waitForSkip(30, this) < 0) {
+                    if (mFGO.waitForSkip(30) < 0) {
                         sendMessage("等不到SKIP，當作正常");
                     }
                 }
 
-                if (mFGO.battleRoutine(this, mBattleArg) < 0) {
+                if (mFGO.battleRoutine(mBattleArg) < 0) {
                     sendMessage("戰鬥出現錯誤");
                     playNotificationSound();
                     mShouldJobRunning = false;
@@ -152,19 +153,19 @@ public class LoopBattleJob extends AutoJob {
                 }
 
                 sleep(1000);
-                if (mFGO.battleHandleFriendRequest(this) < 0) {
+                if (mFGO.battleHandleFriendRequest() < 0) {
                     sendMessage("沒有朋友請求，可能正常");
                 }
 
                 if (mWaitSkip) {
-                    if (mFGO.waitForSkip(30, this) < 0) { //wait skip 7 seconds
+                    if (mFGO.waitForSkip(30) < 0) { //wait skip 7 seconds
                         sendMessage("等不到SKIP，當作正常");
                     }
                 }
 
 
                 if (!stageCleared) {
-                    if (mFGO.battlePostSetup(this) < 0) {
+                    if (mFGO.battlePostSetup() < 0) {
                         sendMessage("離開戰鬥錯誤");
                         mShouldJobRunning = false;
                         return;

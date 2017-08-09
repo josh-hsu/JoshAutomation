@@ -55,8 +55,9 @@ public class ShinobiLoopBattleJob extends AutoJob {
         super.stop();
         Log.d(TAG, "stopping job " + getJobName());
 
-        if (mRoutine != null)
+        if (mRoutine != null) {
             mRoutine.interrupt();
+        }
     }
 
     /*

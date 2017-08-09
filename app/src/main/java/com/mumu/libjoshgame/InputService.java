@@ -123,7 +123,7 @@ public class InputService extends JoshGameLibrary.GLService {
     /*
      * Tap on screen amount of times until the color on the screen is not in point->color
      */
-    public int tapOnScreenUntilColorChanged(ScreenPoint point, int interval, int retry, Thread kThread) {
+    public int tapOnScreenUntilColorChanged(ScreenPoint point, int interval, int retry) throws InterruptedException {
         if (point == null) {
             Log.e(TAG, "null point");
             return -1;
@@ -131,11 +131,7 @@ public class InputService extends JoshGameLibrary.GLService {
 
         while(retry-- > 0) {
             tapOnScreen(point.coord);
-            try {
-                kThread.sleep(interval);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
+            Thread.sleep(interval);
             if (mCaptureService.colorIs(point)) {
                 Log.d(TAG, "color didn't change, try again");
             } else {
@@ -148,7 +144,7 @@ public class InputService extends JoshGameLibrary.GLService {
     }
 
     public int tapOnScreenUntilColorChangedTo(ScreenPoint point,
-                                       ScreenPoint to, int interval, int retry) {
+                                       ScreenPoint to, int interval, int retry) throws InterruptedException {
         if ((point == null) || (to == null)) {
             Log.e(TAG, "InputService: null points.\n");
             return -1;
@@ -156,11 +152,7 @@ public class InputService extends JoshGameLibrary.GLService {
 
         while(retry-- > 0) {
             tapOnScreen(point.coord);
-            try {
-                Thread.sleep(interval);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
+            Thread.sleep(interval);
             if (mCaptureService.colorIs(to)) {
                 Log.d(TAG, "color changed to specific point. exiting..");
                 return 0;
