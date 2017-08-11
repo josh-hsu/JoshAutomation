@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen
+    xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <PreferenceCategory android:title="遊戲設定">
+        <CheckBoxPreference
+            android:key="shinobiFromStagePref"
+            android:title="從關卡選擇頁面開始"
+            android:summary="適用於連續往下打的戰鬥"
+            android:defaultValue="false"/>
+        <CheckBoxPreference
+            android:key="shinobiUseFriend"
+            android:title="使用朋友"
+            android:summary="使用朋友的武將進入戰鬥"
+            android:defaultValue="false"/>
+    </PreferenceCategory>
+
+</PreferenceScreen>

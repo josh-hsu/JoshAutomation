@@ -185,6 +185,7 @@ public class LoopBattleJob extends AutoJob {
             try {
                 main();
             } catch (Exception e) {
+                sendMessage("任務已停止");
                 Log.e(TAG, "Routine caught an exception or been interrupted: " + e.getMessage());
             }
         }

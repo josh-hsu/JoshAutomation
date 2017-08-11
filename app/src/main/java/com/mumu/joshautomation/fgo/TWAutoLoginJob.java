@@ -191,10 +191,10 @@ public class TWAutoLoginJob extends AutoJob {
                     mGL.getInputService().tapOnScreen(loginKeyBackspace.coord);
                 }
 
-                //skip accounts
+                //skip accounts which is not valid
                 if (i == 13)
                     i+=2;
-                else if (i == 14 || i == 20 || i == 32)
+                else if (i == 14 || i == 20)
                     i+=1;
 
                 //input account number
@@ -225,6 +225,7 @@ public class TWAutoLoginJob extends AutoJob {
             try {
                 main();
             } catch (Exception e) {
+                sendMessage("任務已停止");
                 Log.e(TAG, "Routine caught an exception or been interrupted: " + e.getMessage());
             }
         }

@@ -508,6 +508,7 @@ public class NewFlushJob extends AutoJob {
                 main();
                 mGL.getInputService().playSound();
             } catch (Exception e) {
+                sendMessage("任務已停止");
                 Log.e(TAG, "Routine caught an exception or been interrupted: " + e.getMessage());
             }
         }

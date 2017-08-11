@@ -115,7 +115,7 @@ public class ShinobiLoopBattleJob extends AutoJob {
             while (mShouldJobRunning) {
                 refreshSetting();
 
-                if (mSR.preBattleSetup(false, firstTime) < 0) {
+                if (mSR.preBattleSetup() < 0) {
                     mShouldJobRunning = false;
                     playNotificationSound();
                     return;
@@ -158,6 +158,7 @@ public class ShinobiLoopBattleJob extends AutoJob {
             try {
                 main();
             } catch (Exception e) {
+                sendMessage("任務已停止");
                 Log.e(TAG, "Routine caught an exception or been interrupted: " + e.getMessage());
             }
         }

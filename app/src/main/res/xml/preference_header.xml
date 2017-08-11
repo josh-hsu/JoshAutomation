@@ -11,4 +11,8 @@
         android:title="@string/settings_fragment_title_1"
         android:summary="@string/settings_fragment_summary_1" />
 
+    <header android:fragment="com.mumu.joshautomation.AppPreferenceActivity$Prefs3Fragment"
+        android:icon="@mipmap/ic_fgo"
+        android:title="@string/settings_fragment_title_3"
+        android:summary="@string/settings_fragment_summary_3" />
 </preference-headers>

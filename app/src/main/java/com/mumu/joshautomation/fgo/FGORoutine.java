@@ -32,12 +32,8 @@ class FGORoutine {
             sendMessage(msg);
     }
 
-    private void sleep(int time) {
-        try {
-            Thread.sleep(time);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
+    private void sleep(int time) throws InterruptedException {
+        Thread.sleep(time);
     }
 
     /* =======================
@@ -160,7 +156,7 @@ class FGORoutine {
         }
     }
 
-    public void tapOnCard(int[] cardIndex) {
+    public void tapOnCard(int[] cardIndex) throws InterruptedException {
         for(int i : cardIndex) {
             ScreenCoord coord = ScreenCoord.getTwoPointCenter(cardPositionStart.get(i),
                     cardPositionEnd.get(i));
@@ -169,7 +165,7 @@ class FGORoutine {
         }
     }
 
-    public void tapOnSkill(int[] skillIndex) {
+    public void tapOnSkill(int[] skillIndex) throws InterruptedException {
         if (skillIndex.length < 1)
             return;
 
@@ -180,7 +176,7 @@ class FGORoutine {
         }
     }
 
-    public void tapOnRoyal(int[] royal) {
+    public void tapOnRoyal(int[] royal) throws InterruptedException {
         if (royal.length < 1)
             return;
 
@@ -191,7 +187,7 @@ class FGORoutine {
         }
     }
 
-    private int selectFriendSupport(int maxSwipe) {
+    private int selectFriendSupport(int maxSwipe) throws InterruptedException {
         ScreenCoord coordFound;
 
         do {
@@ -374,7 +370,7 @@ class FGORoutine {
         return sBattleDone;
     }
 
-    public int battleDieCheckAndHandle() {
+    public int battleDieCheckAndHandle() throws InterruptedException {
         if (mGL.getCaptureService().colorIs(pointBattleDieDetect)) {
             //double confirm backoff button present
             sendMessage("似乎全軍覆沒了");
@@ -491,7 +487,7 @@ class FGORoutine {
         return mGL.getCaptureService().colorIs(pointHomeApAdd);
     }
 
-    public int findNextAndClick(int retry, boolean enableGlobal) {
+    public int findNextAndClick(int retry, boolean enableGlobal) throws InterruptedException {
         ScreenCoord coordFound;
         boolean searchGlobalFailOnce = false;
         int maxTry = retry;
@@ -576,7 +572,7 @@ class FGORoutine {
         return 0;
     }
 
-    public int returnToHome(int retry) {
+    public int returnToHome(int retry) throws InterruptedException {
         int maxRetry = retry;
 
         while(!isInUserMode() && retry >= 0) {

@@ -36,8 +36,9 @@ class ShinobiRoutine {
     /*
      *  Battle session
      */
-    public int preBattleSetup(boolean useFriend, boolean firstTime) throws InterruptedException {
+    public int preBattleSetup() throws InterruptedException {
         int retry = mDefaultMaxRetry;
+        boolean firstTime = true;
 
         if (mPreviousDied) {
             mPreviousDied = false;
@@ -56,7 +57,7 @@ class ShinobiRoutine {
             return 0;
         }
 
-        if (firstTime) {
+        if (AppPreferenceValue.getInstance().getPrefs().getBoolean("shinobiFromStagePref", false)) {
             sendMessage("等待關卡按鈕");
             while(retry > 0 && !mGL.getCaptureService().colorIs(pointBattleSubstageButton)) {
                 sleep(100);
@@ -74,9 +75,21 @@ class ShinobiRoutine {
             sleep(3500);
         }
 
-        if (mGL.getCaptureService().colorIs(firstTime ?
-                pointBattleSelectFriendButton : pointBattleSelectFriendAgainButton)) {
-            if (useFriend) {
+        // find friend select button and determine which kind of page is current displaying
+        while (retry > 0) {
+            if (mGL.getCaptureService().colorIs(pointBattleSelectFriendButton)) {
+                firstTime = true;
+                break;
+            } else if (mGL.getCaptureService().colorIs(pointBattleSelectFriendAgainButton)) {
+                firstTime = false;
+                break;
+            }
+            sleep(100);
+            retry --;
+        }
+        if (retry > 0) {
+            retry = mDefaultMaxRetry;
+            if (AppPreferenceValue.getInstance().getPrefs().getBoolean("shinobiUseFriend", false)) {
                 mGL.getInputService().tapOnScreen(firstTime ?
                         pointBattleSelectFriendButton.coord : pointBattleSelectFriendAgainButton.coord);
                 sleep(2000);
@@ -90,6 +103,7 @@ class ShinobiRoutine {
         }
         sleep(2000);
 
+        // enter battle
         while(retry > 0 && !mGL.getCaptureService().colorIs(firstTime ? pointBattleEnter : pointBattleEnterAgain)) {
             sleep(100);
             retry --;

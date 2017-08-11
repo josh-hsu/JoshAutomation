@@ -176,6 +176,22 @@ public class AppPreferenceActivity extends PreferenceActivity {
         }
     }
 
+    public static class Prefs3Fragment extends PreferenceFragment {
+        @Override
+        public void onCreate(Bundle savedInstanceState) {
+            super.onCreate(savedInstanceState);
+
+            // Make sure default values are applied.  In a real app, you would
+            // want this in a shared function that is used to retrieve the
+            // SharedPreferences wherever they are needed.
+            PreferenceManager.setDefaultValues(getActivity(),
+                    R.xml.app_preferences_shinobi, false);
+
+            // Load the preferences from an XML resource
+            addPreferencesFromResource(R.xml.app_preferences_shinobi);
+        }
+    }
+
     static void openService() {
         mContext.startService(new Intent(mContext, HeadService.class));
     }
