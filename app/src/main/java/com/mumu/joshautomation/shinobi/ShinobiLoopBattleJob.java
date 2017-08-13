@@ -61,7 +61,7 @@ public class ShinobiLoopBattleJob extends AutoJob {
     }
 
     /*
-     * In LoopBattleJob, extra data will be BattleArgument
+     * Extra will be root service
      */
     @Override
     public void setExtra(Object object) {

@@ -7,8 +7,8 @@ android {
         applicationId "com.mumu.joshautomation"
         minSdkVersion 21
         targetSdkVersion 24
-        versionCode 9
-        versionName "1.3.2"
+        versionCode 10
+        versionName "1.4_pre2.0_a"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
     }
     buildTypes {
