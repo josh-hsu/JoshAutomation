@@ -147,6 +147,7 @@ class ShinobiRoutine {
             sleep(2000);
             mGL.getInputService().tapOnScreen(pointBattleDiedExit.coord);
             sleep(2000);
+            return true;
         }
         return false;
     }
