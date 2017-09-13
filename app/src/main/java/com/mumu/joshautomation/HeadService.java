@@ -36,6 +36,8 @@ import android.view.WindowManager;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.mumu.joshautomation.caocao.FlushJob;
+import com.mumu.joshautomation.caocao.FlushMoneyJob;
 import com.mumu.joshautomation.fgo.AutoBattleJob;
 import com.mumu.joshautomation.fgo.LoopBattleJob;
 import com.mumu.joshautomation.fgo.NewFlushJob;
@@ -163,6 +165,8 @@ public class HeadService extends Service implements AutoJobEventListener{
         mAutoJobHandler.addJob(new NewFlushJob());
         mAutoJobHandler.addJob(new TWAutoLoginJob());
         mAutoJobHandler.addJob(new ShinobiLoopBattleJob());
+        mAutoJobHandler.addJob(new FlushJob());
+        mAutoJobHandler.addJob(new FlushMoneyJob());
 
         mAutoJobHandler.setJobEventListener(LoopBattleJob.jobName, this);
         mAutoJobHandler.setJobEventListener(PureBattleJob.jobName, this);
@@ -170,10 +174,14 @@ public class HeadService extends Service implements AutoJobEventListener{
         mAutoJobHandler.setJobEventListener(NewFlushJob.jobName, this);
         mAutoJobHandler.setJobEventListener(TWAutoLoginJob.jobName, this);
         mAutoJobHandler.setJobEventListener(ShinobiLoopBattleJob.jobName, this);
+        mAutoJobHandler.setJobEventListener(FlushJob.jobName, this);
+        mAutoJobHandler.setJobEventListener(FlushMoneyJob.jobName, this);
 
         //add service itself to job
         mAutoJobHandler.setExtra(LoopBattleJob.jobName, this);
         mAutoJobHandler.setExtra(ShinobiLoopBattleJob.jobName, this);
+        mAutoJobHandler.setExtra(FlushJob.jobName, this);
+        mAutoJobHandler.setExtra(FlushMoneyJob.jobName, this);
     }
 
     // provide our service not be able to kill

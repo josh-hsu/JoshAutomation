@@ -164,6 +164,27 @@ public class InputService extends JoshGameLibrary.GLService {
         return -1;
     }
 
+    public int tapOnScreenUntilColorChangedTo(ScreenCoord point,
+                                              ScreenPoint to, int interval, int retry) throws InterruptedException {
+        if ((point == null) || (to == null)) {
+            Log.e(TAG, "InputService: null points.\n");
+            return -1;
+        }
+
+        while(retry-- > 0) {
+            tapOnScreen(point);
+            Thread.sleep(interval);
+            if (mCaptureService.colorIs(to)) {
+                Log.d(TAG, "color changed to specific point. exiting..");
+                return 0;
+            } else {
+                Log.d(TAG, "color didn't change to specific point, try again");
+            }
+        }
+
+        return -1;
+    }
+
     public void inputText(String text) {
         super.runCommand("input text " + text);
     }
