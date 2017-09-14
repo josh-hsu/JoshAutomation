@@ -111,7 +111,6 @@ public class FlushMoneyJob extends AutoJob {
 
         private void main() throws Exception {
             int[] ambRange = new int[] {0x0E, 0x0E, 0x0E};
-            boolean stageCleared = false;
             int loop_time = 0;
 
             mGL.setGameOrientation(ScreenPoint.SO_Landscape);
@@ -133,18 +132,17 @@ public class FlushMoneyJob extends AutoJob {
                 }
                 sleep(1000);
 
-                if (mGL.getCaptureService().waitOnColor(pointDetectingButton, 130) < 0) {
-                    onError("沒出現偵測窗格");
+                sendMessage("點偵測直到戰鬥出現");
+                if (mGL.getInputService().tapOnScreenUntilColorChangedTo(pointDetectingButton, pointAttackButton, 1000, 20) < 0) {
+                    onError("點到天黑也沒看到戰鬥");
                     return;
                 }
-                mGL.getInputService().tapOnScreen(pointDetectingButton.coord);
 
-                sendMessage("等戰鬥按鈕");
-                if (mGL.getCaptureService().waitOnColor(pointAttackButton, 180) < 0) {
-                    onError("沒看到戰鬥按鈕");
+                sendMessage("點戰鬥直到出征出現");
+                if (mGL.getInputService().tapOnScreenUntilColorChangedTo(pointAttackButton, pointAttackFireButton, 1000, 20) < 0) {
+                    onError("點到天黑也沒看到出征");
                     return;
                 }
-                mGL.getInputService().tapOnScreen(pointAttackButton.coord);
 
                 sendMessage("等出征按鈕");
                 if (mGL.getCaptureService().waitOnColor(pointAttackFireButton, 80) < 0) {
@@ -152,11 +150,16 @@ public class FlushMoneyJob extends AutoJob {
                     return;
                 }
                 mGL.getInputService().tapOnScreen(pointMember1Select);
-                sleep(500);
+                sleep(1000);
                 mGL.getInputService().tapOnScreen(pointMember2Select);
                 sleep(1000);
-                mGL.getInputService().tapOnScreen(pointAttackFireButton.coord);
-                sleep(500);
+
+                sendMessage("點出征直到確認出現");
+                if (mGL.getInputService().tapOnScreenUntilColorChangedTo(pointAttackFireButton, pointAttackConfirmButton, 1000, 20) < 0) {
+                    onError("點到天黑也沒看到確認");
+                    return;
+                }
+                sleep(1000);
 
                 sendMessage("等出征確認");
                 if (mGL.getCaptureService().waitOnColor(pointAttackConfirmButton, 50) < 0) {
@@ -173,7 +176,7 @@ public class FlushMoneyJob extends AutoJob {
                     onError("點到天黑也沒看到離開戰鬥");
                     return;
                 }
-                sleep(2000);
+                sleep(4000);
                 mGL.getInputService().tapOnScreen(pointBattleOutButton.coord);
 
                 sendMessage("等確認");
@@ -181,20 +184,20 @@ public class FlushMoneyJob extends AutoJob {
                     onError("等不到確認");
                     return;
                 }
-                sleep(1000);
-                mGL.getInputService().tapOnScreen(pointBattleOutConfirmButton.coord);
 
-                sendMessage("等戰鬥離開按鈕");
-                if (mGL.getCaptureService().waitOnColor(pointBattleCloseButton, 50) < 0) {
-                    onError("沒看到戰鬥離開紐");
+                sendMessage("點確認直到離開按鈕");
+                if (mGL.getInputService().tapOnScreenUntilColorChangedTo(pointBattleOutConfirmButton, pointBattleCloseButton, 1000, 20) < 0) {
+                    onError("點到天黑沒見離開");
                     return;
                 }
-                sleep(2000);
-                mGL.getInputService().tapOnScreen(pointBattleCloseButton.coord);
+
+                sendMessage("點離開直到大地圖");
+                if (mGL.getInputService().tapOnScreenUntilColorChangedTo(pointBattleCloseButton, pointInTheMainMap, 1000, 20) < 0) {
+                    onError("點到天黑沒見地圖");
+                    return;
+                }
 
                 sendMessage("完成了" + (++loop_time) + "次");
-                sleep(2000);
-
             }
 
             sleep(1000);
