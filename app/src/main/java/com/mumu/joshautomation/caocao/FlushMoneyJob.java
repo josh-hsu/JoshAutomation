@@ -176,12 +176,10 @@ public class FlushMoneyJob extends AutoJob {
                     onError("點到天黑也沒看到離開戰鬥");
                     return;
                 }
-                sleep(4000);
-                mGL.getInputService().tapOnScreen(pointBattleOutButton.coord);
 
-                sendMessage("等確認");
-                if (mGL.getCaptureService().waitOnColor(pointBattleOutConfirmButton, 50) < 0) {
-                    onError("等不到確認");
+                sendMessage("點離開直到確認按鈕");
+                if (mGL.getInputService().tapOnScreenUntilColorChangedTo(pointBattleOutButton, pointBattleOutConfirmButton, 1000, 20) < 0) {
+                    onError("點到天黑沒見確認");
                     return;
                 }
 
