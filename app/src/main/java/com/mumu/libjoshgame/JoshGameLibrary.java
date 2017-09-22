@@ -21,7 +21,7 @@ import android.content.pm.PackageManager;
 import android.util.Log;
 
 /*
- * Josh Game Library - Version 1.3
+ * Josh Game Library - Version 1.3.1
  */
 /*
    JoshGameLibrary (GL)
@@ -93,7 +93,7 @@ public class JoshGameLibrary {
         if (mFullInitialized) {
             mCmd.runCommand(cmd);
         } else {
-            Log.d("JoshGameLibrary", "Command service is not initialized");
+            Log.d("LibGame", "Command service is not initialized");
         }
     }
 
@@ -105,7 +105,7 @@ public class JoshGameLibrary {
             if (mFullInitialized) {
                 mCmd.runCommand(cmd);
             } else {
-                Log.d("JoshGameLibrary", "Command service is not initialized");
+                Log.d("LibGame", "Command service is not initialized");
             }
         }
     }

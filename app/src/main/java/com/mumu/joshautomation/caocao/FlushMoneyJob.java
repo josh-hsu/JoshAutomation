@@ -149,10 +149,16 @@ public class FlushMoneyJob extends AutoJob {
                     onError("沒出征紐");
                     return;
                 }
-                mGL.getInputService().tapOnScreen(pointMember1Select);
-                sleep(1000);
-                mGL.getInputService().tapOnScreen(pointMember2Select);
-                sleep(1000);
+
+                if (mGL.getInputService().tapOnScreenUntilColorChangedTo(pointMember1Select, pointMember1DidSelect, 1000, 20) < 0) {
+                    onError("選第一人失敗");
+                    return;
+                }
+
+                if (mGL.getInputService().tapOnScreenUntilColorChangedTo(pointMember2Select, pointMember2DidSelect, 1000, 20) < 0) {
+                    onError("選第二人失敗");
+                    return;
+                }
 
                 sendMessage("點出征直到確認出現");
                 if (mGL.getInputService().tapOnScreenUntilColorChangedTo(pointAttackFireButton, pointAttackConfirmButton, 1000, 20) < 0) {
@@ -166,10 +172,11 @@ public class FlushMoneyJob extends AutoJob {
                     onError("等不到確認");
                     return;
                 }
-                mGL.getInputService().tapOnScreen(pointAttackConfirmButton.coord);
-                sleep(500);
-                mGL.getInputService().tapOnScreen(pointAttackConfirmButton.coord);
-                sleep(1000);
+
+                if (mGL.getInputService().tapOnScreenUntilColorChanged(pointAttackConfirmButton, 1500, 10) < 0) {
+                    onError("戰鬥無法開始");
+                    return;
+                }
 
                 sendMessage("點螢幕點到離開戰鬥紐");
                 if (mGL.getInputService().tapOnScreenUntilColorChangedTo(pointBattleCenterTap, pointBattleOutButton, 300, 100) < 0) {

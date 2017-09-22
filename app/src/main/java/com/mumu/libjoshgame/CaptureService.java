@@ -23,7 +23,7 @@ import java.io.RandomAccessFile;
 import java.util.ArrayList;
 
 public class CaptureService extends JoshGameLibrary.GLService {
-    private final String TAG = "LibJG";
+    private final String TAG = "LibGame";
     private final String mInternalDumpFile = Environment.getExternalStorageDirectory().toString() + "/internal.dump";
     private final String mFindColorDumpFile = Environment.getExternalStorageDirectory().toString() + "/find_color.dump";
     private int mScreenWidth = -1;

@@ -22,8 +22,12 @@ public class CaoCaoDefine {
     static ScreenPoint pointAttackButton = new ScreenPoint(0x66,0x70,0x60,0xff,89,1799,ScreenPoint.SO_Portrait);
     // attack fire (should wait), but tap two members first
     static ScreenPoint pointAttackFireButton = new ScreenPoint(0xba,0x8b,0x52,0xff,75,1589,ScreenPoint.SO_Portrait);
+    // select member point
     static ScreenCoord pointMember1Select = new ScreenCoord(752,285,ScreenPoint.SO_Portrait);
     static ScreenCoord pointMember2Select = new ScreenCoord(740,451,ScreenPoint.SO_Portrait);
+    // determine if member did be selected
+    static ScreenPoint pointMember1DidSelect = new ScreenPoint(217,2,1,0xff,368,390,ScreenPoint.SO_Landscape);
+    static ScreenPoint pointMember2DidSelect = new ScreenPoint(229,2,0,0xff,546,398,ScreenPoint.SO_Landscape);
     // attack confirm 1 & 2
     static ScreenPoint pointAttackConfirmButton = new ScreenPoint(0x3f,0x20,0x00,0xff,320,1340,ScreenPoint.SO_Portrait);
 

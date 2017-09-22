@@ -19,7 +19,7 @@ package com.mumu.libjoshgame;
 import android.util.Log;
 
 public class InputService extends JoshGameLibrary.GLService {
-    private static final String TAG = "LibJG";
+    private static final String TAG = "LibGame";
     private int mGameOrientation = ScreenPoint.SO_Landscape;
     private int mRandomTouchShift = 0;
     private int mScreenWidth = -1;
@@ -132,9 +132,7 @@ public class InputService extends JoshGameLibrary.GLService {
         while(retry-- > 0) {
             tapOnScreen(point.coord);
             Thread.sleep(interval);
-            if (mCaptureService.colorIs(point)) {
-                Log.d(TAG, "color didn't change, try again");
-            } else {
+            if (!mCaptureService.colorIs(point)) {
                 Log.d(TAG, "color changed. exiting..");
                 return 0;
             }
@@ -156,8 +154,6 @@ public class InputService extends JoshGameLibrary.GLService {
             if (mCaptureService.colorIs(to)) {
                 Log.d(TAG, "color changed to specific point. exiting..");
                 return 0;
-            } else {
-                Log.d(TAG, "color didn't change to specific point, try again");
             }
         }
 
@@ -177,8 +173,6 @@ public class InputService extends JoshGameLibrary.GLService {
             if (mCaptureService.colorIs(to)) {
                 Log.d(TAG, "color changed to specific point. exiting..");
                 return 0;
-            } else {
-                Log.d(TAG, "color didn't change to specific point, try again");
             }
         }
 
