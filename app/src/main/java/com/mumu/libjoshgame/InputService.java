@@ -16,6 +16,10 @@
 
 package com.mumu.libjoshgame;
 
+import android.content.Context;
+import android.media.Ringtone;
+import android.media.RingtoneManager;
+import android.net.Uri;
 import android.util.Log;
 
 public class InputService extends JoshGameLibrary.GLService {
@@ -24,13 +28,15 @@ public class InputService extends JoshGameLibrary.GLService {
     private int mRandomTouchShift = 0;
     private int mScreenWidth = -1;
     private int mScreenHeight = -1;
-    public static final int INPUT_TYPE_TAP = 0;
-    public static final int INPUT_TYPE_DOUBLE_TAP = 1;
-    public static final int INPUT_TYPE_TRIPLE_TAP = 2;
-    public static final int INPUT_TYPE_CONT_TAPS =3;
-    public static final int INPUT_TYPE_SWIPE = 4;
-    public static final int INPUT_TYPE_MAX = 5;
     private CaptureService mCaptureService = null;
+    private Context mContext = null;
+
+    private static final int INPUT_TYPE_TAP = 0;
+    private static final int INPUT_TYPE_DOUBLE_TAP = 1;
+    private static final int INPUT_TYPE_TRIPLE_TAP = 2;
+    private static final int INPUT_TYPE_CONT_TAPS =3;
+    private static final int INPUT_TYPE_SWIPE = 4;
+
 
     InputService(CaptureService cs) {
         Log.d(TAG, "InputService instance is created. \n");
@@ -40,6 +46,10 @@ public class InputService extends JoshGameLibrary.GLService {
     void setScreenDimension(int w, int h) {
         mScreenWidth = w;
         mScreenHeight = h;
+    }
+
+    void setContext(Context context) {
+        mContext = context;
     }
 
     void setGameOrientation(int orientation) {
@@ -61,7 +71,7 @@ public class InputService extends JoshGameLibrary.GLService {
      * apply random shift in touch point (added in 1.23)
      * TODO: need to find out why input binary takes a long time to execute
      */
-    public int touchOnScreen(int x, int y, int tx, int ty, int type) {
+    private int touchOnScreen(int x, int y, int tx, int ty, int type) {
         int x_shift = (int) (Math.random() * mRandomTouchShift) - mRandomTouchShift/2;
         int y_shift = (int) (Math.random() * mRandomTouchShift) - mRandomTouchShift/2;
 
@@ -183,8 +193,24 @@ public class InputService extends JoshGameLibrary.GLService {
         super.runCommand("input text " + text);
     }
 
-    public void playSound() {
-        super.runCommand("am start -a \"android.intent.action.VIEW\" -t \"audio/ogg\" -d \"file:///storage/emulated/0/Ringtones/hangouts_incoming_call.ogg\"");
+
+    /*
+     * playNotificationSound (added in 1.32)
+     * Play default notification sound, it needs the JoshGameLibrary
+     * initialized with setContext
+     */
+    public void playNotificationSound() {
+        if (mContext == null) {
+            Log.w(TAG, "Context has not been assigned, aborting play sound.");
+        } else {
+            try {
+                Uri notification = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
+                Ringtone r = RingtoneManager.getRingtone(mContext, notification);
+                r.play();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
     }
 
     public void setBacklightLow() {

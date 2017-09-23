@@ -1,9 +1,5 @@
 package com.mumu.joshautomation.fgo;
 
-import android.app.Service;
-import android.media.Ringtone;
-import android.media.RingtoneManager;
-import android.net.Uri;
 import android.util.Log;
 
 import com.mumu.joshautomation.AppPreferenceValue;
@@ -21,7 +17,6 @@ public class LoopBattleJob extends AutoJob {
     private FGORoutine mFGO;
     private LoopBattleJob mSelf;
     private BattleArgument mBattleArg;
-    private Service mRootService;
     private boolean mWaitSkip = false;
 
     public static final String jobName = "FGO Loop Battle Job";
@@ -69,10 +64,6 @@ public class LoopBattleJob extends AutoJob {
         if (object instanceof BattleArgument) {
             mBattleArg = (BattleArgument)object;
         }
-
-        if (object instanceof Service) {
-            mRootService = (Service)object;
-        }
     }
 
     public void setJobEventListener(AutoJobEventListener el) {
@@ -93,13 +84,7 @@ public class LoopBattleJob extends AutoJob {
     }
 
     private void playNotificationSound() {
-        try {
-            Uri notification = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
-            Ringtone r = RingtoneManager.getRingtone(mRootService, notification);
-            r.play();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+        mGL.getInputService().playNotificationSound();
     }
 
     private void refreshSetting() {

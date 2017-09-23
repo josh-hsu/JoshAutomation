@@ -21,7 +21,7 @@ import android.content.pm.PackageManager;
 import android.util.Log;
 
 /*
- * Josh Game Library - Version 1.3.1
+ * Josh Game Library - Version 1.32
  */
 /*
    JoshGameLibrary (GL)
@@ -34,7 +34,7 @@ import android.util.Log;
    mGL.setScreenDimension(1080, 1920);                //setting the dimension of screen for point check
    mGL.setTouchShift(6)                               //setting the touch random shift size
 
-   Note: with version 1.3 or higher, all the waiting functions are throwing InterruptExceptions
+   Note: with version 1.30 or higher, all the waiting functions are throwing InterruptExceptions
  */
 public class JoshGameLibrary {
     private InputService mInputService;
@@ -54,8 +54,13 @@ public class JoshGameLibrary {
     }
 
     public void setContext(Context context) {
-        mCmd = new Cmd(context.getPackageManager());
-        mFullInitialized = true;
+        if (context == null) {
+            mFullInitialized = false;
+        } else {
+            mInputService.setContext(context);
+            mCmd = new Cmd(context.getPackageManager());
+            mFullInitialized = true;
+        }
     }
 
     public void setPackageManager(PackageManager pm) {
@@ -87,14 +92,6 @@ public class JoshGameLibrary {
 
     public InputService getInputService() {
         return mInputService;
-    }
-
-    public void runCommand(String cmd) {
-        if (mFullInitialized) {
-            mCmd.runCommand(cmd);
-        } else {
-            Log.d("LibGame", "Command service is not initialized");
-        }
     }
 
     static class GLService {

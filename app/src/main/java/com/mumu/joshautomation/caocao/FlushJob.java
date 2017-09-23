@@ -1,17 +1,11 @@
 package com.mumu.joshautomation.caocao;
 
-import android.app.Service;
-import android.media.Ringtone;
-import android.media.RingtoneManager;
-import android.net.Uri;
 import android.util.Log;
 
-import com.mumu.joshautomation.AppPreferenceValue;
 import com.mumu.joshautomation.script.AutoJob;
 import com.mumu.joshautomation.script.AutoJobEventListener;
 import com.mumu.libjoshgame.JoshGameLibrary;
 import com.mumu.libjoshgame.ScreenPoint;
-import com.mumu.joshautomation.caocao.CaoCaoDefine.*;
 
 public class FlushJob extends AutoJob {
     private static final String TAG = "CaoCaoJob";
@@ -21,7 +15,6 @@ public class FlushJob extends AutoJob {
 
     private CaoCaoRoutine mCaoCao;
     private FlushJob mSelf;
-    private Service mRootService;
 
     public static final String jobName = "尻尻刷首抽";
 
@@ -64,9 +57,7 @@ public class FlushJob extends AutoJob {
      */
     @Override
     public void setExtra(Object object) {
-        if (object instanceof Service) {
-            mRootService = (Service)object;
-        }
+
     }
 
     public void setJobEventListener(AutoJobEventListener el) {
@@ -88,13 +79,7 @@ public class FlushJob extends AutoJob {
     }
 
     private void playNotificationSound() {
-        try {
-            Uri notification = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
-            Ringtone r = RingtoneManager.getRingtone(mRootService, notification);
-            r.play();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+        mGL.getInputService().playNotificationSound();
     }
 
     private void refreshSetting() {
@@ -105,7 +90,6 @@ public class FlushJob extends AutoJob {
 
         private void main() throws Exception {
             int[] ambRange = new int[] {0x0E, 0x0E, 0x0E};
-            boolean stageCleared = false;
 
             mGL.setGameOrientation(ScreenPoint.SO_Landscape);
             mGL.setAmbiguousRange(ambRange);

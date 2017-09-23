@@ -1,9 +1,5 @@
 package com.mumu.joshautomation.caocao;
 
-import android.app.Service;
-import android.media.Ringtone;
-import android.media.RingtoneManager;
-import android.net.Uri;
 import android.util.Log;
 
 import com.mumu.joshautomation.script.AutoJob;
@@ -21,7 +17,6 @@ public class FlushMoneyJob extends AutoJob {
 
     private CaoCaoRoutine mCaoCao;
     private FlushMoneyJob mSelf;
-    private Service mRootService;
 
     public static final String jobName = "尻尻刷錢錢";
 
@@ -64,9 +59,7 @@ public class FlushMoneyJob extends AutoJob {
      */
     @Override
     public void setExtra(Object object) {
-        if (object instanceof Service) {
-            mRootService = (Service)object;
-        }
+
     }
 
     public void setJobEventListener(AutoJobEventListener el) {
@@ -88,13 +81,7 @@ public class FlushMoneyJob extends AutoJob {
     }
 
     private void playNotificationSound() {
-        try {
-            Uri notification = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
-            Ringtone r = RingtoneManager.getRingtone(mRootService, notification);
-            r.play();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+        mGL.getInputService().playNotificationSound();
     }
 
     private void refreshSetting() {
