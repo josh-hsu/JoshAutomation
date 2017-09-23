@@ -275,8 +275,6 @@ public class PointSelectionActivity extends AppCompatActivity {
             if (AppPreferenceValue.getInstance().getPrefs().
                     getBoolean("stringFormattedPointEnable", false)) {
                 mPointInfo = "Format: " + mPointTouched.getFormattedString();
-                ScreenPoint test = new ScreenPoint(mPointTouched.getFormattedString());
-                Log.d(TAG, "before " + mPointTouched.toString() + "  AFTER: " + test.toString());
             } else {
                 mPointInfo = String.valueOf("X=" + x + "   Y=" + y + "\n" + kColorOnPoint);
             }

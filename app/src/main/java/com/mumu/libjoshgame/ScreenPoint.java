@@ -69,13 +69,10 @@ public class ScreenPoint {
             coord = new ScreenCoord(coordX, coordY, SO_Portrait); //in this case, we only use portrait orientation
 
             int rawColor = parsedArray[4] * unit*unit*unit + parsedArray[5] * unit*unit + parsedArray[6] * unit + parsedArray[7];
-            Log.d(TAG, "calculate raw " + rawColor);
             int colorR = (rawColor >> 16) & 0xff;
             int colorG = (rawColor >> 8)  & 0xff;
             int colorB = rawColor & 0xff;
             color = new ScreenColor(colorR, colorG, colorB, 0xFF); //we force transparent value to 0xff
-
-            Log.d(TAG, "ScreenPoint: generate " + toString());
         }
     }
 
