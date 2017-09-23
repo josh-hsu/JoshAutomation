@@ -38,6 +38,7 @@ import android.view.WindowManager;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.mumu.joshautomation.AppPreferenceValue;
 import com.mumu.joshautomation.R;
 import com.mumu.libjoshgame.JoshGameLibrary;
 import com.mumu.libjoshgame.ScreenPoint;
@@ -271,7 +272,15 @@ public class PointSelectionActivity extends AppCompatActivity {
                     "  B:0x" + Integer.toHexString(mPointTouched.color.b & 0xFF).toUpperCase() +
                     "  A:0x"+ Integer.toHexString(mPointTouched.color.t & 0xFF).toUpperCase();
 
-            mPointInfo = String.valueOf("X=" + x + "   Y=" + y + "\n" + kColorOnPoint);
+            if (AppPreferenceValue.getInstance().getPrefs().
+                    getBoolean("stringFormattedPointEnable", false)) {
+                mPointInfo = "Format: " + mPointTouched.getFormattedString();
+                ScreenPoint test = new ScreenPoint(mPointTouched.getFormattedString());
+                Log.d(TAG, "before " + mPointTouched.toString() + "  AFTER: " + test.toString());
+            } else {
+                mPointInfo = String.valueOf("X=" + x + "   Y=" + y + "\n" + kColorOnPoint);
+            }
+
             mInfoTextView.setText(mPointInfo);
         }
     }
