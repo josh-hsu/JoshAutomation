@@ -24,7 +24,6 @@ public class FlushJob extends AutoJob {
         /* JoshGameLibrary basic initial */
         mGL = JoshGameLibrary.getInstance();
         mGL.setGameOrientation(ScreenPoint.SO_Landscape);
-        mGL.setScreenDimension(1080, 1920);
         mGL.setTouchShift(6);
 
         mCaoCao = new CaoCaoRoutine(mGL, mListener); //listener might be null before assigning

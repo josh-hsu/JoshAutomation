@@ -15,13 +15,13 @@
  */
 package com.mumu.joshautomation;
 
-import android.app.Notification;
 import android.app.PendingIntent;
 import android.app.Service;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
+import android.graphics.Point;
 import android.os.Environment;
 import android.os.Handler;
 import android.os.IBinder;
@@ -29,6 +29,7 @@ import android.support.v7.app.AlertDialog;
 import android.support.v4.app.NotificationCompat;
 import android.support.v7.view.ContextThemeWrapper;
 import android.util.Log;
+import android.view.Display;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.Window;
@@ -142,46 +143,18 @@ public class HeadService extends Service implements AutoJobEventListener{
         super.onCreate();
 
         mContext = this;
-        mWindowManager = (WindowManager) getSystemService(WINDOW_SERVICE);
 
+        // initial game panel view
         initGamePanelViews();
+
+        // initial game library, this should never fail and follow up initGamePanelViews
+        initGameLibrary();
+
+        // initial a notification
         initNotification();
+
         mMessageThreadRunning = true;
         new GetMessageThread().start();
-
-        mAPV = AppPreferenceValue.getInstance();
-        mAPV.init(mContext);
-
-        mGL = JoshGameLibrary.getInstance();
-        mGL.setContext(mContext);
-        mGL.setScreenDimension(1080, 1920);
-        mGL.setGameOrientation(ScreenPoint.SO_Portrait);
-
-        mAutoJobHandler = AutoJobHandler.getHandler();
-
-        mAutoJobHandler.addJob(new LoopBattleJob());
-        mAutoJobHandler.addJob(new AutoBattleJob());
-        mAutoJobHandler.addJob(new PureBattleJob());
-        mAutoJobHandler.addJob(new NewFlushJob());
-        mAutoJobHandler.addJob(new TWAutoLoginJob());
-        mAutoJobHandler.addJob(new ShinobiLoopBattleJob());
-        mAutoJobHandler.addJob(new FlushJob());
-        mAutoJobHandler.addJob(new FlushMoneyJob());
-
-        mAutoJobHandler.setJobEventListener(LoopBattleJob.jobName, this);
-        mAutoJobHandler.setJobEventListener(PureBattleJob.jobName, this);
-        mAutoJobHandler.setJobEventListener(AutoBattleJob.jobName, this);
-        mAutoJobHandler.setJobEventListener(NewFlushJob.jobName, this);
-        mAutoJobHandler.setJobEventListener(TWAutoLoginJob.jobName, this);
-        mAutoJobHandler.setJobEventListener(ShinobiLoopBattleJob.jobName, this);
-        mAutoJobHandler.setJobEventListener(FlushJob.jobName, this);
-        mAutoJobHandler.setJobEventListener(FlushMoneyJob.jobName, this);
-
-        //add service itself to job
-        mAutoJobHandler.setExtra(LoopBattleJob.jobName, this);
-        mAutoJobHandler.setExtra(ShinobiLoopBattleJob.jobName, this);
-        mAutoJobHandler.setExtra(FlushJob.jobName, this);
-        mAutoJobHandler.setExtra(FlushMoneyJob.jobName, this);
     }
 
     // provide our service not be able to kill
@@ -201,6 +174,7 @@ public class HeadService extends Service implements AutoJobEventListener{
 
     private void initGamePanelViews() {
         mHeadIconList = new ArrayList<>();
+        mWindowManager = (WindowManager) getSystemService(WINDOW_SERVICE);
 
         // Head Icon
         HeadIconView headIcon = new HeadIconView(new ImageView(this), mWindowManager, 0, 0);
@@ -296,6 +270,46 @@ public class HeadService extends Service implements AutoJobEventListener{
 
         // Set default visibility
         configHeadIconShowing(HeadIconView.VISIBLE);
+    }
+
+    private void initGameLibrary() {
+        mAPV = AppPreferenceValue.getInstance();
+        mAPV.init(mContext);
+
+        Display display = mWindowManager.getDefaultDisplay();
+        Point size = new Point();
+        display.getSize(size);
+
+        mGL = JoshGameLibrary.getInstance();
+        mGL.setContext(mContext);
+        mGL.setScreenDimension(size.x, size.y);
+        mGL.setGameOrientation(ScreenPoint.SO_Portrait);
+
+        mAutoJobHandler = AutoJobHandler.getHandler();
+
+        mAutoJobHandler.addJob(new LoopBattleJob());
+        mAutoJobHandler.addJob(new AutoBattleJob());
+        mAutoJobHandler.addJob(new PureBattleJob());
+        mAutoJobHandler.addJob(new NewFlushJob());
+        mAutoJobHandler.addJob(new TWAutoLoginJob());
+        mAutoJobHandler.addJob(new ShinobiLoopBattleJob());
+        mAutoJobHandler.addJob(new FlushJob());
+        mAutoJobHandler.addJob(new FlushMoneyJob());
+
+        mAutoJobHandler.setJobEventListener(LoopBattleJob.jobName, this);
+        mAutoJobHandler.setJobEventListener(PureBattleJob.jobName, this);
+        mAutoJobHandler.setJobEventListener(AutoBattleJob.jobName, this);
+        mAutoJobHandler.setJobEventListener(NewFlushJob.jobName, this);
+        mAutoJobHandler.setJobEventListener(TWAutoLoginJob.jobName, this);
+        mAutoJobHandler.setJobEventListener(ShinobiLoopBattleJob.jobName, this);
+        mAutoJobHandler.setJobEventListener(FlushJob.jobName, this);
+        mAutoJobHandler.setJobEventListener(FlushMoneyJob.jobName, this);
+
+        //add service itself to job
+        mAutoJobHandler.setExtra(LoopBattleJob.jobName, this);
+        mAutoJobHandler.setExtra(ShinobiLoopBattleJob.jobName, this);
+        mAutoJobHandler.setExtra(FlushJob.jobName, this);
+        mAutoJobHandler.setExtra(FlushMoneyJob.jobName, this);
     }
 
     @Override

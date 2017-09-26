@@ -28,7 +28,6 @@ public class TWAutoLoginJob extends AutoJob {
         /* JoshGameLibrary basic initial */
         mGL = JoshGameLibrary.getInstance();
         mGL.setGameOrientation(ScreenPoint.SO_Landscape);
-        mGL.setScreenDimension(1080, 1920);
 
         mSelf = this;
     }

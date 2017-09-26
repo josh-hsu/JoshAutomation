@@ -26,7 +26,6 @@ public class PureBattleJob extends AutoJob {
         /* JoshGameLibrary basic initial */
         mGL = JoshGameLibrary.getInstance();
         mGL.setGameOrientation(ScreenPoint.SO_Landscape);
-        mGL.setScreenDimension(1080, 1920);
 
         mFGO = new FGORoutine(mGL, mListener);
         mSelf = this;
