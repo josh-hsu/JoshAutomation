@@ -28,6 +28,8 @@ public class CaptureService extends JoshGameLibrary.GLService {
     private final String mFindColorDumpFile = Environment.getExternalStorageDirectory().toString() + "/find_color.dump";
     private int mScreenWidth = -1;
     private int mScreenHeight = -1;
+    private int mScreenXOffset = 0;
+    private int mScreenYOffset = 0;
     private int mCurrentGameOrientation = ScreenPoint.SO_Portrait;
     private int[] mAmbiguousRange = {0x05, 0x05, 0x06};
     private final int mMaxColorFinding = 10;
@@ -43,6 +45,16 @@ public class CaptureService extends JoshGameLibrary.GLService {
 
     void setScreenOrientation(int o) {
         mCurrentGameOrientation = o;
+    }
+
+    /*
+     * setScreenOffset (added in 1.34)
+     * this function can be called by JoshGameLibrary only
+     * shift an amount of offset for every point input
+     */
+    void setScreenOffset(int xOffset, int yOffset) {
+        mScreenXOffset = xOffset;
+        mScreenYOffset = yOffset;
     }
 
     void setAmbiguousRange(int[] range) {

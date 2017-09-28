@@ -28,6 +28,8 @@ public class InputService extends JoshGameLibrary.GLService {
     private int mRandomTouchShift = 0;
     private int mScreenWidth = -1;
     private int mScreenHeight = -1;
+    private int mScreenXOffset = 0;
+    private int mScreenYOffset = 0;
     private CaptureService mCaptureService = null;
     private Context mContext = null;
 
@@ -63,6 +65,18 @@ public class InputService extends JoshGameLibrary.GLService {
      */
     void setTouchShift(int ran) {
         mRandomTouchShift = ran;
+    }
+
+
+    /*
+     * setScreenOffset (added in 1.34)
+     * this function can be called by JoshGameLibrary only
+     * shift an amount of offset for every point input
+     * this will apply touch shift as well
+     */
+    void setScreenOffset(int xOffset, int yOffset) {
+        mScreenXOffset = xOffset;
+        mScreenYOffset = yOffset;
     }
 
     /*

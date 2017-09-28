@@ -21,7 +21,7 @@ import android.content.pm.PackageManager;
 import android.util.Log;
 
 /*
- * Josh Game Library - Version 1.33
+ * Josh Game Library - Version 1.34
  */
 /*
    JoshGameLibrary (GL)
@@ -76,6 +76,16 @@ public class JoshGameLibrary {
     public void setGameOrientation(int orientation) {
         mInputService.setGameOrientation(orientation);
         mCaptureService.setScreenOrientation(orientation);
+    }
+
+    public void setScreenOffset(int xOffset, int yOffset, int offsetOrientation) {
+        if (offsetOrientation == ScreenPoint.SO_Landscape) {
+            mInputService.setScreenOffset(yOffset, xOffset);
+            mCaptureService.setScreenOffset(yOffset, xOffset);
+        } else {
+            mInputService.setScreenOffset(xOffset, yOffset);
+            mCaptureService.setScreenOffset(xOffset, yOffset);
+        }
     }
 
     public void setAmbiguousRange(int[] range) {
