@@ -33,12 +33,15 @@ public class CaptureService extends JoshGameLibrary.GLService {
     private int mCurrentGameOrientation = ScreenPoint.SO_Portrait;
     private int[] mAmbiguousRange = {0x05, 0x05, 0x06};
     private final int mMaxColorFinding = 10;
+    private boolean mChatty = true;
     
     CaptureService() {
         Log.d(TAG, "CaptureService has been created.");
     }
 
     void setScreenDimension(int w, int h) {
+        if (mChatty) Log.d(TAG, "Setting width = " + w + ", height = " + h);
+
         mScreenHeight = h;
         mScreenWidth = w;
     }
@@ -62,6 +65,10 @@ public class CaptureService extends JoshGameLibrary.GLService {
         mAmbiguousRange = range;
     }
 
+    public void setChatty(boolean chatty) {
+        mChatty = chatty;
+    }
+
     public void dumpScreenPNG(String filename) {
         super.runCommand("screencap -p " + filename);
     }
@@ -76,7 +83,7 @@ public class CaptureService extends JoshGameLibrary.GLService {
     }
 
     /*
-     * calculate offset
+     * calculateOffset
      * This function calculate the offset of dump file for
      * retrieving color of the specific point
      */
@@ -84,7 +91,16 @@ public class CaptureService extends JoshGameLibrary.GLService {
         int offset = 0;
         final int bpp = 4;
 
-        //if Android version is 7.0 or higher, the dump orientation will be obeyed device
+        if (mChatty) {
+            if (coord.orientation == ScreenPoint.SO_Landscape)
+                Log.d(TAG, "Mapping (" + coord.x + ", " + coord.y +
+                    ") to ("  + (coord.x + mScreenYOffset) + ", " + (coord.y + mScreenXOffset) + ")");
+            else
+                Log.d(TAG, "Mapping (" + coord.x + ", " + coord.y +
+                        ") to ("  + (coord.x + mScreenXOffset) + ", " + (coord.y + mScreenYOffset) + ")");
+        }
+
+        //if Android version is 7.0 or higher, the dump orientation will obey the device status
         if (mCurrentGameOrientation == ScreenPoint.SO_Portrait) {
             if (coord.orientation == ScreenPoint.SO_Portrait) {
                 offset = (mScreenWidth * (coord.y + mScreenYOffset) + (coord.x + mScreenXOffset)) * bpp;
@@ -231,7 +247,7 @@ public class CaptureService extends JoshGameLibrary.GLService {
     /*
      * checkColorIsInRegion (added in 1.20)
      * Check if the colors set is in the range of src <=> dest
-     * This function doesn't check the position of color, it only checks
+     * This function doesn't return the position of color, it only checks
      * its existence
      *
      * src: Source ScreenCoord (must smaller than dest)
@@ -292,7 +308,8 @@ public class CaptureService extends JoshGameLibrary.GLService {
             }
         }
 
-        Log.d(TAG, "FindColorInRange: now checking total " + coordList.size() + " points");
+        if (mChatty) Log.d(TAG, "FindColorInRange: now checking total " + coordList.size() + " points");
+
         dumpScreen(mFindColorDumpFile);
         getColorsOnDump(colorsReturned, mFindColorDumpFile, coordList);
         for(ScreenColor color : colorsReturned) {
@@ -565,6 +582,7 @@ public class CaptureService extends JoshGameLibrary.GLService {
 
         while(threshold-- > 0) {
             getColorOnScreen(currentPoint.color, coord);
+            if (mChatty) Log.d(TAG, "get color " + currentPoint.color.toString());
             if (colorCompare(sc, currentPoint.color)) {
                 Log.d(TAG, "CaptureService: Matched!");
                 return 0;

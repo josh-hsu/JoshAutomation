@@ -30,7 +30,7 @@ public class AutoBattleJob extends AutoJob {
         // FGO game specific point offset
         if (mGL.getScreenWidth() == 1080) {
             if (mGL.getScreenHeight() == 2160) {
-                mGL.setScreenOffset(45, 0, ScreenPoint.SO_Landscape);
+                mGL.setScreenOffset(42, 0, ScreenPoint.SO_Landscape);
             }
         }
 

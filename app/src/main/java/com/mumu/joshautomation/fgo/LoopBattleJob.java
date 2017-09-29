@@ -20,7 +20,7 @@ public class LoopBattleJob extends AutoJob {
     private BattleArgument mBattleArg;
     private boolean mWaitSkip = false;
 
-    public static final String jobName = "FGO Loop Battle Job";
+    public static final String jobName = "FGO 循環戰鬥";
 
     public LoopBattleJob() {
         super(jobName);
@@ -33,7 +33,7 @@ public class LoopBattleJob extends AutoJob {
         // FGO game specific point offset
         if (mGL.getScreenWidth() == 1080) {
             if (mGL.getScreenHeight() == 2160) {
-                mGL.setScreenOffset(45, 0, ScreenPoint.SO_Landscape);
+                mGL.setScreenOffset(42, 0, ScreenPoint.SO_Landscape);
             }
         }
 
@@ -103,10 +103,11 @@ public class LoopBattleJob extends AutoJob {
     private class MainJobRoutine extends Thread {
 
         private void main() throws Exception {
-            int[] ambRange = new int[] {0x0A, 0x0A, 0x0A};
+            int[] ambRange = new int[] {0x0A, 0x0A, 0x10};
             boolean stageCleared = false;
 
             mGL.setGameOrientation(ScreenPoint.SO_Landscape);
+            mGL.setScreenDimension(1080,2160);
             mGL.setAmbiguousRange(ambRange);
 
             sendMessage("開始循環戰鬥");

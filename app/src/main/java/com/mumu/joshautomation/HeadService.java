@@ -273,6 +273,9 @@ public class HeadService extends Service implements AutoJobEventListener{
     }
 
     private void initGameLibrary() {
+        int w = 1080;
+        int h = 1920;
+        // App Preference Value should be initialized here
         mAPV = AppPreferenceValue.getInstance();
         mAPV.init(mContext);
 
@@ -280,9 +283,25 @@ public class HeadService extends Service implements AutoJobEventListener{
         Point size = new Point();
         display.getSize(size);
 
+        // we always treat the short edge as width
+        // TODO: we need to find a new way to get actual panel width and height
+        if (size.x > size.y) {
+            w = size.y;
+            if (size.x > 2000)
+                h = 2160;
+            else
+                h = size.x;
+        } else {
+            w = size.x;
+            if (size.y > 2000)
+                h = 2160;
+            else
+                h = size.y;
+        }
+
         mGL = JoshGameLibrary.getInstance();
         mGL.setContext(mContext);
-        mGL.setScreenDimension(size.x, size.y);
+        mGL.setScreenDimension(w, h);
         mGL.setGameOrientation(ScreenPoint.SO_Portrait);
 
         mAutoJobHandler = AutoJobHandler.getHandler();
