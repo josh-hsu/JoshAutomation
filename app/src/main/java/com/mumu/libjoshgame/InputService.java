@@ -126,20 +126,37 @@ public class InputService extends JoshGameLibrary.GLService {
         return 0;
     }
 
+    private ScreenCoord getCalculatedOffsetCoord(ScreenCoord coord1) {
+        ScreenCoord coord;
+
+        if (coord1.orientation == ScreenPoint.SO_Portrait) {
+            coord = new ScreenCoord(coord1.x + mScreenXOffset, coord1.y + mScreenYOffset, coord1.orientation);
+        } else {
+            coord = new ScreenCoord(coord1.x + mScreenYOffset, coord1.y + mScreenXOffset, coord1.orientation);
+        }
+
+        return coord;
+    }
+
     public int tapOnScreen(ScreenCoord coord1) {
-        if (mGameOrientation != coord1.orientation)
-            touchOnScreen(coord1.y, mScreenWidth - coord1.x, 0, 0, INPUT_TYPE_TAP);
+        ScreenCoord coord = getCalculatedOffsetCoord(coord1);
+
+        if (mGameOrientation != coord.orientation)
+            touchOnScreen(coord.y, mScreenWidth - coord.x, 0, 0, INPUT_TYPE_TAP);
         else
-            touchOnScreen(coord1.x, coord1.y, 0, 0, INPUT_TYPE_TAP);
+            touchOnScreen(coord.x, coord.y, 0, 0, INPUT_TYPE_TAP);
 
         return 0;
     }
 
     public int swipeOnScreen(ScreenCoord start, ScreenCoord end) {
+        ScreenCoord coord_start = getCalculatedOffsetCoord(start);
+        ScreenCoord coord_end = getCalculatedOffsetCoord(end);
+
         if (mGameOrientation != start.orientation)
-            touchOnScreen(start.y, mScreenWidth - start.x, end.y, mScreenWidth - end.x, INPUT_TYPE_SWIPE);
+            touchOnScreen(coord_start.y, mScreenWidth - coord_start.x, coord_end.y, mScreenWidth - coord_end.x, INPUT_TYPE_SWIPE);
         else
-            touchOnScreen(start.x, start.y, end.x, end.y, INPUT_TYPE_SWIPE);
+            touchOnScreen(coord_start.x, coord_start.y, coord_end.x, coord_end.y, INPUT_TYPE_SWIPE);
 
         return 0;
     }

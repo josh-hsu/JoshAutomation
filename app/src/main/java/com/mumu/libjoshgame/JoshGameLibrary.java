@@ -35,12 +35,15 @@ import android.util.Log;
    mGL.setTouchShift(6)                               //setting the touch random shift size
 
    Note: with version 1.30 or higher, all the waiting functions are throwing InterruptExceptions
+   Note: JoshGameLibrary support minimal SDK version of Android 7.0, if you are using Android 6.0 or below
+         you should see Josh-Tool instead.
  */
 public class JoshGameLibrary {
     private InputService mInputService;
     private CaptureService mCaptureService;
     private static Cmd mCmd;
     private static boolean mFullInitialized = false;
+    private int width, height;
 
     private static JoshGameLibrary currentRuntime = new JoshGameLibrary();
 
@@ -69,6 +72,8 @@ public class JoshGameLibrary {
     }
 
     public void setScreenDimension(int w, int h) {
+        width = w;
+        height = h;
         mCaptureService.setScreenDimension(w, h);
         mInputService.setScreenDimension(w, h);
     }
@@ -78,6 +83,12 @@ public class JoshGameLibrary {
         mCaptureService.setScreenOrientation(orientation);
     }
 
+    /*
+     * setScreenOffset (added in 1.34)
+     * screen offset is used for various height screen, especially for
+     * the same set of 1920*1080, 2160*1080, 2240*1080
+     * Internal service will only treat this value as portrait orientation
+     */
     public void setScreenOffset(int xOffset, int yOffset, int offsetOrientation) {
         if (offsetOrientation == ScreenPoint.SO_Landscape) {
             mInputService.setScreenOffset(yOffset, xOffset);
@@ -102,6 +113,14 @@ public class JoshGameLibrary {
 
     public InputService getInputService() {
         return mInputService;
+    }
+
+    public int getScreenWidth () {
+        return width;
+    }
+
+    public int getScreenHeight() {
+        return height;
     }
 
     static class GLService {

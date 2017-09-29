@@ -6,6 +6,7 @@ import com.mumu.joshautomation.AppPreferenceValue;
 import com.mumu.joshautomation.script.AutoJob;
 import com.mumu.joshautomation.script.AutoJobEventListener;
 import com.mumu.libjoshgame.JoshGameLibrary;
+import com.mumu.libjoshgame.ScreenCoord;
 import com.mumu.libjoshgame.ScreenPoint;
 
 public class LoopBattleJob extends AutoJob {
@@ -28,6 +29,13 @@ public class LoopBattleJob extends AutoJob {
         mGL = JoshGameLibrary.getInstance();
         mGL.setGameOrientation(ScreenPoint.SO_Landscape);
         mGL.setTouchShift(6);
+
+        // FGO game specific point offset
+        if (mGL.getScreenWidth() == 1080) {
+            if (mGL.getScreenHeight() == 2160) {
+                mGL.setScreenOffset(45, 0, ScreenPoint.SO_Landscape);
+            }
+        }
 
         mFGO = new FGORoutine(mGL, mListener); //listener might be null before assigning
         mSelf = this;

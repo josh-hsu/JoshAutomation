@@ -51,6 +51,7 @@ public class CaptureService extends JoshGameLibrary.GLService {
      * setScreenOffset (added in 1.34)
      * this function can be called by JoshGameLibrary only
      * shift an amount of offset for every point input
+     * we will treat this as portrait orientation
      */
     void setScreenOffset(int xOffset, int yOffset) {
         mScreenXOffset = xOffset;
@@ -75,6 +76,33 @@ public class CaptureService extends JoshGameLibrary.GLService {
     }
 
     /*
+     * calculate offset
+     * This function calculate the offset of dump file for
+     * retrieving color of the specific point
+     */
+    private int calculateOffset(ScreenCoord coord) {
+        int offset = 0;
+        final int bpp = 4;
+
+        //if Android version is 7.0 or higher, the dump orientation will be obeyed device
+        if (mCurrentGameOrientation == ScreenPoint.SO_Portrait) {
+            if (coord.orientation == ScreenPoint.SO_Portrait) {
+                offset = (mScreenWidth * (coord.y + mScreenYOffset) + (coord.x + mScreenXOffset)) * bpp;
+            } else if (coord.orientation == ScreenPoint.SO_Landscape) {
+                offset = (mScreenWidth * (coord.x + mScreenYOffset) + (mScreenWidth - (coord.y + mScreenXOffset))) * bpp;
+            }
+        } else {
+            if (coord.orientation == ScreenPoint.SO_Portrait) {
+                offset = (mScreenHeight * (mScreenWidth - (coord.x + mScreenXOffset)) + (coord.y + mScreenYOffset)) * bpp;
+            } else if (coord.orientation == ScreenPoint.SO_Landscape) {
+                offset = (mScreenHeight * (coord.y + mScreenXOffset) + (coord.x + mScreenYOffset)) * bpp;
+            }
+        }
+
+        return offset;
+    }
+
+    /*
      * getColorOnDumpInternal
      * This is used only insides this class
      */
@@ -90,23 +118,10 @@ public class CaptureService extends JoshGameLibrary.GLService {
      */
     public void getColorOnDump(ScreenColor sc, String filename, ScreenCoord coord) {
         RandomAccessFile dumpFile;
-        int offset = 0;
-        int bpp = 4;
+        int offset;
         byte[] colorInfo = new byte[4];
 
-        //if Android version is 7.0 or higher, the dump orientation will be obeyed device
-        if (mCurrentGameOrientation == ScreenPoint.SO_Portrait) {
-            if (coord.orientation == ScreenPoint.SO_Portrait)
-                offset = (mScreenWidth * coord.y + coord.x) * bpp;
-            else if (coord.orientation == ScreenPoint.SO_Landscape)
-                offset = (mScreenWidth * coord.x + (mScreenWidth - coord.y)) * bpp;
-        } else {
-            if (coord.orientation == ScreenPoint.SO_Portrait) {
-                offset = (mScreenHeight * (mScreenWidth - coord.x) + coord.y) * bpp;
-            } else if (coord.orientation == ScreenPoint.SO_Landscape) {
-                offset = (mScreenHeight * coord.y + coord.x) * bpp;
-            }
-        }
+        offset = calculateOffset(coord);
 
         try {
             dumpFile = new RandomAccessFile(filename, "rw");
@@ -141,8 +156,7 @@ public class CaptureService extends JoshGameLibrary.GLService {
     public void getColorsOnDump(ArrayList<ScreenColor> colors,
                                 String filename, ArrayList<ScreenCoord> coords) {
         RandomAccessFile dumpFile;
-        int offset = 0;
-        int bpp = 4;
+        int offset;
         byte[] colorInfo;
 
         try {
@@ -156,19 +170,7 @@ public class CaptureService extends JoshGameLibrary.GLService {
             ScreenCoord coord = coords.get(i);
             ScreenColor color = colors.get(i);
 
-            //if Android version is 7.0 or higher, the dump orientation will be obeyed device
-            if (mCurrentGameOrientation == ScreenPoint.SO_Portrait) {
-                if (coord.orientation == ScreenPoint.SO_Portrait)
-                    offset = (mScreenWidth * coord.y + coord.x) * bpp;
-                else if (coord.orientation == ScreenPoint.SO_Landscape)
-                    offset = (mScreenWidth * coord.x + (mScreenWidth - coord.y)) * bpp;
-            } else {
-                if (coord.orientation == ScreenPoint.SO_Portrait) {
-                    offset = (mScreenHeight * (mScreenWidth - coord.x) + coord.y) * bpp;
-                } else if (coord.orientation == ScreenPoint.SO_Landscape) {
-                    offset = (mScreenHeight * coord.y + coord.x) * bpp;
-                }
-            }
+            offset = calculateOffset(coord);
 
             try {
                 colorInfo = new byte[4];
@@ -196,8 +198,7 @@ public class CaptureService extends JoshGameLibrary.GLService {
      * i.e., the file open/close should be handled outside
      */
     private boolean checkColorInList(RandomAccessFile dumpFileOpened, ArrayList<ScreenPoint> points) {
-        int offset = 0;
-        int bpp = 4;
+        int offset;
         byte[] colorInfo;
 
         for(int i = 0; i < points.size(); i++) {
@@ -205,19 +206,7 @@ public class CaptureService extends JoshGameLibrary.GLService {
             ScreenCoord coord = point.coord;
             ScreenColor nowColor = new ScreenColor();
 
-            //if Android version is 7.0 or higher, the dump orientation will be obeyed device
-            if (mCurrentGameOrientation == ScreenPoint.SO_Portrait) {
-                if (coord.orientation == ScreenPoint.SO_Portrait)
-                    offset = (mScreenWidth * coord.y + coord.x) * bpp;
-                else if (point.coord.orientation == ScreenPoint.SO_Landscape)
-                    offset = (mScreenWidth * coord.x + (mScreenWidth - coord.y)) * bpp;
-            } else {
-                if (point.coord.orientation == ScreenPoint.SO_Portrait) {
-                    offset = (mScreenHeight * (mScreenWidth - coord.x) + coord.y) * bpp;
-                } else if (point.coord.orientation == ScreenPoint.SO_Landscape) {
-                    offset = (mScreenHeight * coord.y + coord.x) * bpp;
-                }
-            }
+            offset = calculateOffset(coord);
 
             try {
                 colorInfo = new byte[4];

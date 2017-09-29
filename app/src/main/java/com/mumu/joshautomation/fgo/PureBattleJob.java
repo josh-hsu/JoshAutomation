@@ -27,6 +27,13 @@ public class PureBattleJob extends AutoJob {
         mGL = JoshGameLibrary.getInstance();
         mGL.setGameOrientation(ScreenPoint.SO_Landscape);
 
+        // FGO game specific point offset
+        if (mGL.getScreenWidth() == 1080) {
+            if (mGL.getScreenHeight() == 2160) {
+                mGL.setScreenOffset(45, 0, ScreenPoint.SO_Landscape);
+            }
+        }
+
         mFGO = new FGORoutine(mGL, mListener);
         mSelf = this;
     }
