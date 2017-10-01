@@ -21,7 +21,7 @@ import android.content.pm.PackageManager;
 import android.util.Log;
 
 /*
- * Josh Game Library - Version 1.34
+ * Josh Game Library - Version 1.40
  */
 /*
    JoshGameLibrary (GL)
