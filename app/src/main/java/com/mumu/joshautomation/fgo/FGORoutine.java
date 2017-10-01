@@ -7,6 +7,7 @@ import com.mumu.joshautomation.script.AutoJobEventListener;
 import com.mumu.libjoshgame.JoshGameLibrary;
 import com.mumu.libjoshgame.ScreenCoord;
 
+import java.security.acl.LastOwnerException;
 import java.util.ArrayList;
 
 import static com.mumu.joshautomation.fgo.FGORoutineDefine.*;
@@ -247,6 +248,15 @@ class FGORoutine {
         return 0;
     }
 
+    public int battleGetStage() {
+        for(int i = 0; i < battleStages.size(); i++) {
+            if (mGL.getCaptureService().colorIs(battleStages.get(i)))
+                return i + 1;
+        }
+
+        return -1;
+    }
+
     public int battleRoutine(BattleArgument arg) throws InterruptedException {
         String cardInfo;
         int[] optimizedDraw, cardStatusNow, skillDraw;
@@ -255,7 +265,8 @@ class FGORoutine {
         int resultTry = 20; //fail retry of waiting result
         int battleTry = 150; // fail retry of waiting battle button (150 * 1 = 150 secs)
         int checkCardTry = 20; // fail retry of waiting card recognize
-        int battleRound = 1; //indicate which round of battle
+        int battleStage = 1; //indicate which stage of battle
+        int battleRound = 1; //indicate which round of battle in a stage
         boolean useRoyalIfAvailable = AppPreferenceValue.getInstance().getPrefs().getBoolean("battleUseRoyal", true);
         boolean useOptimizeDraw = AppPreferenceValue.getInstance().getPrefs().getBoolean("battleOptPref", true);
 
@@ -282,9 +293,24 @@ class FGORoutine {
             battleTry = 150;
             checkCardTry = 20;
 
+            //check for stage, default 1
+            int thisStage = battleGetStage();
+            if (thisStage < 0) {
+                thisStage = 1;
+                sendMessage("回合判斷失敗");
+                sleep(1000);
+            }
+
+            if (thisStage != battleStage) {
+                battleStage = thisStage;
+                battleRound = 1;
+            }
+            sendMessage("戰鬥("+battleStage+","+battleRound+")");
+            sleep(1000);
+
             //check skill
             if (arg != null) {
-                skillDraw = arg.getSkillIndexOfRound(battleRound);
+                skillDraw = arg.getSkillIndexOfStage(battleStage, battleRound);
                 sendMessage("技能需求");
                 tapOnSkill(skillDraw);
             }
@@ -327,7 +353,7 @@ class FGORoutine {
 
             //check royal request if any
             if (arg != null) {
-                royalDraw = arg.getRoyalIndexOfRound(battleRound);
+                royalDraw = arg.getRoyalIndexOfStage(battleStage, battleRound);
                 tapOnRoyal(royalDraw);
             }
 

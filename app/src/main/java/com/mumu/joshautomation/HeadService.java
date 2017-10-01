@@ -303,6 +303,7 @@ public class HeadService extends Service implements AutoJobEventListener{
         mGL.setContext(mContext);
         mGL.setScreenDimension(w, h);
         mGL.setGameOrientation(ScreenPoint.SO_Portrait);
+        mGL.getCaptureService().setChatty(false);
 
         mAutoJobHandler = AutoJobHandler.getHandler();
 

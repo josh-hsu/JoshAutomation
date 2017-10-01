@@ -81,7 +81,14 @@ public class BattleArgument {
      * @return true if index out of bound
      */
     private boolean outOfBoundCheck(int stage, int round) {
-        return mParsedCmd.length < stage - 1 || mParsedCmd[stage].length < round - 1;
+        Log.d(TAG, "Checking out of bound: " + stage + ":" + round);
+        if (mParsedCmd.length < stage - 1) {
+            return true;
+        } else if (mParsedCmd[stage - 1].length < round - 1) {
+            return true;
+        }
+
+        return false;
     }
 
     private int[] getParsedDataOfRound(int stage, int round, boolean isSkill) {
@@ -120,7 +127,7 @@ public class BattleArgument {
      * round and stage should be started at 1 and positive
      */
     public int[] getSkillIndexOfStage(int stage, int round) {
-        if (mSupportStage) {
+        if (!mSupportStage) {
             return getParsedDataOfRound(1, round, true);
         } else {
             return getParsedDataOfRound(stage, round, true);
@@ -133,7 +140,7 @@ public class BattleArgument {
      * round and stage should be started at 1 and positive
      */
     public int[] getRoyalIndexOfStage(int stage, int round) {
-        if (mSupportStage) {
+        if (!mSupportStage) {
             return getParsedDataOfRound(1, round, false);
         } else {
             return getParsedDataOfRound(stage, round, false);

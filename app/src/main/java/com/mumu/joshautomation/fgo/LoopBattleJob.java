@@ -107,7 +107,6 @@ public class LoopBattleJob extends AutoJob {
             boolean stageCleared = false;
 
             mGL.setGameOrientation(ScreenPoint.SO_Landscape);
-            mGL.setScreenDimension(1080,2160);
             mGL.setAmbiguousRange(ambRange);
 
             sendMessage("開始循環戰鬥");

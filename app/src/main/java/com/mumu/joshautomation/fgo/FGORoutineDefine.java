@@ -6,8 +6,6 @@ import com.mumu.libjoshgame.ScreenPoint;
 
 import java.util.ArrayList;
 
-//static ScreenPoint pointSkipDialog = new ScreenPoint(0x,0x,0x,0xff,,,ScreenPoint.SO_Portrait);
-
 class FGORoutineDefine {
     static final int sCardBurst = 0;
     static final int sCardArt = 1;
@@ -96,6 +94,14 @@ class FGORoutineDefine {
     static private ScreenPoint char100NPChar3 = new ScreenPoint(0xFF,0xFF,0xFF,0xFF,1317, 1000, ScreenPoint.SO_Landscape);
     static ArrayList<ScreenPoint> char100NPChars = new ArrayList<ScreenPoint>() {{
         add(char100NPChar1);add(char100NPChar2);add(char100NPChar3);
+    }};
+
+    // Stage detect
+    static private ScreenPoint battleStage1 = new ScreenPoint(204,204,204,0xFF,1304, 29, ScreenPoint.SO_Landscape);
+    static private ScreenPoint battleStage2 = new ScreenPoint(240,240,240,0xFF,1318, 49, ScreenPoint.SO_Landscape);
+    static private ScreenPoint battleStage3 = new ScreenPoint(211,211,211,0xFF,1304, 49, ScreenPoint.SO_Landscape);
+    static ArrayList<ScreenPoint> battleStages = new ArrayList<ScreenPoint>() {{
+        add(battleStage1);add(battleStage2);add(battleStage3);
     }};
 
     // home screen
