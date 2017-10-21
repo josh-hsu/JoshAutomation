@@ -48,4 +48,8 @@ public class ScreenColor {
         r = 0;
         t = 0;
     }
+
+    public ScreenPoint toScreenPoint() {
+        return new ScreenPoint(r,g,b,t,0,0, ScreenPoint.SO_Landscape);
+    }
 }

@@ -45,4 +45,8 @@ public class ScreenCoord {
 
         return new ScreenCoord((src.x + dest.x)/2, (src.y + dest.y)/2, src.orientation);
     }
+
+    public ScreenPoint toScreenPoint() {
+        return new ScreenPoint(0,0,0,0,x,y,orientation);
+    }
 }

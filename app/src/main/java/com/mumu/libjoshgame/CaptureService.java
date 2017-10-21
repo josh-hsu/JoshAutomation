@@ -169,7 +169,7 @@ public class CaptureService extends JoshGameLibrary.GLService {
      * filename: dump file path
      * coord: ScreenCoord to be used
      */
-    public void getColorsOnDump(ArrayList<ScreenColor> colors,
+    private void getColorsOnDump(ArrayList<ScreenColor> colors,
                                 String filename, ArrayList<ScreenCoord> coords) {
         RandomAccessFile dumpFile;
         int offset;
@@ -206,6 +206,101 @@ public class CaptureService extends JoshGameLibrary.GLService {
         } catch (Exception e) {
             Log.d(TAG, "File close failed: " + e.toString());
         }
+    }
+
+    /*
+     * getColorOnDump (Added in 1.41)
+     * filename: dump file path
+     * points: ScreenPoints to be used and returned in the same structure
+     */
+    private void getColorsOnDump(String filename, ArrayList<ScreenPoint> points) {
+        RandomAccessFile dumpFile;
+        int offset;
+        byte[] colorInfo;
+
+        try {
+            dumpFile = new RandomAccessFile(filename, "rw");
+        } catch (Exception e) {
+            Log.d(TAG, "getColorsOnDump: File opened failed." + e.getMessage());
+            return;
+        }
+
+        for(int i = 0; i < points.size(); i++) {
+            ScreenCoord coord = points.get(i).coord;
+            ScreenColor color = points.get(i).color;
+
+            offset = calculateOffset(coord);
+
+            try {
+                colorInfo = new byte[4];
+                dumpFile.seek(offset);
+                dumpFile.read(colorInfo);
+                color.r = colorInfo[0];
+                color.g = colorInfo[1];
+                color.b = colorInfo[2];
+                color.t = colorInfo[3];
+            } catch (Exception e) {
+                Log.d(TAG, "File seek error: " + e.toString());
+            }
+        }
+
+        try {
+            dumpFile.close();
+        } catch (Exception e) {
+            Log.d(TAG, "File close failed: " + e.toString());
+        }
+    }
+
+    /*
+     * getColorsInRegion (Added in 1.41)
+     * returns all color and forming array of ScreenPoint in the region formed from src
+     * and dest
+     */
+    public ArrayList<ScreenPoint> getColorsInRegion(ScreenCoord src, ScreenCoord dest) {
+        int x_start, x_end, y_start, y_end;
+        int orientation;
+        ArrayList<ScreenPoint> pointReturned = new ArrayList<>();
+
+        // sanity check
+        if (src == null || dest == null) {
+            Log.w(TAG, "checkColorIsInRegion: colors cannot be null");
+            return null;
+        } else {
+            orientation = src.orientation;
+        }
+
+        if (src.orientation != dest.orientation) {
+            Log.w(TAG, "checkColorIsInRegion: Src and Dest must in same orientation");
+            return null;
+        }
+
+        if (src.x > dest.x) {
+            x_start = dest.x;
+            x_end = src.x;
+        } else {
+            x_start = src.x;
+            x_end = dest.x;
+        }
+
+        if (src.y > dest.y) {
+            y_start = dest.y;
+            y_end = src.y;
+        } else {
+            y_start = src.y;
+            y_end = dest.y;
+        }
+
+        // construct an array of ScreenPoint and fill up coordination
+        for(int x = x_start; x <= x_end; x++) {
+            for(int y = y_start; y <= y_end; y++) {
+                pointReturned.add(new ScreenCoord(x, y, orientation).toScreenPoint());
+            }
+        }
+
+        // doing job
+        dumpScreen(mFindColorDumpFile);
+        getColorsOnDump(mFindColorDumpFile, pointReturned);
+        return pointReturned;
     }
 
     /*
