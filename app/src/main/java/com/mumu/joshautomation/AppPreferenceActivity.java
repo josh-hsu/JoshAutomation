@@ -18,9 +18,11 @@ package com.mumu.joshautomation;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Environment;
+import android.preference.EditTextPreference;
 import android.preference.ListPreference;
 import android.preference.Preference;
 import android.preference.PreferenceActivity;
@@ -36,7 +38,6 @@ import android.widget.LinearLayout;
 
 import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
-import com.mumu.joshautomation.R;
 import com.mumu.joshautomation.script.AutoJobHandler;
 
 import java.io.File;
@@ -113,7 +114,7 @@ public class AppPreferenceActivity extends PreferenceActivity {
     }
 
     /**
-     * This fragment shows the preferences for the first header.
+     * This fragment shows the app_preferences_fgo for the first header.
      */
     public static class Prefs1Fragment extends PreferenceFragment {
         @Override
@@ -124,10 +125,10 @@ public class AppPreferenceActivity extends PreferenceActivity {
             // want this in a shared function that is used to retrieve the
             // SharedPreferences wherever they are needed.
             PreferenceManager.setDefaultValues(getActivity(),
-                    R.xml.preferences, false);
+                    R.xml.app_preferences_fgo, false);
 
-            // Load the preferences from an XML resource
-            addPreferencesFromResource(R.xml.preferences);
+            // Load the app_preferences_fgo from an XML resource
+            addPreferencesFromResource(R.xml.app_preferences_fgo);
 
             // Add start service button listener
             Preference myPref = (Preference) findPreference("enableServicePref");
@@ -151,7 +152,7 @@ public class AppPreferenceActivity extends PreferenceActivity {
             PreferenceManager.setDefaultValues(getActivity(),
                     R.xml.app_preferences, false);
 
-            // Load the preferences from an XML resource
+            // Load the app_preferences_fgo from an XML resource
             addPreferencesFromResource(R.xml.app_preferences);
 
             // Fill out script
@@ -187,8 +188,41 @@ public class AppPreferenceActivity extends PreferenceActivity {
             PreferenceManager.setDefaultValues(getActivity(),
                     R.xml.app_preferences_shinobi, false);
 
-            // Load the preferences from an XML resource
+            // Load the app_preferences_fgo from an XML resource
             addPreferencesFromResource(R.xml.app_preferences_shinobi);
+        }
+    }
+
+    public static class Prefs4Fragment extends PreferenceFragment implements SharedPreferences.OnSharedPreferenceChangeListener{
+        @Override
+        public void onCreate(Bundle savedInstanceState) {
+            super.onCreate(savedInstanceState);
+
+            // Make sure default values are applied.  In a real app, you would
+            // want this in a shared function that is used to retrieve the
+            // SharedPreferences wherever they are needed.
+            PreferenceManager.setDefaultValues(getActivity(),
+                    R.xml.app_preferences_ro, false);
+
+            // Load the app_preferences_fgo from an XML resource
+            addPreferencesFromResource(R.xml.app_preferences_ro);
+
+            //if you are using default SharedPreferences
+            SharedPreferences sharedPrefs = PreferenceManager.getDefaultSharedPreferences(mContext);
+
+            onSharedPreferenceChanged(sharedPrefs, "roAutoHPValuePref");
+            onSharedPreferenceChanged(sharedPrefs, "roAutoHPItemPref");
+            onSharedPreferenceChanged(sharedPrefs, "roAutoMPValuePref");
+            onSharedPreferenceChanged(sharedPrefs, "roAutoMPItemPref");
+        }
+
+        @Override
+        public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
+            Preference pref = findPreference(key);
+            if (pref instanceof EditTextPreference) {
+                EditTextPreference listPref = (EditTextPreference) pref;
+                pref.setSummary(listPref.getText());
+            }
         }
     }
 
@@ -267,5 +301,6 @@ public class AppPreferenceActivity extends PreferenceActivity {
             }
         }
     }
+
 }
 

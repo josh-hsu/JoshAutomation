@@ -7,7 +7,6 @@ import com.mumu.joshautomation.script.AutoJobEventListener;
 import com.mumu.libjoshgame.JoshGameLibrary;
 import com.mumu.libjoshgame.ScreenCoord;
 
-import java.security.acl.LastOwnerException;
 import java.util.ArrayList;
 
 import static com.mumu.joshautomation.fgo.FGORoutineDefine.*;

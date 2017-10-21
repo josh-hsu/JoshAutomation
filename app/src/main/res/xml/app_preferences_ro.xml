@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen
+    xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <PreferenceCategory android:title="補品啟用">
+        <CheckBoxPreference
+            android:key="roAutoHPPref"
+            android:title="自動補血"
+            android:summary="開啟自動補血功能，詳細數值底下設定"
+            android:defaultValue="false"/>
+        <CheckBoxPreference
+            android:key="roAutoMPPref"
+            android:title="自動補魔"
+            android:summary="開啟自動補魔功能，詳細數值底下設定"
+            android:defaultValue="false"/>
+    </PreferenceCategory>
+    <PreferenceCategory android:title="補品設定">
+        <EditTextPreference
+            android:key="roAutoHPValuePref"
+            android:title="補血 % 數"
+            android:summary=""
+            android:defaultValue="50"
+            android:maxLength="3"/>
+        <EditTextPreference
+            android:key="roAutoHPItemPref"
+            android:title="補血道具"
+            android:summary=""
+            android:defaultValue="1"
+            android:maxLength="1"/>
+        <EditTextPreference
+            android:key="roAutoMPValuePref"
+            android:title="補魔 % 數"
+            android:summary=""
+            android:defaultValue="50"
+            android:maxLength="3"/>
+        <EditTextPreference
+            android:key="roAutoMPItemPref"
+            android:title="補魔道具"
+            android:summary=""
+            android:defaultValue="1"
+            android:maxLength="1"/>
+    </PreferenceCategory>
+
+</PreferenceScreen>
