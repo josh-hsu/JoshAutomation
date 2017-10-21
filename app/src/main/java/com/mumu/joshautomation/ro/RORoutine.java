@@ -94,15 +94,15 @@ class RORoutine {
             int hpTargetPercent = Integer.parseInt(AppPreferenceValue.getInstance().getPrefs().getString("roAutoHPValuePref", "50"));
             int hpTargetItem = Integer.parseInt(AppPreferenceValue.getInstance().getPrefs().getString("roAutoHPItemPref", "1"));
             if (isHPLowerThan((float)hpTargetPercent)) {
-                tapOnQuickItem(hpTargetItem);
+                tapOnQuickItem(hpTargetItem - 1);
             }
         }
 
         if (AppPreferenceValue.getInstance().getPrefs().getBoolean("roAutoMPPref", false)) {
             int mpTargetPercent = Integer.parseInt(AppPreferenceValue.getInstance().getPrefs().getString("roAutoMPValuePref", "50"));
             int mpTargetItem = Integer.parseInt(AppPreferenceValue.getInstance().getPrefs().getString("roAutoMPItemPref", "1"));
-            if (isHPLowerThan((float)mpTargetPercent)) {
-                tapOnQuickItem(mpTargetItem);
+            if (isMPLowerThan((float)mpTargetPercent)) {
+                tapOnQuickItem(mpTargetItem - 1);
             }
         }
     }
