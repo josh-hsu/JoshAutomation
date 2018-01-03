@@ -84,7 +84,7 @@ public class BattleArgument {
         Log.d(TAG, "Checking out of bound: " + stage + ":" + round);
         if (mParsedCmd.length < stage - 1) {
             return true;
-        } else if (mParsedCmd[stage - 1].length < round - 1) {
+        } else if (mParsedCmd[stage - 1].length < round) {
             return true;
         }
 
