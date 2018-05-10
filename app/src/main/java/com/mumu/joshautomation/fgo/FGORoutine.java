@@ -165,13 +165,22 @@ class FGORoutine {
         }
     }
 
-    public void tapOnSkill(int[] skillIndex) throws InterruptedException {
-        if (skillIndex.length < 1)
+    public void tapOnSkill(ArrayList<BattleArgument.BattleSkill> skillIndex) throws InterruptedException {
+        if (skillIndex.size() < 1)
             return;
 
-        for(int i : skillIndex) {
-            mGL.getInputService().tapOnScreen(cardSkills.get(i));
-            sendMessage("點技能" + i);
+        for(BattleArgument.BattleSkill sk : skillIndex) {
+            mGL.getInputService().tapOnScreen(cardSkills.get(sk.skill));
+            sendMessage("點技能" + sk.skill);
+            sleep(1000);
+
+            if (sk.target > 0) {
+                sendMessage("點目標" + sk.target);
+                tapOnTarget(sk.target);
+            } else {
+                sendMessage("此技能無目標");
+            }
+
             sleep(2400);
         }
     }
@@ -184,6 +193,13 @@ class FGORoutine {
             mGL.getInputService().tapOnScreen(cardRoyals.get(i));
             sendMessage("點寶具" + i);
             sleep(500);
+        }
+    }
+
+    public void tapOnTarget(int target) throws InterruptedException {
+        if (target > 0 && target <= 3) {
+            if (mGL.getCaptureService().colorIs(inSelectTarget))
+                mGL.getInputService().tapOnScreen(cardTargets.get(target - 1));
         }
     }
 
@@ -250,7 +266,7 @@ class FGORoutine {
     public int battleGetStage() {
         for(int i = 0; i < battleStages.size(); i++) {
             if (mGL.getCaptureService().colorIs(battleStages.get(i)))
-                return i + 1;
+                return i;
         }
 
         return -1;
@@ -258,14 +274,15 @@ class FGORoutine {
 
     public int battleRoutine(BattleArgument arg) throws InterruptedException {
         String cardInfo;
-        int[] optimizedDraw, cardStatusNow, skillDraw;
+        int[] optimizedDraw, cardStatusNow;
+        ArrayList<BattleArgument.BattleSkill> skillDraw;
         int[] royalDraw = new int[0];
         int[] royalAvail = new int[0];
         int resultTry = 20; //fail retry of waiting result
         int battleTry = 150; // fail retry of waiting battle button (150 * 1 = 150 secs)
         int checkCardTry = 20; // fail retry of waiting card recognize
-        int battleStage = 1; //indicate which stage of battle
-        int battleRound = 1; //indicate which round of battle in a stage
+        int battleStage = 0; //indicate which stage of battle (start from 0 but it will start from 1 when displaying)
+        int battleRound = 0; //indicate which round of battle in a stage (start from 0 but it will start from 1 when displaying)
         boolean useRoyalIfAvailable = AppPreferenceValue.getInstance().getPrefs().getBoolean("battleUseRoyal", true);
         boolean useOptimizeDraw = AppPreferenceValue.getInstance().getPrefs().getBoolean("battleOptPref", true);
 
@@ -295,16 +312,16 @@ class FGORoutine {
             //check for stage, default 1
             int thisStage = battleGetStage();
             if (thisStage < 0) {
-                thisStage = 1;
+                thisStage = 0;
                 sendMessage("回合判斷失敗");
                 sleep(1000);
             }
 
             if (thisStage != battleStage) {
                 battleStage = thisStage;
-                battleRound = 1;
+                battleRound = 0;
             }
-            sendMessage("戰鬥("+battleStage+","+battleRound+")");
+            sendMessage("戰鬥(" + (battleStage+1) + "," + (battleRound+1) + ")");
             sleep(1000);
 
             //check skill
@@ -354,10 +371,7 @@ class FGORoutine {
             if (arg != null) {
                 royalDraw = arg.getRoyalIndexOfStage(battleStage, battleRound);
                 tapOnRoyal(royalDraw);
-            }
-
-            //if arg doesn't specific royal at all
-            if (useRoyalIfAvailable) {
+            } else if (useRoyalIfAvailable) { //if arg doesn't specific royal and use royal is enabled
                 if (royalDraw.length == 0 && royalAvail.length > 0) {
                     sendMessage("沒有寶具指定，自動使用寶具");
                     tapOnRoyal(royalAvail);
@@ -492,12 +506,15 @@ class FGORoutine {
     }
 
     public int waitForUserMode(int maxTry) throws InterruptedException {
-        if (mGL.getCaptureService().waitOnColor(pointHomeApAdd, maxTry) < 0) {
-            Log.w(TAG, "Skip not found.");
-            return -1;
+        while (maxTry-- > 0) {
+            if (mGL.getCaptureService().colorIs(pointHomeApAdd) ||
+                    mGL.getCaptureService().colorIs(pointHomeApAddV2)) {
+                return 0;
+            }
+            sleep(100);
         }
 
-        return 0;
+        return -1;
     }
 
     /* =======================

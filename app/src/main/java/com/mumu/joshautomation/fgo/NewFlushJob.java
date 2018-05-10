@@ -7,6 +7,8 @@ import com.mumu.joshautomation.script.AutoJobEventListener;
 import com.mumu.libjoshgame.JoshGameLibrary;
 import com.mumu.libjoshgame.ScreenPoint;
 
+import java.util.ArrayList;
+
 import static com.mumu.joshautomation.fgo.FGORoutineDefine.pointBattleButton;
 import static com.mumu.joshautomation.fgo.FGORoutineDefineTW.*;
 
@@ -191,7 +193,7 @@ public class NewFlushJob extends AutoJob {
         //wait 30 seconds for battle end
         Thread.sleep(20000);
 
-        mFGO.tapOnSkill(new int[] {1});
+        mFGO.tapOnSkill(new ArrayList<BattleArgument.BattleSkill>() {{add(new BattleArgument.BattleSkill(1, 0)); }});
         Thread.sleep(2000);
         mGL.getInputService().tapOnScreen(FGORoutineDefineTW.skillConfirmScreenPoint.coord);
         Thread.sleep(2000);

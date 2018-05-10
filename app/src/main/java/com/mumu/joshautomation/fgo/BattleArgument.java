@@ -10,7 +10,8 @@ import java.util.ArrayList;
  * Parsing argument of customized battle parameter
  *
  * Royal Card Index: 6,7,8
- * Skill Index: a,b,c  e,f,g  i,j,k
+ * Skill Index: a,b,c  e,f,g  i,j,k  master(o,p,q)
+ * Skill target: 1, 2, 3 (0 means no target)
  * Round separator: #
  * Stage separator: |
  *
@@ -43,6 +44,25 @@ public class BattleArgument {
         return mCmdString;
     }
 
+    public static class BattleSkill {
+        public int skill;
+        public int target;
+
+        public BattleSkill() {
+            skill = -1;
+            target = 0;
+        }
+
+        public BattleSkill(int sk, int tg) {
+            skill = sk;
+            target = tg;
+        }
+
+        public String toString() {
+            return "(Skill: " + skill + " Target: " + target + ")";
+        }
+    }
+
     /*
      * parse
      * This function handle parsing of battle argument
@@ -69,43 +89,80 @@ public class BattleArgument {
             Log.d(TAG, "Battle stage: " + i);
             for(int j = 0; j < mParsedCmd[i].length; j++) {
                 String cmd = mParsedCmd[i][j];
-                Log.d(TAG, "=>    round(" + j + "): " + cmd);
+                Log.d(TAG, "=>    round(" + j + "): " + getParsedSkill(i, j).toString() + " cmd: "+ cmd);
             }
         }
     }
 
     /**
      * outOfBoundCheck
-     * @param stage stage to be check
-     * @param round round to be check
+     * @param stage stage to be check (started with 0)
+     * @param round round to be check (started with 0)
      * @return true if index out of bound
      */
     private boolean outOfBoundCheck(int stage, int round) {
         Log.d(TAG, "Checking out of bound: " + stage + ":" + round);
-        if (mParsedCmd.length < stage - 1) {
+        if (mParsedCmd.length < stage) {
             return true;
-        } else if (mParsedCmd[stage - 1].length < round) {
+        } else if (mParsedCmd[stage].length < round) {
             return true;
         }
 
         return false;
     }
 
-    private int[] getParsedDataOfRound(int stage, int round, boolean isSkill) {
+    private ArrayList<BattleSkill> getParsedSkill(int stage, int round) {
+        ArrayList<BattleSkill> list = new ArrayList<>();
+
+        if (outOfBoundCheck(stage, round))
+            return list;
+
+        String cmd = mParsedCmd[stage][round];
+        int length = cmd.length();
+        boolean parseForTarget = false;
+        BattleSkill thisSkill = new BattleSkill(); //new a object here is not necessary but it keeps inspector quiet
+
+        for(int i = 0; i < length; i++) {
+            char seg = cmd.charAt(i);
+            int parsedData;
+
+            if (!parseForTarget) {
+                parsedData = parseSkill(seg);
+                if (parsedData >= 0) {
+                    thisSkill = new BattleSkill(); // new a skill for use later
+                    thisSkill.skill = parsedData;
+                    parseForTarget = true;
+                }
+            } else {
+                parsedData = parseTarget(seg);
+                if (parsedData >= 0) { //target did declare
+                    thisSkill.target = parsedData;
+                    parseForTarget = false;
+                    list.add(thisSkill);
+                } else { //no target but anything else
+                    thisSkill.target = 0;
+                    i--; //ignore this and fallback to parsing skill
+                    parseForTarget = false;
+                    list.add(thisSkill);
+                }
+            }
+        }
+
+        return list;
+    }
+
+    private int[] getParsedRoyal(int stage, int round) {
         if (outOfBoundCheck(stage, round))
             return new int[] {};
 
-        String skill = mParsedCmd[stage - 1][round - 1]; //stage and round are started from 1
+        String cmd = mParsedCmd[stage][round];
         ArrayList<Integer> list = new ArrayList<>();
-        int length = skill.length();
+        int length = cmd.length();
 
         for(int i = 0; i < length; i++) {
-            char seg = skill.charAt(i);
+            char seg = cmd.charAt(i);
             int parsedInt;
-            if (isSkill)
-                parsedInt = parseSkill(seg);
-            else
-                parsedInt = parseRoyal(seg);
+            parsedInt = parseRoyal(seg);
 
             if (parsedInt >= 0) {
                 list.add(parsedInt);
@@ -124,26 +181,26 @@ public class BattleArgument {
     /**
      * getSkillIndexOfStage (added in 1.40)
      * adc, efg, ijk will be transfer to 012,345,678
-     * round and stage should be started at 1 and positive
+     * round and stage should be started at 0
      */
-    public int[] getSkillIndexOfStage(int stage, int round) {
+    public ArrayList<BattleSkill> getSkillIndexOfStage(int stage, int round) {
         if (!mSupportStage) {
-            return getParsedDataOfRound(1, round, true);
+            return getParsedSkill(0, round);
         } else {
-            return getParsedDataOfRound(stage, round, true);
+            return getParsedSkill(stage, round);
         }
     }
 
     /**
      * getRoyalIndexOfStage (added in 1.40)
      * 6,7,8 will be transfer to 0,1,2
-     * round and stage should be started at 1 and positive
+     * round and stage should be started at 0
      */
     public int[] getRoyalIndexOfStage(int stage, int round) {
         if (!mSupportStage) {
-            return getParsedDataOfRound(1, round, false);
+            return getParsedRoyal(0, round);
         } else {
-            return getParsedDataOfRound(stage, round, false);
+            return getParsedRoyal(stage, round);
         }
     }
 
@@ -151,13 +208,13 @@ public class BattleArgument {
      * getSkillIndexOfRound
      * Deprecated in version 1.40
      * adc, efg, ijk will be transfer to 012,345,678
-     * round should be started at 1 and positive
+     * round should be started at 0
      *
      * @deprecated use getSkillIndexOfStage(int stage, int round) instead.
      */
     @Deprecated
     public int[] getSkillIndexOfRound(int round) {
-        return getParsedDataOfRound(1, round, true);
+        return new int[] {};
     }
 
     /**
@@ -169,7 +226,7 @@ public class BattleArgument {
      */
     @Deprecated
     public int[] getRoyalIndexOfRound(int round) {
-        return getParsedDataOfRound(1, round, false);
+        return getParsedRoyal(0, round);
     }
 
     private int parseSkill(char i) {
@@ -193,7 +250,21 @@ public class BattleArgument {
             case 'k':
                 return 8;
             default:
-                Log.e(TAG, "parse failed, illegal parameter " + i);
+                return -1;
+        }
+    }
+
+    private int parseTarget(char i) {
+        switch (i) {
+            case '0':
+                return 0;
+            case '1':
+                return 1;
+            case '2':
+                return 2;
+            case '3':
+                return 3;
+            default:
                 return -1;
         }
     }
@@ -207,7 +278,6 @@ public class BattleArgument {
             case '8':
                 return 2;
             default:
-                Log.e(TAG, "parse failed, illegal parameter " + i);
                 return -1;
         }
     }

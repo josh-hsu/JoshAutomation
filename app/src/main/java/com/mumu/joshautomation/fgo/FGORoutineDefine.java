@@ -88,6 +88,14 @@ class FGORoutineDefine {
         add(cardRoyal1);add(cardRoyal2);add(cardRoyal3);
     }};
 
+    static ScreenPoint inSelectTarget = new ScreenPoint(0xD4, 0xD4, 0xD4, 0xFF, 859, 1625, ScreenPoint.SO_Portrait);
+    static private ScreenCoord cardTarget1 = new ScreenCoord(434 , 492, ScreenPoint.SO_Portrait);
+    static private ScreenCoord cardTarget2 = new ScreenCoord(355 , 945, ScreenPoint.SO_Portrait);
+    static private ScreenCoord cardTarget3 = new ScreenCoord(430, 1418, ScreenPoint.SO_Portrait);
+    static ArrayList<ScreenCoord> cardTargets = new ArrayList<ScreenCoord>() {{
+        add(cardTarget1);add(cardTarget2);add(cardTarget3);
+    }};
+
     // NP 100% detect
     static private ScreenPoint char100NPChar1 = new ScreenPoint(0xFF,0xFF,0xFF,0xFF,362 , 1000, ScreenPoint.SO_Landscape);
     static private ScreenPoint char100NPChar2 = new ScreenPoint(0xFF,0xFF,0xFF,0xFF,838 , 1000, ScreenPoint.SO_Landscape);
@@ -108,6 +116,7 @@ class FGORoutineDefine {
     static ScreenPoint pointHomeGiftBox = new ScreenPoint(229,64,39,0xff,646,1013,ScreenPoint.SO_Landscape);
     static ScreenPoint pointHomeOSiRaSe = new ScreenPoint(0,0,4,0xff,219,78,ScreenPoint.SO_Landscape);
     static ScreenPoint pointHomeApAdd = new ScreenPoint(201,142,85,0xff,262,1049,ScreenPoint.SO_Landscape);
+    static ScreenPoint pointHomeApAddV2 = new ScreenPoint(0xfa,0xf6,0xc2,0xff,59,246,ScreenPoint.SO_Portrait);
     static ScreenPoint pointMenuDownButton = new ScreenPoint(0x31,0x39,0x65,0xff,53,1772,ScreenPoint.SO_Portrait);
 
     // NEXT button location
@@ -167,7 +176,7 @@ class FGORoutineDefine {
     static ScreenPoint pointBattleDieConfirm = new ScreenPoint(250,250,250,0xff,1301,543,ScreenPoint.SO_Landscape);
     static ScreenPoint pointBattleDieClose   = new ScreenPoint(217,217,217,0xff, 960,843,ScreenPoint.SO_Landscape);
 
-    //battle results
+    //Battle results
     static ScreenPoint pointBattleResult = new ScreenPoint(236,236,235,0xff,832,74,ScreenPoint.SO_Landscape);
     static ScreenPoint pointBattleNext = new ScreenPoint(211,211,211,0xff,1527,1018,ScreenPoint.SO_Landscape);
     static ScreenPoint pointQuestClear = new ScreenPoint(0xFF,0xCD,0x00,0xff,261,885,ScreenPoint.SO_Portrait);
