@@ -451,11 +451,19 @@ class FGORoutine {
 
     public int battlePostSetup() throws InterruptedException {
 
-        if (mGL.getCaptureService().waitOnColor(pointQuestClear, 30) < 0) {
-            sendMessage("沒出現破關獎勵");
-        } else {
-            mGL.getInputService().tapOnScreen(pointQuestClear.coord);
+        int retry = 40;
+        while(retry-- > 0) {
+            if (mGL.getCaptureService().colorIs(pointQuestClearCube) ||
+                    mGL.getCaptureService().colorIs(pointQuestClearStone)) {
+                sendMessage("破關獎勵出現");
+                mGL.getInputService().tapOnScreen(pointQuestClearStone.coord);
+                sleep(100);
+                return 0;
+            }
+
+            sleep(100);
         }
+        sendMessage("沒出現破關獎勵");
 
         return 0;
     }

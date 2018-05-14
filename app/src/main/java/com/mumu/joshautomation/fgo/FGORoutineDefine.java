@@ -179,6 +179,7 @@ class FGORoutineDefine {
     //Battle results
     static ScreenPoint pointBattleResult = new ScreenPoint(236,236,235,0xff,832,74,ScreenPoint.SO_Landscape);
     static ScreenPoint pointBattleNext = new ScreenPoint(211,211,211,0xff,1527,1018,ScreenPoint.SO_Landscape);
-    static ScreenPoint pointQuestClear = new ScreenPoint(0xFF,0xCD,0x00,0xff,261,885,ScreenPoint.SO_Portrait);
+    static ScreenPoint pointQuestClearStone = new ScreenPoint(0xFF,0xCD,0x00,0xff,261,885,ScreenPoint.SO_Portrait);
+    static ScreenPoint pointQuestClearCube = new ScreenPoint(0xFF,0xCD,0x00,0xff,265,1266,ScreenPoint.SO_Portrait);
     static ScreenPoint pointDenyFriend = new ScreenPoint(115,115,115,0xff,487,921,ScreenPoint.SO_Landscape);
 }

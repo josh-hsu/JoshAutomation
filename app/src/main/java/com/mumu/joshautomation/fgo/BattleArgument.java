@@ -102,11 +102,14 @@ public class BattleArgument {
      */
     private boolean outOfBoundCheck(int stage, int round) {
         Log.d(TAG, "Checking out of bound: " + stage + ":" + round);
-        if (mParsedCmd.length < stage) {
+        if (mParsedCmd.length <= stage) {
+            Log.d(TAG, "Stage length = " + mParsedCmd.length + " <= stage request = " + stage);
             return true;
-        } else if (mParsedCmd[stage].length < round) {
+        } else if (mParsedCmd[stage].length <= round) {
+            Log.d(TAG, "Round length = " + mParsedCmd[stage].length + " <= round request = " + round);
             return true;
         }
+        Log.d(TAG, "Not out of bound, Stage length = " + mParsedCmd.length + " Round length = " + mParsedCmd[stage].length);
 
         return false;
     }
