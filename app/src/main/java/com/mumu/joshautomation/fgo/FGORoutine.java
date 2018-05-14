@@ -170,15 +170,62 @@ class FGORoutine {
             return;
 
         for(BattleArgument.BattleSkill sk : skillIndex) {
-            mGL.getInputService().tapOnScreen(cardSkills.get(sk.skill));
-            sendMessage("點技能" + sk.skill);
-            sleep(1000);
 
-            if (sk.target > 0) {
-                sendMessage("點目標" + sk.target);
-                tapOnTarget(sk.target);
-            } else {
-                sendMessage("此技能無目標");
+            if (sk.skill < 9) { //Normal Skills
+                mGL.getInputService().tapOnScreen(cardSkills.get(sk.skill));
+                sendMessage("點技能" + sk.skill);
+                sleep(1000);
+
+                if (sk.target > 0) {
+                    sendMessage("點目標" + sk.target);
+                    tapOnTarget(sk.target);
+                } else {
+                    sendMessage("此技能無目標");
+                }
+            } else if (sk.skill > 9 && sk.skill <= 12) { //Normal Master Skills
+                mGL.getInputService().tapOnScreen(masterSkillButton.coord);
+                sendMessage("點Master技能");
+                sleep(500);
+                mGL.getInputService().tapOnScreen(masterSkills.get(sk.skill - 10));
+                sendMessage("點Master技能" + (sk.skill - 9));
+                sleep(500);
+
+                if (sk.target > 0) {
+                    sendMessage("點目標" + sk.target);
+                    tapOnTarget(sk.target);
+                } else {
+                    sendMessage("此技能無目標");
+                }
+            } else if (sk.skill == 90) { //Master skill: change servants
+                if (sk.change_target > 0 && sk.target > 0) {
+
+                    mGL.getInputService().tapOnScreen(masterSkillButton.coord);
+                    sendMessage("點Master技能");
+                    sleep(500);
+                    mGL.getInputService().tapOnScreen(masterSkills.get(2));
+                    sendMessage("點換人");
+                    sleep(500);
+
+                    //tap on left side
+                    if (mGL.getCaptureService().colorIs(inChangingServant)) {
+                        mGL.getInputService().tapOnScreen(changeServants.get(sk.change_target - 1));
+                        sleep(250);
+                        mGL.getInputService().tapOnScreen(changeServants.get(sk.target + 2));
+                        sleep(750);
+
+                        //tap confirm
+                        mGL.getInputService().tapOnScreen(inChangingServant.coord);
+                        sleep(2000);
+                        if (mGL.getCaptureService().waitOnColor(pointBattleButton, 100) < 0)
+                            sendMessage("等不到戰鬥按鈕");
+                    } else {
+                        sendMessage("換人頁面出不來");
+                    }
+                } else {
+                    sendMessage("換人技能要有目標");
+                }
+            } else { //No such skill, should never happened
+                sendMessage("不合法的技能" + sk.skill);
             }
 
             sleep(2400);

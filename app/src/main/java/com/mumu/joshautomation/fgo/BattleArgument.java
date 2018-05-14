@@ -10,7 +10,7 @@ import java.util.ArrayList;
  * Parsing argument of customized battle parameter
  *
  * Royal Card Index: 6,7,8
- * Skill Index: a,b,c  e,f,g  i,j,k  master(o,p,q)
+ * Skill Index: a,b,c  e,f,g  i,j,k  master(x, y, z), change servant (w 123|123)
  * Skill target: 1, 2, 3 (0 means no target)
  * Round separator: #
  * Stage separator: |
@@ -47,19 +47,31 @@ public class BattleArgument {
     public static class BattleSkill {
         public int skill;
         public int target;
+        public int change_target; //the servant in left, target is the servant in right side
 
         public BattleSkill() {
             skill = -1;
             target = 0;
+            change_target = -1;
         }
 
         public BattleSkill(int sk, int tg) {
             skill = sk;
             target = tg;
+            change_target = -1;
+        }
+
+        public BattleSkill(int sk, int tg, int chtg) {
+            skill = sk;
+            target = tg;
+            change_target = chtg;
         }
 
         public String toString() {
-            return "(Skill: " + skill + " Target: " + target + ")";
+            if (change_target == -1)
+                return "(Skill: " + skill + " Target: " + target + ")";
+            else
+                return "(Skill: " + skill + " Target: " + target + " ChangeTarget: " + change_target + ")";
         }
     }
 
@@ -122,32 +134,47 @@ public class BattleArgument {
 
         String cmd = mParsedCmd[stage][round];
         int length = cmd.length();
-        boolean parseForTarget = false;
+        int parseForTarget = 0;
         BattleSkill thisSkill = new BattleSkill(); //new a object here is not necessary but it keeps inspector quiet
 
         for(int i = 0; i < length; i++) {
             char seg = cmd.charAt(i);
             int parsedData;
 
-            if (!parseForTarget) {
+            if (parseForTarget == 0) {
                 parsedData = parseSkill(seg);
                 if (parsedData >= 0) {
                     thisSkill = new BattleSkill(); // new a skill for use later
                     thisSkill.skill = parsedData;
-                    parseForTarget = true;
+                    if (parsedData == 90) //Master skill: change servant needs 2 targets
+                        parseForTarget = 2;
+                    else
+                        parseForTarget = 1;
                 }
-            } else {
+            } else if (parseForTarget > 0){
                 parsedData = parseTarget(seg);
                 if (parsedData >= 0) { //target did declare
-                    thisSkill.target = parsedData;
-                    parseForTarget = false;
-                    list.add(thisSkill);
+                    if (thisSkill.skill == 90 && parseForTarget == 2) {
+                        thisSkill.change_target = parsedData;
+                    } else {
+                        thisSkill.target = parsedData;
+                        list.add(thisSkill);
+                    }
+
+                    parseForTarget--;
                 } else { //no target but anything else
-                    thisSkill.target = 0;
-                    i--; //ignore this and fallback to parsing skill
-                    parseForTarget = false;
-                    list.add(thisSkill);
+                    if (thisSkill.skill == 90) {
+                        Log.e(TAG, "Change Servant should have 2 targets, ignore this skill");
+                    } else {
+                        thisSkill.target = 0;
+                        i--; //ignore this and fallback to parsing skill
+                        parseForTarget--;
+                        list.add(thisSkill);
+                    }
                 }
+            } else {
+                Log.d(TAG, "WTF: parseForTarget < 0 should never happen");
+                parseForTarget = 0;
             }
         }
 
@@ -252,6 +279,14 @@ public class BattleArgument {
                 return 7;
             case 'k':
                 return 8;
+            case 'w':
+                return 90;
+            case 'x':
+                return 10;
+            case 'y':
+                return 11;
+            case 'z':
+                return 12;
             default:
                 return -1;
         }

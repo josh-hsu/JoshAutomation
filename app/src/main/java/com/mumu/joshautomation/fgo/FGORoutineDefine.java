@@ -96,6 +96,26 @@ class FGORoutineDefine {
         add(cardTarget1);add(cardTarget2);add(cardTarget3);
     }};
 
+    static ScreenPoint masterSkillButton = new ScreenPoint(0x18, 0x31, 0x5A, 0xFF, 615, 1772, ScreenPoint.SO_Portrait);
+    static private ScreenCoord masterSkill1 = new ScreenCoord(600, 1354, ScreenPoint.SO_Portrait);
+    static private ScreenCoord masterSkill2 = new ScreenCoord(600, 1495, ScreenPoint.SO_Portrait);
+    static private ScreenCoord masterSkill3 = new ScreenCoord(600, 1620, ScreenPoint.SO_Portrait);
+    static ArrayList<ScreenCoord> masterSkills = new ArrayList<ScreenCoord>() {{
+        add(masterSkill1);add(masterSkill2);add(masterSkill3);
+    }};
+
+    static ScreenPoint inChangingServant = new ScreenPoint(0x14, 0x1F, 0x56, 0xFF, 131, 946, ScreenPoint.SO_Portrait); //also confirm button
+    static private ScreenCoord changeServant1 = new ScreenCoord(550, 205, ScreenPoint.SO_Portrait);
+    static private ScreenCoord changeServant2 = new ScreenCoord(550, 502, ScreenPoint.SO_Portrait);
+    static private ScreenCoord changeServant3 = new ScreenCoord(550, 819, ScreenPoint.SO_Portrait);
+    static private ScreenCoord changeServant4 = new ScreenCoord(550, 1115, ScreenPoint.SO_Portrait);
+    static private ScreenCoord changeServant5 = new ScreenCoord(550, 1420, ScreenPoint.SO_Portrait);
+    static private ScreenCoord changeServant6 = new ScreenCoord(550, 1700, ScreenPoint.SO_Portrait);
+    static ArrayList<ScreenCoord> changeServants = new ArrayList<ScreenCoord>() {{
+        add(changeServant1);add(changeServant2);add(changeServant3);
+        add(changeServant4);add(changeServant5);add(changeServant6);
+    }};
+
     // NP 100% detect
     static private ScreenPoint char100NPChar1 = new ScreenPoint(0xFF,0xFF,0xFF,0xFF,362 , 1000, ScreenPoint.SO_Landscape);
     static private ScreenPoint char100NPChar2 = new ScreenPoint(0xFF,0xFF,0xFF,0xFF,838 , 1000, ScreenPoint.SO_Landscape);
