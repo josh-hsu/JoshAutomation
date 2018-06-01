@@ -306,6 +306,17 @@ public class HeadService extends Service implements AutoJobEventListener{
         mGL.setGameOrientation(ScreenPoint.SO_Portrait);
         mGL.getCaptureService().setChatty(false);
 
+        if (mAPV.getPrefs().getBoolean("ssEnabled", false)) {
+            String pn = mAPV.getPrefs().getString("ssPackageName", "");
+            String sn = mAPV.getPrefs().getString("ssServiceName", "");
+            String in = mAPV.getPrefs().getString("ssInterfaceName", "");
+            int code = Integer.parseInt(mAPV.getPrefs().getString("ssTransactCode", "0"));
+            mGL.setHackParams(pn, sn, in, code);
+            mGL.setHackSS(true);
+        } else {
+            mGL.setHackSS(false);
+        }
+
         mAutoJobHandler = AutoJobHandler.getHandler();
 
         mAutoJobHandler.addJob(new LoopBattleJob());

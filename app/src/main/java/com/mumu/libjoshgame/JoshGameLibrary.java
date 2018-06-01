@@ -17,11 +17,10 @@
 package com.mumu.libjoshgame;
 
 import android.content.Context;
-import android.content.pm.PackageManager;
 import android.util.Log;
 
 /*
- * Josh Game Library - Version 1.41
+ * Josh Game Library - Version 1.5
  */
 /*
    JoshGameLibrary (GL)
@@ -32,13 +31,15 @@ import android.util.Log;
    mGL.setContext(this);                              //this can also be setPackageManager
    mGL.setGameOrientation(ScreenPoint.SO_Landscape);  //setting game orientation for point check
    mGL.setScreenDimension(1080, 1920);                //setting the dimension of screen for point check
-   mGL.setTouchShift(6)                               //setting the touch random shift size
+   mGL.setTouchShift(6);                              //setting the touch random shift size
+   mGL.setHackSS(false);                              //setting this value to true if your device is hacked
 
    Note: with version 1.30 or higher, all the waiting functions are throwing InterruptExceptions
    Note: JoshGameLibrary support minimal SDK version of Android 7.0, if you are using Android 6.0 or below
          you should see Josh-Tool instead.
  */
 public class JoshGameLibrary {
+    public static final String TAG = "LibGame";
     private InputService mInputService;
     private CaptureService mCaptureService;
     private static Cmd mCmd;
@@ -61,14 +62,26 @@ public class JoshGameLibrary {
             mFullInitialized = false;
         } else {
             mInputService.setContext(context);
-            mCmd = new Cmd(context.getPackageManager());
+            mCmd = new Cmd(context);
             mFullInitialized = true;
         }
     }
 
-    public void setPackageManager(PackageManager pm) {
-        mCmd = new Cmd(pm);
-        mFullInitialized = true;
+    /*
+     * setHackSS
+     * this function is used to make run any command on hacked device.
+     * you can use isDeviceHacked() to determine if your device is hacked.
+     */
+    public void setHackSS(boolean hack) {
+        if (!mFullInitialized) {
+            Log.d(TAG, "Command service is not initialized");
+        } else {
+            mCmd.setHackSS(hack);
+        }
+    }
+
+    public void setHackParams(String pn, String sn, String in, int code) {
+        mCmd.setHackParams(pn, sn, in, code);
     }
 
     public void setScreenDimension(int w, int h) {
@@ -131,7 +144,7 @@ public class JoshGameLibrary {
             if (mFullInitialized) {
                 mCmd.runCommand(cmd);
             } else {
-                Log.d("LibGame", "Command service is not initialized");
+                Log.d(TAG, "Command service is not initialized");
             }
         }
     }

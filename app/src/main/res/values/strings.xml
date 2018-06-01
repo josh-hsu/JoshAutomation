@@ -58,7 +58,7 @@
     <!-- Settings -->
     <string name="settings_fragment_title_1">FGO 設定</string>
     <string name="settings_fragment_summary_1">在程式 FGO 底下的腳本設定</string>
-    <string name="settings_fragment_title_2">腳本選擇設定</string>
+    <string name="settings_fragment_title_2">腳本與系統設定</string>
     <string name="settings_fragment_summary_2">決定按下 Play 後要執行哪一個任務</string>
     <string name="settings_fragment_title_3">Shinobi 設定</string>
     <string name="settings_fragment_summary_3">在程式 Shinobi 底下的腳本設定</string>

@@ -31,4 +31,38 @@
             android:maxLength="40"/>
     </PreferenceCategory>
 
+    <PreferenceCategory android:title="Binder 設定">
+        <CheckBoxPreference
+            android:key="ssEnabled"
+            android:title="啟用 Binder 控制"
+            android:summary="使用自己建立的 Binder 服務連接 LibGameService"
+            android:defaultValue="false"/>
+        <EditTextPreference
+            android:key="ssPackageName"
+            android:title="元件名稱"
+            android:summary="Binder 提供者的 package 名稱"
+            android:hint="com.package.sample"
+            android:maxLength="45"/>
+        <EditTextPreference
+            android:key="ssServiceName"
+            android:title="服務名稱"
+            android:summary="該 package 內是哪一個 service 提供服務"
+            android:hint=".service"
+            android:maxLength="45"/>
+        <EditTextPreference
+            android:key="ssInterfaceName"
+            android:title="介面名稱"
+            android:summary="提供接收交易的介面名稱"
+            android:hint=".IService"
+            android:maxLength="45"/>
+        <EditTextPreference
+            android:key="ssTransactCode"
+            android:title="交易密碼"
+            android:summary="該介面使用的密碼"
+            android:hint="1000"
+            android:defaultValue="0"
+            android:maxLength="6"/>
+
+    </PreferenceCategory>
+
 </PreferenceScreen>

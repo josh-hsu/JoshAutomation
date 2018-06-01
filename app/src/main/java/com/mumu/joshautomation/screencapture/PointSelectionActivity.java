@@ -17,6 +17,7 @@
 package com.mumu.joshautomation.screencapture;
 
 import android.annotation.SuppressLint;
+import android.content.DialogInterface;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
@@ -27,6 +28,7 @@ import android.graphics.drawable.ShapeDrawable;
 import android.graphics.drawable.shapes.RectShape;
 import android.os.Environment;
 import android.support.v7.app.ActionBar;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.os.Handler;
@@ -114,27 +116,41 @@ public class PointSelectionActivity extends AppCompatActivity {
         mGL.setScreenDimension(1080, 1920);
 
         Bitmap pngFileMap = BitmapFactory.decodeFile(mPngFilePath);
-        int w = pngFileMap.getWidth();
-        int h = pngFileMap.getHeight();
-        if (pngFileMap.getWidth() > pngFileMap.getHeight()) {
-            Matrix mtx = new Matrix();
-            mtx.postRotate(90);
-            pngFileMap = Bitmap.createBitmap(pngFileMap, 0, 0, w, h, mtx, true);
+
+        if (pngFileMap == null) {
+            new AlertDialog.Builder(this)
+                    .setTitle("截圖錯誤")
+                    .setMessage("您的裝置軟體未經過客製化，無法使用此功能。請考慮按照ReadMe，建立您自己的軟體。(這可能會失去保固)")
+                    .setNegativeButton("OK", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            finish();
+                        }
+                    })
+                    .show();
+        } else {
+            int w = pngFileMap.getWidth();
+            int h = pngFileMap.getHeight();
+            if (pngFileMap.getWidth() > pngFileMap.getHeight()) {
+                Matrix mtx = new Matrix();
+                mtx.postRotate(90);
+                pngFileMap = Bitmap.createBitmap(pngFileMap, 0, 0, w, h, mtx, true);
+            }
+            mImageView.setImageBitmap(pngFileMap);
+            mImageView.setOnTouchListener(mPointTouchListener);
+            mInfoTextView.setBackgroundColor(Color.WHITE);
+            mUpZoomImageView.setVisibility(View.INVISIBLE);
+            mDownZoomImageView.setVisibility(View.INVISIBLE);
+
+            Display display = getWindowManager().getDefaultDisplay();
+            Point size = new Point();
+            display.getSize(size);
+            mScreenSizeX = size.x;
+            mScreenSizeY = size.y;
+            mGL.setScreenDimension(mScreenSizeX, mScreenSizeY);
+
+            hide();
         }
-        mImageView.setImageBitmap(pngFileMap);
-        mImageView.setOnTouchListener(mPointTouchListener);
-        mInfoTextView.setBackgroundColor(Color.WHITE);
-        mUpZoomImageView.setVisibility(View.INVISIBLE);
-        mDownZoomImageView.setVisibility(View.INVISIBLE);
-
-        Display display = getWindowManager().getDefaultDisplay();
-        Point size = new Point();
-        display.getSize(size);
-        mScreenSizeX = size.x;
-        mScreenSizeY = size.y;
-        mGL.setScreenDimension(mScreenSizeX, mScreenSizeY);
-
-        hide();
     }
 
     @Override
