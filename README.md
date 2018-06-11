@@ -3,7 +3,7 @@
 
 ## 前置工作
 1. 到 [JoshAutomationService](https://github.com/josh-hsu/JoshAutomationService/tree/master/release) 下載最新的 APK 並簽屬 Platform key 後安裝到您的 Android 手機
-2. 安裝 JoshAutomation APK 至您的手機
+2. 安裝 [JoshAutomation](https://github.com/josh-hsu/JoshAutomation/tree/master/release) APK 至您的手機
 
 ## 設定 JoshAutomation (大小寫注意)
 1. 打開 JoshAutomation，您必須先同意使用外部儲存空間，按下 打開設定 > 腳本與系統設定
