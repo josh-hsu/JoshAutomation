@@ -108,7 +108,8 @@ public class Cmd implements ServiceConnection {
         if (mHackConnected && mHackBinder != null) {
             Parcel data = Parcel.obtain();
             Parcel reply = Parcel.obtain();
-            data.writeInterfaceToken(mSSPackageName + mSSInterfaceName);
+            if (mSSInterfaceName != null && !mSSInterfaceName.equals(""))
+                data.writeInterfaceToken(mSSPackageName + mSSInterfaceName);
             data.writeString(cmd);
             try {
                 mHackBinder.transact(mSSCode, data, reply, 0);

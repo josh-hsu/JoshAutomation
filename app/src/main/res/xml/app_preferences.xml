@@ -35,24 +35,24 @@
         <CheckBoxPreference
             android:key="ssEnabled"
             android:title="啟用 Binder 控制"
-            android:summary="使用自己建立的 Binder 服務連接 LibGameService"
+            android:summary="使用自己建立的 Binder 服務連接 LibGameService，請參考 Project : JoshAutomationService"
             android:defaultValue="false"/>
         <EditTextPreference
             android:key="ssPackageName"
             android:title="元件名稱"
             android:summary="Binder 提供者的 package 名稱"
-            android:hint="com.package.sample"
+            android:hint="com.mumu.joshautomationservice"
             android:maxLength="45"/>
         <EditTextPreference
             android:key="ssServiceName"
             android:title="服務名稱"
             android:summary="該 package 內是哪一個 service 提供服務"
-            android:hint=".service"
+            android:hint=".CommandService"
             android:maxLength="45"/>
         <EditTextPreference
             android:key="ssInterfaceName"
             android:title="介面名稱"
-            android:summary="提供接收交易的介面名稱"
+            android:summary="提供接收交易的介面名稱，若需要 writeInterfaceToken 才填寫"
             android:hint=".IService"
             android:maxLength="45"/>
         <EditTextPreference
