@@ -9,24 +9,14 @@
             android:summary="點擊選擇"
             android:defaultValue="0"/>
         <CheckBoxPreference
-            android:key="debugLogPref"
-            android:title="偵錯模式"
-            android:summary="Log 全開模式"
-            android:defaultValue="false"/>
-        <CheckBoxPreference
-            android:key="stringFormattedPointEnable"
-            android:title="字串找點模式"
-            android:summary="使用相機截圖找點時，可以使用簡易字串來建立 ScreenPoint"
-            android:defaultValue="false"/>
-        <CheckBoxPreference
             android:key="scriptExecuteLoopPref"
             android:title="重複執行"
-            android:summary="是否自動重複執行"
+            android:summary="是否自動重複執行，依據腳本是否支援重複執行而有效"
             android:defaultValue="false"/>
         <EditTextPreference
             android:key="scriptExecuteTimePref"
             android:title="腳本執行次數"
-            android:summary="1 次"
+            android:summary="當重複執行啟用時腳本執行的次數，0表示重複到按下終止為止，依據腳本是否支援重複執行而有效"
             android:defaultValue="1"
             android:maxLength="40"/>
     </PreferenceCategory>
@@ -62,7 +52,19 @@
             android:hint="1000"
             android:defaultValue="0"
             android:maxLength="6"/>
+    </PreferenceCategory>
 
+    <PreferenceCategory android:title="開發者設定">
+        <CheckBoxPreference
+            android:key="debugLogPref"
+            android:title="偵錯模式"
+            android:summary="Log 全開模式"
+            android:defaultValue="false"/>
+        <CheckBoxPreference
+            android:key="stringFormattedPointEnable"
+            android:title="字串找點模式"
+            android:summary="使用相機截圖找點時，可以使用簡易字串來建立 ScreenPoint。"
+            android:defaultValue="false"/>
     </PreferenceCategory>
 
 </PreferenceScreen>

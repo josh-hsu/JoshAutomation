@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2017 The Josh Tool Project
+ * Copyright (C) 2018 The Josh Tool Project
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,7 +20,7 @@ import android.content.Context;
 import android.util.Log;
 
 /*
- * Josh Game Library - Version 1.5
+ * Josh Game Library - Version 1.51
  */
 /*
    JoshGameLibrary (GL)
@@ -42,8 +42,8 @@ public class JoshGameLibrary {
     public static final String TAG = "LibGame";
     private InputService mInputService;
     private CaptureService mCaptureService;
-    private static Cmd mCmd;
-    private static boolean mFullInitialized = false;
+    private Cmd mCmd;
+    private static boolean mFullInitialized;
     private int width, height;
 
     private static JoshGameLibrary currentRuntime = new JoshGameLibrary();
@@ -55,14 +55,15 @@ public class JoshGameLibrary {
     private JoshGameLibrary() {
         mCaptureService = new CaptureService();
         mInputService = new InputService(mCaptureService);
+        mFullInitialized = false;
     }
 
     public void setContext(Context context) {
-        if (context == null) {
-            mFullInitialized = false;
-        } else {
-            mInputService.setContext(context);
+        if (context != null && !mFullInitialized) {
             mCmd = new Cmd(context);
+            mInputService.setContext(context);
+            mInputService.setCmd(mCmd);
+            mCaptureService.setCmd(mCmd);
             mFullInitialized = true;
         }
     }
@@ -134,19 +135,6 @@ public class JoshGameLibrary {
 
     public int getScreenHeight() {
         return height;
-    }
-
-    static class GLService {
-        /*
-         * this eases the pain of accessing Cmd for GLServices
-         */
-        void runCommand(String cmd) {
-            if (mFullInitialized) {
-                mCmd.runCommand(cmd);
-            } else {
-                Log.d(TAG, "Command service is not initialized");
-            }
-        }
     }
 
 }

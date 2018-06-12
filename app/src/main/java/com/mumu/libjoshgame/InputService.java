@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2017 The Josh Tool Project
+ * Copyright (C) 2018 The Josh Tool Project
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -22,7 +22,7 @@ import android.media.RingtoneManager;
 import android.net.Uri;
 import android.util.Log;
 
-public class InputService extends JoshGameLibrary.GLService {
+public class InputService {
     private static final String TAG = "LibGame";
     private int mGameOrientation = ScreenPoint.SO_Landscape;
     private int mRandomTouchShift = 0;
@@ -32,6 +32,7 @@ public class InputService extends JoshGameLibrary.GLService {
     private int mScreenYOffset = 0;
     private CaptureService mCaptureService = null;
     private Context mContext = null;
+    private Cmd mCmd = null;
 
     private static final int INPUT_TYPE_TAP = 0;
     private static final int INPUT_TYPE_DOUBLE_TAP = 1;
@@ -80,12 +81,27 @@ public class InputService extends JoshGameLibrary.GLService {
     }
 
     /*
+     * setCmd (added in 1.50)
+     * now mCmd is no longer static, make sure every Service has mCmd of GameLibrary
+     */
+    void setCmd(Cmd cmd) {
+        mCmd = cmd;
+    }
+
+    private void runCommand(String cmd) {
+        if (mCmd != null) {
+            mCmd.runCommand(cmd);
+        } else {
+            Log.d(TAG, "Command service is not initialized");
+        }
+    }
+
+    /*
      * Touch on screen with type (added in 1.0)
      * This function will not consider the screen orientation
      * apply random shift in touch point (added in 1.23)
-     * TODO: need to find out why input binary takes a long time to execute
      */
-    private int touchOnScreen(int x, int y, int tx, int ty, int type) {
+    private void touchOnScreen(int x, int y, int tx, int ty, int type) {
         int x_shift = (int) (Math.random() * mRandomTouchShift) - mRandomTouchShift/2;
         int y_shift = (int) (Math.random() * mRandomTouchShift) - mRandomTouchShift/2;
 
@@ -104,26 +120,25 @@ public class InputService extends JoshGameLibrary.GLService {
 
         switch (type) {
             case INPUT_TYPE_TAP:
-                super.runCommand("input tap " + x + " " + y);
+                runCommand("input tap " + x + " " + y);
                 break;
             case INPUT_TYPE_DOUBLE_TAP:
-                super.runCommand("input tap " + x + " " + y);
-                super.runCommand("input tap " + x + " " + y);
+                runCommand("input tap " + x + " " + y);
+                runCommand("input tap " + x + " " + y);
                 break;
             case INPUT_TYPE_TRIPLE_TAP:
-                super.runCommand("input tap " + x + " " + y);
-                super.runCommand("input tap " + x + " " + y);
-                super.runCommand("input tap " + x + " " + y);
+                runCommand("input tap " + x + " " + y);
+                runCommand("input tap " + x + " " + y);
+                runCommand("input tap " + x + " " + y);
                 break;
             case INPUT_TYPE_CONT_TAPS:
                 break;
             case INPUT_TYPE_SWIPE:
-                super.runCommand("input swipe " + x + " " + y + " " + tx + " " + ty);
+                runCommand("input swipe " + x + " " + y + " " + tx + " " + ty);
                 break;
             default:
                 Log.e(TAG, "touchOnScreen: type " + type + "is invalid.");
         }
-        return 0;
     }
 
     private ScreenCoord getCalculatedOffsetCoord(ScreenCoord coord1) {
@@ -138,18 +153,16 @@ public class InputService extends JoshGameLibrary.GLService {
         return coord;
     }
 
-    public int tapOnScreen(ScreenCoord coord1) {
+    public void tapOnScreen(ScreenCoord coord1) {
         ScreenCoord coord = getCalculatedOffsetCoord(coord1);
 
         if (mGameOrientation != coord.orientation)
             touchOnScreen(coord.y, mScreenWidth - coord.x, 0, 0, INPUT_TYPE_TAP);
         else
             touchOnScreen(coord.x, coord.y, 0, 0, INPUT_TYPE_TAP);
-
-        return 0;
     }
 
-    public int swipeOnScreen(ScreenCoord start, ScreenCoord end) {
+    public void swipeOnScreen(ScreenCoord start, ScreenCoord end) {
         ScreenCoord coord_start = getCalculatedOffsetCoord(start);
         ScreenCoord coord_end = getCalculatedOffsetCoord(end);
 
@@ -158,7 +171,6 @@ public class InputService extends JoshGameLibrary.GLService {
         else
             touchOnScreen(coord_start.x, coord_start.y, coord_end.x, coord_end.y, INPUT_TYPE_SWIPE);
 
-        return 0;
     }
 
     /*
@@ -221,7 +233,7 @@ public class InputService extends JoshGameLibrary.GLService {
     }
 
     public void inputText(String text) {
-        super.runCommand("input text " + text);
+        runCommand("input text " + text);
     }
 
 
@@ -249,7 +261,7 @@ public class InputService extends JoshGameLibrary.GLService {
     }
 
     public void setBacklight(int bl) {
-        super.runCommand("echo " + bl + " > /sys/class/leds/lcd-backlight/brightness");
+        runCommand("echo " + bl + " > /sys/class/leds/lcd-backlight/brightness");
     }
 
     public String toString() {

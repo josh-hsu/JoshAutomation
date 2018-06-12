@@ -83,6 +83,7 @@ public class HeadService extends Service implements AutoJobEventListener{
     private JoshGameLibrary mGL;
     private AppPreferenceValue mAPV;
     private AutoJobHandler mAutoJobHandler;
+    private static boolean mAutoJobAdded = false;
 
     /* ==========================
      * Update UI Thread
@@ -319,30 +320,33 @@ public class HeadService extends Service implements AutoJobEventListener{
 
         mAutoJobHandler = AutoJobHandler.getHandler();
 
-        mAutoJobHandler.addJob(new LoopBattleJob());
-        mAutoJobHandler.addJob(new AutoBattleJob());
-        mAutoJobHandler.addJob(new PureBattleJob());
-        mAutoJobHandler.addJob(new NewFlushJob());
-        mAutoJobHandler.addJob(new TWAutoLoginJob());
-        mAutoJobHandler.addJob(new ShinobiLoopBattleJob());
-        mAutoJobHandler.addJob(new FlushJob());
-        mAutoJobHandler.addJob(new FlushMoneyJob());
-        mAutoJobHandler.addJob(new ROAutoDrinkJob());
+        if (!mAutoJobAdded) {
+            mAutoJobHandler.addJob(new LoopBattleJob());
+            mAutoJobHandler.addJob(new AutoBattleJob());
+            mAutoJobHandler.addJob(new PureBattleJob());
+            mAutoJobHandler.addJob(new NewFlushJob());
+            mAutoJobHandler.addJob(new TWAutoLoginJob());
+            mAutoJobHandler.addJob(new ShinobiLoopBattleJob());
+            mAutoJobHandler.addJob(new FlushJob());
+            mAutoJobHandler.addJob(new FlushMoneyJob());
+            mAutoJobHandler.addJob(new ROAutoDrinkJob());
 
-        mAutoJobHandler.setJobEventListener(LoopBattleJob.jobName, this);
-        mAutoJobHandler.setJobEventListener(PureBattleJob.jobName, this);
-        mAutoJobHandler.setJobEventListener(AutoBattleJob.jobName, this);
-        mAutoJobHandler.setJobEventListener(NewFlushJob.jobName, this);
-        mAutoJobHandler.setJobEventListener(TWAutoLoginJob.jobName, this);
-        mAutoJobHandler.setJobEventListener(ShinobiLoopBattleJob.jobName, this);
-        mAutoJobHandler.setJobEventListener(FlushJob.jobName, this);
-        mAutoJobHandler.setJobEventListener(FlushMoneyJob.jobName, this);
+            mAutoJobHandler.setJobEventListener(LoopBattleJob.jobName, this);
+            mAutoJobHandler.setJobEventListener(PureBattleJob.jobName, this);
+            mAutoJobHandler.setJobEventListener(AutoBattleJob.jobName, this);
+            mAutoJobHandler.setJobEventListener(NewFlushJob.jobName, this);
+            mAutoJobHandler.setJobEventListener(TWAutoLoginJob.jobName, this);
+            mAutoJobHandler.setJobEventListener(ShinobiLoopBattleJob.jobName, this);
+            mAutoJobHandler.setJobEventListener(FlushJob.jobName, this);
+            mAutoJobHandler.setJobEventListener(FlushMoneyJob.jobName, this);
 
-        //add service itself to job
-        mAutoJobHandler.setExtra(LoopBattleJob.jobName, this);
-        mAutoJobHandler.setExtra(ShinobiLoopBattleJob.jobName, this);
-        mAutoJobHandler.setExtra(FlushJob.jobName, this);
-        mAutoJobHandler.setExtra(FlushMoneyJob.jobName, this);
+            //add service itself to job
+            mAutoJobHandler.setExtra(LoopBattleJob.jobName, this);
+            mAutoJobHandler.setExtra(ShinobiLoopBattleJob.jobName, this);
+            mAutoJobHandler.setExtra(FlushJob.jobName, this);
+            mAutoJobHandler.setExtra(FlushMoneyJob.jobName, this);
+            mAutoJobAdded = true;
+        }
     }
 
     @Override

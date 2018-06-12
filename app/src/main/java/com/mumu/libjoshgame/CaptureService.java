@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2017 The Josh Tool Project
+ * Copyright (C) 2018 The Josh Tool Project
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -22,7 +22,7 @@ import android.util.Log;
 import java.io.RandomAccessFile;
 import java.util.ArrayList;
 
-public class CaptureService extends JoshGameLibrary.GLService {
+public class CaptureService {
     private final String TAG = "LibGame";
     private final String mInternalDumpFile = Environment.getExternalStorageDirectory().toString() + "/internal.dump";
     private final String mFindColorDumpFile = Environment.getExternalStorageDirectory().toString() + "/find_color.dump";
@@ -34,6 +34,7 @@ public class CaptureService extends JoshGameLibrary.GLService {
     private int[] mAmbiguousRange = {0x05, 0x05, 0x06};
     private final int mMaxColorFinding = 10;
     private boolean mChatty = true;
+    private Cmd mCmd = null;
     
     CaptureService() {
         Log.d(TAG, "CaptureService has been created.");
@@ -61,6 +62,22 @@ public class CaptureService extends JoshGameLibrary.GLService {
         mScreenYOffset = yOffset;
     }
 
+    /*
+     * setCmd (added in 1.50)
+     * now mCmd is no longer static, make sure every Service has mCmd of GameLibrary
+     */
+    void setCmd(Cmd cmd) {
+        mCmd = cmd;
+    }
+
+    private void runCommand(String cmd) {
+        if (mCmd != null) {
+            mCmd.runCommand(cmd);
+        } else {
+            Log.d(TAG, "Command service is not initialized");
+        }
+    }
+
     void setAmbiguousRange(int[] range) {
         mAmbiguousRange = range;
     }
@@ -70,16 +87,16 @@ public class CaptureService extends JoshGameLibrary.GLService {
     }
 
     public void dumpScreenPNG(String filename) {
-        super.runCommand("screencap -p " + filename);
+        runCommand("screencap -p " + filename);
     }
 
     public void dumpScreen(String filename) {
-        super.runCommand("screencap " + filename);
+        runCommand("screencap " + filename);
     }
 
     private void dumpScreen() {
-        super.runCommand("screencap " + mInternalDumpFile);
-        super.runCommand("chmod 666 " + mInternalDumpFile);
+        runCommand("screencap " + mInternalDumpFile);
+        runCommand("chmod 666 " + mInternalDumpFile);
     }
 
     /*

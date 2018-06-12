@@ -52,7 +52,6 @@ import java.util.List;
 
 public class AppPreferenceActivity extends PreferenceActivity {
     public static final String TAG = "JATool";
-    public boolean mHideOption = true;
 
     private static Context mContext; //this is a workaround, should be fixed later
 
@@ -69,10 +68,7 @@ public class AppPreferenceActivity extends PreferenceActivity {
             button.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    if (mHideOption)
-                        restoreDataFromSdcard();
-                    else
-                        openService();
+                    openService();
                 }
             });
             setListFooter(button);
