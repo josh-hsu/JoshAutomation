@@ -46,6 +46,178 @@
 
     <defset resolution="1080x1920">
         <screenpoint name="pointIntroPage">0x44,0x44,0x75,0xFF,824,1035,P</screenpoint>
+
+        <screenpoint name="pointSkipDialog">0xff,0xff,0xff,0xff,982,1743,Portrait</screenpoint>
+        <screenpoint name="pointSkipConfirm">0xDA,0xDA,0xDB,0xff,233,1166,Portrait</screenpoint>
+        <screenpoint name="pointSkipCancel">0xD3,0xD4,0xD4,0xff,232,807,Portrait</screenpoint>
+
+        <screenpoint name="pointCloseButton">45,61,108,0xff,156,63,Landscape</screenpoint>
+        <screenpoint name="pointLoopBattleStage">0xff,0xff,0xff,0xff,718,1420,Portrait</screenpoint>
+
+        <!-- battle cards -->
+        <screenpoint name="pointBattleButton">0x01,0xCE,0xF0,0xFF,218,1699,Portrait</screenpoint>
+        <screencoords name="cardPositionStart">
+            <screencoord>80,770,Landscape</screencoord>
+            <screencoord>460,770,Landscape</screencoord>
+            <screencoord>842,770,Landscape</screencoord>
+            <screencoord>1230,770,Landscape</screencoord>
+            <screencoord>1630,770,Landscape</screencoord>
+        </screencoords>
+        <screencoords name="cardPositionEnd">
+            <screencoord>312,920,Landscape</screencoord>
+            <screencoord>684,920,Landscape</screencoord>
+            <screencoord>1074,920,Landscape</screencoord>
+            <screencoord>1470,920,Landscape</screencoord>
+            <screencoord>1845,920,Landscape</screencoord>
+        </screencoords>
+        <screencolors name="cardArt">
+            <screencolor>0,61,209,0xff</screencolor>
+            <screencolor>28,119,255,0xff</screencolor>
+            <screencolor>98,222,255,0xff</screencolor>
+            <screencolor>64,163,255,0xff</screencolor>
+        </screencolors>
+        <screencolors name="cardQuick">
+            <screencolor> 2,147,12,0xff</screencolor>
+            <screencolor>238,254,136,0xff</screencolor>
+            <screencolor>48,223,30,0xff</screencolor>
+            <screencolor>51,233,59,0xff</screencolor>
+        </screencolors>
+        <screencolors name="cardBurst">
+            <screencolor>255,22,6,0xff</screencolor>
+            <screencolor>254,226,67,0xff</screencolor>
+            <screencolor>250,91,28,0xff</screencolor>
+            <screencolor>253,134,39,0xff</screencolor>
+        </screencolors>
+
+        <!-- skill and royal -->
+        <screencoords name="cardSkills">
+            <screencoord>107,870,Landscape</screencoord>
+            <screencoord>250,870,Landscape</screencoord>
+            <screencoord>400,870,Landscape</screencoord>
+            <screencoord>570,870,Landscape</screencoord>
+            <screencoord>720,870,Landscape</screencoord>
+            <screencoord>860,870,Landscape</screencoord>
+            <screencoord>1050,870,Landscape</screencoord>
+            <screencoord>1200,870,Landscape</screencoord>
+            <screencoord>1350,870,Landscape</screencoord>
+        </screencoords>
+        <screencoords name="cardRoyals">
+            <screencoord>620,289,Landscape</screencoord>
+            <screencoord>976,293,Landscape</screencoord>
+            <screencoord>1320,289,Landscape</screencoord>
+        </screencoords>
+        <screenpoint name="inSelectTarget">0xD4,0xD4,0xD4,0xFF,859,1625,Portrait</screenpoint>
+        <screencoords name="cardTargets">
+            <screencoord>434,492,Portrait</screencoord>
+            <screencoord>355,945,Portrait</screencoord>
+            <screencoord>430,1418,Portrait</screencoord>
+        </screencoords>
+        <screenpoint name="masterSkillButton">0x18,0x31,0x5A,0xFF,615,1772,Portrait</screenpoint>
+        <screencoords name="masterSkills">
+            <screencoord>600,1354,Portrait</screencoord>
+            <screencoord>600,1495,Portrait</screencoord>
+            <screencoord>600,1620,Portrait</screencoord>
+        </screencoords>
+        <screenpoint name="inChangingServant">0x14,0x1F,0x56,0xFF,131,946,Portrait</screenpoint> <!-- also confirm button -->
+        <screencoords name="changeServants">
+            <screencoord>550,205,Portrait</screencoord>
+            <screencoord>550,502,Portrait</screencoord>
+            <screencoord>550,819,Portrait</screencoord>
+            <screencoord>550,1115,Portrait</screencoord>
+            <screencoord>550,1420,Portrait</screencoord>
+            <screencoord>550,1700,Portrait</screencoord>
+        </screencoords>
+        <screenpoints name="char100NPChars">
+            <screenpoint>0xFF,0xFF,0xFF,0xFF,362,1000,Landscape</screenpoint>
+            <screenpoint>0xFF,0xFF,0xFF,0xFF,838,1000,Landscape</screenpoint>
+            <screenpoint>0xFF,0xFF,0xFF,0xFF,1317,1000,Landscape</screenpoint>
+        </screenpoints>
+
+        <!-- battle stage detect -->
+        <screenpoints name="battleStages">
+            <screenpoint>204,204,204,0xFF,1304,29,Landscape</screenpoint>
+            <screenpoint>240,240,240,0xFF,1318,49,Landscape</screenpoint>
+            <screenpoint>211,211,211,0xFF,1304,49,Landscape</screenpoint>
+        </screenpoints>
+
+        <!-- home screen -->
+        <screenpoint name="pointHomeGiftBox">229,64,39,0xff,646,1013,Landscape</screenpoint>
+        <screenpoint name="pointHomeOSiRaSe">0,0,4,0xff,219,78,Landscape</screenpoint>
+        <screenpoint name="pointHomeApAdd">201,142,85,0xff,262,1049,Landscape</screenpoint>
+        <screenpoint name="pointHomeApAddV2">0xfa,0xf6,0xc2,0xff,59,246,Portrait</screenpoint>
+        <screenpoint name="pointMenuDownButton">0x31,0x39,0x65,0xff,53,1772,Portrait</screenpoint>
+
+        <!-- NEXT button location -->
+        <screencoord name="pointRightNextStart">1640,156,Landscape</screencoord>
+        <screencoord name="pointRightNextEnd">1640,821,Landscape</screencoord>
+        <screenpoints name="pointRightNextPoints">
+            <screenpoint>253,223,106,0xff,1640,184,Landscape</screenpoint>
+            <screenpoint>255,223,103,0xff,1712,184,Landscape</screenpoint>
+            <screenpoint>255,223,104,0xff,1750,184,Landscape</screenpoint>
+        </screenpoints>
+        <screencoord name="pointLeftNextStart">1141,156,Landscape</screencoord>
+        <screencoord name="pointLeftNextEnd">1141,821,Landscape</screencoord>
+        <screenpoints name="pointLeftNextPoints">
+            <screenpoint>253,223,105,0xff,1141,657,Landscape</screenpoint>
+            <screenpoint>254,221,92,0xff,1213,657,Landscape</screenpoint>
+            <screenpoint>255,223,104,0xff,1249,657,Landscape</screenpoint>
+        </screenpoints>
+        <screencoord name="pointSubStageNextStart">1036,138,Landscape</screencoord>
+        <screencoord name="pointSubStageNextEnd">1036,1049,Landscape</screencoord>
+        <screenpoints name="">
+            <screenpoint>252,221,109,0xff,1036,166,Landscape</screenpoint>
+            <screenpoint>255,223,102,0xff,1109,166,Landscape</screenpoint>
+            <screenpoint>255,223,104,0xff,1145,166,Landscape</screenpoint>
+        </screenpoints>
+        <screencoord name="pointMapNextStart">909,156,Landscape</screencoord>
+        <screencoord name="pointMapNextEnd">909,821,Landscape</screencoord>
+        <screenpoints name="pointMapNextPoints">
+            <screenpoint>253,223,106,0xff,909,184,Landscape</screenpoint>
+            <screenpoint>255,223,103,0xff,981,184,Landscape</screenpoint>
+            <screenpoint>255,223,104,0xff,1019,184,Landscape</screenpoint>
+        </screenpoints>
+
+        <screencoord name="pointSwipeStart">1440,700,Landscape</screencoord>
+        <screencoord name="pointSwipeEnd">1440,508,Landscape</screencoord>
+
+        <!-- battle pre-setup -->
+        <screencoord name="pointFriendSelect">979,746,Landscape</screencoord>
+        <screencoord name="pointFriendSelectDefault">624,787,Portrait</screencoord>
+        <screenpoint name="pointEnterStage">37,47,75,0xff,1735,1010,Landscape</screenpoint>
+
+        <!-- friend select -->
+        <screencoord name="pointFriendSupStart">1558,300,Landscape</screencoord>
+        <screencoord name="pointFriendSupEnd">1558,1000,Landscape</screencoord>
+        <screenpoints name="pointFriendSupPoints">
+            <screenpoint>232,178,59,0xff,1558,713,Landscape</screenpoint>
+            <screenpoint>250,191,63,0xff,1589,713,Landscape</screenpoint>
+            <screenpoint>240,185,62,0xff,1609,713,Landscape</screenpoint>
+        </screenpoints>
+
+        <!-- battle die detect -->
+        <screenpoint name="pointBattleDieDetect">255,0,0,0xff,1586,131,Landscape</screenpoint>
+        <screenpoint name="pointBattleDieBackoff">0,0,0,0xff,492,475,Landscape</screenpoint>
+        <screenpoint name="pointBattleDieConfirm">250,250,250,0xff,1301,543,Landscape</screenpoint>
+        <screenpoint name="pointBattleDieClose">217,217,217,0xff,960,843,Landscape</screenpoint>
+
+        <!-- battle results -->
+        <screenpoint name="pointBattleResult">236,236,235,0xff,832,74,Landscape</screenpoint>
+        <screenpoint name="pointBattleNext">211,211,211,0xff,1527,1018,Landscape</screenpoint>
+        <screenpoint name="pointQuestClearStone">0xFF,0xCD,0x00,0xff,261,885,Portrait</screenpoint>
+        <screenpoint name="pointQuestClearCube">0xFF,0xCD,0x00,0xff,265,1266,Portrait</screenpoint>
+        <screenpoint name="pointDenyFriend">115,115,115,0xff,487,921,Landscape</screenpoint>
+
+    </defset>
+
+    <defset resolution="720x1280">
+        <screenpoint name="pointIntroPage">FAKE2</screenpoint>
+
+        <screenpoint name="pointSkipDialog">FAKE1</screenpoint>
+        <screenpoint name="pointSkipConfirm">FAKE3</screenpoint>
+        <screenpoint name="pointSkipCancel">FAKE4</screenpoint>
+
+        <screenpoint name="pointCloseButton">FAKE5</screenpoint>
+        <screenpoint name="pointLoopBattleStage">FAKE6</screenpoint>
     </defset>
 
 </definitions>

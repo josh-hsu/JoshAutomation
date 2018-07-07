@@ -48,6 +48,7 @@ import com.mumu.joshautomation.ro.ROAutoDrinkJob;
 import com.mumu.joshautomation.screencapture.PointSelectionActivity;
 import com.mumu.joshautomation.script.AutoJobEventListener;
 import com.mumu.joshautomation.script.AutoJobHandler;
+import com.mumu.joshautomation.script.DefinitionLoader;
 import com.mumu.joshautomation.shinobi.ShinobiLoopBattleJob;
 import com.mumu.libjoshgame.JoshGameLibrary;
 import com.mumu.libjoshgame.ScreenPoint;
@@ -280,6 +281,12 @@ public class HeadService extends Service implements AutoJobEventListener{
         // App Preference Value should be initialized here
         mAPV = AppPreferenceValue.getInstance();
         mAPV.init(mContext);
+
+        // Initial DefinitionLoader
+        DefinitionLoader.getInstance().setResources(mContext.getResources());
+
+        //TODO: remove this, test only
+        DefinitionLoader.getInstance().requestDefData(R.raw.fgo_definitions, "1080x1920");
 
         Display display = mWindowManager.getDefaultDisplay();
         Point size = new Point();
