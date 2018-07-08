@@ -168,10 +168,93 @@ public class DefinitionLoader {
         for(int i = 0; i < screenpointList.getLength(); i++) {
             Element element = (Element) screenpointList.item(i);
             String name = element.getAttribute(ATTR_NAME);
-            String data = element.getChildNodes().item(0).getNodeValue();
+            String data = getElementValue(element);
             if (!name.equals("")) {
-                Log.d(TAG, "point " + name + ": " + data);
+                ScreenPoint sp = new ScreenPoint(data);
+                Log.d(TAG, "Name " + name + ":" + sp.toString());
+                defData.addScreenPoint(name, sp);
             }
+        }
+
+        // parse screencoord (with name only)
+        for(int i = 0; i < screencoordList.getLength(); i++) {
+            Element element = (Element) screencoordList.item(i);
+            String name = element.getAttribute(ATTR_NAME);
+            String data = getElementValue(element);
+            if (!name.equals("")) {
+                ScreenCoord sc = new ScreenCoord(data);
+                Log.d(TAG, "Name " + name + ":" + sc.toString());
+                defData.addScreenCoord(name, sc);
+            }
+        }
+
+        // parse screencolor (with name only)
+        for(int i = 0; i < screencolorList.getLength(); i++) {
+            Element element = (Element) screencolorList.item(i);
+            String name = element.getAttribute(ATTR_NAME);
+            String data = getElementValue(element);
+            if (!name.equals("")) {
+                ScreenColor sc = new ScreenColor(data);
+                Log.d(TAG, "Name " + name + ":" + sc.toString());
+                defData.addScreenColor(name, sc);
+            }
+        }
+
+        // parse screenpoints array
+        for(int i = 0; i < screenpointsList.getLength(); i++) {
+            Element element = (Element) screenpointsList.item(i);
+            String name = element.getAttribute(ATTR_NAME);
+            NodeList points = element.getElementsByTagName(TAG_SCREENPOINT);
+            int pointCount = points.getLength();
+            ArrayList<ScreenPoint> spSet = new ArrayList<>();
+
+            Log.d(TAG, "Point set name = " + name);
+            for(int j = 0; j < pointCount; j++) {
+                String data = getElementValue(points.item(j));
+                ScreenPoint sp = new ScreenPoint(data);
+                spSet.add(j, sp);
+                Log.d(TAG, "     <" + j + "> " + sp.toString());
+            }
+
+            defData.addScreenPoints(name, spSet);
+        }
+
+        // parse screencoords array
+        for(int i = 0; i < screencoordsList.getLength(); i++) {
+            Element element = (Element) screencoordsList.item(i);
+            String name = element.getAttribute(ATTR_NAME);
+            NodeList coords = element.getElementsByTagName(TAG_SCREENCOORD);
+            int coordCount = coords.getLength();
+            ArrayList<ScreenCoord> scSet = new ArrayList<>();
+
+            Log.d(TAG, "Coord set name = " + name);
+            for(int j = 0; j < coordCount; j++) {
+                String data = getElementValue(coords.item(j));
+                ScreenCoord sp = new ScreenCoord(data);
+                scSet.add(j, sp);
+                Log.d(TAG, "     <" + j + "> " + sp.toString());
+            }
+
+            defData.addScreenCoords(name, scSet);
+        }
+
+        // parse screencolors array
+        for(int i = 0; i < screencolorsList.getLength(); i++) {
+            Element element = (Element) screencolorsList.item(i);
+            String name = element.getAttribute(ATTR_NAME);
+            NodeList colors = element.getElementsByTagName(TAG_SCREENCOLOR);
+            int colorCount = colors.getLength();
+            ArrayList<ScreenColor> scSet = new ArrayList<>();
+
+            Log.d(TAG, "Color set name = " + name);
+            for(int j = 0; j < colorCount; j++) {
+                String data = getElementValue(colors.item(j));
+                ScreenColor sc = new ScreenColor(data);
+                scSet.add(j, sc);
+                Log.d(TAG, "     <" + j + "> " + sc.toString());
+            }
+
+            defData.addScreenColors(name, scSet);
         }
 
         return defData;
@@ -242,7 +325,6 @@ public class DefinitionLoader {
         public ArrayList<ScreenColor> getScreenColors(String name) {
             return screencolors.get(name);
         }
-
     }
 
     /*
@@ -250,5 +332,13 @@ public class DefinitionLoader {
      */
     private String getVersionFromTag(Element element) {
         return element.getAttribute(ATTR_VERSION);
+    }
+
+    private String getElementValue(Element element) {
+        return element.getChildNodes().item(0).getNodeValue();
+    }
+
+    private String getElementValue(Node node) {
+        return node.getChildNodes().item(0).getNodeValue();
     }
 }

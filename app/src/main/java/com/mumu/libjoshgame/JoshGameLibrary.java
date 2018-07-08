@@ -20,7 +20,7 @@ import android.content.Context;
 import android.util.Log;
 
 /*
- * Josh Game Library - Version 1.51
+ * Josh Game Library - Version 1.52
  */
 /*
    JoshGameLibrary (GL)

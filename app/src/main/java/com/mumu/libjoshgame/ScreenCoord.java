@@ -27,6 +27,35 @@ public class ScreenCoord {
         orientation = oo;
     }
 
+    public ScreenCoord(String formattedString) {
+        String data[] = formattedString.split(",");
+        if (data.length == 3) {
+            String o = data[2];
+            try {
+                x = Integer.decode(data[0]);
+                y = Integer.decode(data[1]);
+
+                if (o.equals("Portrait") || o.equals("P") ||
+                        o.equals("p") || o.equals("0")) {
+                    orientation = ScreenPoint.SO_Portrait;
+                } else if (o.equals("Landscape") || o.equals("L") ||
+                        o.equals("l") || o.equals("1")) {
+                    orientation = ScreenPoint.SO_Landscape;
+                } else {
+                    throw new NumberFormatException("Orientation " + orientation + " not legal");
+                }
+            } catch (NumberFormatException e) {
+                x = 0;
+                y = 0;
+                orientation = 0;
+            }
+        } else {
+            x = 0;
+            y = 0;
+            orientation = 0;
+        }
+    }
+
     public ScreenCoord() {
         x = 0;
         y = 0;

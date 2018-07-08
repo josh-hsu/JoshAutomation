@@ -164,7 +164,7 @@
         </screenpoints>
         <screencoord name="pointSubStageNextStart">1036,138,Landscape</screencoord>
         <screencoord name="pointSubStageNextEnd">1036,1049,Landscape</screencoord>
-        <screenpoints name="">
+        <screenpoints name="pointSubStageNextPoints">
             <screenpoint>252,221,109,0xff,1036,166,Landscape</screenpoint>
             <screenpoint>255,223,102,0xff,1109,166,Landscape</screenpoint>
             <screenpoint>255,223,104,0xff,1145,166,Landscape</screenpoint>

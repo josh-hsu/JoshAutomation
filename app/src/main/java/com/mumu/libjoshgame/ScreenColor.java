@@ -42,6 +42,28 @@ public class ScreenColor {
         t = (byte) tt;
     }
 
+    public ScreenColor(String formattedString) {
+        String data[] = formattedString.split(",");
+        if (data.length == 4) {
+            try {
+                r = (byte) (Integer.decode(data[0])& 0xFF);
+                g = (byte) (Integer.decode(data[1])& 0xFF);
+                b = (byte) (Integer.decode(data[2])& 0xFF);
+                t = (byte) (Integer.decode(data[3])& 0xFF);
+            } catch (NumberFormatException e) {
+                b = 0;
+                g = 0;
+                r = 0;
+                t = 0;
+            }
+        } else {
+            b = 0;
+            g = 0;
+            r = 0;
+            t = 0;
+        }
+    }
+
     public ScreenColor() {
         b = 0;
         g = 0;

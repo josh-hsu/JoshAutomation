@@ -36,28 +36,34 @@ public class ScreenPoint {
     }
 
     /*
-     * ScreenPoint can now work with PointSelectionActivity to easy adding point (added in 1.33)
+     * ScreenPoint can now work with PointSelectionActivity for easily adding point (added in 1.33)
      *
-     * Example formatted string: 4-Aj5Gr0
-     * first bytes: 4-Aj is for coordination (up to 2400x2400)
-     * second bytes: 5Gr0 is for color (FF000000 ~ FFFFFFFF)
+     * 1. Example 8-digits formatted string: 4-Aj5Gr0
+     *    first byte: 4-Aj is for coordination (up to 2400x2400)
+     *    second byte: 5Gr0 is for color (FF000000 ~ FFFFFFFF)
      *
-     * char to int table
-     * |-------------------------------------------------------------------|
-     * |Decimal   Value |  0 - 9  |  10 - 35 | 36 - 61 | 62 | 63 | 64 | 65 |
-     * |--------------------------------------------------------------------
-     * |Character Value |  0 - 9  |  A  - Z  | a  - z  | +  |  - |  * |  / |
-     * |-------------------------------------------------------------------|
+     *    char to int table
+     *    |-------------------------------------------------------------------|
+     *    |Decimal   Value |  0 - 9  |  10 - 35 | 36 - 61 | 62 | 63 | 64 | 65 |
+     *    |--------------------------------------------------------------------
+     *    |Character Value |  0 - 9  |  A  - Z  | a  - z  | +  |  - |  * |  / |
+     *    |-------------------------------------------------------------------|
+     *
+     * 2. Example XML formatted string: 236,236,235,0xff,832,74,Landscape
+     *    There is no space in string and separated by 6 commas
+     *    There are 7 data, first 6 are numbers, last one is string
+     *    First 4 data: 236,236,235,0xff are color
+     *    Last 3 data: 832,74,Landscape are coordination
      */
     public ScreenPoint(String formattedString) {
         int[] parsedArray = new int[8];
         int unit = 66;
 
-        if (formattedString == null || formattedString.length() != 8) {
+        if (formattedString == null) {
             Log.w(TAG, "ScreenPoint: String " + formattedString + " is not legal.");
             coord = null;
             color = null;
-        } else {
+        } else if (formattedString.length() == 8) { //8-digits format
             for(int i = 0; i < formattedString.length(); i++) {
                 char targetChar = formattedString.charAt(i);
                 int parsedInt = parseFormattedChar(targetChar);
@@ -73,6 +79,41 @@ public class ScreenPoint {
             int colorG = (rawColor >> 8)  & 0xff;
             int colorB = rawColor & 0xff;
             color = new ScreenColor(colorR, colorG, colorB, 0xFF); //we force transparent value to 0xff
+        } else { //XML format
+            String data[] = formattedString.split(",");
+            if (data.length == 7) {
+                int r, g, b, t, x, y, o;
+                String orientation = data[6];
+                try {
+                    r = Integer.decode(data[0]);
+                    g = Integer.decode(data[1]);
+                    b = Integer.decode(data[2]);
+                    t = Integer.decode(data[3]);
+                    x = Integer.decode(data[4]);
+                    y = Integer.decode(data[5]);
+
+                    if (orientation.equals("Portrait") || orientation.equals("P") ||
+                            orientation.equals("p") || orientation.equals("0")) {
+                        o = SO_Portrait;
+                    } else if (orientation.equals("Landscape") || orientation.equals("L") ||
+                            orientation.equals("l") || orientation.equals("1")) {
+                        o = SO_Landscape;
+                    } else {
+                        throw new NumberFormatException("Orientation " + orientation + " not legal");
+                    }
+
+                    coord = new ScreenCoord(x, y, o);
+                    color = new ScreenColor((byte)(r & 0xFF), (byte)(g & 0xFF), (byte)(b & 0xFF), (byte)(t & 0xFF));
+                } catch (NumberFormatException e) {
+                    Log.e(TAG, "Data not legal " + e.getMessage());
+                    coord = null;
+                    color = null;
+                }
+            } else {
+                Log.w(TAG, "ScreenPoint: String " + formattedString + " is not legal.");
+                coord = null;
+                color = null;
+            }
         }
     }
 
