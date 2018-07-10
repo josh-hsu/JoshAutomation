@@ -285,9 +285,6 @@ public class HeadService extends Service implements AutoJobEventListener{
         // Initial DefinitionLoader
         DefinitionLoader.getInstance().setResources(mContext.getResources());
 
-        //TODO: remove this, test only
-        DefinitionLoader.getInstance().requestDefData(R.raw.fgo_definitions, "1080x1920");
-
         Display display = mWindowManager.getDefaultDisplay();
         Point size = new Point();
         display.getSize(size);

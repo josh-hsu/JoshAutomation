@@ -3,9 +3,13 @@ package com.mumu.joshautomation.fgo;
 import android.util.Log;
 
 import com.mumu.joshautomation.AppPreferenceValue;
+import com.mumu.joshautomation.R;
 import com.mumu.joshautomation.script.AutoJobEventListener;
+import com.mumu.joshautomation.script.DefinitionLoader;
 import com.mumu.libjoshgame.JoshGameLibrary;
+import com.mumu.libjoshgame.ScreenColor;
 import com.mumu.libjoshgame.ScreenCoord;
+import com.mumu.libjoshgame.ScreenPoint;
 
 import java.util.ArrayList;
 
@@ -15,10 +19,24 @@ class FGORoutine {
     private static final String TAG = "FGORoutine";
     private JoshGameLibrary mGL;
     private AutoJobEventListener mCallbacks;
+    private DefinitionLoader.DefData mDef;
+
+    private static final int sCardBurst = 0;
+    private static final int sCardArt = 1;
+    private static final int sCardQuick = 2;
+    private static final int sCardUnknown = 3;
+
+    private static final int sBattleDone = 0;
+    private static final int sBattleWaitTimeout = -1;
+    private static final int sBattleWaitResultTimeout = -2;
+    private static final int sBattleDie = -3;
 
     FGORoutine(JoshGameLibrary gl, AutoJobEventListener el) {
         mGL = gl;
         mCallbacks = el;
+
+        mDef = DefinitionLoader.getInstance().requestDefData(R.raw.fgo_definitions,
+                gl.getScreenWidth() + "x" + gl.getScreenHeight());
     }
 
     private void sendMessage(String msg) {
@@ -36,6 +54,15 @@ class FGORoutine {
         Thread.sleep(time);
     }
 
+    // Definition helper functions
+    private ScreenPoint SPT(String name) { return mDef.getScreenPoint(name);}
+    private ScreenCoord SCD(String name) { return mDef.getScreenCoord(name);}
+    private ScreenColor SCL(String name) { return mDef.getScreenColor(name);}
+    private ArrayList<ScreenPoint> SPTList(String name) {return mDef.getScreenPoints(name);}
+    private ArrayList<ScreenCoord> SCDList(String name) {return mDef.getScreenCoords(name);}
+    private ArrayList<ScreenColor> SCLList(String name) {return mDef.getScreenColors(name);}
+
+
     /* =======================
      * Battle Card Checking and Tapping
      * =======================
@@ -45,19 +72,19 @@ class FGORoutine {
 
         for(int i = 0; i < 5; i++) {
             if (mGL.getCaptureService().checkColorIsInRegion(
-                    cardPositionStart.get(i),
-                    cardPositionEnd.get(i),
-                    cardArt)) {
+                    SCDList("cardPositionStart").get(i),
+                    SCDList("cardPositionEnd").get(i),
+                    SCLList("cardArt"))) {
                 ret[i] = sCardArt;
             } else if (mGL.getCaptureService().checkColorIsInRegion(
-                    cardPositionStart.get(i),
-                    cardPositionEnd.get(i),
-                    cardBurst)) {
+                    SCDList("cardPositionStart").get(i),
+                    SCDList("cardPositionEnd").get(i),
+                    SCLList("cardBurst"))) {
                 ret[i] = sCardBurst;
             } else if (mGL.getCaptureService().checkColorIsInRegion(
-                    cardPositionStart.get(i),
-                    cardPositionEnd.get(i),
-                    cardQuick)) {
+                    SCDList("cardPositionStart").get(i),
+                    SCDList("cardPositionEnd").get(i),
+                    SCLList("cardQuick"))) {
                 ret[i] = sCardQuick;
             } else {
                 ret[i] = sCardUnknown;
@@ -142,7 +169,7 @@ class FGORoutine {
     private int[] getRoyalAvailability() {
         ArrayList<Integer> retSet = new ArrayList<>();
         for(int i = 0; i < 3; i++) {
-            if (mGL.getCaptureService().colorIs(char100NPChars.get(i)))
+            if (mGL.getCaptureService().colorIs(SPTList("char100NPChars").get(i)))
                 retSet.add(i);
         }
 
@@ -158,8 +185,9 @@ class FGORoutine {
 
     public void tapOnCard(int[] cardIndex) throws InterruptedException {
         for(int i : cardIndex) {
-            ScreenCoord coord = ScreenCoord.getTwoPointCenter(cardPositionStart.get(i),
-                    cardPositionEnd.get(i));
+            ScreenCoord coord = ScreenCoord.getTwoPointCenter(
+                    SCDList("cardPositionStart").get(i),
+                    SCDList("cardPositionEnd").get(i));
             mGL.getInputService().tapOnScreen(coord);
             sleep(200);
         }
@@ -172,7 +200,7 @@ class FGORoutine {
         for(BattleArgument.BattleSkill sk : skillIndex) {
 
             if (sk.skill < 9) { //Normal Skills
-                mGL.getInputService().tapOnScreen(cardSkills.get(sk.skill));
+                mGL.getInputService().tapOnScreen(SCDList("cardSkills").get(sk.skill));
                 sendMessage("點技能" + sk.skill);
                 sleep(1000);
 
@@ -183,10 +211,10 @@ class FGORoutine {
                     sendMessage("此技能無目標");
                 }
             } else if (sk.skill > 9 && sk.skill <= 12) { //Normal Master Skills
-                mGL.getInputService().tapOnScreen(masterSkillButton.coord);
+                mGL.getInputService().tapOnScreen(SPT("masterSkillButton").coord);
                 sendMessage("點Master技能");
                 sleep(500);
-                mGL.getInputService().tapOnScreen(masterSkills.get(sk.skill - 10));
+                mGL.getInputService().tapOnScreen(SCDList("masterSkills").get(sk.skill - 10));
                 sendMessage("點Master技能" + (sk.skill - 9));
                 sleep(500);
 
@@ -199,24 +227,24 @@ class FGORoutine {
             } else if (sk.skill == 90) { //Master skill: change servants
                 if (sk.change_target > 0 && sk.target > 0) {
 
-                    mGL.getInputService().tapOnScreen(masterSkillButton.coord);
+                    mGL.getInputService().tapOnScreen(SPT("masterSkillButton").coord);
                     sendMessage("點Master技能");
                     sleep(500);
-                    mGL.getInputService().tapOnScreen(masterSkills.get(2));
+                    mGL.getInputService().tapOnScreen(SCDList("masterSkills").get(2));
                     sendMessage("點換人");
                     sleep(500);
 
                     //tap on left side
                     if (mGL.getCaptureService().colorIs(inChangingServant)) {
-                        mGL.getInputService().tapOnScreen(changeServants.get(sk.change_target - 1));
+                        mGL.getInputService().tapOnScreen(SCDList("changeServants").get(sk.change_target - 1));
                         sleep(250);
-                        mGL.getInputService().tapOnScreen(changeServants.get(sk.target + 2));
+                        mGL.getInputService().tapOnScreen(SCDList("changeServants").get(sk.target + 2));
                         sleep(750);
 
                         //tap confirm
-                        mGL.getInputService().tapOnScreen(inChangingServant.coord);
+                        mGL.getInputService().tapOnScreen(SPT("inChangingServant").coord);
                         sleep(2000);
-                        if (mGL.getCaptureService().waitOnColor(pointBattleButton, 100) < 0)
+                        if (mGL.getCaptureService().waitOnColor(SPT("pointBattleButton"), 100) < 0)
                             sendMessage("等不到戰鬥按鈕");
                     } else {
                         sendMessage("換人頁面出不來");
@@ -237,7 +265,7 @@ class FGORoutine {
             return;
 
         for(int i : royal) {
-            mGL.getInputService().tapOnScreen(cardRoyals.get(i));
+            mGL.getInputService().tapOnScreen(SCDList("cardRoyals").get(i));
             sendMessage("點寶具" + i);
             sleep(500);
         }
@@ -245,8 +273,8 @@ class FGORoutine {
 
     public void tapOnTarget(int target) throws InterruptedException {
         if (target > 0 && target <= 3) {
-            if (mGL.getCaptureService().colorIs(inSelectTarget))
-                mGL.getInputService().tapOnScreen(cardTargets.get(target - 1));
+            if (mGL.getCaptureService().colorIs(SPT("inSelectTarget")))
+                mGL.getInputService().tapOnScreen(SCDList("cardTargets").get(target - 1));
         }
     }
 
@@ -254,12 +282,12 @@ class FGORoutine {
         ScreenCoord coordFound;
 
         do {
-            coordFound = mGL.getCaptureService().findColorSegment(pointFriendSupStart,
-                    pointFriendSupEnd, pointFriendSupPoints);
+            coordFound = mGL.getCaptureService().findColorSegment(SCD("pointFriendSupStart"),
+                    SCD("pointFriendSupEnd"), SPTList("pointFriendSupPoints"));
 
             sleep(500);
             if (coordFound == null) {
-                mGL.getInputService().swipeOnScreen(pointSwipeStart, pointSwipeEnd);
+                mGL.getInputService().swipeOnScreen(SCD("pointSwipeStart"), SCD("pointSwipeEnd"));
             }
 
             if(maxSwipe-- < 0 && coordFound == null) {
@@ -286,33 +314,33 @@ class FGORoutine {
         boolean useFriendEnabled = AppPreferenceValue.getInstance().getPrefs().getBoolean("battleUseFriendOnly", false);
         if (useFriendEnabled) {
             if (selectFriendSupport(2) < 0) {
-                mGL.getInputService().swipeOnScreen(pointSwipeEnd, pointSwipeStart);
+                mGL.getInputService().swipeOnScreen(SCD("pointSwipeEnd"), SCD("pointSwipeStart"));
                 sleep(200);
-                mGL.getInputService().swipeOnScreen(pointSwipeEnd, pointSwipeStart);
+                mGL.getInputService().swipeOnScreen(SCD("pointSwipeEnd"), SCD("pointSwipeStart"));
                 sleep(200);
-                mGL.getInputService().tapOnScreen(pointFriendSelect);
+                mGL.getInputService().tapOnScreen(SCD("pointFriendSelect"));
             }
         } else {
             sendMessage("選擇第一位好友");
-            mGL.getInputService().tapOnScreen(pointFriendSelectDefault);
+            mGL.getInputService().tapOnScreen(SCD("pointFriendSelectDefault"));
         }
 
         sleep(1500);
-        if (mGL.getCaptureService().waitOnColor(pointEnterStage, 20) < 0) {
+        if (mGL.getCaptureService().waitOnColor(SPT("pointEnterStage"), 20) < 0) {
             return -1;
         }
 
         sendMessage("進入關卡");
-        mGL.getInputService().tapOnScreen(pointEnterStage.coord);
+        mGL.getInputService().tapOnScreen(SPT("pointEnterStage").coord);
         sleep(1000);
-        mGL.getInputService().tapOnScreen(pointEnterStage.coord); // just be safe
+        mGL.getInputService().tapOnScreen(SPT("pointEnterStage").coord); // just be safe
 
         return 0;
     }
 
     public int battleGetStage() {
-        for(int i = 0; i < battleStages.size(); i++) {
-            if (mGL.getCaptureService().colorIs(battleStages.get(i)))
+        for(int i = 0; i < SPTList("battleStages").size(); i++) {
+            if (mGL.getCaptureService().colorIs(SPTList("battleStages").get(i)))
                 return i;
         }
 
@@ -335,7 +363,7 @@ class FGORoutine {
 
         sendMessage("這次戰鬥參數：" + (arg == null ?  "無" : arg.toString() ) );
         sleep(500);
-        while(!mGL.getCaptureService().colorIs(pointBattleResult) && battleTry > 0) {
+        while(!mGL.getCaptureService().colorIs(SPT("pointBattleResult")) && battleTry > 0) {
             sleep(500);
             sendMessage("在等Battle按鈕" + (150 - battleTry));
 
@@ -346,7 +374,7 @@ class FGORoutine {
             }
 
             //wait for battle button
-            if (mGL.getCaptureService().waitOnColor(pointBattleButton, 10) < 0) {
+            if (mGL.getCaptureService().waitOnColor(SPT("pointBattleButton"), 10) < 0) {
                 Log.d(TAG, "Cannot find battle button, checking if finished");
                 battleTry--;
                 continue;
@@ -385,11 +413,11 @@ class FGORoutine {
             }
 
             //tap battle
-            mGL.getInputService().tapOnScreen(pointBattleButton.coord);
+            mGL.getInputService().tapOnScreen(SPT("pointBattleButton").coord);
             sleep(500);
-            if (mGL.getCaptureService().colorIs(pointBattleButton)) {
+            if (mGL.getCaptureService().colorIs(SPT("pointBattleButton"))) {
                 sendMessage("沒點到戰鬥?再點一次");
-                mGL.getInputService().tapOnScreen(pointBattleButton.coord);
+                mGL.getInputService().tapOnScreen(SPT("pointBattleButton").coord);
                 sleep(500);
             }
             sendMessage("辨識卡片");
@@ -438,10 +466,10 @@ class FGORoutine {
 
         // tap on screen until NEXT button to exit battle
         sendMessage("戰鬥結果出現點到下一步");
-        while (!mGL.getCaptureService().colorIs(FGORoutineDefine.pointBattleNext)
+        while (!mGL.getCaptureService().colorIs(SPT("pointBattleNext"))
                 && !mGL.getCaptureService().colorIs(FGORoutineDefineTW.pointBattleNext)
                 && resultTry > 0) {
-            mGL.getInputService().tapOnScreen(pointBattleResult.coord);
+            mGL.getInputService().tapOnScreen(SPT("pointBattleResult").coord);
             resultTry--;
             sleep(500);
         }
@@ -450,22 +478,22 @@ class FGORoutine {
             return sBattleWaitResultTimeout;
 
         sendMessage("點下一步");
-        mGL.getInputService().tapOnScreen(pointBattleNext.coord);
+        mGL.getInputService().tapOnScreen(SPT("pointBattleNext").coord);
         sleep(1000);
 
         return sBattleDone;
     }
 
     public int battleDieCheckAndHandle() throws InterruptedException {
-        if (mGL.getCaptureService().colorIs(pointBattleDieDetect)) {
+        if (mGL.getCaptureService().colorIs(SPT("pointBattleDieDetect"))) {
             //double confirm backoff button present
             sendMessage("似乎全軍覆沒了");
-            if (mGL.getCaptureService().colorIs(pointBattleDieBackoff)) {
-                mGL.getInputService().tapOnScreen(pointBattleDieBackoff.coord);
+            if (mGL.getCaptureService().colorIs(SPT("pointBattleDieBackoff"))) {
+                mGL.getInputService().tapOnScreen(SPT("pointBattleDieBackoff").coord);
                 sleep(1000);
-                mGL.getInputService().tapOnScreen(pointBattleDieConfirm.coord);
+                mGL.getInputService().tapOnScreen(SPT("pointBattleDieConfirm").coord);
                 sleep(1000);
-                mGL.getInputService().tapOnScreen(pointBattleDieClose.coord);
+                mGL.getInputService().tapOnScreen(SPT("pointBattleDieClose").coord);
                 sleep(1000);
                 return 0;
             }
@@ -476,10 +504,10 @@ class FGORoutine {
 
     public int battleHandleFriendRequest() throws InterruptedException{
         sleep(500);
-        if (mGL.getCaptureService().waitOnColor(pointDenyFriend, 20) < 0) {
+        if (mGL.getCaptureService().waitOnColor(SPT("pointDenyFriend"), 20) < 0) {
             sendMessage("沒出現朋友請求");
         } else {
-            mGL.getInputService().tapOnScreen(pointDenyFriend.coord);
+            mGL.getInputService().tapOnScreen(SPT("pointDenyFriend").coord);
             sleep(500);
         }
         return 0;
@@ -500,10 +528,10 @@ class FGORoutine {
 
         int retry = 40;
         while(retry-- > 0) {
-            if (mGL.getCaptureService().colorIs(pointQuestClearCube) ||
-                    mGL.getCaptureService().colorIs(pointQuestClearStone)) {
+            if (mGL.getCaptureService().colorIs(SPT("pointQuestClearCube")) ||
+                    mGL.getCaptureService().colorIs(SPT("pointQuestClearStone"))) {
                 sendMessage("破關獎勵出現");
-                mGL.getInputService().tapOnScreen(pointQuestClearStone.coord);
+                mGL.getInputService().tapOnScreen(SPT("pointQuestClearStone").coord);
                 sleep(100);
                 return 0;
             }
@@ -546,15 +574,15 @@ class FGORoutine {
      * =======================
      */
     public int waitForSkip(int maxTry) throws InterruptedException {
-        if (mGL.getCaptureService().waitOnColor(pointSkipDialog, maxTry) < 0) {
+        if (mGL.getCaptureService().waitOnColor(SPT("pointSkipDialog"), maxTry) < 0) {
             Log.w(TAG, "Skip not found.");
             return -1;
         } else {
             sendMessage("找到SKIP但是等一下");
             sleep(3000);
-            mGL.getInputService().tapOnScreen(pointSkipDialog.coord);
+            mGL.getInputService().tapOnScreen(SPT("pointSkipDialog").coord);
             sleep(1000);
-            mGL.getInputService().tapOnScreen(pointSkipConfirm.coord);
+            mGL.getInputService().tapOnScreen(SPT("pointSkipConfirm").coord);
             sleep(3000);
             return 0;
         }
@@ -562,8 +590,8 @@ class FGORoutine {
 
     public int waitForUserMode(int maxTry) throws InterruptedException {
         while (maxTry-- > 0) {
-            if (mGL.getCaptureService().colorIs(pointHomeApAdd) ||
-                    mGL.getCaptureService().colorIs(pointHomeApAddV2)) {
+            if (mGL.getCaptureService().colorIs(SPT("pointHomeApAdd")) ||
+                    mGL.getCaptureService().colorIs(SPT("pointHomeApAddV2"))) {
                 return 0;
             }
             sleep(100);
@@ -577,11 +605,11 @@ class FGORoutine {
      * =======================
      */
     public boolean isInHomeScreen() {
-        return mGL.getCaptureService().colorIs(pointHomeOSiRaSe);
+        return mGL.getCaptureService().colorIs(SPT("pointHomeOSiRaSe"));
     }
 
     public boolean isInUserMode() {
-        return mGL.getCaptureService().colorIs(pointHomeApAdd);
+        return mGL.getCaptureService().colorIs(SPT("pointHomeApAdd"));
     }
 
     public int findNextAndClick(int retry, boolean enableGlobal) throws InterruptedException {
@@ -597,11 +625,11 @@ class FGORoutine {
 
         sendMessage("尋找NEXT");
         do {
-            coordFound = mGL.getCaptureService().findColorSegment(pointRightNextStart,
-                    pointRightNextEnd, pointRightNextPoints);
+            coordFound = mGL.getCaptureService().findColorSegment(SCD("pointRightNextStart"),
+                    SCD("pointRightNextEnd"), SPTList("pointRightNextPoints"));
             if (coordFound == null) {
-                coordFound = mGL.getCaptureService().findColorSegment(pointLeftNextStart,
-                        pointLeftNextEnd, pointLeftNextPoints);
+                coordFound = mGL.getCaptureService().findColorSegment(SCD("pointLeftNextStart"),
+                        SCD("pointLeftNextEnd"), SPTList("pointLeftNextPoints"));
             }
 
             sleep(500);
