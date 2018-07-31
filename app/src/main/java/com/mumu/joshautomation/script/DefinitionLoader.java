@@ -17,8 +17,8 @@
 package com.mumu.joshautomation.script;
 
 import android.content.res.Resources;
-import android.util.Log;
 
+import com.mumu.libjoshgame.Log;
 import com.mumu.libjoshgame.ScreenColor;
 import com.mumu.libjoshgame.ScreenCoord;
 import com.mumu.libjoshgame.ScreenPoint;

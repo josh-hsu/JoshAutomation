@@ -28,7 +28,6 @@ import android.os.IBinder;
 import android.support.v7.app.AlertDialog;
 import android.support.v4.app.NotificationCompat;
 import android.support.v7.view.ContextThemeWrapper;
-import android.util.Log;
 import android.view.Display;
 import android.view.MotionEvent;
 import android.view.View;
@@ -51,6 +50,7 @@ import com.mumu.joshautomation.script.AutoJobHandler;
 import com.mumu.joshautomation.script.DefinitionLoader;
 import com.mumu.joshautomation.shinobi.ShinobiLoopBattleJob;
 import com.mumu.libjoshgame.JoshGameLibrary;
+import com.mumu.libjoshgame.Log;
 import com.mumu.libjoshgame.ScreenPoint;
 
 import java.util.ArrayList;

@@ -17,7 +17,6 @@
 package com.mumu.libjoshgame;
 
 import android.os.Environment;
-import android.util.Log;
 
 import java.io.RandomAccessFile;
 import java.util.ArrayList;

@@ -32,7 +32,6 @@ import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.os.Handler;
-import android.util.Log;
 import android.view.Display;
 import android.view.MotionEvent;
 import android.view.View;
@@ -42,6 +41,7 @@ import android.widget.TextView;
 
 import com.mumu.joshautomation.AppPreferenceValue;
 import com.mumu.joshautomation.R;
+import com.mumu.libjoshgame.Log;
 import com.mumu.libjoshgame.JoshGameLibrary;
 import com.mumu.libjoshgame.ScreenPoint;
 

@@ -17,7 +17,6 @@
 package com.mumu.libjoshgame;
 
 import android.content.Context;
-import android.util.Log;
 
 /*
  * Josh Game Library - Version 1.52

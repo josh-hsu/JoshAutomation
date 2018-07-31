@@ -16,8 +16,6 @@
 
 package com.mumu.libjoshgame;
 
-import android.util.Log;
-
 public class ScreenPoint {
     private static final String TAG = "LibGame";
     public final static int SO_Portrait = 0;
@@ -60,7 +58,7 @@ public class ScreenPoint {
         int unit = 66;
 
         if (formattedString == null) {
-            Log.w(TAG, "ScreenPoint: String " + formattedString + " is not legal.");
+            Log.w(TAG, "ScreenPoint: String is null.");
             coord = null;
             color = null;
         } else if (formattedString.length() == 8) { //8-digits format

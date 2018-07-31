@@ -1,10 +1,9 @@
 package com.mumu.joshautomation.fgo;
 
-import android.util.Log;
-
 import com.mumu.joshautomation.script.AutoJob;
 import com.mumu.joshautomation.script.AutoJobEventListener;
 import com.mumu.libjoshgame.JoshGameLibrary;
+import com.mumu.libjoshgame.Log;
 import com.mumu.libjoshgame.ScreenPoint;
 
 import java.util.ArrayList;

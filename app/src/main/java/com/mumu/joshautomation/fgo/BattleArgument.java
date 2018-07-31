@@ -1,6 +1,6 @@
 package com.mumu.joshautomation.fgo;
 
-import android.util.Log;
+import com.mumu.libjoshgame.Log;
 
 import java.util.ArrayList;
 

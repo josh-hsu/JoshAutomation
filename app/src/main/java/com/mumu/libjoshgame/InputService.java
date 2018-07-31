@@ -20,7 +20,6 @@ import android.content.Context;
 import android.media.Ringtone;
 import android.media.RingtoneManager;
 import android.net.Uri;
-import android.util.Log;
 
 public class InputService {
     private static final String TAG = "LibGame";

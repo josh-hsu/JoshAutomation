@@ -1,12 +1,11 @@
 package com.mumu.joshautomation.fgo;
 
-import android.util.Log;
-
 import com.mumu.joshautomation.AppPreferenceValue;
 import com.mumu.joshautomation.R;
 import com.mumu.joshautomation.script.AutoJobEventListener;
 import com.mumu.joshautomation.script.DefinitionLoader;
 import com.mumu.libjoshgame.JoshGameLibrary;
+import com.mumu.libjoshgame.Log;
 import com.mumu.libjoshgame.ScreenColor;
 import com.mumu.libjoshgame.ScreenCoord;
 import com.mumu.libjoshgame.ScreenPoint;
