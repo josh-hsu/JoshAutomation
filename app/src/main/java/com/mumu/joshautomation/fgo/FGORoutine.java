@@ -363,7 +363,7 @@ class FGORoutine {
 
         sendMessage("這次戰鬥參數：" + (arg == null ?  "無" : arg.toString() ) );
         sleep(500);
-        while(!mGL.getCaptureService().colorIs(SPT("pointBattleResult")) && battleTry > 0) {
+        while(!mGL.getCaptureService().colorsAre(SPTList("pointBattleResults")) && battleTry > 0) {
             sleep(100);
             sendMessage("在等Battle按鈕" + (850 - battleTry));
 
