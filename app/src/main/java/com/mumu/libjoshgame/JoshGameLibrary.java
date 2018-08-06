@@ -19,7 +19,7 @@ package com.mumu.libjoshgame;
 import android.content.Context;
 
 /*
- * Josh Game Library - Version 1.52
+ * Josh Game Library - Version 1.53
  */
 /*
    JoshGameLibrary (GL)

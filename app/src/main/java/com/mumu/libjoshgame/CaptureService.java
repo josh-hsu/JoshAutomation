@@ -225,7 +225,7 @@ public class CaptureService {
     }
 
     /*
-     * getColorOnDump (Added in 1.41)
+     * getColorOnDump (added in 1.41)
      * filename: dump file path
      * points: ScreenPoints to be used and returned in the same structure
      */
@@ -268,7 +268,7 @@ public class CaptureService {
     }
 
     /*
-     * getColorsInRegion (Added in 1.41)
+     * getColorsInRegion (added in 1.41)
      * returns all color and forming array of ScreenPoint in the region formed from src
      * and dest
      */
@@ -729,6 +729,10 @@ public class CaptureService {
         return -1;
     }
 
+    /*
+     * colorIs (added in 1.0)
+     * check if the screen color is point.color at point.coord
+     */
     public boolean colorIs(ScreenPoint point) {
         if (point == null) {
             Log.w(TAG, "Point is null");
@@ -737,6 +741,19 @@ public class CaptureService {
         ScreenPoint currentPoint = new ScreenPoint();
         getColorOnScreen(currentPoint.color, point.coord);
         return colorCompare(currentPoint.color, point.color);
+    }
+
+    /*
+     * colorsAre (Added in 1.53)
+     * check every ScreenPoint in array are all matched
+     */
+    public boolean colorsAre(ArrayList<ScreenPoint> points) {
+        for(ScreenPoint point : points) {
+            if (!colorIs(point))
+                return false;
+        }
+
+        return true;
     }
 
     public int[] getCurrentAmbiguousRange() {

@@ -17,7 +17,7 @@
 -->
 
 <!--
-   Josh Automation game definition XML file format
+   Josh Automation Game Definition XML file format
 
    1. single point   <screenpoint name="pointName">r,g,b,a,x,y,o</screenpoint>
    2. single coord   <screencoord name="coordName">x,y,o</screencoord>
@@ -40,9 +40,10 @@
 
    NOTE: integer value can be represented as decimal or hexadecimal (started with 0x).
          orientation can be represented as Portrait/Landscape, P(p)/L(l) or 0/1.
+   NOTE: no space is allowed.
 -->
 
-<definitions version="1.52">
+<definitions version="1.53">
 
     <defset resolution="1080x1920">
         <screenpoint name="pointIntroPage">0x44,0x44,0x75,0xFF,824,1035,P</screenpoint>
@@ -55,7 +56,14 @@
         <screenpoint name="pointLoopBattleStage">0xff,0xff,0xff,0xff,718,1420,Portrait</screenpoint>
 
         <!-- battle cards -->
-        <screenpoint name="pointBattleButton">0x01,0xCE,0xF0,0xFF,218,1699,Portrait</screenpoint>
+        <screenpoint name="pointBattleButton" deprecated="true">0x01,0xCE,0xF0,0xFF,218,1699,Portrait</screenpoint>
+        <screenpoints name="pointBattleButtons"> <!-- Add more point to confirm the button is actually shown -->
+            <screenpoint>0x01,0xCE,0xF0,0xFF,218,1699,Portrait</screenpoint>
+            <screenpoint>0x01,0xD3,0xF1,0xFF,224,1722,Portrait</screenpoint>
+            <screenpoint>0xF1,0xE9,0xE0,0xFF,257,1617,Portrait</screenpoint>
+            <screenpoint>0x01,0xD5,0xEE,0xFF,227,1708,Portrait</screenpoint>
+        </screenpoints>
+
         <screencoords name="cardPositionStart">
             <screencoord>80,770,Landscape</screencoord>
             <screencoord>460,770,Landscape</screencoord>

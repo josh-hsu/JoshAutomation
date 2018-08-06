@@ -39,14 +39,15 @@ class FGORoutine {
     }
 
     private void sendMessage(String msg) {
+        boolean verboseMode = AppPreferenceValue.getInstance().getPrefs().getBoolean("debugLogPref", false);
+
+        // Send message to screen
         if (mCallbacks != null)
             mCallbacks.onEventReceived(msg, this);
-    }
 
-    private void sendMessageVerbose(String msg) {
-        boolean verboseMode = AppPreferenceValue.getInstance().getPrefs().getBoolean("debugLogPref", false);
+        // Send message to log txt file under /sdcard/ja.log
         if (verboseMode)
-            sendMessage(msg);
+            Log.d(TAG, msg);
     }
 
     private void sleep(int time) throws InterruptedException {
@@ -353,7 +354,7 @@ class FGORoutine {
         int[] royalDraw = new int[0];
         int[] royalAvail = new int[0];
         int resultTry = 20; //fail retry of waiting result
-        int battleTry = 150; // fail retry of waiting battle button (150 * 1 = 150 secs)
+        int battleTry = 850; // fail retry of waiting battle button (850 * 0.1 = 85 secs)
         int checkCardTry = 20; // fail retry of waiting card recognize
         int battleStage = 0; //indicate which stage of battle (start from 0 but it will start from 1 when displaying)
         int battleRound = 0; //indicate which round of battle in a stage (start from 0 but it will start from 1 when displaying)
@@ -363,8 +364,8 @@ class FGORoutine {
         sendMessage("這次戰鬥參數：" + (arg == null ?  "無" : arg.toString() ) );
         sleep(500);
         while(!mGL.getCaptureService().colorIs(SPT("pointBattleResult")) && battleTry > 0) {
-            sleep(500);
-            sendMessage("在等Battle按鈕" + (150 - battleTry));
+            sleep(100);
+            sendMessage("在等Battle按鈕" + (850 - battleTry));
 
             //detect die
             if (battleDieCheckAndHandle() == 0) {
@@ -373,14 +374,13 @@ class FGORoutine {
             }
 
             //wait for battle button
-            if (mGL.getCaptureService().waitOnColor(SPT("pointBattleButton"), 10) < 0) {
-                Log.d(TAG, "Cannot find battle button, checking if finished");
+            if (!mGL.getCaptureService().colorsAre(SPTList("pointBattleButtons"))) {
                 battleTry--;
                 continue;
             }
 
             //found battle button, reset try count
-            battleTry = 150;
+            battleTry = 850;
             checkCardTry = 20;
 
             //check for stage, default 1
