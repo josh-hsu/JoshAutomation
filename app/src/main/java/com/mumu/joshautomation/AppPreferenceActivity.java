@@ -125,15 +125,6 @@ public class AppPreferenceActivity extends PreferenceActivity {
 
             // Load the app_preferences_fgo from an XML resource
             addPreferencesFromResource(R.xml.app_preferences_fgo);
-
-            // Add start service button listener
-            Preference myPref = (Preference) findPreference("enableServicePref");
-            myPref.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
-                public boolean onPreferenceClick(Preference preference) {
-                    openService();
-                    return true;
-                }
-            });
         }
     }
 
@@ -150,6 +141,15 @@ public class AppPreferenceActivity extends PreferenceActivity {
 
             // Load the app_preferences_fgo from an XML resource
             addPreferencesFromResource(R.xml.app_preferences);
+
+            // Add start service button listener
+            Preference myPref = (Preference) findPreference("enableServicePref");
+            myPref.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
+                public boolean onPreferenceClick(Preference preference) {
+                    openService();
+                    return true;
+                }
+            });
 
             // Fill out script
             ListPreference scriptSelectPref = (ListPreference) findPreference("scriptSelectPref");

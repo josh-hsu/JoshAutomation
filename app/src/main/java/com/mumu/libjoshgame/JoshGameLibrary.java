@@ -45,6 +45,9 @@ public class JoshGameLibrary {
     private static boolean mFullInitialized;
     private int width, height;
 
+    public static final int DEFAULT_TOUCH_SHIFT = 6;
+    public static final int DEFAULT_AMBIGUOUS_VALUE = 0xA;
+
     private static JoshGameLibrary currentRuntime = new JoshGameLibrary();
 
     public static JoshGameLibrary getInstance() {

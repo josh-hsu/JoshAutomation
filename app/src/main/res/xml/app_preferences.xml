@@ -2,6 +2,13 @@
 <PreferenceScreen
     xmlns:android="http://schemas.android.com/apk/res/android">
 
+    <PreferenceCategory android:title="服務設定">
+        <Preference
+            android:title="開啟服務"
+            android:key="enableServicePref"
+            android:summary="服務自動服務平台"/>
+    </PreferenceCategory>
+
     <PreferenceCategory android:title="腳本設定">
         <ListPreference
             android:key="scriptSelectPref"
@@ -61,10 +68,60 @@
             android:summary="Log 全開模式"
             android:defaultValue="false"/>
         <CheckBoxPreference
+            android:key="captureServiceChatty"
+            android:title="抓點服務偵錯模式"
+            android:summary="CaptureService Log 全開模式"
+            android:defaultValue="false"/>
+        <CheckBoxPreference
             android:key="stringFormattedPointEnable"
-            android:title="字串找點模式"
+            android:title="字串找點模式 (Deprecated)"
             android:summary="使用相機截圖找點時，可以使用簡易字串來建立 ScreenPoint。"
             android:defaultValue="false"/>
+    </PreferenceCategory>
+
+    <PreferenceCategory android:title="複寫系統設定">
+        <EditTextPreference
+            android:key="userSetWidth"
+            android:title="螢幕寬度"
+            android:summary="複寫螢幕寬度，0表示不複寫，預設自動判定"
+            android:hint="1080"
+            android:defaultValue="0"
+            android:maxLength="6"/>
+        <EditTextPreference
+            android:key="userSetHeight"
+            android:title="螢幕高度"
+            android:summary="複寫螢幕高度，0表示不複寫，預設自動判定"
+            android:hint="1920"
+            android:defaultValue="0"
+            android:maxLength="6"/>
+        <EditTextPreference
+            android:key="userAmbValue"
+            android:title="顏色判定放寬範圍"
+            android:summary="由於各個裝置的顯示顏色會有落差，如果使用上有問題，請調高此數值，0表示不複寫，預設11"
+            android:hint="11"
+            android:defaultValue="0"
+            android:maxLength="3" />
+        <EditTextPreference
+            android:key="userSetTouchShift"
+            android:title="觸控位移"
+            android:summary="點擊螢幕的時候，隨機在此數值間偏移，防外掛偵測用，0表示不複寫，預設6"
+            android:hint="6"
+            android:defaultValue="0"
+            android:maxLength="2"/>
+        <EditTextPreference
+            android:key="userSetScreenXOffset"
+            android:title="螢幕X軸位移 (直式方向)"
+            android:summary="若是特殊螢幕例如有瀏海，請自己找到螢幕因此位移的像素數，0表示不複寫，預設0"
+            android:hint="0"
+            android:defaultValue="0"
+            android:maxLength="6"/>
+        <EditTextPreference
+            android:key="userSetScreenYOffset"
+            android:title="螢幕Y軸位移 (直式方向)"
+            android:summary="若是特殊螢幕例如有瀏海，請自己找到螢幕因此位移的像素數，0表示不複寫，預設0"
+            android:hint="0"
+            android:defaultValue="0"
+            android:maxLength="6"/>
     </PreferenceCategory>
 
 </PreferenceScreen>

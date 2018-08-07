@@ -17,7 +17,7 @@
 
     <!-- drawer -->
     <string name="drawer_title">您</string>
-    <string name="drawer_subtitle">lazypig1226@gmail.com</string>
+    <string name="drawer_subtitle">這裡沒有功能</string>
     <string name="drawer_outline">概覽與功能</string>
     <string name="drawer_electricity">帳號管理</string>
     <string name="drawer_menu_social">社群</string>
@@ -59,7 +59,7 @@
     <string name="settings_fragment_title_1">FGO 設定</string>
     <string name="settings_fragment_summary_1">在程式 FGO 底下的腳本設定</string>
     <string name="settings_fragment_title_2">腳本與系統設定</string>
-    <string name="settings_fragment_summary_2">決定按下 Play 後要執行哪一個任務</string>
+    <string name="settings_fragment_summary_2">選擇執行任務與系統相關細項設定</string>
     <string name="settings_fragment_title_3">Shinobi 設定</string>
     <string name="settings_fragment_summary_3">在程式 Shinobi 底下的腳本設定</string>
     <string name="settings_fragment_title_4">RO 設定</string>
@@ -70,7 +70,7 @@
     <string name="settings_restore_failed">備份失敗</string>
     <string name="settings_restore_not_found">抱歉，在裝置上找不到任何備份資料。</string>
     <string name="settings_restore_finished">備份資料已成功復原。</string>
-    <string name="settings_default_battle_arg">bc6#eg7#j8</string>
+    <string name="settings_default_battle_arg">bc6|eg7|j8</string>
 
     <!-- HeadService -->
     <string name="headservice_how_to_stop">服務已啟動，長按圖示可終止服務</string>

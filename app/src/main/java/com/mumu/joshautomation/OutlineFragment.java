@@ -3,6 +3,8 @@ package com.mumu.joshautomation;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageInfo;
+import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -11,6 +13,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.mumu.libjoshgame.Log;
@@ -22,6 +25,7 @@ public class OutlineFragment extends MainFragment {
 
     private Button mSettingButton;
     private Button mStartServiceButton;
+    private TextView mBarTextView;
 
     private OnFragmentInteractionListener mListener;
 
@@ -109,6 +113,8 @@ public class OutlineFragment extends MainFragment {
             }
         });
 
+        mBarTextView = (TextView) view.findViewById(R.id.textViewElectricBarView);
+        mBarTextView.setText("App 版本: " + getVersionName(getContext()));
     }
 
     /*
@@ -153,6 +159,19 @@ public class OutlineFragment extends MainFragment {
         Intent intent = new Intent(Intent.ACTION_MAIN);
         intent.addCategory(Intent.CATEGORY_HOME);
         startActivity(intent);
+    }
+
+    public String getVersionName(Context context){
+        PackageManager packageManager = context.getPackageManager();
+        PackageInfo packageInfo;
+        String versionName = "";
+        try {
+            packageInfo = packageManager.getPackageInfo(context.getPackageName(),0);
+            versionName = packageInfo.versionName;
+        } catch (PackageManager.NameNotFoundException e) {
+            e.printStackTrace();
+        }
+        return versionName;
     }
 
 }

@@ -147,6 +147,9 @@ public class HeadService extends Service implements AutoJobEventListener{
 
         mContext = this;
 
+        mAPV = AppPreferenceValue.getInstance();
+        mAPV.init(mContext);
+
         // initial game panel view
         initGamePanelViews();
 
@@ -276,11 +279,26 @@ public class HeadService extends Service implements AutoJobEventListener{
     }
 
     private void initGameLibrary() {
-        int w = 1080;
-        int h = 1920;
-        // App Preference Value should be initialized here
-        mAPV = AppPreferenceValue.getInstance();
-        mAPV.init(mContext);
+        int w, h;
+        int userWidth, userHeight, userAmbValue, userTouchShift, userScreenXOffset, userScreenYOffset;
+
+        // try to get user's setting
+        try {
+            userWidth = Integer.parseInt(mAPV.getPrefs().getString("userSetWidth", "0"));
+            userHeight = Integer.parseInt(mAPV.getPrefs().getString("userSetHeight", "0"));
+            userAmbValue = Integer.parseInt(mAPV.getPrefs().getString("userAmbValue", "0"));
+            userTouchShift = Integer.parseInt(mAPV.getPrefs().getString("userSetTouchShift", "0"));
+            userScreenXOffset = Integer.parseInt(mAPV.getPrefs().getString("userSetScreenXOffset", "0"));
+            userScreenYOffset = Integer.parseInt(mAPV.getPrefs().getString("userSetScreenYOffset", "0"));
+        } catch (NumberFormatException e) {
+            Log.e(TAG, "Setting value format error: " + e.getMessage());
+            userWidth = 0;
+            userHeight = 0;
+            userAmbValue = 0;
+            userTouchShift = 0;
+            userScreenXOffset = 0;
+            userScreenYOffset = 0;
+        }
 
         // Initial DefinitionLoader
         DefinitionLoader.getInstance().setResources(mContext.getResources());
@@ -307,9 +325,28 @@ public class HeadService extends Service implements AutoJobEventListener{
 
         mGL = JoshGameLibrary.getInstance();
         mGL.setContext(mContext);
-        mGL.setScreenDimension(w, h);
-        mGL.setGameOrientation(ScreenPoint.SO_Portrait);
-        mGL.getCaptureService().setChatty(false);
+
+        // Check if user override settings
+        if (userWidth != 0 && userHeight != 0)
+            mGL.setScreenDimension(userWidth, userHeight);
+        else
+            mGL.setScreenDimension(w, h);
+
+        mGL.getCaptureService().setChatty(mAPV.getPrefs().getBoolean("captureServiceChatty", false));
+
+        if (userAmbValue != 0)
+            mGL.setAmbiguousRange(new int[]{userAmbValue, userAmbValue, userAmbValue});
+        else
+            mGL.setAmbiguousRange(new int[]{JoshGameLibrary.DEFAULT_AMBIGUOUS_VALUE,
+                    JoshGameLibrary.DEFAULT_AMBIGUOUS_VALUE, JoshGameLibrary.DEFAULT_AMBIGUOUS_VALUE});
+
+        if (userScreenXOffset != 0 || userScreenYOffset != 0)
+            mGL.setScreenOffset(userScreenXOffset, userScreenYOffset, ScreenPoint.SO_Portrait);
+
+        if (userTouchShift != 0)
+            mGL.setTouchShift(userTouchShift);
+        else
+            mGL.setTouchShift(JoshGameLibrary.DEFAULT_TOUCH_SHIFT);
 
         if (mAPV.getPrefs().getBoolean("ssEnabled", false)) {
             String pn = mAPV.getPrefs().getString("ssPackageName", "");

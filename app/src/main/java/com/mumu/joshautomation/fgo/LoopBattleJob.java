@@ -26,14 +26,6 @@ public class LoopBattleJob extends AutoJob {
         /* JoshGameLibrary basic initial */
         mGL = JoshGameLibrary.getInstance();
         mGL.setGameOrientation(ScreenPoint.SO_Landscape);
-        mGL.setTouchShift(6);
-
-        // FGO game specific point offset
-        if (mGL.getScreenWidth() == 1080) {
-            if (mGL.getScreenHeight() == 2160) {
-                mGL.setScreenOffset(42, 0, ScreenPoint.SO_Landscape);
-            }
-        }
 
         mFGO = new FGORoutine(mGL, mListener); //listener might be null before assigning
         mSelf = this;
@@ -101,11 +93,7 @@ public class LoopBattleJob extends AutoJob {
     private class MainJobRoutine extends Thread {
 
         private void main() throws Exception {
-            int[] ambRange = new int[] {0x0A, 0x0A, 0x10};
             boolean stageCleared = false;
-
-            mGL.setGameOrientation(ScreenPoint.SO_Landscape);
-            mGL.setAmbiguousRange(ambRange);
 
             sendMessage("開始循環戰鬥");
 

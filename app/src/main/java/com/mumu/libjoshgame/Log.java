@@ -13,11 +13,11 @@ import java.util.Locale;
  */
 
 public final class Log {
-    public static final int DEBUG = 3;
-    public static final int ERROR = 6;
-    public static final int INFO = 4;
-    public static final int VERBOSE = 2;
-    public static final int WARN = 5;
+    private static final int DEBUG = 3;
+    private static final int ERROR = 6;
+    private static final int INFO = 4;
+    private static final int VERBOSE = 2;
+    private static final int WARN = 5;
 
     public static void v(String tag, String msg) {
         android.util.Log.v(tag, msg);
@@ -56,9 +56,9 @@ public final class Log {
     }
 
     private static String logFormatted(String tag, String msg, int level) {
-        DateFormat df = new SimpleDateFormat("yyyy/MM/dd a hh:mm", Locale.getDefault());
+        DateFormat df = new SimpleDateFormat("yyyy/MM/dd a hh:mm:ss", Locale.getDefault());
         String thisTime = df.format(Calendar.getInstance().getTime());
-        return String.format("%18s: [%s] %s: %s\n", thisTime, getLevelString(level), tag, msg);
+        return String.format("%18s: <%s> %s: %s\n", thisTime, getLevelString(level), tag, msg);
     }
 
     private static String getLevelString(int level) {
@@ -66,19 +66,19 @@ public final class Log {
 
         switch (level) {
             case DEBUG:
-                ret = "DEBG";
+                ret = "D";
                 break;
             case WARN:
-                ret = "WARN";
+                ret = "W";
                 break;
             case INFO:
-                ret = "INFO";
+                ret = "I";
                 break;
             case ERROR:
-                ret = "ERRO";
+                ret = "E";
                 break;
             case VERBOSE:
-                ret = "VRBS";
+                ret = "V";
                 break;
         }
         return ret;

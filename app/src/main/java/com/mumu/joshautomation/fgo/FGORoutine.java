@@ -266,7 +266,7 @@ class FGORoutine {
 
         for(int i : royal) {
             mGL.getInputService().tapOnScreen(SCDList("cardRoyals").get(i));
-            sendMessage("點寶具" + i);
+            sendMessage("點寶具" + (i + 1));
             sleep(500);
         }
     }
