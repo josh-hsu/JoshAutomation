@@ -34,8 +34,13 @@ class FGORoutine {
         mGL = gl;
         mCallbacks = el;
 
-        mDef = DefinitionLoader.getInstance().requestDefData(R.raw.fgo_definitions,
-                gl.getScreenWidth() + "x" + gl.getScreenHeight());
+        // FGO game 1080p related resolution should treat as the same
+        // i.e., 1080x1920, 1080x2160, 1080x2246 ... etc are the same.
+        String resolution = gl.getScreenWidth() + "x" + gl.getScreenHeight();
+        if (gl.getScreenWidth() == 1080)
+            mDef = DefinitionLoader.getInstance().requestDefData(R.raw.fgo_definitions, "1080x1920");
+        else
+            mDef = DefinitionLoader.getInstance().requestDefData(R.raw.fgo_definitions, resolution);
     }
 
     private void sendMessage(String msg) {
