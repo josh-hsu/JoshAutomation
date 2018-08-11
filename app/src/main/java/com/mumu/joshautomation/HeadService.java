@@ -56,7 +56,7 @@ import com.mumu.libjoshgame.ScreenPoint;
 import java.util.ArrayList;
 
 public class HeadService extends Service implements AutoJobEventListener{
-    private static final String TAG = "JATool";
+    private static final String TAG = "HeadService";
     private final Handler mHandler = new Handler();
     private final String mPngFilePath = Environment.getExternalStorageDirectory().toString() + "/select.png";
     private final String mDumpFilePath = Environment.getExternalStorageDirectory().toString() + "/select.dump";

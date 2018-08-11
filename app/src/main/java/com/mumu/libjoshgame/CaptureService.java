@@ -40,8 +40,6 @@ public class CaptureService {
     }
 
     void setScreenDimension(int w, int h) {
-        if (mChatty) Log.d(TAG, "Setting width = " + w + ", height = " + h);
-
         mScreenHeight = h;
         mScreenWidth = w;
     }

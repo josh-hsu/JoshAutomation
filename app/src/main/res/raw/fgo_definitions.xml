@@ -56,7 +56,7 @@
         <screenpoint name="pointLoopBattleStage">0xff,0xff,0xff,0xff,718,1420,Portrait</screenpoint>
 
         <!-- battle cards -->
-        <screenpoint name="pointBattleButton" deprecated="true">0x01,0xCE,0xF0,0xFF,218,1699,Portrait</screenpoint>
+        <screenpoint name="pointBattleButton">0x01,0xCE,0xF0,0xFF,218,1699,Portrait</screenpoint>
         <screenpoints name="pointBattleButtons"> <!-- Add more point to confirm the button is actually shown -->
             <screenpoint>0x01,0xCE,0xF0,0xFF,218,1699,Portrait</screenpoint>
             <screenpoint>0x01,0xD3,0xF1,0xFF,224,1722,Portrait</screenpoint>

@@ -88,6 +88,9 @@ public class JoshGameLibrary {
     }
 
     public void setScreenDimension(int w, int h) {
+        if (width != w || height != h)
+            Log.w(TAG, "Screen size changed from (" + width + ", " + height + ") to" +
+                        " (" + w + ", " + h + ")");
         width = w;
         height = h;
         mCaptureService.setScreenDimension(w, h);

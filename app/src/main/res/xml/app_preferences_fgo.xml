@@ -19,11 +19,12 @@
             android:title="自動使用寶具"
             android:summary="只要寶具可以使用，皆以寶具優先"
             android:defaultValue="true" />
-        <CheckBoxPreference
-            android:key="battleSpeedUp"
-            android:title="腳本加速"
-            android:summary="減少 sleep 的時間"
-            android:defaultValue="false" />
+        <EditTextPreference
+            android:key="battleSpeed"
+            android:title="腳本速度倍率"
+            android:summary="sleep 時間加成，請輸入浮點數 0.1 ~ 5.0"
+            android:maxLength="8"
+            android:defaultValue="1.0" />
         <CheckBoxPreference
             android:key="battleWaitSkip"
             android:title="等待 SKIP 劇情"

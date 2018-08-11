@@ -112,8 +112,6 @@ public class PointSelectionActivity extends AppCompatActivity {
 
         mGL = JoshGameLibrary.getInstance();
         mGL.setContext(this);
-        //mGL.setGameOrientation(ScreenPoint.SO_Landscape); //orientation is set by head service
-        mGL.setScreenDimension(1080, 1920);
 
         Bitmap pngFileMap = BitmapFactory.decodeFile(mPngFilePath);
 

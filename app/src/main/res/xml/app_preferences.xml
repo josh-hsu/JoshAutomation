@@ -118,7 +118,7 @@
         <EditTextPreference
             android:key="userSetScreenYOffset"
             android:title="螢幕Y軸位移 (直式方向)"
-            android:summary="若是特殊螢幕例如有瀏海，請自己找到螢幕因此位移的像素數，0表示不複寫，預設0"
+            android:summary="若是特殊螢幕例如有瀏海，請自己找到螢幕因此位移的像素數，0表示不複寫，預設0\nZenfone 5: 132"
             android:hint="0"
             android:defaultValue="0"
             android:maxLength="6"/>

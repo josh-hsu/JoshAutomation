@@ -56,7 +56,13 @@ class FGORoutine {
     }
 
     private void sleep(int time) throws InterruptedException {
-        Thread.sleep(time);
+        try {
+            String sleepMultiplier = AppPreferenceValue.getInstance().getPrefs().getString("battleSpeed", "1.0");
+            Double sleepMultiplyValue = Double.parseDouble(sleepMultiplier);
+            Thread.sleep((long) (time * sleepMultiplyValue));
+        } catch (NumberFormatException e) {
+            Thread.sleep(time);
+        }
     }
 
     // Definition helper functions
@@ -356,21 +362,22 @@ class FGORoutine {
         String cardInfo;
         int[] optimizedDraw, cardStatusNow;
         ArrayList<BattleArgument.BattleSkill> skillDraw;
+        final int battleMaxTries = 950; // fail retry of waiting battle button (950 * 0.1 = 95 secs)
         int[] royalDraw = new int[0];
         int[] royalAvail = new int[0];
         int resultTry = 20; //fail retry of waiting result
-        int battleTry = 850; // fail retry of waiting battle button (850 * 0.1 = 85 secs)
+        int battleTry = battleMaxTries; // fail retry of waiting battle button (950 * 0.1 = 95 secs)
         int checkCardTry = 20; // fail retry of waiting card recognize
         int battleStage = 0; //indicate which stage of battle (start from 0 but it will start from 1 when displaying)
         int battleRound = 0; //indicate which round of battle in a stage (start from 0 but it will start from 1 when displaying)
         boolean useRoyalIfAvailable = AppPreferenceValue.getInstance().getPrefs().getBoolean("battleUseRoyal", true);
-        boolean useOptimizeDraw = AppPreferenceValue.getInstance().getPrefs().getBoolean("battleOptPref", true);
+        boolean useOptimizeDraw = AppPreferenceValue.getInstance().getPrefs().getBoolean("battleOptPref", false);
 
         sendMessage("這次戰鬥參數：" + (arg == null ?  "無" : arg.toString() ) );
         sleep(500);
         while(!mGL.getCaptureService().colorsAre(SPTList("pointBattleResults")) && battleTry > 0) {
             sleep(100);
-            sendMessage("在等Battle按鈕" + (850 - battleTry));
+            sendMessage("在等Battle按鈕" + (battleMaxTries - battleTry));
 
             //detect die
             if (battleDieCheckAndHandle() == 0) {
@@ -385,8 +392,10 @@ class FGORoutine {
             }
 
             //found battle button, reset try count
-            battleTry = 850;
+            battleTry = battleMaxTries;
             checkCardTry = 20;
+
+            sleep(500);
 
             //check for stage, default 1
             int thisStage = battleGetStage();
@@ -418,11 +427,11 @@ class FGORoutine {
 
             //tap battle
             mGL.getInputService().tapOnScreen(SPT("pointBattleButton").coord);
-            sleep(500);
-            if (mGL.getCaptureService().colorIs(SPT("pointBattleButton"))) {
+            sleep(1000);
+            if (mGL.getCaptureService().colorsAre(SPTList("pointBattleButtons"))) {
                 sendMessage("沒點到戰鬥?再點一次");
                 mGL.getInputService().tapOnScreen(SPT("pointBattleButton").coord);
-                sleep(500);
+                sleep(1000);
             }
             sendMessage("辨識卡片");
 
