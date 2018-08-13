@@ -128,16 +128,16 @@ class FGORoutine {
     }
 
     private String getCardNameSeries(int[] series) {
-        String cardInfo = "";
+        StringBuilder cardInfo = new StringBuilder("");
         for (int i : series) {
             if (i == sCardUnknown) {
-                cardInfo = "Recognize failed";
+                cardInfo = new StringBuilder("Recognize failed");
                 break;
             }
-            cardInfo += getCardName(i);
+            cardInfo.append(getCardName(i));
         }
 
-        return cardInfo;
+        return cardInfo.toString();
     }
 
     private int[] getOptimizeDraw(int[] pattern) {
@@ -318,8 +318,33 @@ class FGORoutine {
      * =======================
      */
 
+    public int battleHandleAPSupply() throws InterruptedException {
+        boolean shouldEatAppleIfNeeded = AppPreferenceValue.getInstance().getPrefs().getBoolean("battleEatGoldApple", false);
+        if (mGL.getCaptureService().colorsAre(SPTList("pointAPChargeGoldApple"))) {
+            if (shouldEatAppleIfNeeded) {
+                sleep(500);
+                mGL.getInputService().tapOnScreen(SPTList("pointAPChargeGoldApple").get(0).coord);
+                sleep(2000);
+                if (mGL.getCaptureService().colorIs(SPT("pointAPChargeGoldAppleConfirm"))) {
+                    mGL.getInputService().tapOnScreen(SPT("pointAPChargeGoldAppleConfirm").coord);
+                    sleep(1000);
+                } else {
+                    sendMessage("吃蘋果失敗");
+                    return -1;
+                }
+            } else {
+                sendMessage("AP不足，腳本結束");
+                return -1;
+            }
+        } else {
+            sendMessage("AP足夠");
+        }
+        sleep(1000);
+        return 0;
+    }
+
     public int battlePreSetup(boolean swipeFriend) throws InterruptedException {
-        sleep(3000);
+        sleep(2500);
 
         //try to find friend's servant, if not found, touch first one
         boolean useFriendEnabled = AppPreferenceValue.getInstance().getPrefs().getBoolean("battleUseFriendOnly", false);
@@ -349,7 +374,7 @@ class FGORoutine {
         return 0;
     }
 
-    public int battleGetStage() {
+    private int battleGetStage() {
         for(int i = 0; i < SPTList("battleStages").size(); i++) {
             if (mGL.getCaptureService().colorIs(SPTList("battleStages").get(i)))
                 return i;
@@ -427,14 +452,9 @@ class FGORoutine {
 
             //tap battle
             mGL.getInputService().tapOnScreen(SPT("pointBattleButton").coord);
-            sleep(1000);
-            if (mGL.getCaptureService().colorsAre(SPTList("pointBattleButtons"))) {
-                sendMessage("沒點到戰鬥?再點一次");
-                mGL.getInputService().tapOnScreen(SPT("pointBattleButton").coord);
-                sleep(1000);
-            }
-            sendMessage("辨識卡片");
+            sleep(1500);
 
+            sendMessage("辨識卡片");
             if (useOptimizeDraw) {
                 cardStatusNow = getCurrentCardPresent();
                 while (!isCardValid(cardStatusNow) && checkCardTry > 0) {
@@ -458,9 +478,15 @@ class FGORoutine {
             //check royal request if any
             if (arg != null) {
                 royalDraw = arg.getRoyalIndexOfStage(battleStage, battleRound);
-                tapOnRoyal(royalDraw);
+                if (royalDraw.length > 0) {
+                    tapOnRoyal(royalDraw);
+                } else if (useRoyalIfAvailable && royalAvail.length > 0 &&
+                        arg.isNoMoreRoyalSpecify(battleStage, battleRound)) {
+                    sendMessage("此後無參數設定，自動寶具");
+                    tapOnRoyal(royalAvail);
+                }
             } else if (useRoyalIfAvailable) { //if arg doesn't specific royal and use royal is enabled
-                if (royalDraw.length == 0 && royalAvail.length > 0) {
+                if (royalAvail.length > 0) {
                     sendMessage("沒有寶具指定，自動使用寶具");
                     tapOnRoyal(royalAvail);
                 }
@@ -493,6 +519,10 @@ class FGORoutine {
         sendMessage("點下一步");
         mGL.getInputService().tapOnScreen(SPT("pointBattleNext").coord);
         sleep(1000);
+        mGL.getInputService().tapOnScreen(SPT("pointBattleNext").coord);
+        sleep(500);
+        mGL.getInputService().tapOnScreen(SPT("pointBattleNext").coord);
+        sleep(500);
 
         return sBattleDone;
     }

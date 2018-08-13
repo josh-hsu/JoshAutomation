@@ -100,7 +100,7 @@ public class LoopBattleJob extends AutoJob {
             while (mShouldJobRunning) {
                 refreshSetting();
 
-                if (mFGO.waitForUserMode(40) < 0) {
+                if (mFGO.waitForUserMode(100) < 0) {
                     sendMessage("錯誤:不在主畫面上");
                     playNotificationSound();
                     mShouldJobRunning = false;
@@ -108,7 +108,14 @@ public class LoopBattleJob extends AutoJob {
                 }
 
                 mGL.getInputService().tapOnScreen(FGORoutineDefine.pointLoopBattleStage.coord);
-                sleep(2000);
+                sleep(3000);
+
+                // handle AP not enough
+                if (mFGO.battleHandleAPSupply() < 0) {
+                    playNotificationSound();
+                    mShouldJobRunning = false;
+                    return;
+                }
 
                 if (mFGO.battlePreSetup(false) < 0) {
                     sendMessage("進入關卡錯誤");
@@ -140,7 +147,6 @@ public class LoopBattleJob extends AutoJob {
                         sendMessage("等不到SKIP，當作正常");
                     }
                 }
-
 
                 if (!stageCleared) {
                     if (mFGO.battlePostSetup() < 0) {

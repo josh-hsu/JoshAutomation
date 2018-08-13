@@ -235,6 +235,21 @@ public class BattleArgument {
     }
 
     /**
+     * isNoMoreRoyalSpecify (added in 1.57)
+     * check if there is no more argument then
+     */
+    public boolean isNoMoreRoyalSpecify(int currentStage, int currentRound) {
+        if (mParsedCmd.length <= currentStage) { //currentStage is out of bound
+            return true;
+        } else if (mParsedCmd[currentStage].length <= currentRound
+                && currentStage >= mParsedCmd.length - 1) { //currentRound is out of bound and it is last stage
+            return true;
+        }
+
+        return false;
+    }
+
+    /**
      * getSkillIndexOfRound
      * Deprecated in version 1.40
      * adc, efg, ijk will be transfer to 012,345,678

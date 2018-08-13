@@ -221,6 +221,14 @@
         <screenpoint name="pointQuestClearCube">0xFF,0xCD,0x00,0xff,265,1266,Portrait</screenpoint>
         <screenpoint name="pointDenyFriend">115,115,115,0xff,487,921,Landscape</screenpoint>
 
+        <!-- AP charge -->
+        <screenpoints name="pointAPChargeGoldApple">
+            <screenpoint>249,229,49,0xff,575,472,Landscape</screenpoint>
+            <screenpoint>79,104,54,0xff,575,444,Landscape</screenpoint>
+            <screenpoint>208,145,8,0xff,519,489,Landscape</screenpoint>
+        </screenpoints>
+        <screenpoint name="pointAPChargeGoldAppleConfirm">0,0,0,0xff,1290,822,Landscape</screenpoint>
+
     </defset>
 
     <defset resolution="720x1280">
