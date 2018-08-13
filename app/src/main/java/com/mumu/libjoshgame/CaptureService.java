@@ -93,7 +93,7 @@ public class CaptureService {
 
     private void dumpScreen() {
         runCommand("screencap " + mInternalDumpFile);
-        runCommand("chmod 666 " + mInternalDumpFile);
+        runCommand("sync");
     }
 
     /*
@@ -759,7 +759,7 @@ public class CaptureService {
     }
 
     public boolean colorCompare(ScreenColor src, ScreenColor dest) {
-        //Log.d(TAG, "compare " + src.toString() + " with " + dest.toString());
+        if(mChatty) Log.d(TAG, "compare " + src.toString() + " with " + dest.toString());
         return colorWithinRange(src.r, dest.r, mAmbiguousRange[0]) &&
                 colorWithinRange(src.b, dest.b, mAmbiguousRange[1]) &&
                 colorWithinRange(src.g, dest.g, mAmbiguousRange[2]);

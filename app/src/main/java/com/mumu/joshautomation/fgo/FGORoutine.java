@@ -320,7 +320,7 @@ class FGORoutine {
 
     public int battleHandleAPSupply() throws InterruptedException {
         boolean shouldEatAppleIfNeeded = AppPreferenceValue.getInstance().getPrefs().getBoolean("battleEatGoldApple", false);
-        if (mGL.getCaptureService().colorsAre(SPTList("pointAPChargeGoldApple"))) {
+        if (mGL.getCaptureService().colorIs(SPTList("pointAPChargeGoldApple").get(0))) {
             if (shouldEatAppleIfNeeded) {
                 sleep(500);
                 mGL.getInputService().tapOnScreen(SPTList("pointAPChargeGoldApple").get(0).coord);

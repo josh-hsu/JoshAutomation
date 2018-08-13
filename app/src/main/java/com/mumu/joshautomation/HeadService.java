@@ -359,6 +359,8 @@ public class HeadService extends Service implements AutoJobEventListener{
             mGL.setHackSS(false);
         }
 
+        mGL.getCaptureService().setChatty(mAPV.getPrefs().getBoolean("captureServiceChatty", false));
+
         mAutoJobHandler = AutoJobHandler.getHandler();
 
         if (!mAutoJobAdded) {
