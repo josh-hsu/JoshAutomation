@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<PreferenceScreen
+<PreferenceScreen xmlns:tools="http://schemas.android.com/tools"
     xmlns:android="http://schemas.android.com/apk/res/android">
 
     <PreferenceCategory android:title="戰鬥設定">
@@ -11,9 +11,10 @@
         <EditTextPreference
             android:key="battleArgPref"
             android:title="戰鬥參數"
-            android:summary="技能 abc,efg,ijk  技能目標 1,2,3 寶具 6,7,8\n御主技 x,y,z (w 123|123 換人要2個目標)\nTurn區隔: #    Stage關卡區隔: | \n舉例: a1b6|w13e07|xij38\n第一關: 技能A目標1, 技能B沒目標, 第一人寶具\n第二關: 把第一人換成後面第三人,\n               技能E無目標, 第二人寶具\n第三關: 御主技能1, 技能I無目標\n               技能J目標第3人, 第三人寶具"
-            android:defaultValue="@string/settings_default_battle_arg"
-            android:maxLength="40"/>
+            android:dialogMessage="技能　　： abc, efg, ijk\n技能目標： 1, 2, 3\n寶具　　： 6, 7, 8\n御主技能： x, y, z\n換人技能： w 123|123\n回合區隔： #\n關卡區隔： |\n範例: a1b6|w13e7|xij38\n第一關: 技能a目標1, 技能b沒目標,\n               第一人寶具\n第二關: 把第一人換成後面第三人,\n               技能e無目標, 第二人寶具\n第三關: 御主技能1, 技能i無目標\n               技能j目標第3人, 第三人寶具"
+            android:maxLength="40"
+            android:summary=""
+            android:defaultValue="@string/settings_default_battle_arg" />
         <CheckBoxPreference
             android:key="battleUseRoyal"
             android:title="自動使用寶具"
