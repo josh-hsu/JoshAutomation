@@ -17,6 +17,7 @@
 package com.mumu.joshautomation.script;
 
 import android.content.res.Resources;
+import android.util.SparseArray;
 
 import com.mumu.libjoshgame.Log;
 import com.mumu.libjoshgame.ScreenColor;
@@ -58,10 +59,11 @@ public class DefinitionLoader {
 
     private Resources mRes;
     private static DefinitionLoader mSelf;
+    private static SparseArray<DefData> mLoadedData;
     private boolean mLoaderInitialized = false;
 
     private DefinitionLoader() {
-
+        mLoadedData = new SparseArray<>();
     }
 
     public static DefinitionLoader getInstance() {
@@ -85,11 +87,19 @@ public class DefinitionLoader {
 
     public DefData requestDefData(int rawFileId, String resolution) {
         InputStream inputStream;
+        DefData defData;
 
         // check if service is initialized or aborting
         if (!getAvailable()) {
             Log.e(TAG, "Not yet initialized, aborting.");
             return null;
+        }
+
+        // check if defData has been loaded
+        defData = mLoadedData.get(rawFileId);
+        if (defData != null) {
+            Log.d(TAG, "resource id " + rawFileId + " has been loaded, return it.");
+            return defData;
         }
 
         // get input stream from resources
@@ -101,12 +111,16 @@ public class DefinitionLoader {
         }
 
         try {
-            return parse(inputStream, resolution);
+            defData = parse(inputStream, resolution);
         } catch (Exception e) {
             Log.e(TAG, "Parse input stream failed. " + e.getMessage());
         }
 
-        return null;
+        if (defData != null) {
+            mLoadedData.put(rawFileId, defData);
+        }
+
+        return defData;
     }
 
     private DefData parse(InputStream in, String resolutionRequested) throws Exception {
