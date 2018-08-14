@@ -223,9 +223,9 @@
 
         <!-- AP charge -->
         <screenpoints name="pointAPChargeGoldApple">
-            <screenpoint>249,229,49,0xff,575,472,Landscape</screenpoint>
-            <screenpoint>79,104,54,0xff,575,444,Landscape</screenpoint>
-            <screenpoint>208,145,8,0xff,519,489,Landscape</screenpoint>
+            <screenpoint>253,227,34,0xff,575,472,Landscape</screenpoint>
+            <screenpoint>78,104,54,0xff,575,444,Landscape</screenpoint>
+            <screenpoint>207,144,7,0xff,519,489,Landscape</screenpoint>
         </screenpoints>
         <screenpoint name="pointAPChargeGoldAppleConfirm">0,0,0,0xff,1290,822,Landscape</screenpoint>
 
