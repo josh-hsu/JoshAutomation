@@ -60,12 +60,12 @@ class RORoutine {
         return null;
     }
 
-    boolean isMPLowerThan(float percent) {
+    boolean isMPLowerThan(float percent) throws InterruptedException {
         ScreenPoint point = new ScreenPoint(getTargetGaugeCoord(percent, GAUGE_TYPE_MP), pointMPColor);
         return !mGL.getCaptureService().colorIs(point);
     }
 
-    boolean isHPLowerThan(float percent) {
+    boolean isHPLowerThan(float percent) throws InterruptedException {
         ScreenPoint point = new ScreenPoint(getTargetGaugeCoord(percent, GAUGE_TYPE_HP), pointHPColor);
         return !mGL.getCaptureService().colorIs(point);
     }
@@ -88,7 +88,7 @@ class RORoutine {
         mGL.getInputService().tapOnScreen(skillCoord);
     }
 
-    void checkBattleSupply() {
+    void checkBattleSupply() throws InterruptedException {
         // check on character HP and MP
         if (AppPreferenceValue.getInstance().getPrefs().getBoolean("roAutoHPPref", false)) {
             int hpTargetPercent = Integer.parseInt(AppPreferenceValue.getInstance().getPrefs().getString("roAutoHPValuePref", "50"));

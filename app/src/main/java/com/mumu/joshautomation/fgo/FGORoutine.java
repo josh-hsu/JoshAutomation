@@ -78,7 +78,7 @@ class FGORoutine {
      * Battle Card Checking and Tapping
      * =======================
      */
-    private int[] getCurrentCardPresent() {
+    private int[] getCurrentCardPresent() throws InterruptedException {
         int ret[] = new int[5];
 
         for(int i = 0; i < 5; i++) {
@@ -177,7 +177,7 @@ class FGORoutine {
      * getRoyalAvailability
      * returns the index array of which char has royal ready to use
      */
-    private int[] getRoyalAvailability() {
+    private int[] getRoyalAvailability() throws InterruptedException {
         ArrayList<Integer> retSet = new ArrayList<>();
         for(int i = 0; i < 3; i++) {
             if (mGL.getCaptureService().colorIs(SPTList("char100NPChars").get(i)))
@@ -224,10 +224,10 @@ class FGORoutine {
             } else if (sk.skill > 9 && sk.skill <= 12) { //Normal Master Skills
                 mGL.getInputService().tapOnScreen(SPT("masterSkillButton").coord);
                 sendMessage("點Master技能");
-                sleep(500);
+                sleep(1000);
                 mGL.getInputService().tapOnScreen(SCDList("masterSkills").get(sk.skill - 10));
                 sendMessage("點Master技能" + (sk.skill - 9));
-                sleep(500);
+                sleep(1000);
 
                 if (sk.target > 0) {
                     sendMessage("點目標" + sk.target);
@@ -240,17 +240,17 @@ class FGORoutine {
 
                     mGL.getInputService().tapOnScreen(SPT("masterSkillButton").coord);
                     sendMessage("點Master技能");
-                    sleep(500);
+                    sleep(1000);
                     mGL.getInputService().tapOnScreen(SCDList("masterSkills").get(2));
                     sendMessage("點換人");
-                    sleep(500);
+                    sleep(1500);
 
                     //tap on left side
                     if (mGL.getCaptureService().colorIs(inChangingServant)) {
                         mGL.getInputService().tapOnScreen(SCDList("changeServants").get(sk.change_target - 1));
-                        sleep(250);
+                        sleep(500);
                         mGL.getInputService().tapOnScreen(SCDList("changeServants").get(sk.target + 2));
-                        sleep(750);
+                        sleep(1000);
 
                         //tap confirm
                         mGL.getInputService().tapOnScreen(SPT("inChangingServant").coord);
@@ -267,7 +267,7 @@ class FGORoutine {
                 sendMessage("不合法的技能" + sk.skill);
             }
 
-            sleep(2400);
+            sleep(2500);
         }
     }
 
@@ -284,8 +284,12 @@ class FGORoutine {
 
     public void tapOnTarget(int target) throws InterruptedException {
         if (target > 0 && target <= 3) {
-            if (mGL.getCaptureService().colorIs(SPT("inSelectTarget")))
+            if (mGL.getCaptureService().colorIs(SPT("inSelectTarget"))) {
                 mGL.getInputService().tapOnScreen(SCDList("cardTargets").get(target - 1));
+            } else {
+                sendMessage("目標視窗無法辨識，隨便點");
+                mGL.getInputService().tapOnScreen(SCDList("cardTargets").get(target - 1));
+            }
         }
     }
 
@@ -341,12 +345,11 @@ class FGORoutine {
         } else {
             sendMessage("AP足夠");
         }
-        sleep(1000);
+        sleep(2000);
         return 0;
     }
 
     public int battlePreSetup(boolean swipeFriend) throws InterruptedException {
-        sleep(2500);
 
         //try to find friend's servant, if not found, touch first one
         boolean useFriendEnabled = AppPreferenceValue.getInstance().getPrefs().getBoolean("battleUseFriendOnly", false);
@@ -376,8 +379,9 @@ class FGORoutine {
         return 0;
     }
 
-    private int battleGetStage() {
+    private int battleGetStage() throws InterruptedException {
         for(int i = 0; i < SPTList("battleStages").size(); i++) {
+            sleep(100);
             if (mGL.getCaptureService().colorIs(SPTList("battleStages").get(i)))
                 return i;
         }
@@ -389,11 +393,11 @@ class FGORoutine {
         String cardInfo;
         int[] optimizedDraw, cardStatusNow;
         ArrayList<BattleArgument.BattleSkill> skillDraw;
-        final int battleMaxTries = 950; // fail retry of waiting battle button (950 * 0.1 = 95 secs)
+        final int battleMaxTries = 300; // fail retry of waiting battle button (300 * (0.1+0.2) = 90 secs)
         int[] royalDraw = new int[0];
         int[] royalAvail = new int[0];
         int resultTry = 20; //fail retry of waiting result
-        int battleTry = battleMaxTries; // fail retry of waiting battle button (950 * 0.1 = 95 secs)
+        int battleTry = battleMaxTries;
         int checkCardTry = 20; // fail retry of waiting card recognize
         int battleStage = 0; //indicate which stage of battle (start from 0 but it will start from 1 when displaying)
         int battleRound = 0; //indicate which round of battle in a stage (start from 0 but it will start from 1 when displaying)
@@ -422,7 +426,7 @@ class FGORoutine {
             battleTry = battleMaxTries;
             checkCardTry = 20;
 
-            sleep(500);
+            sleep(1000);
 
             //check for stage, default 1
             int thisStage = battleGetStage();
@@ -498,7 +502,7 @@ class FGORoutine {
             tapOnCard(optimizedDraw);
 
             battleRound++;
-            sleep(8000);
+            sleep(4000);
         }
 
         // check if this is a timeout
@@ -649,11 +653,11 @@ class FGORoutine {
      * Home Info
      * =======================
      */
-    public boolean isInHomeScreen() {
+    public boolean isInHomeScreen() throws InterruptedException {
         return mGL.getCaptureService().colorIs(SPT("pointHomeOSiRaSe"));
     }
 
-    public boolean isInUserMode() {
+    public boolean isInUserMode() throws InterruptedException {
         return mGL.getCaptureService().colorIs(SPT("pointHomeApAdd"));
     }
 

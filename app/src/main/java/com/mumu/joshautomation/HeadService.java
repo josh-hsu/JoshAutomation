@@ -117,8 +117,12 @@ public class HeadService extends Service implements AutoJobEventListener{
         @Override
         public void run() {
             /* Call our library to dump screen, this might take a while */
-            mGL.getCaptureService().dumpScreenPNG(mPngFilePath);
-            mGL.getCaptureService().dumpScreen(mDumpFilePath);
+            try {
+                mGL.getCaptureService().dumpScreenPNG(mPngFilePath);
+                mGL.getCaptureService().dumpScreen(mDumpFilePath);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
 
             /* show icon view back */
             configAllIconShowing(HeadIconView.VISIBLE);
@@ -487,7 +491,11 @@ public class HeadService extends Service implements AutoJobEventListener{
     private void configSettings(boolean isLongPress) {
         if (isLongPress) {
             String filename = mDumpFilePath + mDumpCount;
-            mGL.getCaptureService().dumpScreen(filename);
+            try {
+                mGL.getCaptureService().dumpScreen(filename);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
             mMessageText = "Dump count = " + mDumpCount;
             mDumpCount++;
         } else {

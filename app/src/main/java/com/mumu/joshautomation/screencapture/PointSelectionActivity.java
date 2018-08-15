@@ -219,7 +219,11 @@ public class PointSelectionActivity extends AppCompatActivity {
         kUserPoint.coord.orientation = ScreenPoint.SO_Portrait;
         kUserPoint.coord.x = x;
         kUserPoint.coord.y = y;
-        mGL.getCaptureService().getColorOnDump(kUserPoint.color, mDumpFilePath, kUserPoint.coord);
+        try {
+            mGL.getCaptureService().getColorOnDump(kUserPoint.color, mDumpFilePath, kUserPoint.coord);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
         mPointTouched = kUserPoint;
     }
 

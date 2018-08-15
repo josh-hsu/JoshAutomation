@@ -130,7 +130,7 @@ class ShinobiRoutine {
         return retry > 0;
     }
 
-    public boolean isBattleOngoing() {
+    public boolean isBattleOngoing() throws InterruptedException {
         return mGL.getCaptureService().colorIs(pointBattleOngoing);
     }
 

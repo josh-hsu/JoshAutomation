@@ -108,7 +108,7 @@ public class LoopBattleJob extends AutoJob {
                 }
 
                 mGL.getInputService().tapOnScreen(FGORoutineDefine.pointLoopBattleStage.coord);
-                sleep(3000);
+                sleep(1000);
 
                 // handle AP not enough
                 if (mFGO.battleHandleAPSupply() < 0) {
@@ -116,6 +116,7 @@ public class LoopBattleJob extends AutoJob {
                     mShouldJobRunning = false;
                     return;
                 }
+                sleep(1000);
 
                 if (mFGO.battlePreSetup(false) < 0) {
                     sendMessage("進入關卡錯誤");

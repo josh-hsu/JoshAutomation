@@ -37,8 +37,8 @@ public class HeadIconView {
 
     private static final long mTouchLongPressThreshold = 1500;
     private static final int mTouchTapThreshold = 200;
-    private static final int mInitialPositionX = 0;
-    private static final int mInitialPositionY = 150;
+    private static final int mInitialPositionX = 20;
+    private static final int mInitialPositionY = 300;
 
     public static final int VISIBLE = View.VISIBLE;
     public static final int INVISIBLE = View.INVISIBLE;

@@ -83,17 +83,19 @@ public class CaptureService {
         mChatty = chatty;
     }
 
-    public void dumpScreenPNG(String filename) {
+    public void dumpScreenPNG(String filename) throws InterruptedException {
         runCommand("screencap -p " + filename);
+        Thread.sleep(200);
     }
 
-    public void dumpScreen(String filename) {
+    public void dumpScreen(String filename) throws InterruptedException {
         runCommand("screencap " + filename);
+        Thread.sleep(200);
     }
 
-    private void dumpScreen() {
+    private void dumpScreen() throws InterruptedException {
         runCommand("screencap " + mInternalDumpFile);
-        runCommand("sync");
+        Thread.sleep(200); //TODO: need a new way to find out if file is opened
     }
 
     /*
@@ -133,20 +135,12 @@ public class CaptureService {
     }
 
     /*
-     * getColorOnDumpInternal
-     * This is used only insides this class
-     */
-    private void getColorOnDumpInternal(ScreenColor sc, ScreenCoord coord) {
-        getColorOnDump(sc, mInternalDumpFile, coord);
-    }
-
-    /*
      * getColorOnDump
      * sc: ScreenColor to be saved into
      * filename: dump file path
      * coord: ScreenCoord to be used
      */
-    public void getColorOnDump(ScreenColor sc, String filename, ScreenCoord coord) {
+    public synchronized void getColorOnDump(ScreenColor sc, String filename, ScreenCoord coord) throws InterruptedException {
         RandomAccessFile dumpFile;
         int offset;
         byte[] colorInfo = new byte[4];
@@ -168,14 +162,32 @@ public class CaptureService {
     }
 
     /*
+     * getColorOnDumpInternal
+     * This is used only insides this class
+     */
+    private void getColorOnDumpInternal(ScreenColor sc, ScreenCoord coord) throws InterruptedException {
+        getColorOnDump(sc, mInternalDumpFile, coord);
+    }
+
+    /*
      * getColorOnScreen
      * sc: ScreenColor to be saved
      * coord: ScreenCoord to be used to get color
      */
-    public void getColorOnScreen(ScreenColor sc, ScreenCoord coord) {
+    public void getColorOnScreen(ScreenColor sc, ScreenCoord coord) throws InterruptedException {
         dumpScreen();
         getColorOnDumpInternal(sc, coord);
     }
+
+    /*
+     * getColorsOnScreen (Added in 1.61)
+     * coords: ArrayList of ScreenCoord to be used to get colors
+     */
+    public void getColorsOnScreen(ArrayList<ScreenColor> colors, ArrayList<ScreenCoord> coords) throws InterruptedException {
+        dumpScreen();
+        getColorsOnDump(colors, mInternalDumpFile, coords);
+    }
+
 
     /*
      * getColorOnDump
@@ -183,7 +195,7 @@ public class CaptureService {
      * filename: dump file path
      * coord: ScreenCoord to be used
      */
-    private void getColorsOnDump(ArrayList<ScreenColor> colors,
+    private synchronized void getColorsOnDump(ArrayList<ScreenColor> colors,
                                 String filename, ArrayList<ScreenCoord> coords) {
         RandomAccessFile dumpFile;
         int offset;
@@ -211,14 +223,14 @@ public class CaptureService {
                 color.b = colorInfo[2];
                 color.t = colorInfo[3];
             } catch (Exception e) {
-                Log.d(TAG, "File seek error: " + e.toString());
+                Log.d(TAG, "File seek error: " + e.getMessage());
             }
         }
 
         try {
             dumpFile.close();
         } catch (Exception e) {
-            Log.d(TAG, "File close failed: " + e.toString());
+            Log.d(TAG, "File close failed: " + e.getMessage());
         }
     }
 
@@ -227,7 +239,7 @@ public class CaptureService {
      * filename: dump file path
      * points: ScreenPoints to be used and returned in the same structure
      */
-    private void getColorsOnDump(String filename, ArrayList<ScreenPoint> points) {
+    private synchronized void getColorsOnDump(String filename, ArrayList<ScreenPoint> points) {
         RandomAccessFile dumpFile;
         int offset;
         byte[] colorInfo;
@@ -270,7 +282,7 @@ public class CaptureService {
      * returns all color and forming array of ScreenPoint in the region formed from src
      * and dest
      */
-    public ArrayList<ScreenPoint> getColorsInRegion(ScreenCoord src, ScreenCoord dest) {
+    public ArrayList<ScreenPoint> getColorsInRegion(ScreenCoord src, ScreenCoord dest)  throws InterruptedException {
         int x_start, x_end, y_start, y_end;
         int orientation;
         ArrayList<ScreenPoint> pointReturned = new ArrayList<>();
@@ -363,7 +375,7 @@ public class CaptureService {
      * dest: Destination ScreenCoord
      * colors: ScreenColor array to be found
      */
-    public boolean checkColorIsInRegion(ScreenCoord src, ScreenCoord dest, ArrayList<ScreenColor> colors) {
+    public boolean checkColorIsInRegion(ScreenCoord src, ScreenCoord dest, ArrayList<ScreenColor> colors) throws InterruptedException {
         ArrayList<ScreenCoord> coordList = new ArrayList<>();
         ArrayList<ScreenColor> colorsReturned = new ArrayList<>();
         ArrayList<Boolean> checkList = new ArrayList<>();
@@ -731,7 +743,7 @@ public class CaptureService {
      * colorIs (added in 1.0)
      * check if the screen color is point.color at point.coord
      */
-    public boolean colorIs(ScreenPoint point) {
+    public boolean colorIs(ScreenPoint point) throws InterruptedException {
         if (point == null) {
             Log.w(TAG, "Point is null");
             return false;
@@ -745,9 +757,24 @@ public class CaptureService {
      * colorsAre (Added in 1.53)
      * check every ScreenPoint in array are all matched
      */
-    public boolean colorsAre(ArrayList<ScreenPoint> points) {
-        for(ScreenPoint point : points) {
-            if (!colorIs(point))
+    public boolean colorsAre(ArrayList<ScreenPoint> points) throws InterruptedException {
+        // forming an array of colors and coords
+        ArrayList<ScreenCoord> coords = new ArrayList<>();
+        ArrayList<ScreenColor> colors = new ArrayList<>();
+
+        for(ScreenPoint point: points) {
+            coords.add(point.coord);
+            colors.add(new ScreenColor());
+        }
+
+        //get all colors
+        getColorsOnScreen(colors, coords);
+
+        //compare all colors
+        for(int i = 0; i < points.size(); i++) {
+            ScreenColor currentColor = colors.get(i);
+            ScreenColor targetColor = points.get(i).color;
+            if (!colorCompare(currentColor, targetColor))
                 return false;
         }
 
@@ -759,7 +786,6 @@ public class CaptureService {
     }
 
     public boolean colorCompare(ScreenColor src, ScreenColor dest) {
-        //if(mChatty) Log.d(TAG, "compare " + src.toString() + " with " + dest.toString());
         return colorWithinRange(src.r, dest.r, mAmbiguousRange[0]) &&
                 colorWithinRange(src.b, dest.b, mAmbiguousRange[1]) &&
                 colorWithinRange(src.g, dest.g, mAmbiguousRange[2]);
