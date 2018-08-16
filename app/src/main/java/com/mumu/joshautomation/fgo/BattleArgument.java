@@ -78,6 +78,7 @@ public class BattleArgument {
     /*
      * parse
      * This function handle parsing of battle argument
+     * parse() will only fill out mParsedCmd, and will parse real skill and royal at request
      */
     private void parse() {
         String[] mParsedStageCmd = mCmdString.split("\\|");
@@ -175,6 +176,16 @@ public class BattleArgument {
             } else {
                 Log.d(TAG, "WTF: parseForTarget < 0 should never happen");
                 parseForTarget = 0;
+            }
+        }
+
+        //If last skill doesn't specific target, fill out here
+        if (parseForTarget > 0) {
+            if (thisSkill.skill == 90) {
+                Log.e(TAG, "Change Servant should have 2 target, do add this one.");
+            } else {
+                thisSkill.target = 0;
+                list.add(thisSkill);
             }
         }
 
