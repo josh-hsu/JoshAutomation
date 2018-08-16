@@ -71,6 +71,7 @@
     <string name="settings_restore_not_found">抱歉，在裝置上找不到任何備份資料。</string>
     <string name="settings_restore_finished">備份資料已成功復原。</string>
     <string name="settings_default_battle_arg">bc6|eg7|j8</string>
+    <string name="settings_battle_arg_instruction">技能　　： abc, efg, ijk\n技能目標： 1, 2, 3\n寶具　　： 6, 7, 8\n御主技能： x, y, z\n換人技能： w 123|123\n回合區隔： #\n關卡區隔： |\n範例: a1b6|w13e7|xij38\n第一關: 技能a目標1, 技能b沒目標,\n               第一人寶具\n第二關: 把第一人換成後面第三人,\n               技能e無目標, 第二人寶具\n第三關: 御主技能1, 技能i無目標\n               技能j目標第3人, 第三人寶具</string>
 
     <!-- HeadService -->
     <string name="headservice_how_to_stop">服務已啟動，長按圖示可終止服務</string>

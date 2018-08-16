@@ -36,6 +36,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
 import android.widget.LinearLayout;
+import android.widget.Toast;
 
 import com.mumu.joshautomation.script.AutoJobHandler;
 
@@ -112,6 +113,9 @@ public class AppPreferenceActivity extends PreferenceActivity {
      * This fragment shows the app_preferences_fgo for the first header.
      */
     public static class Prefs1Fragment extends PreferenceFragment implements SharedPreferences.OnSharedPreferenceChangeListener {
+        private final int battleArgCount = 5;
+        private int initReferenceCount = battleArgCount;
+
         @Override
         public void onCreate(Bundle savedInstanceState) {
             super.onCreate(savedInstanceState);
@@ -128,6 +132,11 @@ public class AppPreferenceActivity extends PreferenceActivity {
             SharedPreferences sharedPrefs = PreferenceManager.getDefaultSharedPreferences(mContext);
 
             onSharedPreferenceChanged(sharedPrefs, "battleArgPref");
+            onSharedPreferenceChanged(sharedPrefs, "battleArgSaved0");
+            onSharedPreferenceChanged(sharedPrefs, "battleArgSaved1");
+            onSharedPreferenceChanged(sharedPrefs, "battleArgSaved2");
+            onSharedPreferenceChanged(sharedPrefs, "battleArgSaved3");
+            onSharedPreferenceChanged(sharedPrefs, "battleArgSaved4");
         }
 
         @Override
@@ -146,9 +155,36 @@ public class AppPreferenceActivity extends PreferenceActivity {
         public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
             Preference pref = findPreference(key);
             if (pref instanceof EditTextPreference) {
-                EditTextPreference listPref = (EditTextPreference) pref;
-                pref.setSummary(listPref.getText());
+                EditTextPreference battleArgPref = (EditTextPreference) pref;
+                pref.setSummary(battleArgPref.getText());
+                refreshBattleArgs();
+                if (initReferenceCount-- <= 0) {
+                    Toast.makeText(getActivity(), "修改後請重新在「戰鬥參數選擇」做選擇", Toast.LENGTH_SHORT).show();
+                    initReferenceCount = 0;
+                }
             }
+
+            if (pref instanceof  ListPreference && key.equals("battleArgPref")) {
+                ListPreference listPref = (ListPreference) pref;
+                pref.setSummary(listPref.getValue());
+            }
+        }
+
+        private void refreshBattleArgs() {
+            SharedPreferences sharedPrefs = PreferenceManager.getDefaultSharedPreferences(mContext);
+            ListPreference selectPref = (ListPreference) findPreference("battleArgPref");
+            CharSequence[] battleArgEntries = new CharSequence[battleArgCount];
+            CharSequence[] battleArgValues = new CharSequence[battleArgCount];
+
+            for(int i = 0; i < battleArgCount; i++) {
+                String key = "battleArgSaved" + i;
+                String value = sharedPrefs.getString(key, "");
+                battleArgEntries[i] = "指令 " + (i+1) + ":  " + value;
+                battleArgValues[i] = value;
+            }
+
+            selectPref.setEntries(battleArgEntries);
+            selectPref.setEntryValues(battleArgValues);
         }
     }
 
