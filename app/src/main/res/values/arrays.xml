@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="battle_policy_entries">
+        <item>不辨識卡片</item>
+        <item>B 卡絕對優先</item>
+        <item>A 卡絕對優先</item>
+        <item>Q 卡絕對優先</item>
+        <item>同色卡優先，否則 B 卡優先</item>
+        <item>同色卡優先，否則 A 卡優先</item>
+        <item>同色卡優先，否則 Q 卡優先</item>
+        <item>排斥 Q 卡，同色卡優先，否則 B 卡優先</item>
+        <item>排斥 Q 卡，同色卡優先，否則 A 卡優先</item>
+    </string-array>
+    <string-array name="battle_policy_values">
+        <item>0</item>
+        <item>1</item>
+        <item>2</item>
+        <item>3</item>
+        <item>4</item>
+        <item>5</item>
+        <item>6</item>
+        <item>7</item>
+        <item>8</item>
+    </string-array>
+</resources>
