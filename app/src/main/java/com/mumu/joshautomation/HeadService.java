@@ -284,7 +284,8 @@ public class HeadService extends Service implements AutoJobEventListener{
 
     private void initGameLibrary() {
         int w, h;
-        int userWidth, userHeight, userAmbValue, userTouchShift, userScreenXOffset, userScreenYOffset;
+        int userWidth, userHeight, userAmbValue, userTouchShift;
+        int userScreenXOffset, userScreenYOffset, userWaitTransactTime;
 
         // try to get user's setting
         try {
@@ -294,6 +295,7 @@ public class HeadService extends Service implements AutoJobEventListener{
             userTouchShift = Integer.parseInt(mAPV.getPrefs().getString("userSetTouchShift", "0"));
             userScreenXOffset = Integer.parseInt(mAPV.getPrefs().getString("userSetScreenXOffset", "0"));
             userScreenYOffset = Integer.parseInt(mAPV.getPrefs().getString("userSetScreenYOffset", "0"));
+            userWaitTransactTime = Integer.parseInt(mAPV.getPrefs().getString("userSetWaitTransactionDoneTime", "0"));
         } catch (NumberFormatException e) {
             Log.e(TAG, "Setting value format error: " + e.getMessage());
             userWidth = 0;
@@ -302,6 +304,7 @@ public class HeadService extends Service implements AutoJobEventListener{
             userTouchShift = 0;
             userScreenXOffset = 0;
             userScreenYOffset = 0;
+            userWaitTransactTime = 0;
         }
 
         // Initial DefinitionLoader
@@ -351,6 +354,11 @@ public class HeadService extends Service implements AutoJobEventListener{
             mGL.setTouchShift(userTouchShift);
         else
             mGL.setTouchShift(JoshGameLibrary.DEFAULT_TOUCH_SHIFT);
+
+        if (userWaitTransactTime != 0)
+            mGL.setWaitTransactionTime(userWaitTransactTime);
+        else
+            mGL.setWaitTransactionTime(JoshGameLibrary.DEFAULT_WAIT_TRANSACT_TIME);
 
         if (mAPV.getPrefs().getBoolean("ssEnabled", false)) {
             String pn = mAPV.getPrefs().getString("ssPackageName", "");

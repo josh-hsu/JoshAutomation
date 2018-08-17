@@ -17,19 +17,16 @@
 package com.mumu.joshautomation;
 
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.os.Bundle;
-import android.os.Environment;
 import android.preference.EditTextPreference;
 import android.preference.ListPreference;
 import android.preference.Preference;
 import android.preference.PreferenceActivity;
 import android.preference.PreferenceFragment;
 import android.preference.PreferenceManager;
-import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -40,25 +37,17 @@ import android.widget.Toast;
 
 import com.mumu.joshautomation.script.AutoJobHandler;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.List;
 
 public class AppPreferenceActivity extends PreferenceActivity {
     public static final String TAG = "JATool";
 
-    private static Context mContext; //this is a workaround, should be fixed later
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        mContext = this;
+
+        final Context context = this;
 
         // Add a button to the header list.
         if (hasHeaders()) {
@@ -68,7 +57,7 @@ public class AppPreferenceActivity extends PreferenceActivity {
             button.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    openService();
+                    startService(new Intent(context, HeadService.class));
                 }
             });
             setListFooter(button);
@@ -110,9 +99,57 @@ public class AppPreferenceActivity extends PreferenceActivity {
     }
 
     /**
-     * This fragment shows the app_preferences_fgo for the first header.
+     * System Preference Fragment
      */
-    public static class Prefs1Fragment extends PreferenceFragment implements SharedPreferences.OnSharedPreferenceChangeListener {
+    public static class SystemPrefFragment extends PreferenceFragment {
+        @Override
+        public void onCreate(Bundle savedInstanceState) {
+            super.onCreate(savedInstanceState);
+
+            // Make sure default values are applied.  In a real app, you would
+            // want this in a shared function that is used to retrieve the
+            // SharedPreferences wherever they are needed.
+            PreferenceManager.setDefaultValues(getActivity(),
+                    R.xml.app_preferences, false);
+
+            // Load the app_preferences_fgo from an XML resource
+            addPreferencesFromResource(R.xml.app_preferences);
+
+            // Add start service button listener
+            Preference myPref = findPreference("enableServicePref");
+            myPref.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
+                public boolean onPreferenceClick(Preference preference) {
+                    getContext().startService(new Intent(getContext(), HeadService.class));
+                    return true;
+                }
+            });
+
+            // Fill out script
+            ListPreference scriptSelectPref = (ListPreference) findPreference("scriptSelectPref");
+            AutoJobHandler jobHandler = AutoJobHandler.getHandler();
+            ArrayList<CharSequence> entriesArray = new ArrayList<>();
+            ArrayList<CharSequence> entriesValueArray = new ArrayList<>();
+
+            if (jobHandler.getJobCount() <= 0) {
+                entriesArray.add("沒有工作，請確定服務打開");
+                entriesValueArray.add("0");
+            } else {
+                for(int i = 0; i < jobHandler.getJobCount(); i++) {
+                    entriesArray.add(jobHandler.getJobName(i));
+                    entriesValueArray.add(""+i);
+                }
+            }
+
+            scriptSelectPref.setEntries(entriesArray.toArray(new CharSequence[entriesArray.size()]));
+            scriptSelectPref.setDefaultValue("0");
+            scriptSelectPref.setEntryValues(entriesValueArray.toArray(new CharSequence[entriesValueArray.size()]));
+        }
+    }
+
+    /**
+     * FGO Preference Fragment
+     */
+    public static class FGOPrefFragment extends PreferenceFragment implements SharedPreferences.OnSharedPreferenceChangeListener {
         private final int battleArgCount = 5;
         private int initReferenceCount = battleArgCount;
 
@@ -129,9 +166,10 @@ public class AppPreferenceActivity extends PreferenceActivity {
             // Load the app_preferences_fgo from an XML resource
             addPreferencesFromResource(R.xml.app_preferences_fgo);
 
-            SharedPreferences sharedPrefs = PreferenceManager.getDefaultSharedPreferences(mContext);
+            SharedPreferences sharedPrefs = PreferenceManager.getDefaultSharedPreferences(getContext());
 
             onSharedPreferenceChanged(sharedPrefs, "battleArgPref");
+            onSharedPreferenceChanged(sharedPrefs, "battlePolicyPrefs");
             onSharedPreferenceChanged(sharedPrefs, "battleArgSaved0");
             onSharedPreferenceChanged(sharedPrefs, "battleArgSaved1");
             onSharedPreferenceChanged(sharedPrefs, "battleArgSaved2");
@@ -164,14 +202,19 @@ public class AppPreferenceActivity extends PreferenceActivity {
                 }
             }
 
-            if (pref instanceof  ListPreference && key.equals("battleArgPref")) {
+            if (pref instanceof  ListPreference) {
                 ListPreference listPref = (ListPreference) pref;
-                pref.setSummary(listPref.getValue());
+
+                if (key.equals("battleArgPref")) {
+                    pref.setSummary(listPref.getValue());
+                } else if (key.equals("battlePolicyPrefs")) {
+                    pref.setSummary(listPref.getValue() + ": " + listPref.getEntry());
+                }
             }
         }
 
         private void refreshBattleArgs() {
-            SharedPreferences sharedPrefs = PreferenceManager.getDefaultSharedPreferences(mContext);
+            SharedPreferences sharedPrefs = PreferenceManager.getDefaultSharedPreferences(getContext());
             ListPreference selectPref = (ListPreference) findPreference("battleArgPref");
             CharSequence[] battleArgEntries = new CharSequence[battleArgCount];
             CharSequence[] battleArgValues = new CharSequence[battleArgCount];
@@ -188,52 +231,10 @@ public class AppPreferenceActivity extends PreferenceActivity {
         }
     }
 
-    public static class Prefs2Fragment extends PreferenceFragment {
-        @Override
-        public void onCreate(Bundle savedInstanceState) {
-            super.onCreate(savedInstanceState);
-
-            // Make sure default values are applied.  In a real app, you would
-            // want this in a shared function that is used to retrieve the
-            // SharedPreferences wherever they are needed.
-            PreferenceManager.setDefaultValues(getActivity(),
-                    R.xml.app_preferences, false);
-
-            // Load the app_preferences_fgo from an XML resource
-            addPreferencesFromResource(R.xml.app_preferences);
-
-            // Add start service button listener
-            Preference myPref = (Preference) findPreference("enableServicePref");
-            myPref.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
-                public boolean onPreferenceClick(Preference preference) {
-                    openService();
-                    return true;
-                }
-            });
-
-            // Fill out script
-            ListPreference scriptSelectPref = (ListPreference) findPreference("scriptSelectPref");
-            AutoJobHandler jobHandler = AutoJobHandler.getHandler();
-            ArrayList<CharSequence> entriesArray = new ArrayList<>();
-            ArrayList<CharSequence> entriesValueArray = new ArrayList<>();
-
-            if (jobHandler.getJobCount() <= 0) {
-                entriesArray.add("沒有工作，請確定服務打開");
-                entriesValueArray.add("0");
-            } else {
-                for(int i = 0; i < jobHandler.getJobCount(); i++) {
-                    entriesArray.add(jobHandler.getJobName(i));
-                    entriesValueArray.add(""+i);
-                }
-            }
-
-            scriptSelectPref.setEntries(entriesArray.toArray(new CharSequence[entriesArray.size()]));
-            scriptSelectPref.setDefaultValue("0");
-            scriptSelectPref.setEntryValues(entriesValueArray.toArray(new CharSequence[entriesValueArray.size()]));
-        }
-    }
-
-    public static class Prefs3Fragment extends PreferenceFragment {
+    /**
+     * Shinobi Preference Fragment
+     */
+    public static class ShinobiPrefFragment extends PreferenceFragment {
         @Override
         public void onCreate(Bundle savedInstanceState) {
             super.onCreate(savedInstanceState);
@@ -249,7 +250,10 @@ public class AppPreferenceActivity extends PreferenceActivity {
         }
     }
 
-    public static class Prefs4Fragment extends PreferenceFragment implements SharedPreferences.OnSharedPreferenceChangeListener{
+    /**
+     * RO Preference Fragment
+     */
+    public static class ROPrefFragment extends PreferenceFragment implements SharedPreferences.OnSharedPreferenceChangeListener{
         @Override
         public void onCreate(Bundle savedInstanceState) {
             super.onCreate(savedInstanceState);
@@ -264,7 +268,7 @@ public class AppPreferenceActivity extends PreferenceActivity {
             addPreferencesFromResource(R.xml.app_preferences_ro);
 
             //if you are using default SharedPreferences
-            SharedPreferences sharedPrefs = PreferenceManager.getDefaultSharedPreferences(mContext);
+            SharedPreferences sharedPrefs = PreferenceManager.getDefaultSharedPreferences(getContext());
 
             onSharedPreferenceChanged(sharedPrefs, "roAutoHPValuePref");
             onSharedPreferenceChanged(sharedPrefs, "roAutoHPItemPref");
@@ -281,86 +285,5 @@ public class AppPreferenceActivity extends PreferenceActivity {
             }
         }
     }
-
-    static void openService() {
-        mContext.startService(new Intent(mContext, HeadService.class));
-    }
-
-    void restoreDataFromSdcard() {
-        new AlertDialog.Builder(this)
-                .setTitle(getString(R.string.settings_restore_title))
-                .setMessage(getString(R.string.settings_restore_subtitle))
-                .setPositiveButton(getString(R.string.action_confirm), new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        doRestoreDataFromSdcard();
-                    }
-                })
-                .setNegativeButton(getString(R.string.action_cancel), new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        finish();
-                    }
-                }).show();
-    }
-
-    void doRestoreDataFromSdcard() {
-        try {
-            saveSdcardFileToData(getString(R.string.electric_data_file_name));
-        } catch (FileNotFoundException e) {
-            Log.w(TAG, "Try to restore data from sdcard but no backup file found");
-            new AlertDialog.Builder(this)
-                    .setTitle(getString(R.string.settings_restore_failed))
-                    .setMessage(getString(R.string.settings_restore_not_found))
-                    .show();
-            return;
-        }
-
-        new AlertDialog.Builder(this)
-                .setTitle(getString(R.string.settings_restore_title))
-                .setMessage(getString(R.string.settings_restore_finished))
-                .show();
-    }
-
-    public void saveSdcardFileToData(String filename) throws FileNotFoundException {
-        String userSdcardPath = Environment.getExternalStorageDirectory() + "/" + filename;
-        File srcFile = new File(userSdcardPath);
-        String destFilePath = getFilesDir().getAbsolutePath() + "/" + filename;
-
-        InputStream in = null;
-        OutputStream out = null;
-
-        try {
-            in = new FileInputStream(srcFile);
-            out = new FileOutputStream(new File(destFilePath));
-
-            int read = 0;
-            byte[] bytes = new byte[1024];
-
-            while ((read = in.read(bytes)) != -1) {
-                out.write(bytes, 0, read);
-            }
-        } catch (FileNotFoundException e) {
-            throw e;
-        } catch (IOException e) {
-            Log.e(TAG, "Save " + filename + " to data failed: " + e.getMessage());
-        } finally {
-            if (in != null) {
-                try {
-                    in.close();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-            }
-            if (out != null) {
-                try {
-                    out.close();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-            }
-        }
-    }
-
 }
 

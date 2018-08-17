@@ -140,12 +140,80 @@ class FGORoutine {
         return cardInfo.toString();
     }
 
-    private int[] getOptimizeDraw(int[] pattern) {
+    /*
+     * getOptimizeDraw
+     * this allows user to use their policy and decide which card should be selected
+     * pattern: current card present on screen
+     * policy: user select policy
+     * royalSelected: if this round has royal selected, than we skip chain forming rule
+     */
+    private int[] getOptimizeDraw(int[] pattern, int policy, boolean royalSelected) {
         int[] select = new int[3];
         int selected = 0;
+        int cardTypeFirst;
+        boolean chainAvailFirst;
+        boolean minimizeQuickUsage = false;
 
+        // Parsing policy
+        switch (policy) {
+            case 1:
+                cardTypeFirst = sCardBurst;
+                chainAvailFirst = false;
+                break;
+            case 2:
+                cardTypeFirst = sCardArt;
+                chainAvailFirst = false;
+                break;
+            case 3:
+                cardTypeFirst = sCardQuick;
+                chainAvailFirst = false;
+                break;
+            case 4:
+                cardTypeFirst = sCardBurst;
+                chainAvailFirst = true;
+                break;
+            case 5:
+                cardTypeFirst = sCardArt;
+                chainAvailFirst = true;
+                break;
+            case 6:
+                cardTypeFirst = sCardQuick;
+                chainAvailFirst = true;
+                break;
+            case 7:
+                cardTypeFirst = sCardBurst;
+                chainAvailFirst = true;
+                minimizeQuickUsage = true;
+                break;
+            case 8:
+                cardTypeFirst = sCardArt;
+                chainAvailFirst = true;
+                minimizeQuickUsage = true;
+                break;
+            default:
+                Log.e(TAG, "No policy " + policy + " return default card select");
+            case 0:
+                return new int[]{0, 1, 2};
+        }
+
+        if (royalSelected)
+            chainAvailFirst = false;
+
+        // Pick chain available card, if there's a number of card at least 3, use it first
+        if (chainAvailFirst) {
+            int[] cardPresentCount = new int[]{0, 0, 0}; //Burst(0), Art(1), Quick(2) card count
+            for (int card : pattern) {
+                cardPresentCount[card]++;
+            }
+
+            for (int i = 0; i < 3; i++)
+                if (cardPresentCount[i] >= 3 && !(minimizeQuickUsage && i == sCardQuick))
+                    cardTypeFirst = i;
+        }
+
+        // Pick wanted card
         for(int i = 0; i < pattern.length; i++) {
-            if (pattern[i] == sCardBurst) {
+            if (pattern[i] == cardTypeFirst) {
                 select[selected] = i;
                 selected++;
 
@@ -154,6 +222,26 @@ class FGORoutine {
             }
         }
 
+        // Pick last card without QuickCard if specific
+        if (minimizeQuickUsage) {
+            for(int i = 0; i < pattern.length; i++) {
+                boolean alreadyIn = false;
+                for(int j = 0; j < selected; j++) {
+                    if (select[j] == i)
+                        alreadyIn = true;
+                }
+
+                if(!alreadyIn && (pattern[i] != sCardQuick)) {
+                    select[selected] = i;
+                    selected++;
+
+                    if (selected == 3)
+                        return select;
+                }
+            }
+        }
+
+        // Pick last card
         for(int i = 0; i < pattern.length; i++) {
             boolean alreadyIn = false;
             for(int j = 0; j < selected; j++) {
@@ -402,7 +490,7 @@ class FGORoutine {
         int battleStage = 0; //indicate which stage of battle (start from 0 but it will start from 1 when displaying)
         int battleRound = 0; //indicate which round of battle in a stage (start from 0 but it will start from 1 when displaying)
         boolean useRoyalIfAvailable = AppPreferenceValue.getInstance().getPrefs().getBoolean("battleUseRoyal", true);
-        boolean useOptimizeDraw = AppPreferenceValue.getInstance().getPrefs().getBoolean("battleOptPref", false);
+        int optimizeDrawPolicy = Integer.parseInt(AppPreferenceValue.getInstance().getPrefs().getString("battlePolicyPrefs", "0"));
 
         sendMessage("這次戰鬥參數：" + (arg == null ?  "無" : arg.toString() ) );
         sleep(500);
@@ -461,7 +549,7 @@ class FGORoutine {
             sleep(1500);
 
             sendMessage("辨識卡片");
-            if (useOptimizeDraw) {
+            if (optimizeDrawPolicy > 0) {
                 cardStatusNow = getCurrentCardPresent();
                 while (!isCardValid(cardStatusNow) && checkCardTry > 0) {
                     cardStatusNow = getCurrentCardPresent();
@@ -482,23 +570,27 @@ class FGORoutine {
             }
 
             //check royal request if any
+            boolean useRoyalInThisRound = false;
             if (arg != null) {
                 royalDraw = arg.getRoyalIndexOfStage(battleStage, battleRound);
                 if (royalDraw.length > 0) {
                     tapOnRoyal(royalDraw);
+                    useRoyalInThisRound = true;
                 } else if (useRoyalIfAvailable && royalAvail.length > 0 &&
                         arg.isNoMoreRoyalSpecify(battleStage, battleRound)) {
                     sendMessage("此後無參數設定，自動寶具");
                     tapOnRoyal(royalAvail);
+                    useRoyalInThisRound = true;
                 }
             } else if (useRoyalIfAvailable) { //if arg doesn't specific royal and use royal is enabled
                 if (royalAvail.length > 0) {
                     sendMessage("沒有寶具指定，自動使用寶具");
                     tapOnRoyal(royalAvail);
+                    useRoyalInThisRound = true;
                 }
             }
 
-            optimizedDraw = getOptimizeDraw(cardStatusNow);
+            optimizedDraw = getOptimizeDraw(cardStatusNow, optimizeDrawPolicy, useRoyalInThisRound);
             tapOnCard(optimizedDraw);
 
             battleRound++;

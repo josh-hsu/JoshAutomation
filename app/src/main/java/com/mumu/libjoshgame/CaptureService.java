@@ -32,6 +32,7 @@ public class CaptureService {
     private int mCurrentGameOrientation = ScreenPoint.SO_Portrait;
     private int[] mAmbiguousRange = {0x05, 0x05, 0x06};
     private final int mMaxColorFinding = 10;
+    private int mWaitTransactTime = JoshGameLibrary.DEFAULT_WAIT_TRANSACT_TIME;
     private boolean mChatty = true;
     private Cmd mCmd = null;
     
@@ -67,6 +68,15 @@ public class CaptureService {
         mCmd = cmd;
     }
 
+    /*
+     * setWaitTransactionTime (added in 1.62)
+     * when use binder to dumpScreen there's a time need to wait for command to be executed
+     * default time is 200 ms
+     */
+    public void setWaitTransactionTime(int milli) {
+        mWaitTransactTime = milli;
+    }
+
     private void runCommand(String cmd) {
         if (mCmd != null) {
             mCmd.runCommand(cmd);
@@ -85,17 +95,17 @@ public class CaptureService {
 
     public void dumpScreenPNG(String filename) throws InterruptedException {
         runCommand("screencap -p " + filename);
-        Thread.sleep(200);
+        Thread.sleep(mWaitTransactTime);
     }
 
     public void dumpScreen(String filename) throws InterruptedException {
         runCommand("screencap " + filename);
-        Thread.sleep(200);
+        Thread.sleep(mWaitTransactTime);
     }
 
     private void dumpScreen() throws InterruptedException {
         runCommand("screencap " + mInternalDumpFile);
-        Thread.sleep(200); //TODO: need a new way to find out if file is opened
+        Thread.sleep(mWaitTransactTime);
     }
 
     /*

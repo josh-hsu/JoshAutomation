@@ -47,6 +47,7 @@ public class JoshGameLibrary {
 
     public static final int DEFAULT_TOUCH_SHIFT = 6;
     public static final int DEFAULT_AMBIGUOUS_VALUE = 0xA;
+    public static final int DEFAULT_WAIT_TRANSACT_TIME = 200;
 
     private static JoshGameLibrary currentRuntime = new JoshGameLibrary();
 
@@ -116,6 +117,15 @@ public class JoshGameLibrary {
             mInputService.setScreenOffset(xOffset, yOffset);
             mCaptureService.setScreenOffset(xOffset, yOffset);
         }
+    }
+
+    /*
+     * setWaitTransactionTime (added in 1.62)
+     * when use binder to dumpScreen there's a time need to wait for command to be executed
+     * default time is 200 ms
+     */
+    public void setWaitTransactionTime(int milli) {
+        mCaptureService.setWaitTransactionTime(milli);
     }
 
     public void setAmbiguousRange(int[] range) {

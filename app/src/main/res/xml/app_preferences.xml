@@ -122,6 +122,13 @@
             android:hint="0"
             android:defaultValue="0"
             android:maxLength="6"/>
+        <EditTextPreference
+            android:key="userSetWaitTransactionDoneTime"
+            android:title="指令完成時間"
+            android:summary="等待螢幕擷取完成的時間，若辨識太差可考慮調高此數值，建議 200 ms"
+            android:hint="0"
+            android:defaultValue="0"
+            android:maxLength="4"/>
     </PreferenceCategory>
 
 </PreferenceScreen>

@@ -54,15 +54,17 @@
             android:title="自動蘋果回AP"
             android:defaultValue="false"
             android:summary="選項開啟後，若戰鬥沒AP會自動吃金蘋果，會有鈴聲通知。" />
-        <CheckBoxPreference
-            android:key="battleOptPref"
-            android:title="判斷最佳化抽卡"
-            android:defaultValue="true"
-            android:summary="會盡量 B 卡優先" />
+        <ListPreference
+            android:key="battlePolicyPrefs"
+            android:title="選卡策略"
+            android:entries="@array/battle_policy_entries"
+            android:entryValues="@array/battle_policy_values"
+            android:defaultValue="0"
+            android:summary="" />
         <CheckBoxPreference
             android:key="battleUseRoyal"
             android:title="自動使用寶具"
-            android:summary="只要寶具可以使用，皆以寶具優先"
+            android:summary="選定參數回合過後，能用寶具就用寶具"
             android:defaultValue="true" />
         <EditTextPreference
             android:key="battleSpeed"
