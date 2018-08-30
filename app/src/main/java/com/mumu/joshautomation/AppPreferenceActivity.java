@@ -16,6 +16,7 @@
 
 package com.mumu.joshautomation;
 
+import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -27,6 +28,7 @@ import android.preference.Preference;
 import android.preference.PreferenceActivity;
 import android.preference.PreferenceFragment;
 import android.preference.PreferenceManager;
+import android.preference.PreferenceScreen;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -79,6 +81,7 @@ public class AppPreferenceActivity extends PreferenceActivity {
             }
         });
         bar.setTitleTextColor(Color.WHITE);
+        bar.setTitle(getTitle());
     }
 
     /**
@@ -187,6 +190,38 @@ public class AppPreferenceActivity extends PreferenceActivity {
         public void onPause() {
             super.onPause();
             getPreferenceScreen().getSharedPreferences().unregisterOnSharedPreferenceChangeListener( this );
+        }
+
+        @Override
+        public boolean onPreferenceTreeClick(PreferenceScreen preferenceScreen, Preference preference) {
+            super.onPreferenceTreeClick(preferenceScreen, preference);
+
+            // If the user has clicked on a preference screen, set up the screen
+            if (preference instanceof PreferenceScreen) {
+                setUpNestedScreen((PreferenceScreen) preference);
+            }
+
+            return false;
+        }
+
+        public void setUpNestedScreen(PreferenceScreen preferenceScreen) {
+            final Dialog dialog = preferenceScreen.getDialog();
+
+            Toolbar bar;
+
+            LinearLayout root = (LinearLayout) dialog.findViewById(android.R.id.list).getParent().getParent();
+            bar = (Toolbar) LayoutInflater.from(getContext()).inflate(R.layout.settings_toolbar, root, false);
+            root.addView(bar, 0); // insert at top
+
+            bar.setTitle(preferenceScreen.getTitle());
+            bar.setTitleTextColor(Color.WHITE);
+
+            bar.setNavigationOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    dialog.dismiss();
+                }
+            });
         }
 
         @Override
