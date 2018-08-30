@@ -37,6 +37,8 @@ import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.Toast;
 
+import com.mumu.joshautomation.fgo.BattleArgument;
+import com.mumu.joshautomation.fgo.BattleArgumentDialog;
 import com.mumu.joshautomation.script.AutoJobHandler;
 
 import java.util.ArrayList;
@@ -178,6 +180,18 @@ public class AppPreferenceActivity extends PreferenceActivity {
             onSharedPreferenceChanged(sharedPrefs, "battleArgSaved2");
             onSharedPreferenceChanged(sharedPrefs, "battleArgSaved3");
             onSharedPreferenceChanged(sharedPrefs, "battleArgSaved4");
+
+            /*findPreference("battleArgSaved0").setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
+                @Override
+                public boolean onPreferenceClick(Preference preference) {
+                    Intent intent = new Intent(getContext(), BattleArgumentDialog.class);
+                    Bundle bundle = new Bundle();
+                    bundle.putString(BattleArgumentDialog.bundlePreferenceKey, preference.getKey());
+                    intent.putExtras(bundle);
+                    startActivity(intent);
+                    return false;
+                }
+            });*/
         }
 
         @Override

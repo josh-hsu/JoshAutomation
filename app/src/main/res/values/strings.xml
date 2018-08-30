@@ -89,5 +89,39 @@
 
     <!-- Capture view -->
     <string name="capture_point_default_info">觸碰位置取得資訊</string>
+    <string name="title_activity_battle_argument_dialog">BattleArgumentDialog</string>
 
+    <!-- Battle Argument -->
+    <string name="ba_royal_1">寶具1</string>
+    <string name="ba_royal_2">寶具2</string>
+    <string name="ba_royal_3">寶具3</string>
+    <string name="ba_skill_1"> A </string>
+    <string name="ba_skill_2"> B </string>
+    <string name="ba_skill_3"> C </string>
+    <string name="ba_skill_4"> E </string>
+    <string name="ba_skill_5"> F </string>
+    <string name="ba_skill_6"> G </string>
+    <string name="ba_skill_7"> I </string>
+    <string name="ba_skill_8"> J </string>
+    <string name="ba_skill_9"> K </string>
+    <string name="ba_target_0"> 無 </string>
+    <string name="ba_target_1"> 1 </string>
+    <string name="ba_target_2"> 2 </string>
+    <string name="ba_target_3"> 3 </string>
+    <string name="ba_target_4"> 4 </string>
+    <string name="ba_target_5"> 5 </string>
+    <string name="ba_target_6"> 6 </string>
+    <string name="ba_master_1">御主1</string>
+    <string name="ba_master_2">御主2</string>
+    <string name="ba_master_3">御主3</string>
+    <string name="ba_master_4">換人</string>
+    <string name="ba_stage_1">關卡1</string>
+    <string name="ba_stage_2">關卡2</string>
+    <string name="ba_stage_3">關卡3</string>
+    <string name="ba_round">#</string>
+    <string name="ba_backspace">←</string>
+    <string name="ba_instruction">請輸入技能或寶具</string>
+    <string name="ba_arg_1">關卡1:</string>
+    <string name="ba_arg_2">關卡2:</string>
+    <string name="ba_arg_3">關卡3:</string>
 </resources>
