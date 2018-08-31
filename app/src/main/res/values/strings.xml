@@ -124,4 +124,6 @@
     <string name="ba_arg_1">關卡1:</string>
     <string name="ba_arg_2">關卡2:</string>
     <string name="ba_arg_3">關卡3:</string>
+    <string name="ba_confirm">確認</string>
+    <string name="ba_cancel">取消</string>
 </resources>

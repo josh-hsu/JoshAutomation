@@ -156,7 +156,7 @@ public class AppPreferenceActivity extends PreferenceActivity {
      */
     public static class FGOPrefFragment extends PreferenceFragment implements SharedPreferences.OnSharedPreferenceChangeListener {
         private final int battleArgCount = 5;
-        private int initReferenceCount = battleArgCount;
+        private boolean battleArgDialogPressed = false;
 
         @Override
         public void onCreate(Bundle savedInstanceState) {
@@ -175,13 +175,9 @@ public class AppPreferenceActivity extends PreferenceActivity {
 
             onSharedPreferenceChanged(sharedPrefs, "battleArgPref");
             onSharedPreferenceChanged(sharedPrefs, "battlePolicyPrefs");
-            onSharedPreferenceChanged(sharedPrefs, "battleArgSaved0");
-            onSharedPreferenceChanged(sharedPrefs, "battleArgSaved1");
-            onSharedPreferenceChanged(sharedPrefs, "battleArgSaved2");
-            onSharedPreferenceChanged(sharedPrefs, "battleArgSaved3");
-            onSharedPreferenceChanged(sharedPrefs, "battleArgSaved4");
 
-            /*findPreference("battleArgSaved0").setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
+            // Set on click on single battle arg
+            Preference.OnPreferenceClickListener singleBattleArgClicked = new Preference.OnPreferenceClickListener() {
                 @Override
                 public boolean onPreferenceClick(Preference preference) {
                     Intent intent = new Intent(getContext(), BattleArgumentDialog.class);
@@ -189,15 +185,24 @@ public class AppPreferenceActivity extends PreferenceActivity {
                     bundle.putString(BattleArgumentDialog.bundlePreferenceKey, preference.getKey());
                     intent.putExtras(bundle);
                     startActivity(intent);
+                    battleArgDialogPressed = true;
                     return false;
                 }
-            });*/
+            };
+
+            for (int i = 0; i < battleArgCount; i++) {
+                String key = "battleArgSaved" + i;
+                findPreference(key).setOnPreferenceClickListener(singleBattleArgClicked);
+            }
         }
 
         @Override
         public void onResume() {
             super.onResume();
             getPreferenceScreen().getSharedPreferences().registerOnSharedPreferenceChangeListener( this );
+            refreshAllBattleArgs();
+            if (battleArgDialogPressed)
+                Toast.makeText(getActivity(), "修改後請重新在「戰鬥參數選擇」做選擇", Toast.LENGTH_SHORT).show();
         }
 
         @Override
@@ -241,15 +246,6 @@ public class AppPreferenceActivity extends PreferenceActivity {
         @Override
         public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
             Preference pref = findPreference(key);
-            if (pref instanceof EditTextPreference) {
-                EditTextPreference battleArgPref = (EditTextPreference) pref;
-                pref.setSummary(battleArgPref.getText());
-                refreshBattleArgs();
-                if (initReferenceCount-- <= 0) {
-                    Toast.makeText(getActivity(), "修改後請重新在「戰鬥參數選擇」做選擇", Toast.LENGTH_SHORT).show();
-                    initReferenceCount = 0;
-                }
-            }
 
             if (pref instanceof  ListPreference) {
                 ListPreference listPref = (ListPreference) pref;
@@ -260,6 +256,20 @@ public class AppPreferenceActivity extends PreferenceActivity {
                     pref.setSummary(listPref.getValue() + ": " + listPref.getEntry());
                 }
             }
+        }
+
+        private void refreshAllBattleArgs() {
+            SharedPreferences sharedPrefs = PreferenceManager.getDefaultSharedPreferences(getContext());
+            String keyPrefix = "battleArgSaved";
+
+            for(int i = 0; i < battleArgCount; i++) {
+                String key = keyPrefix + i;
+                String value = sharedPrefs.getString(key, "無");
+                findPreference(key).setSummary(value);
+            }
+
+            // call refresh for arg list pref
+            refreshBattleArgs();
         }
 
         private void refreshBattleArgs() {

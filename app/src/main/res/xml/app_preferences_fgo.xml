@@ -10,35 +10,35 @@
         <PreferenceScreen
             android:key="battleArgSetPref"
             android:title="戰鬥參數建立">
-            <EditTextPreference
+            <Preference
                 android:title="戰鬥參數設定 1"
                 android:summary=""
                 android:dialogMessage="@string/settings_battle_arg_instruction"
                 android:key="battleArgSaved0"
                 android:defaultValue="|"
                 android:maxLength="50"/>
-            <EditTextPreference
+            <Preference
                 android:title="戰鬥參數設定 2"
                 android:summary=""
                 android:dialogMessage="@string/settings_battle_arg_instruction"
                 android:key="battleArgSaved1"
                 android:defaultValue="|"
                 android:maxLength="50"/>
-            <EditTextPreference
+            <Preference
                 android:title="戰鬥參數設定 3"
                 android:summary=""
                 android:dialogMessage="@string/settings_battle_arg_instruction"
                 android:key="battleArgSaved2"
                 android:defaultValue="|"
                 android:maxLength="50"/>
-            <EditTextPreference
+            <Preference
                 android:title="戰鬥參數設定 4"
                 android:summary=""
                 android:dialogMessage="@string/settings_battle_arg_instruction"
                 android:key="battleArgSaved3"
                 android:defaultValue="|"
                 android:maxLength="50"/>
-            <EditTextPreference
+            <Preference
                 android:title="戰鬥參數設定 5"
                 android:summary=""
                 android:dialogMessage="@string/settings_battle_arg_instruction"
