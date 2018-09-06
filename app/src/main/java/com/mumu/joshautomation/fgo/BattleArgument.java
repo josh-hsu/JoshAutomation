@@ -27,17 +27,40 @@ import java.util.ArrayList;
 public class BattleArgument {
     private static final String TAG = "BattleArgument";
     private String mCmdString;
+    private String mArgName;
+    private String mRawString;
     private String[][] mParsedCmd; //if not support stage, left index will always be 1
     private boolean mSupportStage = false;
 
-    public BattleArgument(String cmd) {
-        mCmdString = cmd;
+    public BattleArgument(String raw) {
+        String[] segments = raw.split("@");
+
+        if (segments.length == 2) {
+            mRawString = raw;
+            mCmdString = segments[0];
+            mArgName = segments[1];
+        } else {
+            mRawString = raw;
+            mCmdString = raw;
+            mArgName = "No Name";
+        }
+
         parse();
     }
 
     public BattleArgument() {
         mCmdString = "";
+        mRawString = "";
+        mArgName = "No Name";
         parse();
+    }
+
+    public String getName() {
+        return mArgName;
+    }
+
+    public String getArgs() {
+        return mCmdString;
     }
 
     public String toString() {

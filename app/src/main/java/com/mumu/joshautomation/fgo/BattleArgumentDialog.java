@@ -1,12 +1,15 @@
 package com.mumu.joshautomation.fgo;
 
 import android.app.Activity;
+import android.content.DialogInterface;
 import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
+import android.support.v7.app.AlertDialog;
 import android.view.View;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.TextView;
 
 import com.mumu.joshautomation.R;
@@ -21,16 +24,47 @@ public class BattleArgumentDialog extends Activity {
     private ArrayList<StringBuilder> mArgs;
     private int mCurrentArg;
     private boolean mChangingServant = false;
+    private int mCurrentPreferenceIndex = 0;
     private String mCurrentPreferenceKey;
+    private String mBattleArgName = "";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        boolean initError = false;
         Bundle bundle = getIntent().getExtras();
 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.battle_argument_dialog);
-        Log.d(TAG, "Get preference key: " + bundle.getString(bundlePreferenceKey));
-        mCurrentPreferenceKey = bundle.getString(bundlePreferenceKey);
+
+        if (bundle != null) {
+            mCurrentPreferenceKey = bundle.getString(bundlePreferenceKey);
+            if (mCurrentPreferenceKey != null) {
+                Log.d(TAG, "Get preference key: " + mCurrentPreferenceKey);
+                try {
+                    mCurrentPreferenceIndex = Integer.parseInt(mCurrentPreferenceKey.substring(mCurrentPreferenceKey.length() - 1));
+                } catch (NumberFormatException e) {
+                    mCurrentPreferenceIndex = 0;
+                    initError = true;
+                }
+            } else {
+                initError = true;
+            }
+        } else {
+            initError = true;
+        }
+
+        if (initError) {
+            new AlertDialog.Builder(this)
+                    .setTitle("Key 錯誤")
+                    .setMessage("戰鬥參數指標錯誤，此為嚴重BUG。\nKey: " + mCurrentPreferenceKey)
+                    .setNegativeButton("OK", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            finish();
+                        }
+                    })
+                    .show();
+        }
 
         mUISet = new UISet(this);
 
@@ -45,10 +79,15 @@ public class BattleArgumentDialog extends Activity {
             @Override
             public void onClick(View v) {
                 StringBuilder builder = new StringBuilder("");
+                String battleArgName = mUISet.battleArgNameEditText.getText().toString();
+
                 for(StringBuilder b: mArgs) {
                     builder.append(b.toString());
-                    builder.append("|");
+                    if (b != mArgs.get(2)) // don't append separator to the end of arg
+                        builder.append("|");
                 }
+                builder.append("@");
+                builder.append(battleArgName.equals("") ? mBattleArgName : battleArgName);
                 Log.d(TAG, "Final arg = " + builder.toString());
                 updateArgToPreference(builder.toString());
                 finish();
@@ -62,6 +101,9 @@ public class BattleArgumentDialog extends Activity {
                 finish();
             }
         });
+
+        mBattleArgName = getString(R.string.ba_name_prefix) + ":" + (mCurrentPreferenceIndex + 1);
+        mUISet.battleArgNameEditText.setHint(mBattleArgName);
     }
 
     private void updateArgToPreference(String value) {
@@ -277,6 +319,7 @@ public class BattleArgumentDialog extends Activity {
         Button roundButton;
         Button backspaceButton;
         TextView instructionText;
+        EditText battleArgNameEditText;
         ArrayList<TextView> stageArgumentText = new ArrayList<>();
 
         UISet(Activity act) {
@@ -324,6 +367,8 @@ public class BattleArgumentDialog extends Activity {
             stageArgumentText.add(1, getAndInitTextView(R.id.textViewBattleArgumentStage2));
             stageArgumentText.add(2, getAndInitTextView(R.id.textViewBattleArgumentStage3));
 
+            battleArgNameEditText = findViewById(R.id.battleArgNameEditText);
+
             changeState(STATE_SKILL_ALL);
             changeState(STATE_STAGE_1);
             changeState(STATE_DISABLE_BS);
@@ -348,6 +393,7 @@ public class BattleArgumentDialog extends Activity {
                     triggerEnableButtonSet(royalButtons, true);
                     triggerEnableButtonSet(skillButtons, true);
                     triggerEnableButtonSet(masterButtons, true);
+                    instructionText.setText(getString(R.string.ba_instruction_all));
                     break;
                 case STATE_TARGET_03:
                     triggerEnableButtonSet(target03, true);
@@ -355,6 +401,7 @@ public class BattleArgumentDialog extends Activity {
                     triggerEnableButtonSet(royalButtons, true);
                     triggerEnableButtonSet(skillButtons, true);
                     triggerEnableButtonSet(masterButtons, true);
+                    instructionText.setText(getString(R.string.ba_instruction_target));
                     break;
                 case STATE_TARGET_13:
                     triggerEnableButtonSet(target13, true);
@@ -362,6 +409,7 @@ public class BattleArgumentDialog extends Activity {
                     triggerEnableButtonSet(royalButtons, false);
                     triggerEnableButtonSet(skillButtons, false);
                     triggerEnableButtonSet(masterButtons, false);
+                    instructionText.setText(getString(R.string.ba_instruction_target_A));
                     break;
                 case STATE_TARGET_46:
                     triggerEnableButtonSet(target46, true);
@@ -369,6 +417,7 @@ public class BattleArgumentDialog extends Activity {
                     triggerEnableButtonSet(royalButtons, false);
                     triggerEnableButtonSet(skillButtons, false);
                     triggerEnableButtonSet(masterButtons, false);
+                    instructionText.setText(getString(R.string.ba_instruction_target_B));
                     break;
                 case STATE_STAGE_1:
                     stageButtons.get(0).setEnabled(false);

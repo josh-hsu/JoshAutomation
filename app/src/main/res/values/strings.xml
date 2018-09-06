@@ -92,6 +92,7 @@
     <string name="title_activity_battle_argument_dialog">BattleArgumentDialog</string>
 
     <!-- Battle Argument -->
+    <string name="ba_name_prefix">戰鬥參數名稱</string>
     <string name="ba_royal_1">寶具1</string>
     <string name="ba_royal_2">寶具2</string>
     <string name="ba_royal_3">寶具3</string>
@@ -120,7 +121,10 @@
     <string name="ba_stage_3">關卡3</string>
     <string name="ba_round">#</string>
     <string name="ba_backspace">←</string>
-    <string name="ba_instruction">請輸入技能或寶具</string>
+    <string name="ba_instruction_all">請輸入技能或寶具</string>
+    <string name="ba_instruction_target">請輸入目標，或略過</string>
+    <string name="ba_instruction_target_A">請輸入前排目標</string>
+    <string name="ba_instruction_target_B">請輸入後排目標</string>
     <string name="ba_arg_1">關卡1:</string>
     <string name="ba_arg_2">關卡2:</string>
     <string name="ba_arg_3">關卡3:</string>

@@ -251,7 +251,9 @@ public class AppPreferenceActivity extends PreferenceActivity {
                 ListPreference listPref = (ListPreference) pref;
 
                 if (key.equals("battleArgPref")) {
-                    pref.setSummary(listPref.getValue());
+                    BattleArgument arg = new BattleArgument(listPref.getValue());
+                    String valueDisplayed = arg.getName() + ": " + arg.getArgs();
+                    pref.setSummary(valueDisplayed);
                 } else if (key.equals("battlePolicyPrefs")) {
                     pref.setSummary(listPref.getValue() + ": " + listPref.getEntry());
                 }
@@ -264,8 +266,14 @@ public class AppPreferenceActivity extends PreferenceActivity {
 
             for(int i = 0; i < battleArgCount; i++) {
                 String key = keyPrefix + i;
-                String value = sharedPrefs.getString(key, "無");
-                findPreference(key).setSummary(value);
+                String value = sharedPrefs.getString(key, "");
+                if (!value.equals("")) {
+                    BattleArgument arg = new BattleArgument(value);
+                    String valueDisplayed = arg.getName() + ": " + arg.getArgs();
+                    findPreference(key).setSummary(valueDisplayed);
+                } else {
+                    findPreference(key).setSummary("無");
+                }
             }
 
             // call refresh for arg list pref
@@ -281,7 +289,8 @@ public class AppPreferenceActivity extends PreferenceActivity {
             for(int i = 0; i < battleArgCount; i++) {
                 String key = "battleArgSaved" + i;
                 String value = sharedPrefs.getString(key, "");
-                battleArgEntries[i] = "指令 " + (i+1) + ":  " + value;
+                BattleArgument arg = new BattleArgument(value);
+                battleArgEntries[i] = arg.getName() + ":  " + arg.getArgs();
                 battleArgValues[i] = value;
             }
 
