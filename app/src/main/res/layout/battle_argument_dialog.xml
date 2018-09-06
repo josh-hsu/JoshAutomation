@@ -140,46 +140,6 @@
         android:paddingTop="10dp">
 
         <Button
-            android:id="@+id/buttonMaster1"
-            android:layout_width="60dp"
-            android:layout_height="wrap_content"
-            android:layout_alignParentStart="true"
-            android:layout_alignParentTop="true"
-            android:layout_marginStart="20dp"
-            android:text="@string/ba_master_1" />
-
-        <Button
-            android:id="@+id/buttonMaster2"
-            android:layout_width="60dp"
-            android:layout_height="wrap_content"
-            android:layout_alignParentTop="true"
-            android:layout_toEndOf="@+id/buttonMaster1"
-            android:text="@string/ba_master_2" />
-
-        <Button
-            android:id="@+id/buttonMaster3"
-            android:layout_width="60dp"
-            android:layout_height="wrap_content"
-            android:layout_alignParentTop="true"
-            android:layout_toEndOf="@+id/buttonMaster2"
-            android:text="@string/ba_master_3" />
-
-        <Button
-            android:id="@+id/buttonMaster4"
-            android:layout_width="60dp"
-            android:layout_height="wrap_content"
-            android:layout_alignParentEnd="true"
-            android:layout_alignParentTop="true"
-            android:layout_marginEnd="20dp"
-            android:text="@string/ba_master_4" />
-    </RelativeLayout>
-
-    <RelativeLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:paddingTop="10dp">
-
-        <Button
             android:id="@+id/buttonTarget0"
             android:layout_width="50dp"
             android:layout_height="wrap_content"
@@ -234,6 +194,46 @@
             android:layout_alignParentTop="true"
             android:layout_toEndOf="@+id/buttonTarget5"
             android:text="@string/ba_target_6" />
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingTop="10dp">
+
+        <Button
+            android:id="@+id/buttonMaster1"
+            android:layout_width="60dp"
+            android:layout_height="wrap_content"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentTop="true"
+            android:layout_marginStart="20dp"
+            android:text="@string/ba_master_1" />
+
+        <Button
+            android:id="@+id/buttonMaster2"
+            android:layout_width="60dp"
+            android:layout_height="wrap_content"
+            android:layout_alignParentTop="true"
+            android:layout_toEndOf="@+id/buttonMaster1"
+            android:text="@string/ba_master_2" />
+
+        <Button
+            android:id="@+id/buttonMaster3"
+            android:layout_width="60dp"
+            android:layout_height="wrap_content"
+            android:layout_alignParentTop="true"
+            android:layout_toEndOf="@+id/buttonMaster2"
+            android:text="@string/ba_master_3" />
+
+        <Button
+            android:id="@+id/buttonMaster4"
+            android:layout_width="60dp"
+            android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentTop="true"
+            android:layout_marginEnd="20dp"
+            android:text="@string/ba_master_4" />
     </RelativeLayout>
 
     <RelativeLayout
