@@ -94,70 +94,91 @@ public class LoopBattleJob extends AutoJob {
 
         private void main() throws Exception {
             boolean stageCleared = false;
+            int nextOngoingState;
 
             sendMessage("開始循環戰鬥");
+
+            // pre-condition check
+            nextOngoingState = mFGO.getGameState();
 
             while (mShouldJobRunning) {
                 refreshSetting();
 
-                if (mFGO.waitForUserMode(100) < 0) {
-                    sendMessage("錯誤:不在主畫面上");
-                    playNotificationSound();
-                    mShouldJobRunning = false;
-                    return;
+                switch (nextOngoingState) {
+                    /*
+                     * STATE_IN_HOME
+                     */
+                    case FGORoutine.STATE_IN_HOME:
+                    case FGORoutine.STATE_UNKNOWN:
+                        if (mFGO.waitForUserMode(100) < 0) {
+                            sendMessage("錯誤:不在主畫面上");
+                            playNotificationSound();
+                            mShouldJobRunning = false;
+                            return;
+                        }
+
+                        mGL.getInputService().tapOnScreen(FGORoutineDefine.pointLoopBattleStage.coord);
+                        sleep(1000);
+
+                        // handle AP not enough
+                        if (mFGO.battleHandleAPSupply() < 0) {
+                            playNotificationSound();
+                            mShouldJobRunning = false;
+                            return;
+                        }
+                        sleep(1000);
+
+                        if (mFGO.battlePreSetup(false) < 0) {
+                            sendMessage("進入關卡錯誤");
+                            playNotificationSound();
+                            mShouldJobRunning = false;
+                            return;
+                        }
+
+                        if (mWaitSkip) {
+                            if (mFGO.waitForSkip(30) < 0) {
+                                sendMessage("等不到SKIP，當作正常");
+                            }
+                        }
+
+                        nextOngoingState = FGORoutine.STATE_IN_BATTLE; //Next step: In battle
+                        break;
+                    /*
+                     * STATE_IN_BATTLE
+                     */
+                    case FGORoutine.STATE_IN_BATTLE:
+                        if (mFGO.battleRoutine(mBattleArg) < 0) {
+                            sendMessage("戰鬥出現錯誤");
+                            playNotificationSound();
+                            mShouldJobRunning = false;
+                            return;
+                        }
+
+                        sleep(1000);
+                        if (mFGO.battleHandleFriendRequest() < 0) {
+                            sendMessage("沒有朋友請求，可能正常");
+                        }
+
+                        if (mWaitSkip) {
+                            if (mFGO.waitForSkip(30) < 0) { //wait skip 7 seconds
+                                sendMessage("等不到SKIP，當作正常");
+                            }
+                        }
+
+                        if (!stageCleared) {
+                            if (mFGO.battlePostSetup() < 0) {
+                                sendMessage("離開戰鬥錯誤");
+                                mShouldJobRunning = false;
+                                return;
+                            }
+                        }
+
+                        stageCleared = true;
+                        nextOngoingState = FGORoutine.STATE_IN_HOME; //Next step: In home
+                        break;
+                    default:
+                        break;
                 }
-
-                mGL.getInputService().tapOnScreen(FGORoutineDefine.pointLoopBattleStage.coord);
-                sleep(1000);
-
-                // handle AP not enough
-                if (mFGO.battleHandleAPSupply() < 0) {
-                    playNotificationSound();
-                    mShouldJobRunning = false;
-                    return;
-                }
-                sleep(1000);
-
-                if (mFGO.battlePreSetup(false) < 0) {
-                    sendMessage("進入關卡錯誤");
-                    playNotificationSound();
-                    mShouldJobRunning = false;
-                    return;
-                }
-
-                if (mWaitSkip) {
-                    if (mFGO.waitForSkip(30) < 0) {
-                        sendMessage("等不到SKIP，當作正常");
-                    }
-                }
-
-                if (mFGO.battleRoutine(mBattleArg) < 0) {
-                    sendMessage("戰鬥出現錯誤");
-                    playNotificationSound();
-                    mShouldJobRunning = false;
-                    return;
-                }
-
-                sleep(1000);
-                if (mFGO.battleHandleFriendRequest() < 0) {
-                    sendMessage("沒有朋友請求，可能正常");
-                }
-
-                if (mWaitSkip) {
-                    if (mFGO.waitForSkip(30) < 0) { //wait skip 7 seconds
-                        sendMessage("等不到SKIP，當作正常");
-                    }
-                }
-
-                if (!stageCleared) {
-                    if (mFGO.battlePostSetup() < 0) {
-                        sendMessage("離開戰鬥錯誤");
-                        mShouldJobRunning = false;
-                        return;
-                    }
-                }
-
-                stageCleared = true;
             }
 
             sleep(1000);

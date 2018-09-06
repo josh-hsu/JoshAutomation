@@ -30,6 +30,10 @@ class FGORoutine {
     private static final int sBattleWaitResultTimeout = -2;
     private static final int sBattleDie = -3;
 
+    public static final int STATE_UNKNOWN = -1;
+    public static final int STATE_IN_HOME = 0;
+    public static final int STATE_IN_BATTLE = 1;
+
     FGORoutine(JoshGameLibrary gl, AutoJobEventListener el) {
         mGL = gl;
         mCallbacks = el;
@@ -750,7 +754,23 @@ class FGORoutine {
     }
 
     public boolean isInUserMode() throws InterruptedException {
-        return mGL.getCaptureService().colorIs(SPT("pointHomeApAdd"));
+        return mGL.getCaptureService().colorIs(SPT("pointHomeApAdd")) ||
+                mGL.getCaptureService().colorIs(SPT("pointHomeApAddV2"));
+
+    }
+
+    /*
+     * getGameState
+     * To let script knows current game status
+     */
+    public int getGameState() throws InterruptedException {
+        if (isInUserMode()) {
+            return STATE_IN_HOME;
+        } else if (mGL.getCaptureService().colorsAre(SPTList("pointBattleButtons"))) {
+            return STATE_IN_BATTLE;
+        }
+
+        return STATE_UNKNOWN;
     }
 
     public int findNextAndClick(int retry, boolean enableGlobal) throws InterruptedException {

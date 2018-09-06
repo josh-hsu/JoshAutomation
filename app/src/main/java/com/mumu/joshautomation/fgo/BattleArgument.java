@@ -33,16 +33,22 @@ public class BattleArgument {
     private boolean mSupportStage = false;
 
     public BattleArgument(String raw) {
-        String[] segments = raw.split("@");
-
-        if (segments.length == 2) {
-            mRawString = raw;
-            mCmdString = segments[0];
-            mArgName = segments[1];
-        } else {
-            mRawString = raw;
-            mCmdString = raw;
+        if (raw == null) {
+            mCmdString = "";
+            mRawString = "";
             mArgName = "No Name";
+        } else {
+            String[] segments = raw.split("@");
+
+            if (segments.length == 2) {
+                mRawString = raw;
+                mCmdString = segments[0];
+                mArgName = segments[1];
+            } else {
+                mRawString = raw;
+                mCmdString = raw;
+                mArgName = "No Name";
+            }
         }
 
         parse();
