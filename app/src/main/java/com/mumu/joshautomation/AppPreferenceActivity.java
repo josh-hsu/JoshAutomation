@@ -180,9 +180,14 @@ public class AppPreferenceActivity extends PreferenceActivity {
             Preference.OnPreferenceClickListener singleBattleArgClicked = new Preference.OnPreferenceClickListener() {
                 @Override
                 public boolean onPreferenceClick(Preference preference) {
+                    SharedPreferences sharedPrefs = PreferenceManager.getDefaultSharedPreferences(getContext());
+                    String prefKey = preference.getKey();
                     Intent intent = new Intent(getContext(), BattleArgumentDialog.class);
+
                     Bundle bundle = new Bundle();
-                    bundle.putString(BattleArgumentDialog.bundlePreferenceKey, preference.getKey());
+                    bundle.putString(BattleArgumentDialog.bundlePreferenceKey, prefKey);
+                    bundle.putString(BattleArgumentDialog.bundleLastArg, sharedPrefs.getString(prefKey, ""));
+
                     intent.putExtras(bundle);
                     startActivity(intent);
                     battleArgDialogPressed = true;

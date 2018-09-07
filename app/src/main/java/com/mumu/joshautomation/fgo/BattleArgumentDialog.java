@@ -20,13 +20,16 @@ import java.util.ArrayList;
 public class BattleArgumentDialog extends Activity {
     private static final String TAG = "BattleArgumentDialog";
     public static String bundlePreferenceKey = "preferenceKey";
+    public static String bundleLastArg = "lastArg";
+
     private UISet mUISet;
     private ArrayList<StringBuilder> mArgs;
-    private int mCurrentArg;
+    private int mCurrentTargetArg;
     private boolean mChangingServant = false;
     private int mCurrentPreferenceIndex = 0;
     private String mCurrentPreferenceKey;
     private String mBattleArgName = "";
+    private String mPreviousBattleArg = "";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -38,8 +41,11 @@ public class BattleArgumentDialog extends Activity {
 
         if (bundle != null) {
             mCurrentPreferenceKey = bundle.getString(bundlePreferenceKey);
+            mPreviousBattleArg = bundle.getString(bundleLastArg);
             if (mCurrentPreferenceKey != null) {
-                Log.d(TAG, "Get preference key: " + mCurrentPreferenceKey);
+                Log.d(TAG, "Get preference key: " + mCurrentPreferenceKey + ", last arg: " + mPreviousBattleArg);
+
+                // get battle arg preference index
                 try {
                     mCurrentPreferenceIndex = Integer.parseInt(mCurrentPreferenceKey.substring(mCurrentPreferenceKey.length() - 1));
                 } catch (NumberFormatException e) {
@@ -66,13 +72,18 @@ public class BattleArgumentDialog extends Activity {
                     .show();
         }
 
+        // initial basic UI Set
+        initUISet();
+    }
+
+    private void initUISet() {
         mUISet = new UISet(this);
 
         mArgs = new ArrayList<>();
         for(int i = 0; i < 3; i++) {
             mArgs.add(new StringBuilder(""));
         }
-        mCurrentArg = 0;
+        mCurrentTargetArg = 0;
 
         // confirm button
         findViewById(R.id.buttonBAConfirm).setOnClickListener(new View.OnClickListener() {
@@ -104,6 +115,22 @@ public class BattleArgumentDialog extends Activity {
 
         mBattleArgName = getString(R.string.ba_name_prefix) + ":" + (mCurrentPreferenceIndex + 1);
         mUISet.battleArgNameEditText.setHint(mBattleArgName);
+
+        // restore default value
+        if (!mPreviousBattleArg.equals("")) {
+            BattleArgument battleArgument = new BattleArgument(mPreviousBattleArg);
+            String name = battleArgument.getName();
+            String args = battleArgument.getArgs();
+
+            String[] parsedArgs = args.split("\\|");
+            for(int i = 0; i < parsedArgs.length; i++) {
+                mArgs.add(i, new StringBuilder(""));
+                mArgs.get(i).append(parsedArgs[i]);
+            }
+
+            mUISet.battleArgNameEditText.setText(name);
+            updateArgTextView();
+        }
     }
 
     private void updateArgToPreference(String value) {
@@ -120,7 +147,7 @@ public class BattleArgumentDialog extends Activity {
     }
 
     private void checkBackspace() {
-        StringBuilder builder = mArgs.get(mCurrentArg);
+        StringBuilder builder = mArgs.get(mCurrentTargetArg);
         String currentArg = builder.toString();
 
         if (currentArg.length() > 0) {
@@ -131,7 +158,7 @@ public class BattleArgumentDialog extends Activity {
     }
 
     private void appendArg(String value) {
-        StringBuilder builder = mArgs.get(mCurrentArg);
+        StringBuilder builder = mArgs.get(mCurrentTargetArg);
 
         builder.append(value);
         updateArgTextView();
@@ -139,11 +166,11 @@ public class BattleArgumentDialog extends Activity {
     }
 
     private void deleteArg() {
-        StringBuilder builder = mArgs.get(mCurrentArg);
+        StringBuilder builder = mArgs.get(mCurrentTargetArg);
         String currentArg = builder.toString();
 
         if (currentArg.length() == 0) {
-            Log.d(TAG, "arg " + mCurrentArg + " has no string");
+            Log.d(TAG, "arg " + mCurrentTargetArg + " has no string");
             return;
         }
 
@@ -282,7 +309,7 @@ public class BattleArgumentDialog extends Activity {
     private void onStageChanged(int currentStage) {
         Log.d(TAG, "onStageChanged: index = " + currentStage);
         mUISet.changeState(currentStage + 4);
-        mCurrentArg = currentStage;
+        mCurrentTargetArg = currentStage;
         checkBackspace();
     }
 
