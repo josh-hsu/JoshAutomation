@@ -194,4 +194,10 @@ class FGORoutineDefine {
     static ScreenPoint pointQuestClearStone = new ScreenPoint(0xFF,0xCD,0x00,0xff,261,885,ScreenPoint.SO_Portrait);
     static ScreenPoint pointQuestClearCube = new ScreenPoint(0xFF,0xCD,0x00,0xff,265,1266,ScreenPoint.SO_Portrait);
     static ScreenPoint pointDenyFriend = new ScreenPoint(115,115,115,0xff,487,921,ScreenPoint.SO_Landscape);
+
+    //BoxOpen
+    static ScreenCoord pointBoxOpen = new ScreenCoord(625,640,ScreenPoint.SO_Landscape);
+    static ScreenCoord pointBoxReset = new ScreenCoord(1700,375,ScreenPoint.SO_Landscape);
+    static ScreenCoord pointBoxResetConfirm = new ScreenCoord(1270,820,ScreenPoint.SO_Landscape);
+    static ScreenCoord pointBoxReseted = new ScreenCoord(1010,850,ScreenPoint.SO_Landscape);
 }

@@ -44,6 +44,7 @@ import com.mumu.joshautomation.fgo.NewFlushJob;
 import com.mumu.joshautomation.fgo.PureBattleJob;
 import com.mumu.joshautomation.fgo.TWAutoLoginJob;
 import com.mumu.joshautomation.ro.ROAutoDrinkJob;
+import com.mumu.joshautomation.fgo.AutoBoxJob;
 import com.mumu.joshautomation.screencapture.PointSelectionActivity;
 import com.mumu.joshautomation.script.AutoJobEventListener;
 import com.mumu.joshautomation.script.AutoJobHandler;
@@ -385,6 +386,7 @@ public class HeadService extends Service implements AutoJobEventListener{
             mAutoJobHandler.addJob(new FlushJob());
             mAutoJobHandler.addJob(new FlushMoneyJob());
             mAutoJobHandler.addJob(new ROAutoDrinkJob());
+            mAutoJobHandler.addJob(new AutoBoxJob());
 
             mAutoJobHandler.setJobEventListener(LoopBattleJob.jobName, this);
             mAutoJobHandler.setJobEventListener(PureBattleJob.jobName, this);
@@ -394,6 +396,7 @@ public class HeadService extends Service implements AutoJobEventListener{
             mAutoJobHandler.setJobEventListener(ShinobiLoopBattleJob.jobName, this);
             mAutoJobHandler.setJobEventListener(FlushJob.jobName, this);
             mAutoJobHandler.setJobEventListener(FlushMoneyJob.jobName, this);
+            mAutoJobHandler.setJobEventListener(AutoBoxJob.jobName, this);
 
             //add service itself to job
             mAutoJobHandler.setExtra(LoopBattleJob.jobName, this);
