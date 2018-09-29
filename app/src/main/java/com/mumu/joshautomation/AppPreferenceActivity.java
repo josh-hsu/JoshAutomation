@@ -175,6 +175,7 @@ public class AppPreferenceActivity extends PreferenceActivity {
 
             onSharedPreferenceChanged(sharedPrefs, "battleArgPref");
             onSharedPreferenceChanged(sharedPrefs, "battlePolicyPrefs");
+            onSharedPreferenceChanged(sharedPrefs, "battleEatApple");
 
             // Set on click on single battle arg
             Preference.OnPreferenceClickListener singleBattleArgClicked = new Preference.OnPreferenceClickListener() {
@@ -261,6 +262,8 @@ public class AppPreferenceActivity extends PreferenceActivity {
                     pref.setSummary(valueDisplayed);
                 } else if (key.equals("battlePolicyPrefs")) {
                     pref.setSummary(listPref.getValue() + ": " + listPref.getEntry());
+                } else if (key.equals("battleEatApple")) {
+                    pref.setSummary(listPref.getEntry());
                 }
             }
         }

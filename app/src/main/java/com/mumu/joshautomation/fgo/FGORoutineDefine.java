@@ -1,3 +1,8 @@
+/*
+ * FGORoutineDefine
+ * This class has been deprecated.
+ * You should update your point in fgo_definitions.xml and use DefinitionLoader to load your point
+ */
 package com.mumu.joshautomation.fgo;
 
 import com.mumu.libjoshgame.ScreenColor;

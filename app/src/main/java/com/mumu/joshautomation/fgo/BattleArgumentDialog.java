@@ -306,6 +306,27 @@ public class BattleArgumentDialog extends Activity {
         appendArg(value);
     }
 
+    private void onEnemySelected(int enemy) {
+        String value;
+
+        switch (enemy) {
+            case 0:
+                value = "o";
+                break;
+            case 1:
+                value = "p";
+                break;
+            case 2:
+                value = "q";
+                break;
+            default:
+                Log.e(TAG, "WTF: enemy tap value illegal " + enemy);
+                return;
+        }
+
+        appendArg(value);
+    }
+
     private void onStageChanged(int currentStage) {
         Log.d(TAG, "onStageChanged: index = " + currentStage);
         mUISet.changeState(currentStage + 4);
@@ -342,6 +363,7 @@ public class BattleArgumentDialog extends Activity {
         ArrayList<Button> masterButtons = new ArrayList<>();
         ArrayList<Button> targetButtons = new ArrayList<>();
         ArrayList<Button> stageButtons = new ArrayList<>();
+        ArrayList<Button> enemyButtons = new ArrayList<>();
         Button changeServantButton;
         Button roundButton;
         Button backspaceButton;
@@ -385,6 +407,10 @@ public class BattleArgumentDialog extends Activity {
             stageButtons.add(0, getAndInitButton(R.id.buttonStage1));
             stageButtons.add(1, getAndInitButton(R.id.buttonStage2));
             stageButtons.add(2, getAndInitButton(R.id.buttonStage3));
+
+            enemyButtons.add(0, getAndInitButton(R.id.buttonEnemy1));
+            enemyButtons.add(1, getAndInitButton(R.id.buttonEnemy2));
+            enemyButtons.add(2, getAndInitButton(R.id.buttonEnemy3));
             
             roundButton = getAndInitButton(R.id.buttonRound);
             backspaceButton = getAndInitButton(R.id.buttonBackspace);
@@ -504,6 +530,8 @@ public class BattleArgumentDialog extends Activity {
                     onChangeServant();
                 } else if (id >= R.id.buttonStage1 && id <= R.id.buttonStage3) {
                     onStageChanged(id - R.id.buttonStage1);
+                } else if (id >= R.id.buttonEnemy1 && id <= R.id.buttonEnemy3) {
+                    onEnemySelected(id - R.id.buttonEnemy1);
                 } else if (id == R.id.buttonRound) {
                     onRoundTapped();
                 } else if (id == R.id.buttonBackspace) {

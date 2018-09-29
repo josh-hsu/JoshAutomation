@@ -70,12 +70,12 @@ class FGORoutine {
     }
 
     // Definition helper functions
-    private ScreenPoint SPT(String name) { return mDef.getScreenPoint(name);}
-    private ScreenCoord SCD(String name) { return mDef.getScreenCoord(name);}
-    private ScreenColor SCL(String name) { return mDef.getScreenColor(name);}
-    private ArrayList<ScreenPoint> SPTList(String name) {return mDef.getScreenPoints(name);}
-    private ArrayList<ScreenCoord> SCDList(String name) {return mDef.getScreenCoords(name);}
-    private ArrayList<ScreenColor> SCLList(String name) {return mDef.getScreenColors(name);}
+    private ScreenPoint SPT(String name) { if (mDef.getScreenPoint(name) == null) { sendMessage("找不到"+name); } return mDef.getScreenPoint(name);}
+    private ScreenCoord SCD(String name) { if (mDef.getScreenCoord(name) == null) { sendMessage("找不到"+name); } return mDef.getScreenCoord(name);}
+    private ScreenColor SCL(String name) { if (mDef.getScreenColor(name) == null) { sendMessage("找不到"+name); } return mDef.getScreenColor(name);}
+    private ArrayList<ScreenPoint> SPTList(String name) {if (mDef.getScreenPoints(name) == null) { sendMessage("找不到"+name); } return mDef.getScreenPoints(name);}
+    private ArrayList<ScreenCoord> SCDList(String name) {if (mDef.getScreenCoords(name) == null) { sendMessage("找不到"+name); } return mDef.getScreenCoords(name);}
+    private ArrayList<ScreenColor> SCLList(String name) {if (mDef.getScreenColors(name) == null) { sendMessage("找不到"+name); } return mDef.getScreenColors(name);}
 
 
     /* =======================
@@ -304,7 +304,7 @@ class FGORoutine {
 
             if (sk.skill < 9) { //Normal Skills
                 mGL.getInputService().tapOnScreen(SCDList("cardSkills").get(sk.skill));
-                sendMessage("點技能" + sk.skill);
+                sendMessage("點技能" + (sk.skill + 1));
                 sleep(1000);
 
                 if (sk.target > 0) {
@@ -313,12 +313,12 @@ class FGORoutine {
                 } else {
                     sendMessage("此技能無目標");
                 }
-            } else if (sk.skill > 9 && sk.skill <= 12) { //Normal Master Skills
+            } else if (sk.skill >= 10 && sk.skill <= 12) { //Normal Master Skills
                 mGL.getInputService().tapOnScreen(SPT("masterSkillButton").coord);
                 sendMessage("點Master技能");
                 sleep(1000);
                 mGL.getInputService().tapOnScreen(SCDList("masterSkills").get(sk.skill - 10));
-                sendMessage("點Master技能" + (sk.skill - 9));
+                sendMessage("點Master技能" + (sk.skill - 10 + 1));
                 sleep(1000);
 
                 if (sk.target > 0) {
@@ -327,6 +327,10 @@ class FGORoutine {
                 } else {
                     sendMessage("此技能無目標");
                 }
+            } else if (sk.skill >= 20 && sk.skill <= 22) {
+                mGL.getInputService().tapOnScreen(SCDList("enemyTargets").get(sk.skill - 20));
+                sendMessage("點敵方" + (sk.skill - 20 + 1));
+                sleep(500);
             } else if (sk.skill == 90) { //Master skill: change servants
                 if (sk.change_target > 0 && sk.target > 0) {
 
@@ -415,13 +419,27 @@ class FGORoutine {
      */
 
     public int battleHandleAPSupply() throws InterruptedException {
-        boolean shouldEatAppleIfNeeded = AppPreferenceValue.getInstance().getPrefs().getBoolean("battleEatGoldApple", false);
+        int shouldEatAppleIfNeeded = Integer.parseInt(AppPreferenceValue.getInstance().getPrefs().getString("battleEatApple", "0"));
 
         if (mGL.getCaptureService().colorsAre(SPTList("pointAPChargeGoldApple"))) {
-            if (shouldEatAppleIfNeeded) {
+            if (shouldEatAppleIfNeeded > 0) {
                 sendMessage("嘗試吃蘋果");
                 sleep(500);
-                mGL.getInputService().tapOnScreen(SPTList("pointAPChargeGoldApple").get(0).coord);
+
+                switch (shouldEatAppleIfNeeded) {
+                    case 1: //Gold apple required
+                        mGL.getInputService().tapOnScreen(SPTList("pointAPChargeGoldApple").get(0).coord);
+                        break;
+                    case 2:
+                        mGL.getInputService().tapOnScreen(SPTList("pointAPChargeSilverApple").get(0).coord);
+                        break;
+                    case 3:
+                        mGL.getInputService().tapOnScreen(SPTList("pointAPChargeTanApple").get(0).coord);
+                        break;
+                    default:
+                        break;
+                }
+
                 sleep(2000);
                 if (mGL.getCaptureService().colorIs(SPT("pointAPChargeGoldAppleConfirm"))) {
                     mGL.getInputService().tapOnScreen(SPT("pointAPChargeGoldAppleConfirm").coord);
@@ -765,10 +783,13 @@ class FGORoutine {
      */
     public int getGameState() throws InterruptedException {
         if (isInUserMode()) {
+            sendMessage("在主畫面");
             return STATE_IN_HOME;
         } else if (mGL.getCaptureService().colorsAre(SPTList("pointBattleButtons"))) {
+            sendMessage("在戰鬥");
             return STATE_IN_BATTLE;
         }
+        sendMessage("未知畫面");
 
         return STATE_UNKNOWN;
     }

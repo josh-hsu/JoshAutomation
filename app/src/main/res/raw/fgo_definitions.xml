@@ -135,6 +135,11 @@
             <screencoord>550,1420,Portrait</screencoord>
             <screencoord>550,1700,Portrait</screencoord>
         </screencoords>
+        <screencoords name="enemyTargets">
+            <screencoord>68,67,Landscape</screencoord>
+            <screencoord>434,67,Landscape</screencoord>
+            <screencoord>789,67,Landscape</screencoord>
+        </screencoords>
         <screenpoints name="char100NPChars">
             <screenpoint>0xFF,0xFF,0xFF,0xFF,362,1000,Landscape</screenpoint>
             <screenpoint>0xFF,0xFF,0xFF,0xFF,838,1000,Landscape</screenpoint>
@@ -226,6 +231,13 @@
             <screenpoint>253,227,34,0xff,575,472,Landscape</screenpoint>
             <screenpoint>78,104,54,0xff,575,444,Landscape</screenpoint>
             <screenpoint>207,144,7,0xff,519,489,Landscape</screenpoint>
+        </screenpoints>
+        <screenpoints name="pointAPChargeSilverApple">
+            <screenpoint>255,255,255,0xff,562,705,Landscape</screenpoint>
+            <screenpoint>73,97,48,0xff,565,661,Landscape</screenpoint>
+        </screenpoints>
+        <screenpoints name="pointAPChargeTanApple">
+            <screenpoint>247,231,223,0xff,497,853,Landscape</screenpoint>
         </screenpoints>
         <screenpoint name="pointAPChargeGoldAppleConfirm">0,0,0,0xff,1290,822,Landscape</screenpoint>
 

@@ -12,6 +12,7 @@ import java.util.ArrayList;
  * Royal Card Index: 6,7,8
  * Skill Index: a,b,c  e,f,g  i,j,k  master(x, y, z), change servant (w 123|123)
  * Skill target: 1, 2, 3 (0 means no target)
+ * Enemy target: o, p, q (treated as skills)
  * Round separator: #
  * Stage separator: |
  *
@@ -334,6 +335,12 @@ public class BattleArgument {
                 return 7;
             case 'k':
                 return 8;
+            case 'o':
+                return 20;
+            case 'p':
+                return 21;
+            case 'q':
+                return 22;
             case 'w':
                 return 90;
             case 'x':

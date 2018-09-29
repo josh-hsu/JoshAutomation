@@ -116,6 +116,9 @@
     <string name="ba_master_2">御主2</string>
     <string name="ba_master_3">御主3</string>
     <string name="ba_master_4">換人</string>
+    <string name="ba_enemy_1">敵人1</string>
+    <string name="ba_enemy_2">敵人2</string>
+    <string name="ba_enemy_3">敵人3</string>
     <string name="ba_stage_1">關卡1</string>
     <string name="ba_stage_2">關卡2</string>
     <string name="ba_stage_3">關卡3</string>
@@ -128,6 +131,6 @@
     <string name="ba_arg_1">關卡1:</string>
     <string name="ba_arg_2">關卡2:</string>
     <string name="ba_arg_3">關卡3:</string>
-    <string name="ba_confirm">確認</string>
+    <string name="ba_confirm">確定</string>
     <string name="ba_cancel">取消</string>
 </resources>

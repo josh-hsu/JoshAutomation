@@ -49,11 +49,13 @@
     </PreferenceCategory>
 
     <PreferenceCategory android:title="戰鬥設定">
-        <CheckBoxPreference
-            android:key="battleEatGoldApple"
+        <ListPreference
+            android:key="battleEatApple"
             android:title="自動蘋果回AP"
-            android:defaultValue="false"
-            android:summary="選項開啟後，若戰鬥沒AP會自動吃金蘋果，會有鈴聲通知。" />
+            android:entries="@array/battle_eat_apple"
+            android:entryValues="@array/battle_eat_apple_values"
+            android:defaultValue="0"
+            android:summary="" />
         <ListPreference
             android:key="battlePolicyPrefs"
             android:title="選卡策略"

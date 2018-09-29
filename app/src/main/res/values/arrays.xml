@@ -22,4 +22,16 @@
         <item>7</item>
         <item>8</item>
     </string-array>
+    <string-array name="battle_eat_apple">
+        <item>不吃蘋果</item>
+        <item>吃金蘋果</item>
+        <item>吃銀蘋果</item>
+        <item>吃銅蘋果</item>
+    </string-array>
+    <string-array name="battle_eat_apple_values">
+        <item>0</item>
+        <item>1</item>
+        <item>2</item>
+        <item>3</item>
+    </string-array>
 </resources>
