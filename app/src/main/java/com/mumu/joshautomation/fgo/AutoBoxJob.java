@@ -14,9 +14,10 @@ public class AutoBoxJob extends AutoJob {
     private static final String TAG = "AutoBoxJob";
     private MainJobRoutine mRoutine;
     private JoshGameLibrary mGL;
+    private FGORoutine mFGO;
     private AutoJobEventListener mListener;
 
-    public static final String jobName = "Auto Box Open job"; //give your job a name
+    public static final String jobName = "FGO 換箱"; //give your job a name
 
     public AutoBoxJob() {
         super(jobName);
@@ -24,7 +25,8 @@ public class AutoBoxJob extends AutoJob {
         /* JoshGameLibrary basic initial */
         mGL = JoshGameLibrary.getInstance();
         mGL.setGameOrientation(ScreenPoint.SO_Landscape);
-        mGL.setScreenDimension(1080, 1920);
+
+        mFGO = new FGORoutine(mGL, mListener); //listener might be null before assigning
     }
 
     /*
@@ -67,6 +69,7 @@ public class AutoBoxJob extends AutoJob {
      */
     public void setJobEventListener(AutoJobEventListener el) {
         mListener = el;
+        mFGO = new FGORoutine(mGL, mListener);
     }
 
     /*
@@ -93,25 +96,12 @@ public class AutoBoxJob extends AutoJob {
 
         private void main() throws Exception {
             boolean shouldRunning = true;
-            int i = 0;
+
 
             while (shouldRunning) {
                 sendMessage("Starting Box Opening job");
 
-                while (i < 100) {
-                    mGL.getInputService().tapOnScreen(pointBoxOpen);
-                    sleep(500);
-                    i++;
-                }
-                sendMessage("Rest Box");
-                mGL.getInputService().tapOnScreen(pointBoxReset);
-                sleep(2000);
-                mGL.getInputService().tapOnScreen(pointBoxResetConfirm);
-                sleep(2000);
-                mGL.getInputService().tapOnScreen(pointBoxReseted);
-                sleep(2000);
-
-                i = 0;
+                mFGO.runAutoBox();
             }
         }
 

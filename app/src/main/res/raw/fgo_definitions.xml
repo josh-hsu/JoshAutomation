@@ -241,6 +241,12 @@
         </screenpoints>
         <screenpoint name="pointAPChargeGoldAppleConfirm">0,0,0,0xff,1290,822,Landscape</screenpoint>
 
+        <!-- Autobox -->
+        <screencoord name="pointBoxOpen">625,640,Landscape</screencoord>
+        <screencoord name="pointBoxReset">1700,375,Landscape</screencoord>
+        <screencoord name="pointBoxResetConfirm">1270,820,Landscape</screencoord>
+        <screencoord name="pointBoxReseted">1010,850,Landscape</screencoord>
+
     </defset>
 
     <defset resolution="720x1280">

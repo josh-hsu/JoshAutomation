@@ -25,7 +25,7 @@ class AutoJobExample extends AutoJob {
         /* JoshGameLibrary basic initial */
         mGL = JoshGameLibrary.getInstance();
         mGL.setGameOrientation(ScreenPoint.SO_Landscape);
-        mGL.setScreenDimension(1080, 1920);
+        //mGL.setScreenDimension(1080, 1920); //no more needed, initialized by HeadService
     }
 
     /*

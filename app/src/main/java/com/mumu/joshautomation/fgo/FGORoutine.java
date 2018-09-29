@@ -900,4 +900,27 @@ class FGORoutine {
         return 0;
     }
 
+    /* ===================
+     * Auto Box
+     * ===================
+     */
+    public int runAutoBox() throws InterruptedException {
+        int i = 0;
+
+        while (i < 100) {
+            mGL.getInputService().tapOnScreen(SCD("pointBoxOpen"));
+            sleep(500);
+            i++;
+        }
+        sendMessage("Rest Box");
+        mGL.getInputService().tapOnScreen(SCD("pointBoxReset"));
+        sleep(2000);
+        mGL.getInputService().tapOnScreen(SCD("pointBoxResetConfirm"));
+        sleep(2000);
+        mGL.getInputService().tapOnScreen(SCD("pointBoxReseted"));
+        sleep(2000);
+
+        return 0;
+    }
+
 }
