@@ -5,8 +5,8 @@ android {
     buildToolsVersion '28.0.3'
     defaultConfig {
         applicationId "com.mumu.joshautomation"
-        minSdkVersion 24
-        targetSdkVersion 26
+        minSdkVersion 23
+        targetSdkVersion 23   /* do not modify this */
         versionCode 28
         versionName "1.66"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
