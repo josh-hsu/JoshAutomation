@@ -43,6 +43,16 @@
    NOTE: no space is allowed.
 -->
 
+<!--
+   if you like to modify it, make sure to update version number in following manners
+   Add a floating number value between 0.001 and 0.009 to current version
+   1.53 -> 1.531  (OK, add 0.001)
+   1.53 -> 1.5310 (OK, add 0.001)
+   1.53 -> 1.5311 (OK, add 0.0011)
+   1.53 -> 1.532  (OK, add 0.002)
+   1.53 -> 1.54   (NOT OK, add 0.01)
+   This number will be considered as floating number so don't use another dots
+-->
 <definitions version="1.53">
 
     <defset resolution="1080x1920">

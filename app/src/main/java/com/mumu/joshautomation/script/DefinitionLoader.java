@@ -17,6 +17,7 @@
 package com.mumu.joshautomation.script;
 
 import android.content.res.Resources;
+import android.os.Environment;
 import android.util.SparseArray;
 
 import com.mumu.libjoshgame.Log;
@@ -29,7 +30,13 @@ import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.io.InputStream;
+import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
 
@@ -85,9 +92,9 @@ public class DefinitionLoader {
         return mLoaderInitialized;
     }
 
-    public DefData requestDefData(int rawFileId, String resolution) {
-        InputStream inputStream;
-        DefData defData;
+    public DefData requestDefData(int rawFileId , String rawFileName, String resolution) {
+        DefData defDataFromResource, defDataFromFile = null;
+        InputStream resInputStream = null, fileInputStream = null;
 
         // check if service is initialized or aborting
         if (!getAvailable()) {
@@ -96,19 +103,59 @@ public class DefinitionLoader {
         }
 
         // check if defData has been loaded
-        defData = mLoadedData.get(rawFileId);
-        if (defData != null) {
+        defDataFromResource = mLoadedData.get(rawFileId);
+        if (defDataFromResource != null) {
             Log.d(TAG, "resource id " + rawFileId + " has been loaded, return it.");
-            return defData;
+            return defDataFromResource;
         }
 
+        // request defData from In-App resource
         // get input stream from resources
         try {
-            inputStream = mRes.openRawResource(rawFileId);
+            resInputStream = mRes.openRawResource(rawFileId);
+            defDataFromResource = requestDefData(resInputStream, resolution);
         } catch (Resources.NotFoundException e) {
             Log.e(TAG, "resource id " + rawFileId + " not found!");
             return null;
+        } finally {
+            if (resInputStream != null) {
+                try {
+                    resInputStream.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
         }
+
+        // request defData from External storage see if someone want to overlay it
+        String filePath = Environment.getExternalStorageDirectory().toString() + "/" + rawFileName;
+        try {
+            fileInputStream = new FileInputStream(filePath);
+            defDataFromFile = requestDefData(fileInputStream, resolution);
+        } catch (FileNotFoundException e) {
+            Log.e(TAG, "file " + filePath + " not found! copy one to external storage");
+            copyResourceToFile(rawFileId, filePath);
+        }
+
+        // select the newest defData to put in database
+        if (defDataFromFile == null) {
+            mLoadedData.put(rawFileId, defDataFromResource);
+        } else {
+            if (defDataFromResource.getVersion() >= defDataFromFile.getVersion()) {
+                Log.d(TAG, "Use def xml file in resource");
+                mLoadedData.put(rawFileId, defDataFromResource);
+            } else {
+                Log.d(TAG, "Use def xml file in storage");
+                mLoadedData.put(rawFileId, defDataFromFile);
+                return defDataFromFile;
+            }
+        }
+
+        return defDataFromResource;
+    }
+
+    public DefData requestDefData(InputStream inputStream, String resolution) {
+        DefData defData = null;
 
         try {
             defData = parse(inputStream, resolution);
@@ -116,11 +163,38 @@ public class DefinitionLoader {
             Log.e(TAG, "Parse input stream failed. " + e.getMessage());
         }
 
-        if (defData != null) {
-            mLoadedData.put(rawFileId, defData);
-        }
-
         return defData;
+    }
+
+    private void copyResourceToFile(int resId, String destFilePath) {
+        InputStream in = mRes.openRawResource(resId);
+        OutputStream out = null;
+
+        try {
+            out = new FileOutputStream(new File(destFilePath));
+
+            int read = 0;
+            byte[] bytes = new byte[1024];
+
+            while ((read = in.read(bytes)) != -1) {
+                out.write(bytes, 0, read);
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        } finally {
+            try {
+                in.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            if (out != null) {
+                try {
+                    out.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
     }
 
     private DefData parse(InputStream in, String resolutionRequested) throws Exception {
@@ -152,7 +226,7 @@ public class DefinitionLoader {
 
         // parse matched resolution data if any
         if (targetDefset != null) {
-            return parseDefData((Element)targetDefset, resolutionRequested);
+            return parseDefData((Element)targetDefset, resolutionRequested, documentVersion);
         } else {
             Log.w(TAG, "No defset found for resolution " + resolutionRequested);
         }
@@ -160,7 +234,7 @@ public class DefinitionLoader {
         return null;
     }
 
-    private DefData parseDefData(Element target, String resolutionRequested) {
+    private DefData parseDefData(Element target, String resolutionRequested, String xmlVersion) {
         DefData defData = new DefData();
         NodeList screenpointList = target.getElementsByTagName(TAG_SCREENPOINT);
         NodeList screencoordList = target.getElementsByTagName(TAG_SCREENCOORD);
@@ -170,6 +244,7 @@ public class DefinitionLoader {
         NodeList screencolorsList = target.getElementsByTagName(TAG_SCREENCOLORS);
 
         defData.setResolution(resolutionRequested);
+        defData.setVersion(xmlVersion);
 
         Log.d(TAG, "This resolution has " + screenpointList.getLength() + " " + TAG_SCREENPOINT);
         Log.d(TAG, "This resolution has " + screencoordList.getLength() + " " + TAG_SCREENCOORD);
@@ -276,6 +351,7 @@ public class DefinitionLoader {
 
     public class DefData {
         private String resolution; //defset resolution
+        private double version; //defset version
 
         private HashMap<String, ScreenPoint> screenpoint = new HashMap<>();
         private HashMap<String, ScreenCoord> screencoord = new HashMap<>();
@@ -290,6 +366,19 @@ public class DefinitionLoader {
 
         public String getResolution() {
             return resolution;
+        }
+
+        public void setVersion(String ver) {
+            try {
+                version = Double.parseDouble(ver);
+            } catch (NumberFormatException e) {
+                Log.e(TAG, "Version string " + ver + " is not a legal floating point number");
+                version = 1.0;
+            }
+        }
+
+        public double getVersion() {
+            return version;
         }
 
         public void addScreenPoint(String name, ScreenPoint data) {
