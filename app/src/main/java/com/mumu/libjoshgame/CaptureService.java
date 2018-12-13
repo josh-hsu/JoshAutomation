@@ -796,9 +796,16 @@ public class CaptureService {
     }
 
     public boolean colorCompare(ScreenColor src, ScreenColor dest) {
-        return colorWithinRange(src.r, dest.r, mAmbiguousRange[0]) &&
+        boolean result = colorWithinRange(src.r, dest.r, mAmbiguousRange[0]) &&
                 colorWithinRange(src.b, dest.b, mAmbiguousRange[1]) &&
                 colorWithinRange(src.g, dest.g, mAmbiguousRange[2]);
+
+        if (mChatty) {
+            Log.d(TAG, "Source: (" + src.r + ", " + src.g + ", " + src.b + "), " +
+                " Destination: (" + dest.r + ", " + dest.g + ", " + dest.b + ") ");
+        }
+
+        return result;
     }
 
     private boolean colorWithinRange(byte a, byte b, int range) {
