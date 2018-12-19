@@ -56,6 +56,13 @@
             android:entryValues="@array/battle_eat_apple_values"
             android:defaultValue="0"
             android:summary="" />
+        <EditTextPreference
+            android:defaultValue="0"
+            android:inputType="number"
+            android:key="battleCountLimit"
+            android:maxLength="3"
+            android:summary="戰鬥場數限制過後將停止繼續戰鬥，0表示不限制"
+            android:title="戰鬥場數限制" />
         <ListPreference
             android:key="battlePolicyPrefs"
             android:title="選卡策略"

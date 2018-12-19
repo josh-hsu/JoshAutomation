@@ -265,6 +265,11 @@ public class AppPreferenceActivity extends PreferenceActivity {
                 } else if (key.equals("battleEatApple")) {
                     pref.setSummary(listPref.getEntry());
                 }
+            } else if (pref instanceof EditTextPreference) {
+                EditTextPreference textPref = (EditTextPreference) pref;
+                if (key.equals("battleCountLimit") || key.equals("battleSpeed")) {
+                    pref.setSummary("" + textPref.getText());
+                }
             }
         }
 

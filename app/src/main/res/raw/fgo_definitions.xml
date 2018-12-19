@@ -231,6 +231,12 @@
             <screenpoint>230,180,32,0xff,131,282,Landscape</screenpoint>
             <screenpoint>53,126,211,0xFF,199,654,Landscape</screenpoint>
         </screenpoints>
+        <screenpoints name="pointBattleResults_2"> <!-- for first servant has more than 10 bonds -->
+            <screenpoint>236,236,235,0xff,832,74,Landscape</screenpoint>
+            <screenpoint>234,184,32,0xff,154,281,Landscape</screenpoint>
+            <screenpoint>230,180,32,0xff,131,282,Landscape</screenpoint>
+            <screenpoint>236,228,112,0xFF,206,659,Landscape</screenpoint>
+        </screenpoints>
         <screenpoint name="pointBattleNext">211,211,211,0xff,1527,1018,Landscape</screenpoint>
         <screenpoint name="pointQuestClearStone">0xFF,0xCD,0x00,0xff,261,885,Portrait</screenpoint>
         <screenpoint name="pointQuestClearCube">0xFF,0xCD,0x00,0xff,265,1266,Portrait</screenpoint>

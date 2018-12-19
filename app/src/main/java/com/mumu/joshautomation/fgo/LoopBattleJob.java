@@ -90,11 +90,26 @@ public class LoopBattleJob extends AutoJob {
         mBattleArg = new BattleArgument(battleString);
     }
 
+    private int getBattleCountLimit() {
+        String limitString = AppPreferenceValue.getInstance().
+                getPrefs().getString("battleCountLimit", "0");
+        int ret = 0;
+
+        try {
+            ret = Integer.parseInt(limitString);
+        } catch (NumberFormatException e) {
+            sendMessage("戰鬥場數限制設定有誤");
+        }
+
+        return ret;
+    }
+
     private class MainJobRoutine extends Thread {
 
         private void main() throws Exception {
             boolean stageCleared = false;
             int nextOngoingState;
+            int battleCountLimit = getBattleCountLimit();
 
             sendMessage("開始循環戰鬥");
 
@@ -173,6 +188,12 @@ public class LoopBattleJob extends AutoJob {
                             }
                         }
 
+                        if (battleCountLimit-- < 0) {
+                            sendMessage("戰鬥次數達成，離開戰鬥");
+                            mShouldJobRunning = false;
+                            return;
+                        }
+
                         stageCleared = true;
                         nextOngoingState = FGORoutine.STATE_IN_HOME; //Next step: In home
                         break;
@@ -185,6 +206,7 @@ public class LoopBattleJob extends AutoJob {
             sendMessage("結束循環戰鬥");
             playNotificationSound();
             mListener.onJobDone(mSelf.getJobName());
+            sleep(1000);
         }
 
         public void run() {
