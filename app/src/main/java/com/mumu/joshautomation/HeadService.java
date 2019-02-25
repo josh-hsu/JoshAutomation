@@ -27,7 +27,7 @@ import android.os.Handler;
 import android.os.IBinder;
 import android.support.v7.app.AlertDialog;
 import android.support.v4.app.NotificationCompat;
-import android.support.v7.view.ContextThemeWrapper;
+import android.view.ContextThemeWrapper;
 import android.view.Display;
 import android.view.MotionEvent;
 import android.view.View;
@@ -259,6 +259,22 @@ public class HeadService extends Service implements AutoJobEventListener{
             }
         });
         mHeadIconList.add(startIcon);
+
+        // auto correction control Icon
+        HeadIconView acIcon = new HeadIconView(new ImageView(this), mWindowManager, 360, 120);
+        acIcon.getImageView().setImageResource(R.drawable.ic_menu_slideshow);
+        acIcon.setOnTapListener(new HeadIconView.OnTapListener() {
+            @Override
+            public void onTap(View view) {
+                configAutoCorrection();
+            }
+
+            @Override
+            public void onLongPress(View view) {
+
+            }
+        });
+        mHeadIconList.add(acIcon);
 
         // Share the same on move listener for moving at the same time
         HeadIconView.OnMoveListener moveListener = new HeadIconView.OnMoveListener() {
@@ -534,6 +550,13 @@ public class HeadService extends Service implements AutoJobEventListener{
         mScriptRunning = !mScriptRunning;
     }
 
+    private void configAutoCorrection() {
+        String currentSelectIndexPref = mAPV.getPrefs().getString("scriptSelectPref", "0");
+        int currentSelectIndex = Integer.parseInt(currentSelectIndexPref);
+
+        mAutoJobHandler.requestAutoCorrection(currentSelectIndex, null);
+    }
+
     /* ==========================
      * Message handler
      * ==========================
@@ -553,6 +576,18 @@ public class HeadService extends Service implements AutoJobEventListener{
             mScriptRunning = false;
             mMessageText = "循環戰鬥結束";
         }
+    }
+
+    @Override
+    public void onInteractFromScript(int what, String react) {
+        Log.d(TAG, "Interact request from script, what=" + what);
+        react = "GREAT";
+        try {
+            Thread.sleep(2000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        Log.d(TAG, "Interact done, return GREAT");
     }
 
     private class GetMessageThread extends Thread {

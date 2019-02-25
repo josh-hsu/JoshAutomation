@@ -7,5 +7,6 @@ package com.mumu.joshautomation.script;
 
 public interface AutoJobEventListener {
     void onEventReceived(String msg, Object extra);
+    void onInteractFromScript(int what, String react);
     void onJobDone(String jobName);
 }

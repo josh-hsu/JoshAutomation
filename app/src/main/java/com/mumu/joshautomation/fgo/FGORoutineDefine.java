@@ -11,6 +11,7 @@ import com.mumu.libjoshgame.ScreenPoint;
 
 import java.util.ArrayList;
 
+@Deprecated
 class FGORoutineDefine {
 
 

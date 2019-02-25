@@ -66,4 +66,18 @@ public class AutoJob {
     public void setJobEventListener(AutoJobEventListener el) {
 
     }
+
+    /*
+     * onAutoCorrection(Object object)
+     *
+     * When user hits button to do auto correction
+     * this function will be called
+     * Auto Correction is usually used in following scenarios:
+     * 1. Screen size correction, to auto detect the offset of height or width
+     * 2. User interacts with script, the argument object will throw in this function
+     *    including tap location and more.
+     */
+    public void onAutoCorrection(Object object) {
+
+    }
 }

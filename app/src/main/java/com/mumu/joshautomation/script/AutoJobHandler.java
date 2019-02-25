@@ -144,4 +144,13 @@ public class AutoJobHandler {
         else
             return -1;
     }
+
+    public void requestAutoCorrection(int idx, Object obj) {
+        AutoJob job = getJob(idx);
+        if (job != null) {
+            job.onAutoCorrection(obj);
+        } else {
+            Log.w(TAG, "request auto correction failed, no such job in index " + idx);
+        }
+    }
 }

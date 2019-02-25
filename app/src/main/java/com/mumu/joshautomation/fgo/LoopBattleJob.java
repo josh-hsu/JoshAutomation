@@ -68,6 +68,26 @@ public class LoopBattleJob extends AutoJob {
         mFGO = new FGORoutine(mGL, mListener);
     }
 
+    /*
+     * LoopBattleJob Auto Correction procedure
+     * 1. stop current routine if job is running
+     * 2. request user proceeding to home screen
+     * 3. start calculate possible offset
+     * 4.
+     */
+    @Override
+    public void onAutoCorrection(Object object) {
+        String reaction = "";
+        if (mShouldJobRunning) {
+            Log.d(TAG, "onAutoCorrection: stopping current job");
+            if (mRoutine != null)
+                mRoutine.interrupt();
+        }
+
+        mListener.onInteractFromScript(0, reaction);
+        Log.d(TAG, "Receive reaction = " + reaction);
+    }
+
     private void sendEvent(String msg, Object extra) {
         if (mListener != null) {
             mListener.onEventReceived(msg, extra);
