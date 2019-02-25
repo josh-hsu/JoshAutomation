@@ -2,6 +2,7 @@ package com.mumu.joshautomation.fgo;
 
 import com.mumu.joshautomation.AppPreferenceValue;
 import com.mumu.joshautomation.script.AutoJob;
+import com.mumu.joshautomation.script.AutoJobAction;
 import com.mumu.joshautomation.script.AutoJobEventListener;
 import com.mumu.libjoshgame.JoshGameLibrary;
 import com.mumu.libjoshgame.Log;
@@ -77,15 +78,7 @@ public class LoopBattleJob extends AutoJob {
      */
     @Override
     public void onAutoCorrection(Object object) {
-        String reaction = "";
-        if (mShouldJobRunning) {
-            Log.d(TAG, "onAutoCorrection: stopping current job");
-            if (mRoutine != null)
-                mRoutine.interrupt();
-        }
-
-        mListener.onInteractFromScript(0, reaction);
-        Log.d(TAG, "Receive reaction = " + reaction);
+        new AutoCorrectionRoutine().start();
     }
 
     private void sendEvent(String msg, Object extra) {
@@ -236,6 +229,24 @@ public class LoopBattleJob extends AutoJob {
                 sendMessage("任務已停止");
                 Log.e(TAG, "Routine caught an exception or been interrupted: " + e.getMessage());
             }
+        }
+    }
+
+    private class AutoCorrectionRoutine extends Thread {
+        public void run() {
+            if (mShouldJobRunning) {
+                Log.d(TAG, "onAutoCorrection: stopping current job");
+                if (mRoutine != null)
+                    mRoutine.interrupt();
+            }
+
+            String[] options = new String[] {"是", "否"};
+            String title = "座標自動校正";
+            String summary = "請移動至主頁面，就是有關卡選擇，禮物盒以及AP經驗條的畫面";
+            AutoJobAction action = new AutoJobAction("ACTION", null, title, summary, options);
+
+            mListener.onInteractFromScript(0, action);
+            Log.d(TAG, "Receive action = " + action.toString());
         }
     }
 }

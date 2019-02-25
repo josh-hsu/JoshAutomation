@@ -46,6 +46,7 @@ import com.mumu.joshautomation.fgo.TWAutoLoginJob;
 import com.mumu.joshautomation.ro.ROAutoDrinkJob;
 import com.mumu.joshautomation.fgo.AutoBoxJob;
 import com.mumu.joshautomation.screencapture.PointSelectionActivity;
+import com.mumu.joshautomation.script.AutoJobAction;
 import com.mumu.joshautomation.script.AutoJobEventListener;
 import com.mumu.joshautomation.script.AutoJobHandler;
 import com.mumu.joshautomation.script.DefinitionLoader;
@@ -86,6 +87,13 @@ public class HeadService extends Service implements AutoJobEventListener{
     private AppPreferenceValue mAPV;
     private AutoJobHandler mAutoJobHandler;
     private static boolean mAutoJobAdded = false;
+
+    // actions from job
+    private static final long mDefaultTimeoutSecond = 15;
+    public static final int ACTION_SHOW_DIALOG = 0;
+    public static final int ACTION_SHOW_INPUT = 1;
+    public static final int ACTION_SHOW_WARNING = 2;
+    public static final int ACTION_SHOW_COMMIT = 3;
 
     /* ==========================
      * Update UI Thread
@@ -579,15 +587,22 @@ public class HeadService extends Service implements AutoJobEventListener{
     }
 
     @Override
-    public void onInteractFromScript(int what, String react) {
+    public void onInteractFromScript(final int what, final AutoJobAction action) {
         Log.d(TAG, "Interact request from script, what=" + what);
-        react = "GREAT";
-        try {
-            Thread.sleep(2000);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-        Log.d(TAG, "Interact done, return GREAT");
+
+        // doing script request must run on UI Thread
+        mHandler.post(new Runnable() {
+            @Override
+            public void run() {
+                doingScriptAction(what, action);
+            }
+        });
+
+        // doing hang until user finish output, context must be script routine thread
+        action.waitReaction();
+
+        // finish waiting
+        Log.d(TAG, "Interact done");
     }
 
     private class GetMessageThread extends Thread {
@@ -601,5 +616,48 @@ public class HeadService extends Service implements AutoJobEventListener{
                 }
             }
         }
+    }
+
+    /* ==========================
+     * Action handler
+     * ==========================
+     */
+    private void doingScriptAction(int what, AutoJobAction action) {
+        switch (what) {
+            case ACTION_SHOW_DIALOG:
+                showDialog(action);
+                break;
+            case ACTION_SHOW_INPUT:
+                break;
+            case ACTION_SHOW_WARNING:
+                break;
+            case ACTION_SHOW_COMMIT:
+                break;
+            default:
+                Log.d(TAG, "Unknown request.");
+                break;
+        }
+    }
+
+    private void showDialog(final AutoJobAction action) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(new ContextThemeWrapper(mContext, R.style.MyDialogStyle))
+                .setTitle(action.getTitle())
+                .setMessage(action.getSummary())
+                .setPositiveButton(action.getOptions().length >= 2 ? action.getOptions()[0] : "Yes", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        action.doReaction("YES", null);
+                    }
+                })
+                .setNegativeButton(action.getOptions().length >= 2 ? action.getOptions()[1] : "No", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        action.doReaction("NO", null);
+                    }
+                });
+        AlertDialog alert = builder.create();
+        Window win = alert.getWindow();
+        if (win != null) win.setType(WindowManager.LayoutParams.TYPE_SYSTEM_ALERT);
+        alert.show();
     }
 }
