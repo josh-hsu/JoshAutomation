@@ -5,10 +5,7 @@ import android.util.Log;
 import com.mumu.joshautomation.script.AutoJob;
 import com.mumu.joshautomation.script.AutoJobEventListener;
 import com.mumu.libjoshgame.JoshGameLibrary;
-import com.mumu.libjoshgame.ScreenCoord;
 import com.mumu.libjoshgame.ScreenPoint;
-
-import static com.mumu.joshautomation.fgo.FGORoutineDefine.*;
 
 public class AutoBoxJob extends AutoJob {
     private static final String TAG = "AutoBoxJob";
@@ -78,7 +75,7 @@ public class AutoBoxJob extends AutoJob {
      */
     private void sendEvent(String msg, Object extra) {
         if (mListener != null) {
-            mListener.onEventReceived(msg, extra);
+            mListener.onMessageReceived(msg, extra);
         } else {
             Log.w(TAG, "There is no event listener registered.");
         }

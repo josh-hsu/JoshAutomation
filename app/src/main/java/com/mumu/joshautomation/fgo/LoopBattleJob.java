@@ -1,6 +1,7 @@
 package com.mumu.joshautomation.fgo;
 
 import com.mumu.joshautomation.AppPreferenceValue;
+import com.mumu.joshautomation.HeadService;
 import com.mumu.joshautomation.script.AutoJob;
 import com.mumu.joshautomation.script.AutoJobAction;
 import com.mumu.joshautomation.script.AutoJobEventListener;
@@ -83,7 +84,7 @@ public class LoopBattleJob extends AutoJob {
 
     private void sendEvent(String msg, Object extra) {
         if (mListener != null) {
-            mListener.onEventReceived(msg, extra);
+            mListener.onMessageReceived(msg, extra);
         } else {
             Log.w(TAG, "There is no event listener registered.");
         }
@@ -234,19 +235,62 @@ public class LoopBattleJob extends AutoJob {
 
     private class AutoCorrectionRoutine extends Thread {
         public void run() {
+            int interactResult;
+
             if (mShouldJobRunning) {
                 Log.d(TAG, "onAutoCorrection: stopping current job");
                 if (mRoutine != null)
                     mRoutine.interrupt();
             }
 
-            String[] options = new String[] {"是", "否"};
+            // test for Action <ACTION_SHOW_DIALOG>
+            String[] options = new String[] {"是", "取消"};
             String title = "座標自動校正";
             String summary = "請移動至主頁面，就是有關卡選擇，禮物盒以及AP經驗條的畫面";
             AutoJobAction action = new AutoJobAction("ACTION", null, title, summary, options);
+            interactResult = mListener.onInteractFromScript(HeadService.ACTION_SHOW_DIALOG, action);
+            Log.d(TAG, "Receive action = " + action.toString() + ", result = " + interactResult);
 
-            mListener.onInteractFromScript(0, action);
-            Log.d(TAG, "Receive action = " + action.toString());
+            // test for Action <ACTION_SHOW_INPUT>
+            options = new String[] {};
+            title = "ACTION_SHOW_INPUT title";
+            summary = "ACTION_SHOW_INPUT summary";
+            action = new AutoJobAction("Format:number", null, title, summary, options);
+            interactResult = mListener.onInteractFromScript(HeadService.ACTION_SHOW_INPUT, action);
+            Log.d(TAG, "Receive action = " + action.toString() + ", result = " + interactResult);
+
+            // test for Action <ACTION_SHOW_PROGRESS>
+            options = new String[] {};
+            title = "ACTION_SHOW_PROGRESS title";
+            summary = "ACTION_SHOW_PROGRESS summary";
+            action = new AutoJobAction("NEW", null, title, summary, options);
+            interactResult = mListener.onInteractFromScript(HeadService.ACTION_SHOW_PROGRESS, action);
+            Log.d(TAG, "Receive action = " + action.toString() + ", result = " + interactResult);
+
+            for (int i = 0; i <= 100; i++) {
+                try {
+                    Thread.sleep(40);
+                } catch (Exception e) {}
+
+                options = new String[] {};
+                title = "ACTION_SHOW_PROGRESS title";
+                summary = "ACTION_SHOW_PROGRESS summary";
+                action = new AutoJobAction("UPDATE:" + i, null, title, summary, options);
+                interactResult = mListener.onInteractFromScript(HeadService.ACTION_SHOW_PROGRESS, action);
+                Log.d(TAG, "Receive action = " + action.toString() + ", result = " + interactResult);
+            }
+
+            try {
+                Thread.sleep(1000);
+            } catch (Exception e) {}
+
+            options = new String[] {};
+            title = "ACTION_SHOW_PROGRESS title";
+            summary = "ACTION_SHOW_PROGRESS summary";
+            action = new AutoJobAction("CLOSE", null, title, summary, options);
+            interactResult = mListener.onInteractFromScript(HeadService.ACTION_SHOW_PROGRESS, action);
+            Log.d(TAG, "Receive action = " + action.toString() + ", result = " + interactResult);
+
         }
     }
 }

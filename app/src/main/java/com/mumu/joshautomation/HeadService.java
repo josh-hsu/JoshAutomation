@@ -22,18 +22,23 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.Point;
+import android.os.Build;
 import android.os.Environment;
 import android.os.Handler;
 import android.os.IBinder;
+import android.os.Looper;
 import android.support.v7.app.AlertDialog;
 import android.support.v4.app.NotificationCompat;
 import android.view.ContextThemeWrapper;
 import android.view.Display;
+import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
+import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.mumu.joshautomation.caocao.FlushJob;
@@ -93,7 +98,9 @@ public class HeadService extends Service implements AutoJobEventListener{
     public static final int ACTION_SHOW_DIALOG = 0;
     public static final int ACTION_SHOW_INPUT = 1;
     public static final int ACTION_SHOW_WARNING = 2;
-    public static final int ACTION_SHOW_COMMIT = 3;
+    public static final int ACTION_SHOW_PROGRESS = 3;
+
+    private AlertDialog mActionProgressDialog;
 
     /* ==========================
      * Update UI Thread
@@ -101,11 +108,11 @@ public class HeadService extends Service implements AutoJobEventListener{
      */
     private final Runnable updateRunnable = new Runnable() {
         public void run() {
-            updateUI();
+            updateUIMessageText();
         }
     };
 
-    private void updateUI() {
+    private void updateUIMessageText() {
         if (mLastMessage.equals(mMessageText)) {
             mSameMsgCount++;
             if (mSameMsgCount > mMessageLastTime * 10) { //a same message will last for mMessageLastTime second on screen
@@ -570,7 +577,7 @@ public class HeadService extends Service implements AutoJobEventListener{
      * ==========================
      */
     @Override
-    public void onEventReceived(String msg, Object extra) {
+    public void onMessageReceived(String msg, Object extra) {
         mMessageText = msg;
     }
 
@@ -587,7 +594,8 @@ public class HeadService extends Service implements AutoJobEventListener{
     }
 
     @Override
-    public void onInteractFromScript(final int what, final AutoJobAction action) {
+    public int onInteractFromScript(final int what, final AutoJobAction action) {
+        int result = 0;
         Log.d(TAG, "Interact request from script, what=" + what);
 
         // doing script request must run on UI Thread
@@ -599,10 +607,16 @@ public class HeadService extends Service implements AutoJobEventListener{
         });
 
         // doing hang until user finish output, context must be script routine thread
-        action.waitReaction();
+        if (Looper.getMainLooper().getThread() == Thread.currentThread()) {
+            Log.w(TAG, "Called from UI Thread is not allowed to wait for reaction!");
+            result = -1;
+        } else {
+            action.waitReaction();
+        }
 
         // finish waiting
         Log.d(TAG, "Interact done");
+        return result;
     }
 
     private class GetMessageThread extends Thread {
@@ -625,13 +639,15 @@ public class HeadService extends Service implements AutoJobEventListener{
     private void doingScriptAction(int what, AutoJobAction action) {
         switch (what) {
             case ACTION_SHOW_DIALOG:
-                showDialog(action);
+                actionShowDialog(action);
                 break;
             case ACTION_SHOW_INPUT:
+                actionShowInputDialog(action);
                 break;
             case ACTION_SHOW_WARNING:
                 break;
-            case ACTION_SHOW_COMMIT:
+            case ACTION_SHOW_PROGRESS:
+                actionShowProgressDialog(action);
                 break;
             default:
                 Log.d(TAG, "Unknown request.");
@@ -639,25 +655,114 @@ public class HeadService extends Service implements AutoJobEventListener{
         }
     }
 
-    private void showDialog(final AutoJobAction action) {
+    private void actionShowDialog(final AutoJobAction action) {
         AlertDialog.Builder builder = new AlertDialog.Builder(new ContextThemeWrapper(mContext, R.style.MyDialogStyle))
                 .setTitle(action.getTitle())
                 .setMessage(action.getSummary())
                 .setPositiveButton(action.getOptions().length >= 2 ? action.getOptions()[0] : "Yes", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        action.doReaction("YES", null);
+                        action.doReaction("true", null);
                     }
                 })
                 .setNegativeButton(action.getOptions().length >= 2 ? action.getOptions()[1] : "No", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        action.doReaction("NO", null);
+                        action.doReaction("false", null);
                     }
                 });
         AlertDialog alert = builder.create();
         Window win = alert.getWindow();
         if (win != null) win.setType(WindowManager.LayoutParams.TYPE_SYSTEM_ALERT);
         alert.show();
+    }
+
+    private void actionShowInputDialog(final AutoJobAction action) {
+        final View view = LayoutInflater.from(mContext).inflate(R.layout.action_dialog_input, null);
+        final AlertDialog alertDialog = new AlertDialog.Builder(new ContextThemeWrapper(mContext, R.style.MyDialogStyle)).create();
+        alertDialog.setTitle(action.getTitle());
+        alertDialog.setCancelable(false);
+        alertDialog.setMessage(action.getSummary());
+
+
+        final EditText inputEditText = view.findViewById(R.id.inputEditText);
+
+        alertDialog.setButton(AlertDialog.BUTTON_POSITIVE, "OK", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                action.doReaction(inputEditText.getText().toString(), null);
+            }
+        });
+
+
+        alertDialog.setButton(AlertDialog.BUTTON_NEGATIVE, "Cancel", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                alertDialog.dismiss();
+            }
+        });
+
+        alertDialog.setView(view);
+        Window win = alertDialog.getWindow();
+        if (win != null) win.setType(WindowManager.LayoutParams.TYPE_SYSTEM_ALERT);
+        alertDialog.show();
+    }
+
+    private void actionShowProgressDialog(final AutoJobAction action) {
+        String command = action.getAction();
+
+        if (command.equals("NEW")) {
+            final View view = LayoutInflater.from(mContext).inflate(R.layout.action_dialog_progress, null);
+            mActionProgressDialog = new AlertDialog.Builder(new ContextThemeWrapper(mContext, R.style.MyDialogStyle)).create();
+            mActionProgressDialog.setTitle(action.getTitle());
+            mActionProgressDialog.setCancelable(false);
+            mActionProgressDialog.setMessage(action.getSummary());
+
+            mActionProgressDialog.setView(view);
+            Window win = mActionProgressDialog.getWindow();
+            if (win != null) win.setType(WindowManager.LayoutParams.TYPE_SYSTEM_ALERT);
+            mActionProgressDialog.show();
+            action.doReaction("DONE", null);
+        } else if (command.startsWith("UPDATE:")) {
+            if (mActionProgressDialog == null) {
+                Log.w(TAG, "Update progress bar with no progress dialog present");
+                action.doReaction("ERROR:no dialog present", null);
+            } else {
+                int progress;
+                String progressString;
+                try {
+                    progressString = command.split(":")[1];
+                    progress = Integer.parseInt(progressString);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    action.doReaction("ERROR:format invalid", null);
+                    return;
+                }
+                Log.d(TAG, "Update to " + progress);
+                ProgressBar pb = mActionProgressDialog.findViewById(R.id.progressBar);
+                if (pb != null) {
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+                        pb.setProgress(progress, true);
+                    } else {
+                        pb.setProgress(progress);
+                    }
+
+                    TextView tv = mActionProgressDialog.findViewById(R.id.progressText);
+                    tv.setText(progress + " %");
+                } else {
+                    action.doReaction("ERROR:cannot get progress bar", null);
+                }
+            }
+        } else if (command.startsWith("CLOSE")) {
+            if (mActionProgressDialog == null) {
+                Log.w(TAG, "Update progress bar with no progress dialog present");
+                action.doReaction("ERROR:no dialog present", null);
+            } else {
+                mActionProgressDialog.dismiss();
+                mActionProgressDialog = null;
+            }
+        }
+
+        action.doReaction("SUCCESS", null);
     }
 }

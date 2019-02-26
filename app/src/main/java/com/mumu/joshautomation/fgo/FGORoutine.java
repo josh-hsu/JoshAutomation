@@ -52,7 +52,7 @@ class FGORoutine {
 
         // Send message to screen
         if (mCallbacks != null)
-            mCallbacks.onEventReceived(msg, this);
+            mCallbacks.onMessageReceived(msg, this);
 
         // Send message to log txt file under /sdcard/ja.log
         if (verboseMode)

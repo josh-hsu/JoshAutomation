@@ -78,7 +78,7 @@ public class PureBattleJob extends AutoJob {
 
     private void sendEvent(String msg, Object extra) {
         if (mListener != null) {
-            mListener.onEventReceived(msg, extra);
+            mListener.onMessageReceived(msg, extra);
         } else {
             Log.w(TAG, "There is no event listener registered.");
         }

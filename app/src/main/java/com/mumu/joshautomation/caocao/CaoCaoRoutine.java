@@ -3,7 +3,6 @@ package com.mumu.joshautomation.caocao;
 import android.util.Log;
 
 import com.mumu.joshautomation.AppPreferenceValue;
-import com.mumu.joshautomation.screencapture.PointSelectionActivity;
 import com.mumu.joshautomation.script.AutoJobEventListener;
 import com.mumu.libjoshgame.JoshGameLibrary;
 
@@ -29,7 +28,7 @@ public class CaoCaoRoutine {
     private void sendMessage(String msg) {
         Log.d(TAG, "MSG: " + msg);
         if (mCallbacks != null)
-            mCallbacks.onEventReceived(msg, this);
+            mCallbacks.onMessageReceived(msg, this);
     }
 
     private void sendMessageVerbose(String msg) {

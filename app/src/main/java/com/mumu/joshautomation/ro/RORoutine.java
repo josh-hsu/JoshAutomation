@@ -1,6 +1,5 @@
 package com.mumu.joshautomation.ro;
 
-import android.support.annotation.IntegerRes;
 import android.util.Log;
 
 import com.mumu.joshautomation.AppPreferenceValue;
@@ -28,7 +27,7 @@ class RORoutine {
 
     private void sendMessage(String msg) {
         if (mCallbacks != null)
-            mCallbacks.onEventReceived(msg, this);
+            mCallbacks.onMessageReceived(msg, this);
     }
 
     private void sendMessageVerbose(String msg) {

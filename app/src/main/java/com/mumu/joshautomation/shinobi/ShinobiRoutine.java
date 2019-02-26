@@ -20,7 +20,7 @@ class ShinobiRoutine {
 
     private void sendMessage(String msg) {
         if (mCallbacks != null)
-            mCallbacks.onEventReceived(msg, this);
+            mCallbacks.onMessageReceived(msg, this);
     }
 
     private void sendMessageVerbose(String msg) {
