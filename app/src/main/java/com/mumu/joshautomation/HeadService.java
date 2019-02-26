@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2017 The Josh Tool Project
+ * Copyright (C) 2019 The Josh Tool Project
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -599,12 +599,13 @@ public class HeadService extends Service implements AutoJobEventListener{
         Log.d(TAG, "Interact request from script, what=" + what);
 
         // doing script request must run on UI Thread
-        mHandler.post(new Runnable() {
+        // we need to postpone action process to prevent the wait after action has done
+        mHandler.postDelayed(new Runnable() {
             @Override
             public void run() {
                 doingScriptAction(what, action);
             }
-        });
+        }, 100);
 
         // doing hang until user finish output, context must be script routine thread
         if (Looper.getMainLooper().getThread() == Thread.currentThread()) {
@@ -683,7 +684,6 @@ public class HeadService extends Service implements AutoJobEventListener{
         alertDialog.setTitle(action.getTitle());
         alertDialog.setCancelable(false);
         alertDialog.setMessage(action.getSummary());
-
 
         final EditText inputEditText = view.findViewById(R.id.inputEditText);
 

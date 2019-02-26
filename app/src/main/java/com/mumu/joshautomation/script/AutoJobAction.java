@@ -30,7 +30,7 @@ public class AutoJobAction {
         waiting = true;
         try {
             while (waiting) {
-                Thread.sleep(100);
+                Thread.sleep(10);
             }
         } catch (InterruptedException e) {
             e.printStackTrace();
@@ -38,9 +38,15 @@ public class AutoJobAction {
     }
 
     public void doReaction(String reaction, Object oo) {
-        waiting = false;
-        mReaction = reaction;
-        mOutputObject = oo;
+        if (waiting) {
+            waiting = false;
+            mReaction = reaction;
+            mOutputObject = oo;
+        } else {
+            // no waiting reaction, this might be an error
+            mReaction = reaction;
+            mOutputObject = oo;
+        }
     }
 
     public String toString() {

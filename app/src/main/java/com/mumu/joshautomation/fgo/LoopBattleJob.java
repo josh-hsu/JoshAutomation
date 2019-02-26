@@ -249,7 +249,7 @@ public class LoopBattleJob extends AutoJob {
             String summary = "請移動至主頁面，就是有關卡選擇，禮物盒以及AP經驗條的畫面";
             AutoJobAction action = new AutoJobAction("ACTION", null, title, summary, options);
             interactResult = mListener.onInteractFromScript(HeadService.ACTION_SHOW_DIALOG, action);
-            Log.d(TAG, "Receive action = " + action.toString() + ", result = " + interactResult);
+            Log.d(TAG, "Receive " + action.toString() + ", result = " + interactResult);
 
             // test for Action <ACTION_SHOW_INPUT>
             options = new String[] {};
@@ -257,7 +257,7 @@ public class LoopBattleJob extends AutoJob {
             summary = "ACTION_SHOW_INPUT summary";
             action = new AutoJobAction("Format:number", null, title, summary, options);
             interactResult = mListener.onInteractFromScript(HeadService.ACTION_SHOW_INPUT, action);
-            Log.d(TAG, "Receive action = " + action.toString() + ", result = " + interactResult);
+            Log.d(TAG, "Receive " + action.toString() + ", result = " + interactResult);
 
             // test for Action <ACTION_SHOW_PROGRESS>
             options = new String[] {};
@@ -265,9 +265,9 @@ public class LoopBattleJob extends AutoJob {
             summary = "ACTION_SHOW_PROGRESS summary";
             action = new AutoJobAction("NEW", null, title, summary, options);
             interactResult = mListener.onInteractFromScript(HeadService.ACTION_SHOW_PROGRESS, action);
-            Log.d(TAG, "Receive action = " + action.toString() + ", result = " + interactResult);
+            Log.d(TAG, "Receive " + action.toString() + ", result = " + interactResult);
 
-            for (int i = 0; i <= 100; i++) {
+            for (int i = 0; i <= 10; i++) {
                 try {
                     Thread.sleep(40);
                 } catch (Exception e) {}
@@ -275,9 +275,9 @@ public class LoopBattleJob extends AutoJob {
                 options = new String[] {};
                 title = "ACTION_SHOW_PROGRESS title";
                 summary = "ACTION_SHOW_PROGRESS summary";
-                action = new AutoJobAction("UPDATE:" + i, null, title, summary, options);
+                action = new AutoJobAction("UPDATE:" + i*10, null, title, summary, options);
                 interactResult = mListener.onInteractFromScript(HeadService.ACTION_SHOW_PROGRESS, action);
-                Log.d(TAG, "Receive action = " + action.toString() + ", result = " + interactResult);
+                Log.d(TAG, "Receive " + action.toString() + ", result = " + interactResult);
             }
 
             try {
@@ -289,7 +289,7 @@ public class LoopBattleJob extends AutoJob {
             summary = "ACTION_SHOW_PROGRESS summary";
             action = new AutoJobAction("CLOSE", null, title, summary, options);
             interactResult = mListener.onInteractFromScript(HeadService.ACTION_SHOW_PROGRESS, action);
-            Log.d(TAG, "Receive action = " + action.toString() + ", result = " + interactResult);
+            Log.d(TAG, "Receive " + action.toString() + ", result = " + interactResult);
 
         }
     }
