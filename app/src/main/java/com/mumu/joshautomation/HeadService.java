@@ -594,30 +594,20 @@ public class HeadService extends Service implements AutoJobEventListener{
     }
 
     @Override
-    public int onInteractFromScript(final int what, final AutoJobAction action) {
-        int result = 0;
+    public void onActionReceived(final int what, final AutoJobAction action) {
         Log.d(TAG, "Interact request from script, what=" + what);
 
-        // doing script request must run on UI Thread
-        // we need to postpone action process to prevent the wait after action has done
-        mHandler.postDelayed(new Runnable() {
+        // handle action
+        // this function will only be called in script context
+        action.handleAction(mHandler, new Runnable() {
             @Override
             public void run() {
                 doingScriptAction(what, action);
             }
-        }, 100);
-
-        // doing hang until user finish output, context must be script routine thread
-        if (Looper.getMainLooper().getThread() == Thread.currentThread()) {
-            Log.w(TAG, "Called from UI Thread is not allowed to wait for reaction!");
-            result = -1;
-        } else {
-            action.waitReaction();
-        }
+        });
 
         // finish waiting
         Log.d(TAG, "Interact done");
-        return result;
     }
 
     private class GetMessageThread extends Thread {
@@ -711,56 +701,53 @@ public class HeadService extends Service implements AutoJobEventListener{
     private void actionShowProgressDialog(final AutoJobAction action) {
         String command = action.getAction();
 
-        if (command.equals("NEW")) {
+        // skip any operation except NEW when no progress bar dialog present
+        if (mActionProgressDialog == null && !command.equals("NEW")) {
+            Log.w(TAG, "Progress bar dialog is not shown, aborting");
+            action.doReaction("ERROR:cannot get progress bar", null);
+        }
+
+        if (command.startsWith("NEW")) {
             final View view = LayoutInflater.from(mContext).inflate(R.layout.action_dialog_progress, null);
             mActionProgressDialog = new AlertDialog.Builder(new ContextThemeWrapper(mContext, R.style.MyDialogStyle)).create();
+            mActionProgressDialog.setView(view);
             mActionProgressDialog.setTitle(action.getTitle());
             mActionProgressDialog.setCancelable(false);
             mActionProgressDialog.setMessage(action.getSummary());
-
-            mActionProgressDialog.setView(view);
             Window win = mActionProgressDialog.getWindow();
             if (win != null) win.setType(WindowManager.LayoutParams.TYPE_SYSTEM_ALERT);
             mActionProgressDialog.show();
-            action.doReaction("DONE", null);
         } else if (command.startsWith("UPDATE:")) {
-            if (mActionProgressDialog == null) {
-                Log.w(TAG, "Update progress bar with no progress dialog present");
-                action.doReaction("ERROR:no dialog present", null);
-            } else {
-                int progress;
-                String progressString;
-                try {
-                    progressString = command.split(":")[1];
-                    progress = Integer.parseInt(progressString);
-                } catch (Exception e) {
-                    e.printStackTrace();
-                    action.doReaction("ERROR:format invalid", null);
-                    return;
-                }
-                Log.d(TAG, "Update to " + progress);
-                ProgressBar pb = mActionProgressDialog.findViewById(R.id.progressBar);
-                if (pb != null) {
-                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-                        pb.setProgress(progress, true);
-                    } else {
-                        pb.setProgress(progress);
-                    }
-
-                    TextView tv = mActionProgressDialog.findViewById(R.id.progressText);
-                    tv.setText(progress + " %");
+            int progress;
+            String progressString;
+            try {
+                progressString = command.split(":")[1];
+                progress = Integer.parseInt(progressString);
+            } catch (Exception e) {
+                e.printStackTrace();
+                action.doReaction("ERROR:exception=" + e.getMessage(), null);
+                return;
+            }
+            Log.d(TAG, "Update to " + progress);
+            ProgressBar pb = mActionProgressDialog.findViewById(R.id.progressBar);
+            if (pb != null) {
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+                    pb.setProgress(progress, true);
                 } else {
-                    action.doReaction("ERROR:cannot get progress bar", null);
+                    pb.setProgress(progress);
                 }
-            }
-        } else if (command.startsWith("CLOSE")) {
-            if (mActionProgressDialog == null) {
-                Log.w(TAG, "Update progress bar with no progress dialog present");
-                action.doReaction("ERROR:no dialog present", null);
+                TextView tv = mActionProgressDialog.findViewById(R.id.progressText);
+                tv.setText(progress + " %");
             } else {
-                mActionProgressDialog.dismiss();
-                mActionProgressDialog = null;
+                action.doReaction("ERROR:cannot get progress bar", null);
+                return;
             }
+            mActionProgressDialog.setTitle(action.getTitle());
+            mActionProgressDialog.setCancelable(false);
+            mActionProgressDialog.setMessage(action.getSummary());
+        } else if (command.startsWith("CLOSE")) {
+            mActionProgressDialog.dismiss();
+            mActionProgressDialog = null;
         }
 
         action.doReaction("SUCCESS", null);

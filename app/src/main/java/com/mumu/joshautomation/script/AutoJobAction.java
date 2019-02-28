@@ -1,5 +1,7 @@
 package com.mumu.joshautomation.script;
 
+import android.os.Handler;
+
 public class AutoJobAction {
     private String mAction;
     private String mReaction;
@@ -25,12 +27,40 @@ public class AutoJobAction {
     public String getSummary() { return mSummary; }
     public String[] getOptions() { return mOptions; }
 
-    // this should be only called from script, because script is not in UI Thread
-    public void waitReaction() {
+    // called by client
+    public int sendActionWaited(AutoJobEventListener receiver, int what) {
+        int ret = 0;
+
+        if (receiver == null) {
+            return -3; //receiver is empty
+        }
+
+        // flag the waiting
         waiting = true;
+
+        // send out action to receiver
+        receiver.onActionReceived(what, this);
+
+        // hang here until doReaction is called by receiver
+
+        return ret;
+    }
+
+    // called by server (receiver)
+    public void handleAction(Handler handler, Runnable runnable) {
+        // doing script request must run on UI Thread
+        // we need to postpone action process to prevent the wait after action has done
+        handler.postDelayed(runnable, 100);
+
+        // acknowledge client to start hang waiting
+        waitReaction();
+    }
+
+    // this should be only called from script, because script is not in UI Thread
+    private void waitReaction() {
         try {
             while (waiting) {
-                Thread.sleep(10);
+                Thread.sleep(50);
             }
         } catch (InterruptedException e) {
             e.printStackTrace();

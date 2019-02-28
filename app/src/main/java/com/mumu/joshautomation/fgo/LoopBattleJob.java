@@ -248,35 +248,28 @@ public class LoopBattleJob extends AutoJob {
             String title = "座標自動校正";
             String summary = "請移動至主頁面，就是有關卡選擇，禮物盒以及AP經驗條的畫面";
             AutoJobAction action = new AutoJobAction("ACTION", null, title, summary, options);
-            interactResult = mListener.onInteractFromScript(HeadService.ACTION_SHOW_DIALOG, action);
-            Log.d(TAG, "Receive " + action.toString() + ", result = " + interactResult);
-
-            // test for Action <ACTION_SHOW_INPUT>
-            options = new String[] {};
-            title = "ACTION_SHOW_INPUT title";
-            summary = "ACTION_SHOW_INPUT summary";
-            action = new AutoJobAction("Format:number", null, title, summary, options);
-            interactResult = mListener.onInteractFromScript(HeadService.ACTION_SHOW_INPUT, action);
+            interactResult =action.sendActionWaited(mListener, HeadService.ACTION_SHOW_DIALOG);
             Log.d(TAG, "Receive " + action.toString() + ", result = " + interactResult);
 
             // test for Action <ACTION_SHOW_PROGRESS>
             options = new String[] {};
-            title = "ACTION_SHOW_PROGRESS title";
-            summary = "ACTION_SHOW_PROGRESS summary";
+            title = "請稍後";
+            summary = "開始中...";
             action = new AutoJobAction("NEW", null, title, summary, options);
-            interactResult = mListener.onInteractFromScript(HeadService.ACTION_SHOW_PROGRESS, action);
+            interactResult = action.sendActionWaited(mListener, HeadService.ACTION_SHOW_PROGRESS);
             Log.d(TAG, "Receive " + action.toString() + ", result = " + interactResult);
 
+            summary = "分析中";
             for (int i = 0; i <= 10; i++) {
                 try {
-                    Thread.sleep(40);
+                    Thread.sleep(300);
                 } catch (Exception e) {}
 
                 options = new String[] {};
-                title = "ACTION_SHOW_PROGRESS title";
-                summary = "ACTION_SHOW_PROGRESS summary";
+                title = "請稍後";
+                summary += ".";
                 action = new AutoJobAction("UPDATE:" + i*10, null, title, summary, options);
-                interactResult = mListener.onInteractFromScript(HeadService.ACTION_SHOW_PROGRESS, action);
+                interactResult = action.sendActionWaited(mListener, HeadService.ACTION_SHOW_PROGRESS);
                 Log.d(TAG, "Receive " + action.toString() + ", result = " + interactResult);
             }
 
@@ -288,7 +281,7 @@ public class LoopBattleJob extends AutoJob {
             title = "ACTION_SHOW_PROGRESS title";
             summary = "ACTION_SHOW_PROGRESS summary";
             action = new AutoJobAction("CLOSE", null, title, summary, options);
-            interactResult = mListener.onInteractFromScript(HeadService.ACTION_SHOW_PROGRESS, action);
+            interactResult = action.sendActionWaited(mListener, HeadService.ACTION_SHOW_PROGRESS);
             Log.d(TAG, "Receive " + action.toString() + ", result = " + interactResult);
 
         }
