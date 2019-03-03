@@ -7,6 +7,12 @@
     android:orientation="vertical">
 
     <ProgressBar
+        android:id="@+id/progressLoop"
+        style="?android:attr/progressBarStyle"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+
+    <ProgressBar
         android:id="@+id/progressBar"
         style="?android:attr/progressBarStyleHorizontal"
         android:layout_width="match_parent"

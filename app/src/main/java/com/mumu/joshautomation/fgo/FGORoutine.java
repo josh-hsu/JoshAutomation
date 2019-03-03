@@ -286,6 +286,10 @@ class FGORoutine {
         }
     }
 
+    public void tapOnLoopStage() {
+        mGL.getInputService().tapOnScreen(mDef.getScreenCoord("pointLoopBattleStage"));
+    }
+
     public void tapOnCard(int[] cardIndex) throws InterruptedException {
         for(int i : cardIndex) {
             ScreenCoord coord = ScreenCoord.getTwoPointCenter(

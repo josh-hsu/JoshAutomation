@@ -650,18 +650,21 @@ public class HeadService extends Service implements AutoJobEventListener{
         AlertDialog.Builder builder = new AlertDialog.Builder(new ContextThemeWrapper(mContext, R.style.MyDialogStyle))
                 .setTitle(action.getTitle())
                 .setMessage(action.getSummary())
-                .setPositiveButton(action.getOptions().length >= 2 ? action.getOptions()[0] : "Yes", new DialogInterface.OnClickListener() {
+                .setPositiveButton(action.getOptions().length >= 1 ? action.getOptions()[0] : "Yes", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         action.doReaction("true", null);
                     }
-                })
-                .setNegativeButton(action.getOptions().length >= 2 ? action.getOptions()[1] : "No", new DialogInterface.OnClickListener() {
+                });
+
+        if (action.getOptions().length > 1)
+                builder.setNegativeButton(action.getOptions().length >= 2 ? action.getOptions()[1] : "No", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         action.doReaction("false", null);
                     }
                 });
+
         AlertDialog alert = builder.create();
         Window win = alert.getWindow();
         if (win != null) win.setType(WindowManager.LayoutParams.TYPE_SYSTEM_ALERT);

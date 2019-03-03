@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <!--
-   Copyright (C) 2018 The Josh Tool Project. All rights reserved
+   Copyright (C) 2019 The Josh Tool Project. All rights reserved
 
    Licensed under the Apache License, Version 2.0 (the "License");
    you may not use this file except in compliance with the License.
@@ -63,7 +63,7 @@
         <screenpoint name="pointSkipCancel">0xD3,0xD4,0xD4,0xff,232,807,Portrait</screenpoint>
 
         <screenpoint name="pointCloseButton">45,61,108,0xff,156,63,Landscape</screenpoint>
-        <screenpoint name="pointLoopBattleStage">0xff,0xff,0xff,0xff,718,1420,Portrait</screenpoint>
+        <screencoord name="pointLoopBattleStage">718,1420,Portrait</screencoord>
 
         <!-- battle cards -->
         <screenpoint name="pointBattleButton">0x01,0xCE,0xF0,0xFF,218,1699,Portrait</screenpoint>
@@ -265,6 +265,7 @@
 
     </defset>
 
+    <!-- Not support for 720p devices, this is a demo defset -->
     <defset resolution="720x1280">
         <screenpoint name="pointIntroPage">FAKE2</screenpoint>
 

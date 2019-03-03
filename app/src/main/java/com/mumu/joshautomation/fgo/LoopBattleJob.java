@@ -146,7 +146,7 @@ public class LoopBattleJob extends AutoJob {
                             return;
                         }
 
-                        mGL.getInputService().tapOnScreen(FGORoutineDefine.pointLoopBattleStage.coord);
+                        mFGO.tapOnLoopStage();
                         sleep(1000);
 
                         // handle AP not enough
@@ -244,7 +244,7 @@ public class LoopBattleJob extends AutoJob {
             }
 
             // test for Action <ACTION_SHOW_DIALOG>
-            String[] options = new String[] {"是", "取消"};
+            String[] options = new String[] {"現在進行", "取消"};
             String title = "座標自動校正";
             String summary = "請移動至主頁面，就是有關卡選擇，禮物盒以及AP經驗條的畫面";
             AutoJobAction action = new AutoJobAction("ACTION", null, title, summary, options);
@@ -283,6 +283,30 @@ public class LoopBattleJob extends AutoJob {
             action = new AutoJobAction("CLOSE", null, title, summary, options);
             interactResult = action.sendActionWaited(mListener, HeadService.ACTION_SHOW_PROGRESS);
             Log.d(TAG, "Receive " + action.toString() + ", result = " + interactResult);
+
+            // test for Action <ACTION_SHOW_DIALOG>
+            options = new String[] {"套用", "保持原設定"};
+            title = "座標自動校正";
+            summary = "校正完成\n新的 offset = 0x0c\n建議色彩接受範圍 = 0x0a";
+            action = new AutoJobAction("ACTION", null, title, summary, options);
+            interactResult = action.sendActionWaited(mListener, HeadService.ACTION_SHOW_DIALOG);
+            Log.d(TAG, "Receive " + action.toString() + ", result = " + interactResult);
+
+            if (action.getReaction().equals("true")) {
+                options = new String[] {"完成"};
+                title = "座標自動校正　（完成）";
+                summary = "已成功套用以下設定\n新的 offset = 0x0c\n建議色彩接受範圍 = 0x0a";
+                action = new AutoJobAction("ACTION", null, title, summary, options);
+                interactResult = action.sendActionWaited(mListener, HeadService.ACTION_SHOW_DIALOG);
+                Log.d(TAG, "Receive " + action.toString() + ", result = " + interactResult);
+            } else {
+                options = new String[] {"完成"};
+                title = "座標自動校正　（取消）";
+                summary = "校正取消";
+                action = new AutoJobAction("ACTION", null, title, summary, options);
+                interactResult = action.sendActionWaited(mListener, HeadService.ACTION_SHOW_DIALOG);
+                Log.d(TAG, "Receive " + action.toString() + ", result = " + interactResult);
+            }
 
         }
     }

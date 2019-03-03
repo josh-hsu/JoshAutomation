@@ -26,6 +26,7 @@ public class AutoJobAction {
     public String getTitle() { return mTitle; }
     public String getSummary() { return mSummary; }
     public String[] getOptions() { return mOptions; }
+    public String getReaction() {return mReaction; }
 
     // called by client
     public int sendActionWaited(AutoJobEventListener receiver, int what) {
@@ -47,10 +48,10 @@ public class AutoJobAction {
     }
 
     // called by server (receiver)
-    public void handleAction(Handler handler, Runnable runnable) {
+    public void handleAction(Handler handler, Runnable actionHandleRunnable) {
         // doing script request must run on UI Thread
         // we need to postpone action process to prevent the wait after action has done
-        handler.postDelayed(runnable, 100);
+        handler.postDelayed(actionHandleRunnable, 100);
 
         // acknowledge client to start hang waiting
         waitReaction();
