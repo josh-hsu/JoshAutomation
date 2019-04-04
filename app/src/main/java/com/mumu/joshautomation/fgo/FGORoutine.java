@@ -77,6 +77,9 @@ class FGORoutine {
     private ArrayList<ScreenCoord> SCDList(String name) {if (mDef.getScreenCoords(name) == null) { sendMessage("找不到"+name); } return mDef.getScreenCoords(name);}
     private ArrayList<ScreenColor> SCLList(String name) {if (mDef.getScreenColors(name) == null) { sendMessage("找不到"+name); } return mDef.getScreenColors(name);}
 
+    // Definition getter
+    public DefinitionLoader.DefData getDef() {return mDef;}
+
 
     /* =======================
      * Battle Card Checking and Tapping

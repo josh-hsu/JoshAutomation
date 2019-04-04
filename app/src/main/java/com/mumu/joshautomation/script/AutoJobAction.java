@@ -57,7 +57,7 @@ public class AutoJobAction {
         waitReaction();
     }
 
-    // this should be only called from script, because script is not in UI Thread
+    // this should be only called from script, because script is not on UI Thread
     private void waitReaction() {
         try {
             while (waiting) {

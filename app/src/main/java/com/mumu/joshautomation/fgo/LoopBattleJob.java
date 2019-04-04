@@ -1,13 +1,19 @@
 package com.mumu.joshautomation.fgo;
 
+import android.content.SharedPreferences;
+
 import com.mumu.joshautomation.AppPreferenceValue;
 import com.mumu.joshautomation.HeadService;
 import com.mumu.joshautomation.script.AutoJob;
 import com.mumu.joshautomation.script.AutoJobAction;
 import com.mumu.joshautomation.script.AutoJobEventListener;
+import com.mumu.joshautomation.script.DefinitionLoader;
 import com.mumu.libjoshgame.JoshGameLibrary;
 import com.mumu.libjoshgame.Log;
+import com.mumu.libjoshgame.ScreenCoord;
 import com.mumu.libjoshgame.ScreenPoint;
+
+import java.util.ArrayList;
 
 public class LoopBattleJob extends AutoJob {
     private static final String TAG = "LoopBattleJob";
@@ -234,6 +240,69 @@ public class LoopBattleJob extends AutoJob {
     }
 
     private class AutoCorrectionRoutine extends Thread {
+        private int sX = 0, sY = 0;
+        private int sWidth = 2340, sHeight = 1080;
+        private int resultX = 0, resultY = 0;
+        private boolean sFinish = false;
+        private DefinitionLoader.DefData sDef;
+        private ArrayList<ScreenPoint> targetPoints;
+
+        private void init() {
+            sDef = mFGO.getDef();
+            targetPoints = new ArrayList<>();
+            targetPoints.add(sDef.getScreenPoint("pointHomeApAdd"));
+            targetPoints.add(sDef.getScreenPoint("pointHomeApAddV2"));
+        }
+
+        private int startAutoCorrection() throws InterruptedException {
+            ArrayList<ScreenPoint> tryPoints = new ArrayList<>();
+            boolean found = false;
+
+            for (ScreenPoint point : targetPoints) {
+                ScreenCoord coord = new ScreenCoord(point.coord.x + sX,
+                        point.coord.y + sY, point.coord.orientation);
+                tryPoints.add(new ScreenPoint(coord, point.color));
+            }
+
+            for(ScreenPoint point : tryPoints) {
+                if (mGL.getCaptureService().colorIs(point)) {
+                    found = true;
+                    break;
+                }
+            }
+
+            if (found) {
+                return 100; // means it reach the end
+            }
+
+            // reach X max, increase Y
+            if (sX++ >= sWidth) {
+                sX = 0;
+                sY++;
+            }
+
+            if (sY >= sHeight) {
+                sFinish = true;
+                return 100;
+            }
+
+            return (sX * 100) / (sHeight);
+        }
+
+        private void applyCorrection() {
+            SharedPreferences.Editor editor = AppPreferenceValue.getInstance().getPrefs().edit();
+            if (mGL.getGameOrientation() == ScreenPoint.SO_Landscape) {
+                editor.putString("userSetScreenXOffset", "" + sY);
+                editor.putString("userSetScreenYOffset", "" + sX);
+                mGL.setScreenOffset(sY, sX, ScreenPoint.SO_Portrait);
+            } else {
+                editor.putString("userSetScreenXOffset", "" + sX);
+                editor.putString("userSetScreenYOffset", "" + sY);
+                mGL.setScreenOffset(sX, sY, ScreenPoint.SO_Portrait);
+            }
+            editor.commit();
+        }
+
         public void run() {
             int interactResult;
 
@@ -242,6 +311,9 @@ public class LoopBattleJob extends AutoJob {
                 if (mRoutine != null)
                     mRoutine.interrupt();
             }
+
+            // initial for routine
+            init();
 
             // test for Action <ACTION_SHOW_DIALOG>
             String[] options = new String[] {"現在進行", "取消"};
@@ -260,22 +332,21 @@ public class LoopBattleJob extends AutoJob {
             Log.d(TAG, "Receive " + action.toString() + ", result = " + interactResult);
 
             summary = "分析中";
-            for (int i = 0; i <= 10; i++) {
+            while (interactResult != 100) {
                 try {
-                    Thread.sleep(300);
-                } catch (Exception e) {}
+                    interactResult = startAutoCorrection();
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
 
                 options = new String[] {};
-                title = "請稍後";
-                summary += ".";
-                action = new AutoJobAction("UPDATE:" + i*10, null, title, summary, options);
-                interactResult = action.sendActionWaited(mListener, HeadService.ACTION_SHOW_PROGRESS);
+                title = "分析中，碰觸即取消";
+                summary = "目前 sX: " + sX + ", sY:" + sY +
+                        (sX > 200 ? "\n您是不是不在此畫面上??" : "");
+                action = new AutoJobAction("UPDATE:" + interactResult, null, title, summary, options);
+                action.sendActionWaited(mListener, HeadService.ACTION_SHOW_PROGRESS);
                 Log.d(TAG, "Receive " + action.toString() + ", result = " + interactResult);
             }
-
-            try {
-                Thread.sleep(1000);
-            } catch (Exception e) {}
 
             options = new String[] {};
             title = "ACTION_SHOW_PROGRESS title";
@@ -287,15 +358,19 @@ public class LoopBattleJob extends AutoJob {
             // test for Action <ACTION_SHOW_DIALOG>
             options = new String[] {"套用", "保持原設定"};
             title = "座標自動校正";
-            summary = "校正完成\n新的 offset = 0x0c\n建議色彩接受範圍 = 0x0a";
+            summary = "校正完成\n新的 offset X = " + sX + "\n新的 offset Y = " + sY +
+                    "\n建議色彩接受範圍 = 0x0a";
             action = new AutoJobAction("ACTION", null, title, summary, options);
             interactResult = action.sendActionWaited(mListener, HeadService.ACTION_SHOW_DIALOG);
             Log.d(TAG, "Receive " + action.toString() + ", result = " + interactResult);
 
             if (action.getReaction().equals("true")) {
+                applyCorrection();
+
                 options = new String[] {"完成"};
                 title = "座標自動校正　（完成）";
-                summary = "已成功套用以下設定\n新的 offset = 0x0c\n建議色彩接受範圍 = 0x0a";
+                summary = "已成功套用以下設定\n新的 offset X = " + sX + "\n新的 offset Y = " + sY +
+                        "\n建議色彩接受範圍 = 0x0a";
                 action = new AutoJobAction("ACTION", null, title, summary, options);
                 interactResult = action.sendActionWaited(mListener, HeadService.ACTION_SHOW_DIALOG);
                 Log.d(TAG, "Receive " + action.toString() + ", result = " + interactResult);

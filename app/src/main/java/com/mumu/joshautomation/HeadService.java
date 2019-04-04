@@ -715,7 +715,7 @@ public class HeadService extends Service implements AutoJobEventListener{
             mActionProgressDialog = new AlertDialog.Builder(new ContextThemeWrapper(mContext, R.style.MyDialogStyle)).create();
             mActionProgressDialog.setView(view);
             mActionProgressDialog.setTitle(action.getTitle());
-            mActionProgressDialog.setCancelable(false);
+            mActionProgressDialog.setCancelable(true);
             mActionProgressDialog.setMessage(action.getSummary());
             Window win = mActionProgressDialog.getWindow();
             if (win != null) win.setType(WindowManager.LayoutParams.TYPE_SYSTEM_ALERT);
@@ -746,7 +746,7 @@ public class HeadService extends Service implements AutoJobEventListener{
                 return;
             }
             mActionProgressDialog.setTitle(action.getTitle());
-            mActionProgressDialog.setCancelable(false);
+            mActionProgressDialog.setCancelable(true);
             mActionProgressDialog.setMessage(action.getSummary());
         } else if (command.startsWith("CLOSE")) {
             mActionProgressDialog.dismiss();

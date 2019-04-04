@@ -44,6 +44,7 @@ public class JoshGameLibrary {
     private Cmd mCmd;
     private static boolean mFullInitialized;
     private int width, height;
+    private int orientation;
 
     public static final int DEFAULT_TOUCH_SHIFT = 6;
     public static final int DEFAULT_AMBIGUOUS_VALUE = 0xA;
@@ -98,9 +99,10 @@ public class JoshGameLibrary {
         mInputService.setScreenDimension(w, h);
     }
 
-    public void setGameOrientation(int orientation) {
-        mInputService.setGameOrientation(orientation);
-        mCaptureService.setScreenOrientation(orientation);
+    public void setGameOrientation(int orient) {
+        orientation = orient;
+        mInputService.setGameOrientation(orient);
+        mCaptureService.setScreenOrientation(orient);
     }
 
     /*
@@ -151,5 +153,7 @@ public class JoshGameLibrary {
     public int getScreenHeight() {
         return height;
     }
+
+    public int getGameOrientation() { return orientation; }
 
 }
