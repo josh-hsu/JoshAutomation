@@ -26,7 +26,6 @@ import android.os.Build;
 import android.os.Environment;
 import android.os.Handler;
 import android.os.IBinder;
-import android.os.Looper;
 import android.support.v7.app.AlertDialog;
 import android.support.v4.app.NotificationCompat;
 import android.view.ContextThemeWrapper;
@@ -68,7 +67,7 @@ public class HeadService extends Service implements AutoJobEventListener{
     private final String mPngFilePath = Environment.getExternalStorageDirectory().toString() + "/select.png";
     private final String mDumpFilePath = Environment.getExternalStorageDirectory().toString() + "/select.dump";
     private static final int mUpdateUIInterval = 100;
-    private static final int mMessageLastTime = 20; //20 seconds
+    private static final int mMessageLastTime = 3; //3 seconds
     private Context mContext;
 
     // View objects
@@ -113,15 +112,17 @@ public class HeadService extends Service implements AutoJobEventListener{
     };
 
     private void updateUIMessageText() {
-        if (mLastMessage.equals(mMessageText)) {
-            mSameMsgCount++;
-            if (mSameMsgCount > mMessageLastTime * 10) { //a same message will last for mMessageLastTime second on screen
-                ((TextView) mHeadIconList.get(IDX_MSG_TEXT).getView()).setText("");
+        if (mAPV.getPrefs().getBoolean("userInteractTextView", true)) {
+            if (mLastMessage.equals(mMessageText)) {
+                mSameMsgCount++;
+                if (mSameMsgCount > mMessageLastTime * 10) { //a same message will last for mMessageLastTime second on screen
+                    ((TextView) mHeadIconList.get(IDX_MSG_TEXT).getView()).setText("");
+                }
+            } else {
+                mLastMessage = mMessageText;
+                mSameMsgCount = 0;
+                ((TextView) mHeadIconList.get(IDX_MSG_TEXT).getView()).setText(mMessageText);
             }
-        } else {
-            mLastMessage = mMessageText;
-            mSameMsgCount = 0;
-            ((TextView) mHeadIconList.get(IDX_MSG_TEXT).getView()).setText(mMessageText);
         }
 
         if (!mScriptRunning) {
@@ -221,7 +222,7 @@ public class HeadService extends Service implements AutoJobEventListener{
         mHeadIconList.add(headIcon);
 
         // Message Text Icon
-        HeadIconView msgText = new HeadIconView(new TextView(this), mWindowManager, 140, 45);
+        HeadIconView msgText = new HeadIconView(new TextView(this), mWindowManager, 120, 20);
         msgText.getTextView().setTextColor(Color.BLACK);
         msgText.getView().setBackgroundColor(Color.WHITE);
         mHeadIconList.add(msgText);
@@ -243,7 +244,7 @@ public class HeadService extends Service implements AutoJobEventListener{
         mHeadIconList.add(captureIcon);
 
         // Setting Icon
-        HeadIconView settingIcon = new HeadIconView(new ImageView(this), mWindowManager, 120, 120);
+        HeadIconView settingIcon = new HeadIconView(new ImageView(this), mWindowManager, 0, 240);
         settingIcon.getImageView().setImageResource(R.drawable.ic_menu_settings);
         settingIcon.setOnTapListener(new HeadIconView.OnTapListener() {
             @Override
@@ -260,7 +261,7 @@ public class HeadService extends Service implements AutoJobEventListener{
         mHeadIconList.add(settingIcon);
 
         // Start and Stop control Icon
-        HeadIconView startIcon = new HeadIconView(new ImageView(this), mWindowManager, 240, 120);
+        HeadIconView startIcon = new HeadIconView(new ImageView(this), mWindowManager, 0, 360);
         startIcon.getImageView().setImageResource(R.drawable.ic_play);
         startIcon.setOnTapListener(new HeadIconView.OnTapListener() {
             @Override
@@ -276,7 +277,7 @@ public class HeadService extends Service implements AutoJobEventListener{
         mHeadIconList.add(startIcon);
 
         // auto correction control Icon
-        HeadIconView acIcon = new HeadIconView(new ImageView(this), mWindowManager, 360, 120);
+        HeadIconView acIcon = new HeadIconView(new ImageView(this), mWindowManager, 0, 480);
         acIcon.getImageView().setImageResource(R.drawable.ic_menu_slideshow);
         acIcon.setOnTapListener(new HeadIconView.OnTapListener() {
             @Override

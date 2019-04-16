@@ -73,10 +73,10 @@
             android:summary="CaptureService Log 全開模式"
             android:defaultValue="false"/>
         <CheckBoxPreference
-            android:key="stringFormattedPointEnable"
-            android:title="字串找點模式 (Deprecated)"
-            android:summary="使用相機截圖找點時，可以使用簡易字串來建立 ScreenPoint。"
-            android:defaultValue="false"/>
+            android:key="userInteractTextView"
+            android:title="使用者互動文字"
+            android:summary="打開時，將會顯示腳本運作的互動文字供使用者了解現在運作狀況。"
+            android:defaultValue="true"/>
     </PreferenceCategory>
 
     <PreferenceCategory android:title="複寫系統設定">
@@ -118,7 +118,7 @@
         <EditTextPreference
             android:key="userSetScreenYOffset"
             android:title="螢幕Y軸位移 (直式方向)"
-            android:summary="若是特殊螢幕例如有瀏海，請自己找到螢幕因此位移的像素數，0表示不複寫，預設0\nZenfone 5: 132"
+            android:summary="若是特殊螢幕例如有瀏海，請自己找到螢幕因此位移的像素數，0表示不複寫，預設0\nZenfone 5: 132\nZenfone 6:211"
             android:hint="0"
             android:defaultValue="0"
             android:maxLength="6"/>

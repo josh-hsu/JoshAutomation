@@ -1,6 +1,7 @@
 package com.mumu.joshautomation.fgo;
 
 import android.content.SharedPreferences;
+import android.os.Environment;
 
 import com.mumu.joshautomation.AppPreferenceValue;
 import com.mumu.joshautomation.HeadService;
@@ -10,6 +11,7 @@ import com.mumu.joshautomation.script.AutoJobEventListener;
 import com.mumu.joshautomation.script.DefinitionLoader;
 import com.mumu.libjoshgame.JoshGameLibrary;
 import com.mumu.libjoshgame.Log;
+import com.mumu.libjoshgame.ScreenColor;
 import com.mumu.libjoshgame.ScreenCoord;
 import com.mumu.libjoshgame.ScreenPoint;
 
@@ -241,11 +243,13 @@ public class LoopBattleJob extends AutoJob {
 
     private class AutoCorrectionRoutine extends Thread {
         private int sX = 0, sY = 0;
-        private int sWidth = 2340, sHeight = 1080;
-        private int resultX = 0, resultY = 0;
+        private int sWidth = 1080, sHeight = 2340;
+        private int sCorrectionOrientation = ScreenPoint.SO_Portrait;
         private boolean sFinish = false;
+
         private DefinitionLoader.DefData sDef;
         private ArrayList<ScreenPoint> targetPoints;
+        private final String sDumpFile = Environment.getExternalStorageDirectory().toString() + "/auto_correction.dump";
 
         private void init() {
             sDef = mFGO.getDef();
@@ -254,18 +258,41 @@ public class LoopBattleJob extends AutoJob {
             targetPoints.add(sDef.getScreenPoint("pointHomeApAddV2"));
         }
 
+        private int captureTargetScreen() {
+            try {
+                mGL.getCaptureService().dumpScreen(sDumpFile);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+                return -1;
+            }
+
+            return 0;
+        }
+
         private int startAutoCorrection() throws InterruptedException {
-            ArrayList<ScreenPoint> tryPoints = new ArrayList<>();
+            ArrayList<ScreenCoord> tryCoords = new ArrayList<>();
             boolean found = false;
 
             for (ScreenPoint point : targetPoints) {
-                ScreenCoord coord = new ScreenCoord(point.coord.x + sX,
-                        point.coord.y + sY, point.coord.orientation);
-                tryPoints.add(new ScreenPoint(coord, point.color));
+                ScreenCoord coord;
+                if (point.coord.orientation == ScreenPoint.SO_Portrait) {
+                    coord = new ScreenCoord(point.coord.x + sX,
+                            point.coord.y + sY, point.coord.orientation);
+                } else {
+                    coord = new ScreenCoord(point.coord.x + sX,
+                            point.coord.y + sY, point.coord.orientation);
+                }
+                tryCoords.add(coord);
             }
 
-            for(ScreenPoint point : tryPoints) {
-                if (mGL.getCaptureService().colorIs(point)) {
+            for(int i = 0; i < tryCoords.size(); i++) {
+                ScreenCoord coord = tryCoords.get(i);
+                ScreenColor color = new ScreenColor();
+
+                // we suppose the file has been created and ready to use
+                mGL.getCaptureService().getColorOnDump(color, sDumpFile, coord);
+
+                if (mGL.getCaptureService().colorCompare(color, targetPoints.get(i).color)) {
                     found = true;
                     break;
                 }
@@ -275,18 +302,32 @@ public class LoopBattleJob extends AutoJob {
                 return 100; // means it reach the end
             }
 
-            // reach X max, increase Y
-            if (sX++ >= sWidth) {
-                sX = 0;
-                sY++;
-            }
+            // reach one max, increase another
+            if (sCorrectionOrientation == ScreenPoint.SO_Portrait) {
+                if (sY++ >= sHeight) {
+                    sY = 0;
+                    sX++;
+                }
 
-            if (sY >= sHeight) {
-                sFinish = true;
-                return 100;
-            }
+                if (sX >= sWidth) {
+                    sFinish = true;
+                    return 100;
+                }
 
-            return (sX * 100) / (sHeight);
+                return (sY * 100) / (sHeight);
+            } else {
+                if (sX++ >= sWidth) {
+                    sX = 0;
+                    sY++;
+                }
+
+                if (sY >= sHeight) {
+                    sFinish = true;
+                    return 100;
+                }
+
+                return (sX * 100) / (sWidth);
+            }
         }
 
         private void applyCorrection() {
@@ -315,15 +356,24 @@ public class LoopBattleJob extends AutoJob {
             // initial for routine
             init();
 
-            // test for Action <ACTION_SHOW_DIALOG>
+            // confirm now is on required screen
             String[] options = new String[] {"現在進行", "取消"};
             String title = "座標自動校正";
             String summary = "請移動至主頁面，就是有關卡選擇，禮物盒以及AP經驗條的畫面";
             AutoJobAction action = new AutoJobAction("ACTION", null, title, summary, options);
-            interactResult =action.sendActionWaited(mListener, HeadService.ACTION_SHOW_DIALOG);
-            Log.d(TAG, "Receive " + action.toString() + ", result = " + interactResult);
+            interactResult = action.sendActionWaited(mListener, HeadService.ACTION_SHOW_DIALOG);
 
-            // test for Action <ACTION_SHOW_PROGRESS>
+            if (!action.getReaction().equals("true")) {
+                Log.d(TAG, "User cancelled auto correction");
+                return;
+            }
+
+            // dumping the screen
+            if (captureTargetScreen() < 0) {
+                Log.e(TAG, "screen capture failed.");
+                return;
+            }
+
             options = new String[] {};
             title = "請稍後";
             summary = "開始中...";
@@ -342,7 +392,7 @@ public class LoopBattleJob extends AutoJob {
                 options = new String[] {};
                 title = "分析中，碰觸即取消";
                 summary = "目前 sX: " + sX + ", sY:" + sY +
-                        (sX > 200 ? "\n您是不是不在此畫面上??" : "");
+                        (sY > 200 ? "\n您是不是不在此畫面上??" : "");
                 action = new AutoJobAction("UPDATE:" + interactResult, null, title, summary, options);
                 action.sendActionWaited(mListener, HeadService.ACTION_SHOW_PROGRESS);
                 Log.d(TAG, "Receive " + action.toString() + ", result = " + interactResult);
