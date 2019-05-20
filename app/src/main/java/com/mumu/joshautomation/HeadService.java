@@ -42,6 +42,7 @@ import android.widget.TextView;
 
 import com.mumu.joshautomation.caocao.FlushJob;
 import com.mumu.joshautomation.caocao.FlushMoneyJob;
+import com.mumu.joshautomation.epic7.BattleTreasureReminder;
 import com.mumu.joshautomation.fgo.AutoBattleJob;
 import com.mumu.joshautomation.fgo.LoopBattleJob;
 import com.mumu.joshautomation.fgo.NewFlushJob;
@@ -419,6 +420,7 @@ public class HeadService extends Service implements AutoJobEventListener{
             mAutoJobHandler.addJob(new FlushMoneyJob());
             mAutoJobHandler.addJob(new ROAutoDrinkJob());
             mAutoJobHandler.addJob(new AutoBoxJob());
+            mAutoJobHandler.addJob(new BattleTreasureReminder());
 
             mAutoJobHandler.setJobEventListener(LoopBattleJob.jobName, this);
             mAutoJobHandler.setJobEventListener(PureBattleJob.jobName, this);
@@ -429,12 +431,14 @@ public class HeadService extends Service implements AutoJobEventListener{
             mAutoJobHandler.setJobEventListener(FlushJob.jobName, this);
             mAutoJobHandler.setJobEventListener(FlushMoneyJob.jobName, this);
             mAutoJobHandler.setJobEventListener(AutoBoxJob.jobName, this);
+            mAutoJobHandler.setJobEventListener(BattleTreasureReminder.jobName, this);
 
             //add service itself to job
             mAutoJobHandler.setExtra(LoopBattleJob.jobName, this);
             mAutoJobHandler.setExtra(ShinobiLoopBattleJob.jobName, this);
             mAutoJobHandler.setExtra(FlushJob.jobName, this);
             mAutoJobHandler.setExtra(FlushMoneyJob.jobName, this);
+            mAutoJobHandler.setExtra(BattleTreasureReminder.jobName, this);
             mAutoJobAdded = true;
         }
     }

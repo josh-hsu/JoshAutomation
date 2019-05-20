@@ -20,6 +20,9 @@ import android.content.Context;
 import android.media.Ringtone;
 import android.media.RingtoneManager;
 import android.net.Uri;
+import android.os.Build;
+import android.os.VibrationEffect;
+import android.os.Vibrator;
 
 public class InputService {
     private static final String TAG = "LibGame";
@@ -252,6 +255,17 @@ public class InputService {
             } catch (Exception e) {
                 e.printStackTrace();
             }
+        }
+    }
+
+    /*
+     * vibrate device (added in 1.71)
+     * Vibrate device for a specific time milliseconds
+     */
+    public void playVibrateTime(int milli) {
+        Vibrator v = (Vibrator) mContext.getSystemService(Context.VIBRATOR_SERVICE);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O && v != null) {
+            v.vibrate(VibrationEffect.createOneShot(milli, VibrationEffect.DEFAULT_AMPLITUDE));
         }
     }
 

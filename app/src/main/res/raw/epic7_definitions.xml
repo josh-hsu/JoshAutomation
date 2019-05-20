@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<!--
+   Copyright (C) 2019 The Josh Tool Project. All rights reserved
+
+   Licensed under the Apache License, Version 2.0 (the "License");
+   you may not use this file except in compliance with the License.
+   You may obtain a copy of the License at
+
+        http://www.apache.org/licenses/LICENSE-2.0
+
+   Unless required by applicable law or agreed to in writing, software
+   distributed under the License is distributed on an "AS IS" BASIS,
+   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+   See the License for the specific language governing permissions and
+   limitations under the License.
+-->
+
+<!--
+   Josh Automation Game Definition XML file format
+
+   1. single point   <screenpoint name="pointName">r,g,b,a,x,y,o</screenpoint>
+   2. single coord   <screencoord name="coordName">x,y,o</screencoord>
+   3. single color   <screencolor name="colorName">r,g,b,a</screencolor>
+   4. point set      <screenpoints name="pointSetName">
+                         <screenpoint>r,g,b,a,x,y,o</screenpoint>
+                         ...
+                         <screenpoint>r,g,b,a,x,y,o</screenpoint>
+                     </screenpoints>
+   5. coord set      <screencoords name="coordSetName">
+                         <screenpoint>x,y,o</screenpoint>
+                         ...
+                         <screenpoint>x,y,o</screenpoint>
+                     </screencoords>
+   6. color set      <screencolors name="colorSetName">
+                         <screencolor>r,g,b,a</screencolor>
+                         ...
+                         <screencolor>r,g,b,a</screencolor>
+                     </screencolors>
+
+   NOTE: integer value can be represented as decimal or hexadecimal (started with 0x).
+         orientation can be represented as Portrait/Landscape, P(p)/L(l) or 0/1.
+   NOTE: no space is allowed.
+-->
+
+<!--
+   if you like to modify it, make sure to update version number in following manners
+   Add a floating number value between 0.001 and 0.009 to current version
+   1.53 -> 1.531  (OK, add 0.001)
+   1.53 -> 1.5310 (OK, add 0.001)
+   1.53 -> 1.5311 (OK, add 0.0011)
+   1.53 -> 1.532  (OK, add 0.002)
+   1.53 -> 1.54   (NOT OK, add 0.01)
+   This number will be considered as floating number so don't use another dots
+-->
+<definitions version="1.55">
+
+    <!-- Kirin has panel of 1080x2340 -->
+    <defset resolution="1080x2340">
+        <screenpoints name="pointPost2ndBattle">
+            <screenpoint>253,253,253,0xFF,87,232,L</screenpoint>
+            <screenpoint>225,225,225,0xFF,268,216,L</screenpoint>
+            <screenpoint>242,242,242,0xFF,263,222,L</screenpoint>
+            <screenpoint>246,246,246,0xFF,260,231,L</screenpoint>
+            <screenpoint>163,178,116,0xFF,179,90,L</screenpoint>
+        </screenpoints>
+
+        <screencoord name="pointAutoBattleButton">2115,54,L</screencoord>
+        <screencoord name="pointForwardStage">2115,54,L</screencoord>
+    </defset>
+
+    <!-- Not support for 720p devices, this is a demo defset -->
+    <defset resolution="720x1280">
+        <screenpoint name="pointPost2ndBattle">1,1,1,1,333,333,L</screenpoint>
+    </defset>
+
+</definitions>
