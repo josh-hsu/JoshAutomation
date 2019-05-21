@@ -2,14 +2,11 @@ package com.mumu.joshautomation.epic7;
 
 import android.util.Log;
 
-import com.mumu.joshautomation.HeadService;
 import com.mumu.joshautomation.R;
 import com.mumu.joshautomation.script.AutoJob;
-import com.mumu.joshautomation.script.AutoJobAction;
 import com.mumu.joshautomation.script.AutoJobEventListener;
 import com.mumu.joshautomation.script.DefinitionLoader;
 import com.mumu.libjoshgame.JoshGameLibrary;
-import com.mumu.libjoshgame.ScreenCoord;
 import com.mumu.libjoshgame.ScreenPoint;
 
 import java.util.ArrayList;
@@ -19,28 +16,21 @@ import java.util.ArrayList;
  * An example workable script implementation
  */
 
-public class BattleTreasureReminder extends AutoJob {
-    private static final String TAG = "BattleTreasureReminder";
+public class LoopBattleJob extends AutoJob {
+    private static final String TAG = "LoopBattleJob";
     private MainJobRoutine mRoutine;
     private JoshGameLibrary mGL;
     private AutoJobEventListener mListener;
+    private Epic7Routine mEpic;
 
-    private DefinitionLoader.DefData mDef;
+    public static final String jobName = "第七史詩 連續戰鬥"; //give your job a name
 
-    public static final String jobName = "第七史詩 寶箱提醒"; //give your job a name
-
-    public BattleTreasureReminder() {
+    public LoopBattleJob() {
         super(jobName);
 
         /* JoshGameLibrary basic initial */
         mGL = JoshGameLibrary.getInstance();
         mGL.setGameOrientation(ScreenPoint.SO_Landscape);
-
-        String resolution = mGL.getScreenWidth() + "x" + mGL.getScreenHeight();
-        if (mGL.getScreenWidth() == 1080)
-            mDef = DefinitionLoader.getInstance().requestDefData(R.raw.epic7_definitions, "epic7_definitions.xml", "1080x2340");
-        else
-            mDef = DefinitionLoader.getInstance().requestDefData(R.raw.epic7_definitions, "epic7_definitions.xml", resolution);
     }
 
     /*
@@ -77,12 +67,17 @@ public class BattleTreasureReminder extends AutoJob {
         // You can receive any object from your caller
     }
 
+
+    @Override
+    public void onAutoCorrection(Object object) {
+    }
     /*
      * setJobEventListener
      * called by caller to receiver your message
      */
     public void setJobEventListener(AutoJobEventListener el) {
         mListener = el;
+        mEpic = new Epic7Routine(mGL, mListener);
     }
 
     /*
@@ -101,35 +96,23 @@ public class BattleTreasureReminder extends AutoJob {
         sendEvent(msg, this);
     }
 
-    @Override
-    public void onAutoCorrection(Object object) {
-        sendMessage("繼續自動戰鬥");
-        mGL.getInputService().tapOnScreen(mDef.getScreenCoord("pointAutoBattleButton"));
-    }
-
     /*
      * MainJobRoutine
      * Your script implementation should be here
      */
     private class MainJobRoutine extends Thread {
-        ArrayList<ScreenPoint> pointPost2ndBattle = mDef.getScreenPoints("pointPost2ndBattle");
 
         private void main() throws Exception {
             boolean shouldRunning = true;
 
+            sendMessage("開始");
             while (shouldRunning) {
-                // do your job here
-                sendMessage("偵測中..");
-
-                if (mGL.getCaptureService().colorsAre(pointPost2ndBattle)) {
-                    sendMessage("打完第二關了");
-                    mGL.getInputService().tapOnScreen(mDef.getScreenCoord("pointAutoBattleButton"));
-                    mGL.getInputService().playVibrateTime(3000);
-                    mGL.getInputService().playNotificationSound();
-                    sleep(20000);
+                if (mEpic.battleRoutine(100) == 0) {
+                    sendMessage("完成100次判斷");
+                } else {
+                    shouldRunning = false;
+                    sendMessage("錯誤!!");
                 }
-
-                sleep(100);
             }
         }
 

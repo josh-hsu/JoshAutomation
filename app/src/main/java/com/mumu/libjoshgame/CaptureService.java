@@ -784,8 +784,11 @@ public class CaptureService {
         for(int i = 0; i < points.size(); i++) {
             ScreenColor currentColor = colors.get(i);
             ScreenColor targetColor = points.get(i).color;
-            if (!colorCompare(currentColor, targetColor))
+            if (!colorCompare(currentColor, targetColor)) {
+                if (mChatty)
+                    Log.d(TAG, "colorsAre: diff for the index " + i);
                 return false;
+            }
         }
 
         return true;

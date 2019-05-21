@@ -51,6 +51,7 @@ import com.mumu.joshautomation.fgo.TWAutoLoginJob;
 import com.mumu.joshautomation.ro.ROAutoDrinkJob;
 import com.mumu.joshautomation.fgo.AutoBoxJob;
 import com.mumu.joshautomation.screencapture.PointSelectionActivity;
+import com.mumu.joshautomation.script.AutoJob;
 import com.mumu.joshautomation.script.AutoJobAction;
 import com.mumu.joshautomation.script.AutoJobEventListener;
 import com.mumu.joshautomation.script.AutoJobHandler;
@@ -177,6 +178,9 @@ public class HeadService extends Service implements AutoJobEventListener{
 
         // initial game library, this should never fail and follow up initGamePanelViews
         initGameLibrary();
+
+        // initial auto jobs, this should never fail and follow up by initGameLibrary
+        initAutoJobs();
 
         // initial a notification
         initNotification();
@@ -406,39 +410,30 @@ public class HeadService extends Service implements AutoJobEventListener{
         }
 
         mGL.getCaptureService().setChatty(mAPV.getPrefs().getBoolean("captureServiceChatty", false));
+    }
 
+    private void initAutoJobs () {
         mAutoJobHandler = AutoJobHandler.getHandler();
 
         if (!mAutoJobAdded) {
-            mAutoJobHandler.addJob(new LoopBattleJob());
-            mAutoJobHandler.addJob(new AutoBattleJob());
-            mAutoJobHandler.addJob(new PureBattleJob());
-            mAutoJobHandler.addJob(new NewFlushJob());
-            mAutoJobHandler.addJob(new TWAutoLoginJob());
-            mAutoJobHandler.addJob(new ShinobiLoopBattleJob());
-            mAutoJobHandler.addJob(new FlushJob());
-            mAutoJobHandler.addJob(new FlushMoneyJob());
-            mAutoJobHandler.addJob(new ROAutoDrinkJob());
-            mAutoJobHandler.addJob(new AutoBoxJob());
-            mAutoJobHandler.addJob(new BattleTreasureReminder());
+            try {
+                for (Class clazz : AutoJobClasses.autoJobLists) {
+                    Object object = clazz.newInstance();
+                    if (object instanceof AutoJob) {
+                        AutoJob job = (AutoJob) object;
+                        mAutoJobHandler.addJob(job);
+                        mAutoJobHandler.setJobEventListener(job.getJobName(), this);
+                        mAutoJobHandler.setExtra(job.getJobName(), this); //for first initial we setExtra ourselves
+                    } else {
+                        Log.e(TAG, "class " + clazz.getName() + " is not an AutoJob");
+                    }
+                }
+            } catch (Exception e) {
+                Log.e(TAG, "AutoJob list contains an error, aborting");
+                return;
+            }
 
-            mAutoJobHandler.setJobEventListener(LoopBattleJob.jobName, this);
-            mAutoJobHandler.setJobEventListener(PureBattleJob.jobName, this);
-            mAutoJobHandler.setJobEventListener(AutoBattleJob.jobName, this);
-            mAutoJobHandler.setJobEventListener(NewFlushJob.jobName, this);
-            mAutoJobHandler.setJobEventListener(TWAutoLoginJob.jobName, this);
-            mAutoJobHandler.setJobEventListener(ShinobiLoopBattleJob.jobName, this);
-            mAutoJobHandler.setJobEventListener(FlushJob.jobName, this);
-            mAutoJobHandler.setJobEventListener(FlushMoneyJob.jobName, this);
-            mAutoJobHandler.setJobEventListener(AutoBoxJob.jobName, this);
-            mAutoJobHandler.setJobEventListener(BattleTreasureReminder.jobName, this);
-
-            //add service itself to job
-            mAutoJobHandler.setExtra(LoopBattleJob.jobName, this);
-            mAutoJobHandler.setExtra(ShinobiLoopBattleJob.jobName, this);
-            mAutoJobHandler.setExtra(FlushJob.jobName, this);
-            mAutoJobHandler.setExtra(FlushMoneyJob.jobName, this);
-            mAutoJobHandler.setExtra(BattleTreasureReminder.jobName, this);
+            Log.d(TAG, "AutoJob initialized successfully");
             mAutoJobAdded = true;
         }
     }

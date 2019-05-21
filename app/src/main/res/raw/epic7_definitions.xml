@@ -57,12 +57,46 @@
 
     <!-- Kirin has panel of 1080x2340 -->
     <defset resolution="1080x2340">
-        <screenpoints name="pointPost2ndBattle">
+        <screenpoints name="pointPost2ndBattle" deprecated="true">
             <screenpoint>253,253,253,0xFF,87,232,L</screenpoint>
             <screenpoint>225,225,225,0xFF,268,216,L</screenpoint>
             <screenpoint>242,242,242,0xFF,263,222,L</screenpoint>
             <screenpoint>246,246,246,0xFF,260,231,L</screenpoint>
             <screenpoint>163,178,116,0xFF,179,90,L</screenpoint>
+        </screenpoints>
+
+        <screenpoints name="pointInBattleToken"> <!-- this is the gauge of Yaka -->
+            <screenpoint>164,133,93,0xFF,1556,929,L</screenpoint>
+            <screenpoint>153,124,86,0xFF,1575,1064,L</screenpoint>
+        </screenpoints>
+
+        <screenpoints name="pointPreBattleToken"> <!-- this is the map view -->
+            <screenpoint>65,135,218,0xFF,184,110,L</screenpoint>
+            <screenpoint>22,83,152,0xFF,162,89,L</screenpoint>
+        </screenpoints>
+
+        <screenpoint name="pointInBattleStage1">167,167,167,0xFF,266,16,L</screenpoint>
+        <screenpoint name="pointInBattleStage2">176,176,176,0xFF,270,35,L</screenpoint>
+        <screenpoint name="pointInBattleStage3">178,177,176,0xFF,262,26,L</screenpoint>
+
+        <screenpoints name="pointBattleClearToken"> <!-- this is the STAGE CLEAR icon -->
+            <screenpoint>170,69,33,0xFF,1152,139,L</screenpoint>
+            <screenpoint>88,121,146,0xFF,1170,90,L</screenpoint>
+            <screenpoint>253,255,172,0xFF,1166,152,L</screenpoint>
+        </screenpoints>
+
+        <screenpoints name="pointBattleClearAgain"> <!-- this is the DO IT AGAIN icon -->
+            <screenpoint>184,128,80,0xFF,1927,974,L</screenpoint>
+        </screenpoints>
+
+        <screenpoints name="pointBattleClearSupportNext">
+            <screenpoint>96,181,24,0xFF,1839,960,L</screenpoint>
+            <screenpoint>6,34,20,0xFF,1621,945,L</screenpoint>
+        </screenpoints>
+
+        <screenpoints name="pointBattleClearTeamNext">
+            <screenpoint>206,208,190,0xFF,1432,964,L</screenpoint>
+            <screenpoint>18,71,14,0xFF,1690,993,L</screenpoint>
         </screenpoints>
 
         <screencoord name="pointAutoBattleButton">2115,54,L</screencoord>
