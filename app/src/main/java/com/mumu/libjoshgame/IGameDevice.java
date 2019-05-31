@@ -5,4 +5,7 @@ public interface IGameDevice {
     int queryPreloadedPathCount();
     int dumpScreen(String path);
     int runCommand(String command);
+    String getVersion();
+    int onStart();
+    int onExit();
 }

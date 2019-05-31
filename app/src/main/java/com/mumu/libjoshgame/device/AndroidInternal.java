@@ -1,10 +1,14 @@
 package com.mumu.libjoshgame.device;
 
+import android.app.Service;
 import android.content.ComponentName;
 import android.content.Context;
+import android.content.Intent;
 import android.content.ServiceConnection;
 import android.os.Environment;
 import android.os.IBinder;
+import android.os.Parcel;
+import android.os.RemoteException;
 
 import com.mumu.libjoshgame.GameDevice;
 import com.mumu.libjoshgame.IGameDevice;
@@ -16,15 +20,16 @@ import java.util.Map;
 
 public class AndroidInternal extends GameDevice implements IGameDevice, ServiceConnection {
     private static final String TAG = JoshGameLibrary.TAG;
-    private static String DEVICE_NAME = "AndroidInternal";
-    private static String PRELOAD_PATH_INTERNAL = Environment.getExternalStorageDirectory().toString() + "/internal.dump";
-    private static String PRELOAD_PATH_FIND_COLOR = Environment.getExternalStorageDirectory().toString() + "/find_color.dump";
-    private static String PRELOAD_PATH_USER_SLOT_1 = Environment.getExternalStorageDirectory().toString() + "/user_slot_1.dump";
-    private static String PRELOAD_PATH_USER_SLOT_2 = Environment.getExternalStorageDirectory().toString() + "/user_slot_2.dump";
-    private static String PRELOAD_PATH_USER_SLOT_3 = Environment.getExternalStorageDirectory().toString() + "/user_slot_3.dump";
-    private static String PRELOAD_PATH_USER_SLOT_4 = Environment.getExternalStorageDirectory().toString() + "/user_slot_4.dump";
-    private static String PRELOAD_PATH_USER_SLOT_5 = Environment.getExternalStorageDirectory().toString() + "/user_slot_5.dump";
-    private static String PRELOAD_PATH_USER_SLOT_6 = Environment.getExternalStorageDirectory().toString() + "/user_slot_6.dump";
+    private static final String DEVICE_NAME = "AndroidInternal";
+    private static final String DEVICE_VERSION = "1.0";
+    private static final String PRELOAD_PATH_INTERNAL = Environment.getExternalStorageDirectory().toString() + "/internal.dump";
+    private static final String PRELOAD_PATH_FIND_COLOR = Environment.getExternalStorageDirectory().toString() + "/find_color.dump";
+    private static final String PRELOAD_PATH_USER_SLOT_1 = Environment.getExternalStorageDirectory().toString() + "/user_slot_1.dump";
+    private static final String PRELOAD_PATH_USER_SLOT_2 = Environment.getExternalStorageDirectory().toString() + "/user_slot_2.dump";
+    private static final String PRELOAD_PATH_USER_SLOT_3 = Environment.getExternalStorageDirectory().toString() + "/user_slot_3.dump";
+    private static final String PRELOAD_PATH_USER_SLOT_4 = Environment.getExternalStorageDirectory().toString() + "/user_slot_4.dump";
+    private static final String PRELOAD_PATH_USER_SLOT_5 = Environment.getExternalStorageDirectory().toString() + "/user_slot_5.dump";
+    private static final String PRELOAD_PATH_USER_SLOT_6 = Environment.getExternalStorageDirectory().toString() + "/user_slot_6.dump";
 
     private String[] mPreloadedPath;
     private int mPreloadedPathCount;
@@ -57,6 +62,7 @@ public class AndroidInternal extends GameDevice implements IGameDevice, ServiceC
             return -1;
         }
 
+        /* Android Context initial */
         if (objects[0] instanceof Context) {
             mContext = (Context) objects[0];
         } else {
@@ -64,32 +70,42 @@ public class AndroidInternal extends GameDevice implements IGameDevice, ServiceC
             return -2;
         }
 
+        /* HackSS initial */
         if (objects[1] instanceof Map) {
             Map map = (Map) objects[1];
-            String codeString = "0";
-            if (map.containsKey("packageName")) mSSPackageName = (String)map.get("packageName");
-            if (map.containsKey("serviceName")) mSSServiceName = (String)map.get("serviceName");
-            if (map.containsKey("interfaceName")) mSSInterfaceName = (String)map.get("interfaceName");
-            if (map.containsKey("code")) codeString = (String)map.get("code");
+            String codeString;
 
-            try {
-                mSSCode = Integer.parseInt(codeString);
-            } catch (NumberFormatException e) {
-                Log.e(TAG, "Initial for " + DEVICE_NAME + " error: SSHack params code is not valid " + codeString);
-                mSSCode = 0;
+            if (map.containsKey("packageName") && map.containsKey("serviceName") &&
+                    map.containsKey("interfaceName") && map.containsKey("code")) {
+                mSSPackageName = (String)map.get("packageName");
+                mSSServiceName = (String)map.get("serviceName");
+                mSSInterfaceName = (String)map.get("interfaceName");
+                codeString = (String)map.get("code");
+
+                try {
+                    mSSCode = Integer.parseInt(codeString);
+                } catch (NumberFormatException e) {
+                    Log.e(TAG, "Initial for " + DEVICE_NAME + " error: SSHack params code is not valid " + codeString);
+                    mSSCode = 0;
+                    return -3;
+                }
+            } else {
+                Log.e(TAG, "Initial for " + DEVICE_NAME + " error: illegal hack SS parameters");
                 return -3;
             }
         } else {
             Log.e(TAG, "Initial for " + DEVICE_NAME + " error: the 2nd object should be a Map<String,String>");
-            return -3;
+            return -4;
         }
 
+        /* initial for command proxy, we have PMPath and HackSS two ways to send command */
         ret = initCmdProxy();
         if (ret < 0) {
             Log.e(TAG, "Initial for " + DEVICE_NAME + " error: command proxy init failed with " + ret);
             return -3;
         }
 
+        /* initial for this device is fully done, calling super's init */
         ret = super.init(DEVICE_NAME, this);
 
         if (ret != 0) {
@@ -112,23 +128,26 @@ public class AndroidInternal extends GameDevice implements IGameDevice, ServiceC
         return ret;
     }
 
-
     private int initCmdProxy() {
+        int ret = 0;
+
         try {
             Class<?>[] run_types = new Class[]{String.class, String.class};
             mRunCmdMethod = mContext.getPackageManager().getClass().getMethod("joshCmd", run_types);
             mPMPathAvailable = true;
+            return 0;
         } catch (NoSuchMethodException e) {
             mPMPathAvailable = false;
             Log.e(TAG, "Sorry, your device is not support PackageManager command runner. Fix your sw or try HackBinder.");
         }
 
         // try to use binder connection
+        // from here, the hackSS parameters should be ready
         if (!mPMPathAvailable) {
-
+            ret = setHackSS(true);
         }
 
-        return 0;
+        return ret;
     }
 
     /*
@@ -145,25 +164,114 @@ public class AndroidInternal extends GameDevice implements IGameDevice, ServiceC
     }
 
     @Override
+    public String getVersion() {
+        return DEVICE_VERSION;
+    }
+
+    @Override
     public int dumpScreen(String path) {
+        return runCommand("screencap " + path);
+    }
+
+    @Override
+    public int runCommand(String cmd) {
+        try {
+            if (!mHacked && mPMPathAvailable) {
+                if (mInitialized) {
+                    mRunCmdMethod.invoke(mContext, cmd, "");
+                } else {
+                    return -100;
+                }
+            } else if (mHacked && mHackConnected) {
+                if (mHackBinder != null) {
+                    Parcel data = Parcel.obtain();
+                    Parcel reply = Parcel.obtain();
+                    if (mSSInterfaceName != null && !mSSInterfaceName.equals(""))
+                        data.writeInterfaceToken(mSSPackageName + mSSInterfaceName);
+                    data.writeString(cmd);
+                    try {
+                        mHackBinder.transact(mSSCode, data, reply, 0);
+                    } catch (RemoteException e) {
+                        Log.d(TAG, "transact failed " + e.getMessage());
+                        e.printStackTrace();
+                    }
+                } else {
+                    return -200;
+                }
+            } else {
+                return -1;
+            }
+        } catch (Exception e)  {
+            e.printStackTrace();
+            return -2;
+        }
+
         return 0;
     }
 
     @Override
-    public int runCommand(String command) {
+    public int onStart() {
+        return 0;
+    }
+
+    @Override
+    public int onExit() {
+        setHackSS(false);
         return 0;
     }
 
     /*
-     * Implement of ServiceConnection
+     * HackSS basic
      */
+    private int setHackSS(boolean hack) {
+        int ret = 0;
+        mHacked = hack;
+        if (mHacked && !mHackConnected)
+            ret = connectToHackSS();
+        else if (!mHacked && mHackConnected)
+            ret = disconnectToHackSS();
+
+        return ret;
+    }
+
+    synchronized private int connectToHackSS() {
+        if (!mHackConnected) {
+            try {
+                Intent intent = new Intent();
+                intent.setComponent(new ComponentName(mSSPackageName,
+                        mSSPackageName + mSSServiceName));
+                if (!mContext.bindService(intent, this, Service.BIND_AUTO_CREATE)) {
+                    Log.d(TAG, "Cannot hack this device, parameter wrong or you don't have implement service");
+                    mHackConnected = false;
+                }
+            } catch (SecurityException e) {
+                Log.e(TAG, "can't bind to Service. Your service is not implemented correctly");
+                return -1;
+            }
+            mHackConnected = true;
+        } else {
+            Log.d(TAG, "Hack service is already connected");
+        }
+        return 0;
+    }
+
+    synchronized private int disconnectToHackSS() {
+        if (mHackConnected)
+            mContext.unbindService(this);
+
+        return 0;
+    }
+
     @Override
     public void onServiceConnected(ComponentName name, IBinder service) {
-
+        mHackConnected = true;
+        mHackBinder = service;
+        Log.d(TAG, "Hack service connected.");
     }
 
     @Override
     public void onServiceDisconnected(ComponentName name) {
-
+        mHackConnected = false;
+        Log.d(TAG, "Hack service disconnected.");
     }
 }
