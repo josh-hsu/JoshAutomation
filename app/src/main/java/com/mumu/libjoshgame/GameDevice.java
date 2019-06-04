@@ -1,5 +1,7 @@
 package com.mumu.libjoshgame;
 
+import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.io.RandomAccessFile;
 
 /**
@@ -12,11 +14,23 @@ import java.io.RandomAccessFile;
 public class GameDevice {
     private static final String TAG = JoshGameLibrary.TAG;
 
+    /**
+     * SCREENSHOT_EMPTY screenshot slot is fully released
+     * SCREENSHOT_OPENED screenshot is opened and acquired by Application
+     * SCREENSHOT_CLOSED screenshot is ready for use but not opened
+     */
+    public static final int SCREENSHOT_EMPTY  = 0;
+    public static final int SCREENSHOT_OPENED = 1;
+    public static final int SCREENSHOT_CLOSED = 2;
+
     protected boolean mInitialized = false;
     private String mDeviceName;
     private IGameDevice mDeviceInterface;
-    private String[] mFileSlots;
-    private int mFileSlotIndex;
+
+    private String[] mFilePaths;
+    private int mFilePathCount;
+    private RandomAccessFile[] mFileSlot;
+    private int[] mFileState;
 
     /**
      * Initial function should be override
@@ -49,6 +63,14 @@ public class GameDevice {
             return -1;
         }
         mDeviceInterface = deviceInterface;
+
+        mFilePaths = deviceInterface.queryPreloadedPaths();
+        mFilePathCount = deviceInterface.queryPreloadedPathCount();
+        mFileSlot = new RandomAccessFile[mFilePathCount];
+        mFileState = new int[mFilePathCount];
+        for(int i = 0; i < mFilePathCount; i++) {
+            mFileState[i] = SCREENSHOT_EMPTY;
+        }
 
         return 0;
     }
@@ -118,13 +140,42 @@ public class GameDevice {
      * screenDump
      * make a screenshot at specific index of slot
      * if the previous screenshot is not closed yet, it will return an error if forced
-     * is not set
+     * is not set. Note this will not open a file description for use, just doing dump
      *
      * @param index The index of screenshot slot to save in
      * @param forced True if ignoring the screenshot is in use
      * @return 0 upon success
      */
     public int screenDump(int index, boolean forced) {
+        int ret;
+        // checking if index legal
+        if (index < 0 || index > mFilePathCount) {
+            return -3;
+        }
+
+        if (mFileState[index] == SCREENSHOT_OPENED) {
+            if (forced) {
+                Log.i(TAG, "screenshot is in use, force close it.");
+                ret = screenshotClose(index);
+                if (ret < 0) {
+                    Log.e(TAG, "screenshot in slot " + index + " is not able to close, error: " + ret);
+                    return -9;
+                }
+            } else {
+                Log.w(TAG, "screenshot in slot " + index + " is in use.");
+                return -10;
+            }
+        }
+
+        Log.i(TAG, "trying to dump at index " + index + ", path is " + mFilePaths[index]);
+        ret = mDeviceInterface.dumpScreen(mFilePaths[index]);
+        if (ret < 0) {
+            Log.e(TAG, "dumpscreen failed, ret = " + ret);
+            mFileState[index] = SCREENSHOT_EMPTY;
+            return -1;
+        }
+        mFileState[index] = SCREENSHOT_CLOSED;
+
         return 0;
     }
 
@@ -137,7 +188,31 @@ public class GameDevice {
      * @return 0 upon success
      */
     public RandomAccessFile screenshotOpen(int index) {
-        return null;
+        RandomAccessFile dumpFile;
+
+        // checking if index legal
+        if (index < 0 || index > mFilePathCount) {
+            Log.w(TAG, "index " + index + " is not legal");
+            return null;
+        }
+
+        if (mFileState[index] == SCREENSHOT_EMPTY) {
+            Log.w(TAG, "screenshot is empty at index " + index);
+            return null;
+        }
+
+        if (mFileState[index] == SCREENSHOT_CLOSED) {
+            try {
+                dumpFile = new RandomAccessFile(mFilePaths[index], "rw");
+                mFileState[index] = SCREENSHOT_OPENED;
+                mFileSlot[index] = dumpFile;
+            } catch (FileNotFoundException e) {
+                Log.e(TAG, "screenshot not found! file state might be wrong");
+                return null;
+            }
+        }
+
+        return mFileSlot[index];
     }
 
     /**
@@ -150,6 +225,54 @@ public class GameDevice {
      * @return 0 upon success
      */
     public int screenshotClose(int index) {
+        // checking if index legal
+        if (index < 0 || index > mFilePathCount) {
+            Log.w(TAG, "index " + index + " is not legal");
+            return -3;
+        }
+
+        if (mFileState[index] == SCREENSHOT_EMPTY ||
+                mFileState[index] == SCREENSHOT_CLOSED) {
+            // already closed, do noting.
+            return 0;
+        }
+
+        try {
+            mFileSlot[index].close();
+            mFileState[index] = SCREENSHOT_CLOSED;
+        } catch (IOException e) {
+            Log.e(TAG, "close this file error, release it.");
+            mFileSlot[index] = null;
+            mFileState[index] = SCREENSHOT_EMPTY;
+        }
+
         return 0;
+    }
+
+    /**
+     * screenshotRelease
+     *
+     * release and free the slot of screenshot
+     * make the slot to SCREENSHOT_EMPTY state
+     *
+     * @param index The index of the slot you want to release
+     * @return 0 upon success
+     */
+    public int screenshotRelease(int index) {
+        // checking if index legal
+        if (index < 0 || index > mFilePathCount) {
+            Log.w(TAG, "index " + index + " is not legal");
+            return -3;
+        }
+
+        if (mFileState[index] == SCREENSHOT_EMPTY ||
+                mFileState[index] == SCREENSHOT_CLOSED) {
+            mFileSlot[index] = null;
+            mFileState[index] = SCREENSHOT_EMPTY;
+            return 0;
+        }
+
+        Log.w(TAG, "screenshot at index " + index + " is in use. please close it first");
+        return -2;
     }
 }

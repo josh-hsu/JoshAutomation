@@ -19,18 +19,14 @@ package com.mumu.libjoshgame;
 import android.content.Context;
 
 /*
- * Josh Game Library - Version 2.0
+ * Josh Game Library - Version 1.53
  */
 /*
    JoshGameLibrary (GL)
    This game control library require the following initial phase
 
-   // getting the instance
-   // this will generate a GL instance for specific platform and corresponding device
    JoshGameLibrary mGL;
-   mGL = JoshGameLibrary.getLibForDevice(PLATFORM_NAME, DEVICE_NAME);
-
-
+   mGL = JoshGameLibrary.getInstance();               //this make sure there will be only one instance
    mGL.setContext(this);                              //this can also be setPackageManager
    mGL.setGameOrientation(ScreenPoint.SO_Landscape);  //setting game orientation for point check
    mGL.setScreenDimension(1080, 1920);                //setting the dimension of screen for point check

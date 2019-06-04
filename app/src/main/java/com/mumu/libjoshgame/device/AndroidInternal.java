@@ -14,7 +14,11 @@ import com.mumu.libjoshgame.GameDevice;
 import com.mumu.libjoshgame.IGameDevice;
 import com.mumu.libjoshgame.JoshGameLibrary;
 import com.mumu.libjoshgame.Log;
+import com.mumu.libjoshgame.ScreenPoint;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
 import java.lang.reflect.Method;
 import java.util.Map;
 
@@ -24,6 +28,7 @@ public class AndroidInternal extends GameDevice implements IGameDevice, ServiceC
     private static final String DEVICE_VERSION = "1.0";
     private static final String PRELOAD_PATH_INTERNAL = Environment.getExternalStorageDirectory().toString() + "/internal.dump";
     private static final String PRELOAD_PATH_FIND_COLOR = Environment.getExternalStorageDirectory().toString() + "/find_color.dump";
+    private static final String PRELOAD_PATH_USER_SLOT_0 = Environment.getExternalStorageDirectory().toString() + "/user_slot_0.dump";
     private static final String PRELOAD_PATH_USER_SLOT_1 = Environment.getExternalStorageDirectory().toString() + "/user_slot_1.dump";
     private static final String PRELOAD_PATH_USER_SLOT_2 = Environment.getExternalStorageDirectory().toString() + "/user_slot_2.dump";
     private static final String PRELOAD_PATH_USER_SLOT_3 = Environment.getExternalStorageDirectory().toString() + "/user_slot_3.dump";
@@ -114,14 +119,15 @@ public class AndroidInternal extends GameDevice implements IGameDevice, ServiceC
         }
 
         mPreloadedPath = new String[] {
-                PRELOAD_PATH_INTERNAL,
-                PRELOAD_PATH_FIND_COLOR,
+                PRELOAD_PATH_USER_SLOT_0,
                 PRELOAD_PATH_USER_SLOT_1,
                 PRELOAD_PATH_USER_SLOT_2,
                 PRELOAD_PATH_USER_SLOT_3,
                 PRELOAD_PATH_USER_SLOT_4,
                 PRELOAD_PATH_USER_SLOT_5,
                 PRELOAD_PATH_USER_SLOT_6,
+                PRELOAD_PATH_INTERNAL,
+                PRELOAD_PATH_FIND_COLOR,
         };
         mPreloadedPathCount = mPreloadedPath.length;
 
@@ -150,6 +156,51 @@ public class AndroidInternal extends GameDevice implements IGameDevice, ServiceC
         return ret;
     }
 
+    @Override
+    public int[] getScreenDimension() {
+        String wmResult = runShellCommand("wm size");
+        String[] wmSize = wmResult.split(":");
+
+        if (wmSize.length == 2) {
+            String sizeString = wmSize[1];
+            String[] sizeXY = sizeString.split("x");
+
+            if (sizeXY.length == 2) {
+                if (sizeXY[0].startsWith(" "))
+                    sizeXY[0] = sizeXY[0].substring(1);
+
+                try {
+                    int[] ret = new int[2];
+                    ret[0] = Integer.parseInt(sizeXY[0]);
+                    ret[1] = Integer.parseInt(sizeXY[1]);
+
+                    return ret;
+                } catch (NumberFormatException e) {
+                    Log.e(TAG, "Parse size error " + sizeString);
+                }
+            }
+        }
+
+        Log.e(TAG, "wm size returned error " + wmResult);
+        return null;
+    }
+
+    @Override
+    public int getScreenMainOrientation() {
+        return ScreenPoint.SO_Portrait;
+    }
+
+    @Override
+    public boolean getInitialized() {
+        if (!mInitialized)
+            return false;
+
+        if (mPMPathAvailable)
+            return true;
+
+        return mHacked && mHackConnected;
+    }
+
     /*
      * Implement of IGameDevice
      */
@@ -171,6 +222,38 @@ public class AndroidInternal extends GameDevice implements IGameDevice, ServiceC
     @Override
     public int dumpScreen(String path) {
         return runCommand("screencap " + path);
+    }
+
+    @Override
+    public String runShellCommand(String cmd) {
+        Runtime rt = Runtime.getRuntime();
+        StringBuilder sb = new StringBuilder();
+        String s;
+
+        try {
+            Process process = rt.exec("adb " + cmd);
+
+            BufferedReader stdInput = new BufferedReader(new
+                    InputStreamReader(process.getInputStream()));
+
+            BufferedReader stdError = new BufferedReader(new
+                    InputStreamReader(process.getErrorStream()));
+
+            // read the output from the command
+            while ((s = stdInput.readLine()) != null) {
+                sb.append(s);
+            }
+
+            // read any errors from the attempted command
+            while ((s = stdError.readLine()) != null) {
+                Log.w(TAG, "Fail to execute command " + cmd + ": " + s);
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+            return null;
+        }
+
+        return sb.toString();
     }
 
     @Override
