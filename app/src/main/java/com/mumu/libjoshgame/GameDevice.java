@@ -23,6 +23,10 @@ public class GameDevice {
     public static final int SCREENSHOT_OPENED = 1;
     public static final int SCREENSHOT_CLOSED = 2;
 
+    public static final int DEVICE_SYS_WINDOWS = 0;
+    public static final int DEVICE_SYS_LINUX   = 1;
+    public static final int DEVICE_SYS_DARWIN  = 2;
+
     protected boolean mInitialized = false;
     private String mDeviceName;
     private IGameDevice mDeviceInterface;

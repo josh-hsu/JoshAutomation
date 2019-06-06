@@ -26,6 +26,7 @@ public class AndroidInternal extends GameDevice implements IGameDevice, ServiceC
     private static final String TAG = JoshGameLibrary.TAG;
     private static final String DEVICE_NAME = "AndroidInternal";
     private static final String DEVICE_VERSION = "1.0";
+    private static final int    DEVICE_SYS_TYPE = DEVICE_SYS_LINUX;
     private static final String PRELOAD_PATH_INTERNAL = Environment.getExternalStorageDirectory().toString() + "/internal.dump";
     private static final String PRELOAD_PATH_FIND_COLOR = Environment.getExternalStorageDirectory().toString() + "/find_color.dump";
     private static final String PRELOAD_PATH_USER_SLOT_0 = Environment.getExternalStorageDirectory().toString() + "/user_slot_0.dump";
@@ -220,37 +221,35 @@ public class AndroidInternal extends GameDevice implements IGameDevice, ServiceC
     }
 
     @Override
+    public int getSystemType() {
+        return DEVICE_SYS_TYPE;
+    }
+
+    @Override
     public int dumpScreen(String path) {
         return runCommand("screencap " + path);
     }
 
     @Override
-    public String runShellCommand(String cmd) {
-        Runtime rt = Runtime.getRuntime();
+    public String runShellCommand(String shellCmd) {
+        String[] cmd = {"/system/bin/sh", "-c", shellCmd};
         StringBuilder sb = new StringBuilder();
-        String s;
 
         try {
-            Process process = rt.exec("adb " + cmd);
-
-            BufferedReader stdInput = new BufferedReader(new
-                    InputStreamReader(process.getInputStream()));
-
-            BufferedReader stdError = new BufferedReader(new
-                    InputStreamReader(process.getErrorStream()));
-
-            // read the output from the command
-            while ((s = stdInput.readLine()) != null) {
-                sb.append(s);
+            Process p = Runtime.getRuntime().exec(cmd);
+            BufferedReader in = new BufferedReader(
+                    new InputStreamReader(p.getInputStream()));
+            String line;
+            // append newline at each readLine
+            while ((line = in.readLine()) != null) {
+                sb.append(line);
+                sb.append("\n");
             }
-
-            // read any errors from the attempted command
-            while ((s = stdError.readLine()) != null) {
-                Log.w(TAG, "Fail to execute command " + cmd + ": " + s);
-            }
+            // delete the last newline for consistent
+            if (sb.length() > 1)
+                sb.deleteCharAt(sb.length() - 1);
         } catch (IOException e) {
             e.printStackTrace();
-            return null;
         }
 
         return sb.toString();
