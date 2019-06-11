@@ -119,6 +119,14 @@ public class GameLibrary20 {
         return mDevice.getScreenMainOrientation();
     }
 
+    public int getDeviceSystemType() throws DeviceNotInitializedException {
+        if (getDeviceInitialized())
+            throw new DeviceNotInitializedException("No legal initialized device associated with the GL. " +
+                    "Have you called chooseDevice and initDevice correctly?");
+
+        return mDevice.getDeviceSystemType();
+    }
+
 
 
     //

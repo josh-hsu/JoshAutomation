@@ -96,6 +96,17 @@ public class GameDevice {
         return mInitialized;
     }
 
+    /**
+     * Get the system type of device
+     * @return The system type or -1 upon failure
+     */
+    public int getDeviceSystemType() {
+        if (mDeviceInterface != null)
+            return mDeviceInterface.getSystemType();
+        else
+            return -1;
+    }
+
     public int[] getScreenDimension() {
         /* Override needed */
         return new int[] {0, 0};
