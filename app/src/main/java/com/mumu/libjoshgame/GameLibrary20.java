@@ -2,6 +2,7 @@ package com.mumu.libjoshgame;
 
 import com.mumu.libjoshgame.device.AndroidInternal;
 import com.mumu.libjoshgame.device.NoxPlayer;
+import com.mumu.libjoshgame.service.DeviceScreen;
 
 /**
  * Josh Game Library - Version 2.0
@@ -22,6 +23,7 @@ public class GameLibrary20 {
 
     private boolean mDeviceReady;
     private GameDevice mDevice;
+    private DeviceScreen mScreenService;
 
     public GameLibrary20() {
         mDeviceReady = false;
@@ -29,7 +31,7 @@ public class GameLibrary20 {
     }
 
     // =============================
-    //  DEVICE SELECTION
+    //  DEVICE SELECTION AND INIT
     // =============================
 
     /**
@@ -83,59 +85,84 @@ public class GameLibrary20 {
             return -1;
         }
 
-        if (ret == 0)
-            mDeviceReady = true;
+        mDeviceReady = ret == 0;
+
+        if (mDeviceReady)
+            initGameLibraryInternal();
+
         return ret;
+    }
+
+    private void initGameLibraryInternal() {
+        mScreenService = new DeviceScreen(mDevice);
     }
 
     // =============================
     //  DEVICE FUNCTIONS
     // =============================
-    public boolean getDeviceInitialized() {
+    private boolean getDeviceInitialized() {
         return mDeviceReady && mDevice.getInitialized();
     }
 
     public String getDeviceName() throws DeviceNotInitializedException {
-        if (getDeviceInitialized())
-            throw new DeviceNotInitializedException("No legal initialized device associated with the GL. " +
-                    "Have you called chooseDevice and initDevice correctly?");
-
-        return mDevice.getName();
+        if (!checkInit())
+            return null;
+        else
+            return mDevice.getName();
     }
 
     public int[] getDeviceResolution() throws DeviceNotInitializedException {
-        if (getDeviceInitialized())
-            throw new DeviceNotInitializedException("No legal initialized device associated with the GL. " +
-                    "Have you called chooseDevice and initDevice correctly?");
-
-        return mDevice.getScreenDimension();
+        if (!checkInit())
+            return null;
+        else
+            return mDevice.getScreenDimension();
     }
 
     public int getDeviceMainOrientation() throws DeviceNotInitializedException {
-        if (getDeviceInitialized())
-            throw new DeviceNotInitializedException("No legal initialized device associated with the GL. " +
-                    "Have you called chooseDevice and initDevice correctly?");
-
-        return mDevice.getScreenMainOrientation();
+        if (!checkInit())
+            return -1;
+        else
+            return mDevice.getScreenMainOrientation();
     }
 
     public int getDeviceSystemType() throws DeviceNotInitializedException {
-        if (getDeviceInitialized())
-            throw new DeviceNotInitializedException("No legal initialized device associated with the GL. " +
-                    "Have you called chooseDevice and initDevice correctly?");
-
-        return mDevice.getDeviceSystemType();
+        if (!checkInit())
+            return -1;
+        else
+            return mDevice.getDeviceSystemType();
     }
-
 
 
     //
     // utils
     //
+    private boolean checkInit() throws DeviceNotInitializedException {
+        boolean ret;
+        ret = getDeviceInitialized();
 
-    public class DeviceNotInitializedException extends Exception {
-        DeviceNotInitializedException(String message) {
+        if (!ret) {
+            throw new DeviceNotInitializedException("No legal initialized device associated with the GL. " +
+                    "Have you called chooseDevice and initDevice correctly?");
+        }
+
+        return true;
+    }
+
+    public static class DeviceNotInitializedException extends Exception {
+        public DeviceNotInitializedException(String message) {
             super(message);
         }
+    }
+
+    public static class ScreenshotErrorException extends Exception {
+        int failReason;
+
+        public ScreenshotErrorException(String message, int code) {
+            super(message);
+            failReason = code;
+
+        }
+
+        int getFailReason() {return failReason;}
     }
 }

@@ -8,6 +8,10 @@ import com.mumu.libjoshgame.ScreenPoint;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Locale;
 
 public class NoxPlayer extends GameDevice implements IGameDevice {
     private static final String TAG = JoshGameLibrary.TAG;
@@ -108,5 +112,34 @@ public class NoxPlayer extends GameDevice implements IGameDevice {
     @Override
     public int onExit() {
         return 0;
+    }
+
+    @Override
+    public void logDevice(int level, String tag, String msg) {
+        DateFormat df = new SimpleDateFormat("yyyy/MM/dd a hh:mm:ss", Locale.getDefault());
+        String thisTime = df.format(Calendar.getInstance().getTime());
+        String thisLevel = "U";
+
+        switch(level) {
+            case LOG_VERBOSE:
+                thisLevel = "V";
+                break;
+            case LOG_DEBUG:
+                thisLevel = "D";
+                break;
+            case LOG_WARNING:
+                thisLevel = "W";
+                break;
+            case LOG_ERROR:
+                thisLevel = "E";
+                break;
+            case LOG_FATAL:
+                thisLevel = "F";
+                break;
+            default:
+                break;
+        }
+
+        System.out.println(String.format("%18s: <%s> %s: %s\n", thisTime, thisLevel, tag, msg));
     }
 }

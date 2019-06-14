@@ -51,6 +51,19 @@ public interface IGameDevice {
     int getSystemType();
 
     /**
+     * get the transaction time in milliseconds after every command
+     * such as runCommand and dumpScreen
+     * @return The transaction time in milliseconds
+     */
+    int getWaitTransactionTimeMs();
+
+    /**
+     * set the transaction time in milliseconds after every command
+     * such as runCommand and dumpScreen
+     */
+    void setWaitTransactionTimeMsOverride(int ms);
+
+    /**
      * when the device has been activated, this method should be called
      * @return 0 upon success
      */
@@ -61,4 +74,12 @@ public interface IGameDevice {
      * @return 0 upon success
      */
     int onExit();
+
+    /**
+     * log information into device
+     * @param level
+     * @param tag
+     * @param log
+     */
+    void logDevice(int level, String tag, String log);
 }

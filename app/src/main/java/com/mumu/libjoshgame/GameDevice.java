@@ -1,5 +1,7 @@
 package com.mumu.libjoshgame;
 
+import com.mumu.libjoshgame.service.Logger;
+
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.RandomAccessFile;
@@ -12,7 +14,7 @@ import java.io.RandomAccessFile;
  * </p>
  */
 public class GameDevice {
-    private static final String TAG = JoshGameLibrary.TAG;
+    private static final String TAG = GameLibrary20.TAG;
 
     /**
      * SCREENSHOT_EMPTY screenshot slot is fully released
@@ -23,13 +25,26 @@ public class GameDevice {
     public static final int SCREENSHOT_OPENED = 1;
     public static final int SCREENSHOT_CLOSED = 2;
 
+    public static final int SCREENSHOT_IN_USE = -10;
+    public static final int SCREENSHOT_CLOSE_FAIL = -9;
+    public static final int SCREENSHOT_DUMP_FAIL = -8;
+    public static final int SCREENSHOT_INDEX_ERROR = -3;
+    public static final int SCREENSHOT_NO_ERROR = 0;
+
     public static final int DEVICE_SYS_WINDOWS = 0;
     public static final int DEVICE_SYS_LINUX   = 1;
     public static final int DEVICE_SYS_DARWIN  = 2;
 
+    public static final int LOG_VERBOSE = 0;
+    public static final int LOG_DEBUG   = 1;
+    public static final int LOG_WARNING = 2;
+    public static final int LOG_ERROR   = 3;
+    public static final int LOG_FATAL   = 4;
+
     protected boolean mInitialized = false;
     private String mDeviceName;
     private IGameDevice mDeviceInterface;
+    private Logger mLogger;
 
     private String[] mFilePaths;
     private int mFilePathCount;
@@ -57,13 +72,13 @@ public class GameDevice {
     protected int init(String deviceName, IGameDevice deviceInterface) {
         // verify the input parameters
         if (deviceName == null) {
-            Log.e(TAG, "Initial for NULL device name is not allowed");
+            log(LOG_ERROR, TAG, "Initial for NULL device name is not allowed");
             return -1;
         }
         mDeviceName = deviceName;
 
         if (deviceInterface == null) {
-            Log.e(TAG, "Initial for NULL device implement is not allowed");
+            log(LOG_FATAL, TAG, "Initial for NULL device implement is not allowed");
             return -1;
         }
         mDeviceInterface = deviceInterface;
@@ -75,6 +90,8 @@ public class GameDevice {
         for(int i = 0; i < mFilePathCount; i++) {
             mFileState[i] = SCREENSHOT_EMPTY;
         }
+
+        mLogger = new Logger(this);
 
         return 0;
     }
@@ -118,6 +135,17 @@ public class GameDevice {
     }
 
     /**
+     * Get the transaction waiting time of this device
+     * @return The wait transaction time needed in milliseconds
+     */
+    public int getWaitTransactionTimeMs() {
+        if (mDeviceInterface != null)
+            return mDeviceInterface.getWaitTransactionTimeMs();
+        else
+            return -1;
+    }
+
+    /**
      * setDeviceEssentials
      * set special object that keep this device functional
      * this function might be useful for extended initialization
@@ -126,6 +154,16 @@ public class GameDevice {
      */
     public void setDeviceEssentials(Object object) {
         /* Override needed */
+    }
+
+    /**
+     * Override the device wait transaction time do it on your own risk
+     * @param ms The wait transaction time in milliseconds
+     */
+    public void setWaitTransactionTimeMs(int ms) {
+        if (ms >= 0 && mDeviceInterface != null) {
+            mDeviceInterface.setWaitTransactionTimeMsOverride(ms);
+        }
     }
 
     /**
@@ -156,29 +194,31 @@ public class GameDevice {
      * make a screenshot at specific index of slot
      * if the previous screenshot is not closed yet, it will return an error if forced
      * is not set. Note this will not open a file description for use, just doing dump
+     * after a screen dump command is sent, it will sleep a period of time defined in function
+     * getWaitTransactionTimeMs()
      *
      * @param index The index of screenshot slot to save in
      * @param forced True if ignoring the screenshot is in use
      * @return 0 upon success
      */
-    public int screenDump(int index, boolean forced) {
+    public int screenDump(int index, boolean forced) throws InterruptedException {
         int ret;
         // checking if index legal
         if (index < 0 || index > mFilePathCount) {
-            return -3;
+            return SCREENSHOT_INDEX_ERROR;
         }
 
         if (mFileState[index] == SCREENSHOT_OPENED) {
             if (forced) {
-                Log.i(TAG, "screenshot is in use, force close it.");
+                log(LOG_DEBUG, TAG, "screenshot is in use, force close it.");
                 ret = screenshotClose(index);
                 if (ret < 0) {
-                    Log.e(TAG, "screenshot in slot " + index + " is not able to close, error: " + ret);
-                    return -9;
+                    log(LOG_ERROR, TAG, "screenshot in slot " + index + " is not able to close, error: " + ret);
+                    return SCREENSHOT_CLOSE_FAIL;
                 }
             } else {
-                Log.w(TAG, "screenshot in slot " + index + " is in use.");
-                return -10;
+                log(LOG_WARNING, TAG, "screenshot in slot " + index + " is in use.");
+                return SCREENSHOT_IN_USE;
             }
         }
 
@@ -187,11 +227,14 @@ public class GameDevice {
         if (ret < 0) {
             Log.e(TAG, "dumpscreen failed, ret = " + ret);
             mFileState[index] = SCREENSHOT_EMPTY;
-            return -1;
+            return SCREENSHOT_DUMP_FAIL;
         }
         mFileState[index] = SCREENSHOT_CLOSED;
 
-        return 0;
+        // sleep a waiting time for screenshot truly ready
+        Thread.sleep(getWaitTransactionTimeMs());
+
+        return SCREENSHOT_NO_ERROR;
     }
 
     /**
@@ -207,12 +250,12 @@ public class GameDevice {
 
         // checking if index legal
         if (index < 0 || index > mFilePathCount) {
-            Log.w(TAG, "index " + index + " is not legal");
+            log(LOG_WARNING, TAG, "index " + index + " is not legal");
             return null;
         }
 
         if (mFileState[index] == SCREENSHOT_EMPTY) {
-            Log.w(TAG, "screenshot is empty at index " + index);
+            log(LOG_WARNING, TAG, "screenshot is empty at index " + index);
             return null;
         }
 
@@ -222,7 +265,7 @@ public class GameDevice {
                 mFileState[index] = SCREENSHOT_OPENED;
                 mFileSlot[index] = dumpFile;
             } catch (FileNotFoundException e) {
-                Log.e(TAG, "screenshot not found! file state might be wrong");
+                log(LOG_ERROR, TAG, "screenshot not found! file state might be wrong");
                 return null;
             }
         }
@@ -242,31 +285,30 @@ public class GameDevice {
     public int screenshotClose(int index) {
         // checking if index legal
         if (index < 0 || index > mFilePathCount) {
-            Log.w(TAG, "index " + index + " is not legal");
-            return -3;
+            log(LOG_WARNING, TAG, "index " + index + " is not legal");
+            return SCREENSHOT_INDEX_ERROR;
         }
 
         if (mFileState[index] == SCREENSHOT_EMPTY ||
                 mFileState[index] == SCREENSHOT_CLOSED) {
             // already closed, do noting.
-            return 0;
+            return SCREENSHOT_NO_ERROR;
         }
 
         try {
             mFileSlot[index].close();
             mFileState[index] = SCREENSHOT_CLOSED;
         } catch (IOException e) {
-            Log.e(TAG, "close this file error, release it.");
+            log(LOG_ERROR, TAG, "close this file error, release it.");
             mFileSlot[index] = null;
             mFileState[index] = SCREENSHOT_EMPTY;
         }
 
-        return 0;
+        return SCREENSHOT_NO_ERROR;
     }
 
     /**
      * screenshotRelease
-     *
      * release and free the slot of screenshot
      * make the slot to SCREENSHOT_EMPTY state
      *
@@ -276,18 +318,37 @@ public class GameDevice {
     public int screenshotRelease(int index) {
         // checking if index legal
         if (index < 0 || index > mFilePathCount) {
-            Log.w(TAG, "index " + index + " is not legal");
-            return -3;
+            log(LOG_WARNING, TAG, "index " + index + " is not legal");
+            return SCREENSHOT_INDEX_ERROR;
         }
 
         if (mFileState[index] == SCREENSHOT_EMPTY ||
                 mFileState[index] == SCREENSHOT_CLOSED) {
             mFileSlot[index] = null;
             mFileState[index] = SCREENSHOT_EMPTY;
-            return 0;
+            return SCREENSHOT_NO_ERROR;
         }
 
-        Log.w(TAG, "screenshot at index " + index + " is in use. please close it first");
-        return -2;
+        log(LOG_WARNING, TAG, "screenshot at index " + index + " is in use. please close it first");
+        return SCREENSHOT_IN_USE;
     }
+
+    /**
+     * log to device
+     * @param level The level defined in {@link GameLibrary20}
+     * @param tag The tag of this message
+     * @param msg Message to be logged
+     */
+    public void log(int level, String tag, String msg) {
+        if (mDeviceInterface == null || level == LOG_FATAL) {
+            throw new RuntimeException("Fatal exception that device interface is null");
+        }
+
+        mDeviceInterface.logDevice(level, tag, msg);
+   }
+
+    public Logger getLogger() {
+        return mLogger;
+   }
+
 }

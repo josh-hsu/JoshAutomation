@@ -825,7 +825,7 @@ public class CaptureService {
         if (lowerBound < 0)
             lowerBound = 0;
 
-        //Log.d(TAG, "compare range " + upperBound + " > " + lowerBound + " with " + dst);
+        //Logger.d(TAG, "compare range " + upperBound + " > " + lowerBound + " with " + dst);
         return (dst <= upperBound) && (dst >= lowerBound);
     }
 }

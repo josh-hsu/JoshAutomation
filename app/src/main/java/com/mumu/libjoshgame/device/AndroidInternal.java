@@ -20,6 +20,10 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.lang.reflect.Method;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Locale;
 import java.util.Map;
 
 public class AndroidInternal extends GameDevice implements IGameDevice, ServiceConnection {
@@ -48,6 +52,8 @@ public class AndroidInternal extends GameDevice implements IGameDevice, ServiceC
     private IBinder mHackBinder;
     private String mSSPackageName, mSSServiceName, mSSInterfaceName;
     private int mSSCode = 0;
+
+    private int mWaitTransactTime = 150;
 
     /**
      * init for AndroidInternal device
@@ -118,6 +124,8 @@ public class AndroidInternal extends GameDevice implements IGameDevice, ServiceC
             mInitialized = false;
             return ret;
         }
+
+        mInitialized = true;
 
         mPreloadedPath = new String[] {
                 PRELOAD_PATH_USER_SLOT_0,
@@ -226,6 +234,16 @@ public class AndroidInternal extends GameDevice implements IGameDevice, ServiceC
     }
 
     @Override
+    public int getWaitTransactionTimeMs() {
+        return mWaitTransactTime;
+    }
+
+    @Override
+    public void setWaitTransactionTimeMsOverride(int ms) {
+        mWaitTransactTime = ms;
+    }
+
+    @Override
     public int dumpScreen(String path) {
         return runCommand("screencap " + path);
     }
@@ -300,6 +318,30 @@ public class AndroidInternal extends GameDevice implements IGameDevice, ServiceC
     public int onExit() {
         setHackSS(false);
         return 0;
+    }
+
+    @Override
+    public void logDevice(int level, String tag, String msg) {
+        switch(level) {
+            case LOG_VERBOSE:
+                android.util.Log.v(tag, msg);
+                break;
+            case LOG_DEBUG:
+                android.util.Log.d(tag, msg);
+                break;
+            case LOG_WARNING:
+                android.util.Log.w(tag, msg);
+                break;
+            case LOG_ERROR:
+                android.util.Log.e(tag, msg);
+                break;
+            case LOG_FATAL:
+                android.util.Log.wtf(tag, msg);
+                break;
+            default:
+                android.util.Log.i(tag, msg);
+                break;
+        }
     }
 
     /*

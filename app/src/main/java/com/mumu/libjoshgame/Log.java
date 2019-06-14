@@ -9,7 +9,7 @@ import java.util.Calendar;
 import java.util.Locale;
 
 /**
- * Log saves logs to local buffer file and also outputs to logcat
+ * Logger saves logs to local buffer file and also outputs to logcat
  */
 
 public final class Log {
