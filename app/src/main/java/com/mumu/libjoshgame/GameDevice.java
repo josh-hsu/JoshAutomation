@@ -238,6 +238,23 @@ public class GameDevice {
     }
 
     /**
+     * query all screenshot slot state
+     * @return All screenshot slot state
+     */
+    public int[] screenshotState() {
+        return mFileState;
+    }
+
+    /**
+     * query single screen shot state
+     * @param index The index of the slot
+     * @return The screenshot slot state of the index
+     */
+    public int screenshotState(int index) {
+        return mFileState[index];
+    }
+
+    /**
      * screenshotOpen
      * get the file handle of specific screenshot at index of the slot
      * if the screenshot cannot be returned, an Exception will be thrown
@@ -347,8 +364,24 @@ public class GameDevice {
         mDeviceInterface.logDevice(level, tag, msg);
    }
 
+    /**
+     * get the {@link Logger} wrapper for this device
+     * @return The Logger wrapper
+     */
     public Logger getLogger() {
         return mLogger;
    }
+
+   /**
+     * query preloaded screenshot path count for indexing
+     * @return Total length of screenshot path count
+     */
+    public int getScreenshotSlotCount() {
+        if (mDeviceInterface == null) {
+            throw new RuntimeException("Fatal exception that device interface is null");
+        }
+
+        return mFilePaths.length;
+    }
 
 }

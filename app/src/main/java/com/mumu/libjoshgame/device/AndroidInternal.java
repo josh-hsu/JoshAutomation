@@ -20,10 +20,6 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.lang.reflect.Method;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
-import java.util.Calendar;
-import java.util.Locale;
 import java.util.Map;
 
 public class AndroidInternal extends GameDevice implements IGameDevice, ServiceConnection {
@@ -135,8 +131,8 @@ public class AndroidInternal extends GameDevice implements IGameDevice, ServiceC
                 PRELOAD_PATH_USER_SLOT_4,
                 PRELOAD_PATH_USER_SLOT_5,
                 PRELOAD_PATH_USER_SLOT_6,
-                PRELOAD_PATH_INTERNAL,
-                PRELOAD_PATH_FIND_COLOR,
+                //PRELOAD_PATH_INTERNAL,   //internal path is deprecated
+                //PRELOAD_PATH_FIND_COLOR, //find color path is deprecated
         };
         mPreloadedPathCount = mPreloadedPath.length;
 

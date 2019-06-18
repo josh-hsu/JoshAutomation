@@ -3,7 +3,7 @@ package com.mumu.libjoshgame.service;
 import com.mumu.libjoshgame.GameDevice;
 
 /**
- * This class is the for logging in {@link com.mumu.libjoshgame.GameLibrary20}
+ * This class is for logging in {@link com.mumu.libjoshgame.GameLibrary20}
  * Every log will be saved in text file, console and device itself.
  */
 public class Logger {
