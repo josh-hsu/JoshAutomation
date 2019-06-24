@@ -19,9 +19,16 @@ import java.util.ArrayList;
  */
 public class DeviceScreen {
     private static final String TAG = GameLibrary20.TAG;
-    public static final int POLICY_AUTO = 0;
+
+    /**
+     * screenshot policies determine when or how to refresh a new screenshot
+     * POLICY_DEFAULT: refresh policy default is manual mode
+     * POLICY_STRICT: refresh every time
+     * POLICY_MANUAL: refresh by caller itself
+     */
     public static final int POLICY_STRICT = 1;
-    public static final int POLICY_FIFO = 2;
+    public static final int POLICY_MANUAL = 2;
+    public static final int POLICY_DEFAULT = POLICY_MANUAL;
 
     private GameDevice mDevice;
     private Logger Log; //the naming is just for easy use
@@ -33,7 +40,7 @@ public class DeviceScreen {
     private int mCurrentGameOrientation;
     private int[] mAmbiguousRange = {0x05, 0x05, 0x05};
     private final int mMaxColorFinding = 10;
-    private int mCurrentScreenshotPolicy = POLICY_AUTO;
+    private int mScreenshotPolicy = POLICY_DEFAULT;
     private int mScreenshotSlotCount;
     private int mScreenshotCurrentSlot;
     private boolean mChatty = true;
@@ -96,21 +103,18 @@ public class DeviceScreen {
     }
 
     public void setScreenshotPolicy(int policy) {
-        if (policy < 0 || policy > POLICY_FIFO)
-            mCurrentScreenshotPolicy = POLICY_AUTO;
+        if (policy < 0 || policy > POLICY_MANUAL)
+            mScreenshotPolicy = POLICY_DEFAULT;
         else
-            mCurrentScreenshotPolicy = policy;
+            mScreenshotPolicy = policy;
     }
 
     //
     // Main functions
     //
 
-    /*
-     * calculateOffset
-     * This function calculate the offset of dump file for
-     * retrieving color of the specific point
-     */
+    // calculate the offset of dump file for
+    // retrieving color of the specific point
     private int calculateOffset(ScreenCoord coord) {
         int offset = 0;
         final int bpp = 4;
@@ -142,6 +146,57 @@ public class DeviceScreen {
         return offset;
     }
 
+    private boolean colorWithinRange(byte a, byte b, int range) {
+        Byte byteA = a;
+        Byte byteB = b;
+        int src = byteA.intValue() & 0xFF;
+        int dst = byteB.intValue() & 0xFF;
+        int upperBound = src + range;
+        int lowerBound = src - range;
+
+        if (upperBound > 0xFF)
+            upperBound = 0xFF;
+
+        if (lowerBound < 0)
+            lowerBound = 0;
+
+        //Logger.d(TAG, "compare range " + upperBound + " > " + lowerBound + " with " + dst);
+        return (dst <= upperBound) && (dst >= lowerBound);
+    }
+
+    /**
+     * return the slot count of screenshot slots
+     * @return The slot count of screenshot slots
+     */
+    public int getScreenshotSlotCount() {
+        return mScreenshotSlotCount;
+    }
+
+    /**
+     * request a refresh of screenshot in current slot
+     * @return 0 upon success
+     * @throws InterruptedException if screenshot cannot be done
+     */
+    public int requestRefresh() throws InterruptedException {
+        int ret;
+        int index = mScreenshotCurrentSlot;
+
+        mDevice.screenshotClose(index);
+
+        ret = mDevice.screenDump(index, false);
+        if (ret < 0) {
+            if (ret == GameDevice.SCREENSHOT_IN_USE)
+                ret = mDevice.screenDump(index, true);
+            else if (ret == GameDevice.SCREENSHOT_DUMP_FAIL)
+                throw new InterruptedException();
+
+            if (ret == GameDevice.SCREENSHOT_CLOSE_FAIL)
+                throw new InterruptedException();
+        }
+
+        return ret;
+    }
+
     /**
      * compare two colors if they are the same
      * @param src First color
@@ -162,29 +217,11 @@ public class DeviceScreen {
         return result;
     }
 
-    private boolean colorWithinRange(byte a, byte b, int range) {
-        Byte byteA = a;
-        Byte byteB = b;
-        int src = byteA.intValue() & 0xFF;
-        int dst = byteB.intValue() & 0xFF;
-        int upperBound = src + range;
-        int lowerBound = src - range;
-
-        if (upperBound > 0xFF)
-            upperBound = 0xFF;
-
-        if (lowerBound < 0)
-            lowerBound = 0;
-
-        //Logger.d(TAG, "compare range " + upperBound + " > " + lowerBound + " with " + dst);
-        return (dst <= upperBound) && (dst >= lowerBound);
-    }
-
     /**
      * change the current slot for further screenshot
      * @param index The target index of the slot
-     * @param closeOld True if need to close previous screenshot; False if preserved previous
-     *                 screenshot for future need.
+     * @param closeOld True if need to close previous screenshot; False if you like to preserve
+     *                 previous screenshot for future need.
      * @return 0 if success
      */
     public int changeSlot(int index, boolean closeOld) {
@@ -216,6 +253,7 @@ public class DeviceScreen {
     /**
      * Get the color on screenshot at index
      * If refresh is needed and the slot is in use, force it.
+     * [synced function]
      * @param index The index of the screenshot slot
      * @param src The source coordinate location
      * @param refresh True if we need to take new screenshot before fetching color
@@ -223,7 +261,7 @@ public class DeviceScreen {
      * @throws InterruptedException When interrupted or error happened
      * @throws ScreenshotErrorException When screenshot error happened
      */
-    public synchronized ScreenColor getColorOnPoint(int index, ScreenCoord src, boolean refresh)
+    public synchronized ScreenColor getColorOnScreen(int index, ScreenCoord src, boolean refresh)
             throws InterruptedException, ScreenshotErrorException {
 
         RandomAccessFile dumpFile;
@@ -234,18 +272,8 @@ public class DeviceScreen {
         ScreenColor dest = new ScreenColor();
 
         try {
-            if (refresh) {
-                ret = mDevice.screenDump(index, false);
-                if (ret < 0) {
-                    if (ret == GameDevice.SCREENSHOT_IN_USE)
-                        ret = mDevice.screenDump(index, true);
-                    else if (ret == GameDevice.SCREENSHOT_DUMP_FAIL)
-                        throw new InterruptedException();
-
-                    if (ret == GameDevice.SCREENSHOT_CLOSE_FAIL)
-                        throw new InterruptedException();
-                }
-            }
+            if (refresh)
+                ret = requestRefresh();
 
             dumpFile = mDevice.screenshotOpen(index);
             if (dumpFile == null) {
@@ -257,7 +285,6 @@ public class DeviceScreen {
             dest.g = colorInfo[1];
             dest.b = colorInfo[2];
             dest.t = colorInfo[3];
-            dumpFile.close();
         } catch (InterruptedException e) {
             Log.d(TAG, "File operation failed: " + e.toString());
             throw e;
@@ -270,6 +297,35 @@ public class DeviceScreen {
     }
 
     /**
+     * get multiple colors on screen
+     * @param index The slot index
+     * @param coords The coordination of colors
+     * @param refresh True if request a new screenshot first
+     * @return The array list of screen colors
+     * @throws InterruptedException When interrupted or error happened
+     * @throws ScreenshotErrorException When screenshot error happened
+     */
+    public ArrayList<ScreenColor> getMultiColorOnScreen(int index, ArrayList<ScreenCoord> coords, boolean refresh)
+            throws InterruptedException, ScreenshotErrorException {
+        ArrayList<ScreenColor> colors = new ArrayList<>();
+
+        if (index < 0 || index >= mScreenshotSlotCount)
+            throw new IndexOutOfBoundsException("index " + index + " is not legal.");
+
+        if (coords == null || coords.size() == 0)
+            throw new IllegalArgumentException("coords is null or size is zero");
+
+        if(refresh)
+            requestRefresh();
+
+        for(ScreenCoord coord: coords) {
+            colors.add(getColorOnScreen(coord, false));
+        }
+
+        return colors;
+    }
+
+    /**
      * Get the color on a screenshot at current index
      * @param src The source coordinate location
      * @param refresh True if we need to take new screenshot before fetching color
@@ -277,31 +333,157 @@ public class DeviceScreen {
      * @throws InterruptedException When interrupted or error happened
      * @throws ScreenshotErrorException When screenshot error happened
      */
-    public ScreenColor getColorOnPoint(ScreenCoord src, boolean refresh)
+    public ScreenColor getColorOnScreen(ScreenCoord src, boolean refresh)
             throws InterruptedException, ScreenshotErrorException {
-        return getColorOnPoint(mScreenshotCurrentSlot, src, refresh);
+        return getColorOnScreen(mScreenshotCurrentSlot, src, refresh);
     }
 
+    /**
+     * get multiple colors on screen on current slot
+     * @param coords The coordination of colors
+     * @param refresh True if request a new screenshot first
+     * @return The array list of screen colors
+     * @throws InterruptedException When interrupted or error happened
+     * @throws ScreenshotErrorException When screenshot error happened
+     */
+    public ArrayList<ScreenColor> getMultiColorOnScreen(ArrayList<ScreenCoord> coords, boolean refresh)
+            throws InterruptedException, ScreenshotErrorException {
+        return getMultiColorOnScreen(mScreenshotCurrentSlot, coords, refresh);
+    }
+
+    /**
+     * Check if color at the point.coord is equal to point.color
+     * @param point The point includes the coord to fetch color and determine if it's same as in color
+     * @return True if color is the same or False if the colors are different
+     * @throws InterruptedException When interrupted happened usually the signal from script
+     * @throws ScreenshotErrorException When screenshot error happened
+     */
     public boolean colorIs(ScreenPoint point) throws InterruptedException, ScreenshotErrorException {
+        boolean refreshNeeded = false;
         if (point == null)
             throw new NullPointerException("point is null");
 
-        ScreenColor currentColor = getColorOnPoint(point.coord, false);
+        if (mScreenshotPolicy == POLICY_STRICT)
+            refreshNeeded = true;
+
+        ScreenColor currentColor = getColorOnScreen(point.coord, refreshNeeded);
         return colorCompare(currentColor, point.color);
     }
 
+    /**
+     * Check if colors in the points array are the same as in the screen
+     * @param points The point includes the coord to fetch color and determine if it's same as in color
+     * @return True if colors are the same or False if at least one of the colors are different
+     * @throws InterruptedException When interrupted happened usually the signal from script
+     * @throws ScreenshotErrorException When screenshot error happened
+     */
     public boolean colorsAre(ArrayList<ScreenPoint> points) throws InterruptedException, ScreenshotErrorException {
         if (points == null)
             throw new NullPointerException("point array is null");
 
-        // since we are not doing refresh in this process
-        // calling colorIs repeatedly will not affect the performance
-        for(ScreenPoint point : points) {
-            if (!colorIs(point))
+        // refresh first, we do not like to refresh every point we'd like to check
+        if (mScreenshotPolicy == POLICY_STRICT)
+            requestRefresh();
+
+        for(ScreenPoint point: points) {
+            ScreenColor currentColor = getColorOnScreen(point.coord, false);
+            if (!colorCompare(currentColor, point.color))
                 return false;
         }
 
         return true;
     }
+
+    /**
+     * Check if all colors in the array are all in the specific region rect
+     * Note that the colors in the array in unordered
+     * @param rectLeftTop The LT of rect
+     * @param rectRightBottom The RB of rect
+     * @param colors The set of {@link ScreenColor} in match
+     * @return True if all colors are in the rect. False if at least one color is not in the rect.
+     * @throws InterruptedException When interrupted happened usually the signal from script
+     * @throws ScreenshotErrorException When screenshot error happened
+     */
+    public boolean colorsAreInRect(ScreenCoord rectLeftTop, ScreenCoord rectRightBottom, ArrayList<ScreenColor> colors)
+            throws InterruptedException, ScreenshotErrorException  {
+
+        ArrayList<ScreenCoord> coordList = new ArrayList<>();
+        ArrayList<ScreenColor> colorsReturned;
+        ArrayList<Boolean> checkList = new ArrayList<>();
+        int colorCount, orientation;
+        int x_start, x_end, y_start, y_end;
+
+        // sanity check
+        if (colors == null || rectLeftTop == null || rectRightBottom == null) {
+            Log.w(TAG, "checkColorIsInRegion: colors cannot be null");
+            throw new NullPointerException("checkColorIsInRegion: colors cannot be null");
+        } else {
+            orientation = rectLeftTop.orientation;
+            colorCount = colors.size();
+        }
+
+        if (rectLeftTop.orientation != rectRightBottom.orientation) {
+            Log.w(TAG, "checkColorIsInRegion: Src and Dest must in same orientation");
+            throw new IllegalArgumentException("checkColorIsInRegion: Src and Dest must in same orientation");
+        }
+
+        if (colorCount < 1 || colorCount > mMaxColorFinding) {
+            Log.w(TAG, "checkColorIsInRegion: colors size should be bigger than 0 and smaller than " +
+                    mMaxColorFinding);
+            throw new IllegalArgumentException("checkColorIsInRegion: colors size should be bigger than 0 and smaller than " +
+                    mMaxColorFinding);
+        }
+
+        for(int i = 0; i < colorCount; i++)
+            checkList.add(false);
+
+        if (rectLeftTop.x > rectRightBottom.x) {
+            x_start = rectRightBottom.x;
+            x_end = rectLeftTop.x;
+        } else {
+            x_start = rectLeftTop.x;
+            x_end = rectRightBottom.x;
+        }
+
+        if (rectLeftTop.y > rectRightBottom.y) {
+            y_start = rectRightBottom.y;
+            y_end = rectLeftTop.y;
+        } else {
+            y_start = rectLeftTop.y;
+            y_end = rectRightBottom.y;
+        }
+
+        for(int x = x_start; x <= x_end; x++) {
+            for(int y = y_start; y <= y_end; y++) {
+                coordList.add(new ScreenCoord(x, y, orientation));
+            }
+        }
+
+        if (mChatty) Log.d(TAG, "FindColorInRange: now checking total " + coordList.size() + " points");
+
+        colorsReturned = getMultiColorOnScreen(coordList, true);
+        for(ScreenColor color : colorsReturned) {
+            for (int i = 0; i < colorCount; i++) {
+                ScreenColor sc = colors.get(i);
+
+                if (checkList.get(i))
+                    continue;
+
+                if (colorCompare(color, sc)) {
+                    if (mChatty) Log.d(TAG, "FindColorInRange: Found color " + color.toString());
+                    checkList.set(i, true);
+                }
+            }
+        }
+
+        for(Boolean b : checkList) {
+            if (!b)
+                return false;
+        }
+
+        return true;
+    }
+
+
 
 }
