@@ -4,6 +4,10 @@ import android.content.Context;
 
 import com.mumu.libjoshgame.GameDevice;
 import com.mumu.libjoshgame.GameLibrary20;
+import com.mumu.libjoshgame.ScreenColor;
+import com.mumu.libjoshgame.ScreenCoord;
+import com.mumu.libjoshgame.ScreenPoint;
+import com.mumu.libjoshgame.service.DeviceScreen;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -80,11 +84,99 @@ public class GL20Test {
         }
     };
 
+    private TestCase testGL20DeviceScreen_testGetScreenSlotCount = new TestCase() {
+        @Override
+        public int runTest(Object arg) {
+            if (arg instanceof GameLibrary20) {
+                GameLibrary20 gl = (GameLibrary20) arg;
+                int slot_count = gl.getScreenshotSlotCount();
+
+                if (slot_count >= 1) {
+                    return TEST_PASS;
+                } else if (slot_count == 0) {
+                    return TEST_FAIL_INTERNAL_ILLEGAL;
+                } else {
+                    return TEST_FAIL_INTERNAL_FATAL;
+                }
+            }
+            return TEST_FAIL_INTERNAL_ILLEGAL;
+        }
+
+        @Override
+        public String name() {
+            return "testGL20DeviceScreen_testGetScreenSlotCount";
+        }
+    };
+
+    private TestCase testGL20DeviceScreen_testScreenshotStaticColor = new TestCase() {
+        @Override
+        public int runTest(Object arg) {
+            if (arg instanceof GameLibrary20) {
+                GameLibrary20 gl = (GameLibrary20) arg;
+                int slot_count = gl.getScreenshotSlotCount();
+                int ret = 0;
+                boolean compareResult = false;
+                ScreenCoord testCoord = new ScreenCoord(1,1, ScreenPoint.SO_Portrait);
+                ScreenColor testColor;
+
+                ret = gl.changeSlot(0, true);
+                if (ret < 0)
+                    return -ret;
+
+                ret = gl.getCurrentSlot();
+                if (ret != 0)
+                    return TEST_FAIL_GL_RETURN_NOT_EXPECTED;
+
+                gl.setScreenshotPolicy(DeviceScreen.POLICY_MANUAL);
+
+                try {
+                    ret = gl.requestRefresh();
+                } catch (InterruptedException e) {
+                    return TEST_FAIL_INTERNAL_FATAL;
+                }
+
+                if (ret < 0)
+                    return ret;
+
+                try {
+                    testColor = gl.getColorOnScreen(0, testCoord, false);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    return TEST_FAIL_INTERNAL_FATAL;
+                }
+
+                if (testColor != null) {
+                    try {
+                        compareResult = gl.colorIs(new ScreenPoint(testCoord, testColor));
+
+                        if (compareResult)
+                            return TEST_PASS;
+                        else
+                            return TEST_FAIL_GL_RETURN_NOT_EXPECTED;
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                        return TEST_FAIL_INTERNAL_ILLEGAL;
+                    }
+                } else {
+                    return TEST_FAIL_INTERNAL_ILLEGAL;
+                }
+            }
+            return TEST_FAIL_INTERNAL_ILLEGAL;
+        }
+
+        @Override
+        public String name() {
+            return "testGL20DeviceScreen_testScreenshotStaticColor";
+        }
+    };
+
     private void prepareTestCases(GL20Test self) {
         self.mTestCases = new ArrayList<>();
         self.mTestCases.add(testGL20GetResolution);
         self.mTestCases.add(testGL20GetDeviceName);
         self.mTestCases.add(testGL20GetSystemType);
+        self.mTestCases.add(testGL20DeviceScreen_testGetScreenSlotCount);
+        self.mTestCases.add(testGL20DeviceScreen_testScreenshotStaticColor);
     }
 
     //

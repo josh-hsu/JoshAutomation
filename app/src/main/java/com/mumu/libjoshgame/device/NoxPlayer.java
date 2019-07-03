@@ -33,7 +33,7 @@ public class NoxPlayer extends GameDevice implements IGameDevice {
 
     @Override
     public int[] getScreenDimension() {
-        return new int[] {0, 0};
+        return new int[] {1080, 1920};
     }
 
     @Override
@@ -70,7 +70,22 @@ public class NoxPlayer extends GameDevice implements IGameDevice {
     }
 
     @Override
+    public void setWaitTransactionTimeMsOverride(int ms) {
+
+    }
+
+    @Override
+    public int getWaitTransactionTimeMs() {
+        return 0;
+    }
+
+    @Override
     public int dumpScreen(String path) {
+        return 0;
+    }
+
+    @Override
+    public int mouseEvent(int x1, int y1, int x2, int y2, int event) {
         return 0;
     }
 

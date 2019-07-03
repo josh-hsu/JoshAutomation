@@ -22,6 +22,17 @@ public interface IGameDevice {
     int dumpScreen(String path);
 
     /**
+     * deal with the mouse or touch screen events
+     * @param x1 source x-axis coordination
+     * @param y1 source y-axis coordination
+     * @param x2 destination x-axis coordination (may not need)
+     * @param y2 destination y-axis coordination (may not need)
+     * @param event The event type
+     * @return 0 upon success
+     */
+    int mouseEvent(int x1, int y1, int x2, int y2, int event);
+
+    /**
      * run privileged command such as dump screen or others
      * the result will be ignored
      * TODO: Redirect the pipe of output to internal path

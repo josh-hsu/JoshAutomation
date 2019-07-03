@@ -230,9 +230,8 @@ public class DeviceScreen {
         if (index < 0 || index >= mScreenshotSlotCount)
             throw new IndexOutOfBoundsException("index " + index + " is not legal");
 
+        Log.d(TAG, "Change screenshot slot from " + mScreenshotCurrentSlot + " to " + index);
         if (mScreenshotCurrentSlot != index && closeOld) {
-            Log.d(TAG, "Change screenshot slot from " + mScreenshotCurrentSlot + " to " + index);
-
             // close opened screenshot slot, but even if release failed, we don't need to handle it
             if (mDevice.screenshotState(mScreenshotCurrentSlot) == GameDevice.SCREENSHOT_OPENED) {
                 ret = mDevice.screenshotClose(mScreenshotCurrentSlot);
@@ -248,6 +247,14 @@ public class DeviceScreen {
 
         mScreenshotCurrentSlot = index;
         return ret;
+    }
+
+    /**
+     * get current slot index
+     * @return The current slot index
+     */
+    public int getCurrentSlot() {
+        return mScreenshotCurrentSlot;
     }
 
     /**

@@ -245,6 +245,11 @@ public class AndroidInternal extends GameDevice implements IGameDevice, ServiceC
     }
 
     @Override
+    public int mouseEvent(int x1, int y1, int x2, int y2, int event) {
+        return 0;
+    }
+
+    @Override
     public String runShellCommand(String shellCmd) {
         String[] cmd = {"/system/bin/sh", "-c", shellCmd};
         StringBuilder sb = new StringBuilder();

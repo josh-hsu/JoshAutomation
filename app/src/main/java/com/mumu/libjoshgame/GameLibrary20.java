@@ -2,7 +2,10 @@ package com.mumu.libjoshgame;
 
 import com.mumu.libjoshgame.device.AndroidInternal;
 import com.mumu.libjoshgame.device.NoxPlayer;
+import com.mumu.libjoshgame.service.DeviceInput;
 import com.mumu.libjoshgame.service.DeviceScreen;
+
+import java.util.ArrayList;
 
 /**
  * Josh Game Library - Version 2.0
@@ -21,9 +24,10 @@ public class GameLibrary20 {
     public static final int DEVICE_TYPE_ANDROID_INTERNAL = 1;
     public static final int DEVICE_TYPE_NOX_PLAYER = 9;
 
-    private boolean mDeviceReady;
-    private GameDevice mDevice;
+    private boolean      mDeviceReady;
+    private GameDevice   mDevice;
     private DeviceScreen mScreenService;
+    private DeviceInput  mInputService;
 
     public GameLibrary20() {
         mDeviceReady = false;
@@ -95,6 +99,7 @@ public class GameLibrary20 {
 
     private void initGameLibraryInternal() {
         mScreenService = new DeviceScreen(mDevice);
+        mInputService = new DeviceInput(this, mDevice);
     }
 
     // =============================
@@ -130,6 +135,52 @@ public class GameLibrary20 {
             return -1;
         else
             return mDevice.getDeviceSystemType();
+    }
+
+    // =============================
+    //  DEVICE SCREEN GL
+    // =============================
+    public int getScreenshotSlotCount() {
+        return mScreenService.getScreenshotSlotCount();
+    }
+
+    public int changeSlot(int index, boolean closeOld) {
+        return mScreenService.changeSlot(index, closeOld);
+    }
+
+    public int getCurrentSlot() {
+        return mScreenService.getCurrentSlot();
+    }
+
+    public void setScreenshotPolicy(int policy) {
+        mScreenService.setScreenshotPolicy(policy);
+    }
+
+    public int requestRefresh() throws InterruptedException {
+        return mScreenService.requestRefresh();
+    }
+
+    public ScreenColor getColorOnScreen(int index, ScreenCoord src, boolean refreshNeeded)
+            throws InterruptedException, ScreenshotErrorException {
+        return mScreenService.getColorOnScreen(index, src, refreshNeeded);
+    }
+
+    public ArrayList<ScreenColor> getMultiColorOnScreen(int index, ArrayList<ScreenCoord> coords, boolean refresh)
+            throws InterruptedException, ScreenshotErrorException {
+        return mScreenService.getMultiColorOnScreen(index, coords, refresh);
+    }
+
+    public boolean colorIs(ScreenPoint point) throws InterruptedException, ScreenshotErrorException {
+        return mScreenService.colorIs(point);
+    }
+
+    public boolean colorsAre(ArrayList<ScreenPoint> points) throws InterruptedException, ScreenshotErrorException {
+        return mScreenService.colorsAre(points);
+    }
+
+    public boolean colorsAreInRect(ScreenCoord rectLeftTop, ScreenCoord rectRightBottom, ArrayList<ScreenColor> colors)
+            throws InterruptedException, ScreenshotErrorException  {
+        return colorsAreInRect(rectLeftTop, rectRightBottom, colors);
     }
 
 

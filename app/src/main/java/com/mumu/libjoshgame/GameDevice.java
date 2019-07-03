@@ -25,11 +25,11 @@ public class GameDevice {
     public static final int SCREENSHOT_OPENED = 1;
     public static final int SCREENSHOT_CLOSED = 2;
 
-    public static final int SCREENSHOT_IN_USE = -10;
-    public static final int SCREENSHOT_CLOSE_FAIL = -9;
-    public static final int SCREENSHOT_DUMP_FAIL = -8;
+    public static final int SCREENSHOT_IN_USE      = -10;
+    public static final int SCREENSHOT_CLOSE_FAIL  = -9;
+    public static final int SCREENSHOT_DUMP_FAIL   = -8;
     public static final int SCREENSHOT_INDEX_ERROR = -3;
-    public static final int SCREENSHOT_NO_ERROR = 0;
+    public static final int SCREENSHOT_NO_ERROR    = 0;
 
     public static final int DEVICE_SYS_WINDOWS = 0;
     public static final int DEVICE_SYS_LINUX   = 1;
@@ -40,6 +40,14 @@ public class GameDevice {
     public static final int LOG_WARNING = 2;
     public static final int LOG_ERROR   = 3;
     public static final int LOG_FATAL   = 4;
+
+    public static final int MOUSE_TAP        = 0;
+    public static final int MOUSE_DOUBLE_TAP = 1;
+    public static final int MOUSE_TRIPLE_TAP = 2;
+    public static final int MOUSE_PRESS      = 3;
+    public static final int MOUSE_RELEASE    = 4;
+    public static final int MOUSE_MOVE_TO    = 5;
+    public static final int MOUSE_SWIPE      = 6;
 
     protected boolean mInitialized = false;
     private String mDeviceName;
@@ -92,6 +100,7 @@ public class GameDevice {
         }
 
         mLogger = new Logger(this);
+        mInitialized = true;
 
         return 0;
     }
@@ -222,7 +231,7 @@ public class GameDevice {
             }
         }
 
-        Log.i(TAG, "trying to dump at index " + index + ", path is " + mFilePaths[index]);
+        log(LOG_DEBUG, TAG, "trying to dump at index " + index + ", path is " + mFilePaths[index]);
         ret = mDeviceInterface.dumpScreen(mFilePaths[index]);
         if (ret < 0) {
             Log.e(TAG, "dumpscreen failed, ret = " + ret);
@@ -341,8 +350,8 @@ public class GameDevice {
 
         if (mFileState[index] == SCREENSHOT_EMPTY ||
                 mFileState[index] == SCREENSHOT_CLOSED) {
-            mFileSlot[index] = null;
-            mFileState[index] = SCREENSHOT_EMPTY;
+            mFileSlot[index] = null;                //nullify the file slot as free the space
+            mFileState[index] = SCREENSHOT_EMPTY;   //mark the state as EMPTY
             return SCREENSHOT_NO_ERROR;
         }
 
