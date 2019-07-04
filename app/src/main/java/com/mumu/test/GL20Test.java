@@ -211,12 +211,12 @@ public class GL20Test {
                 continue;
             }
 
-            Log.t("  [" + i + "] " + test.name() + "");
+            Log.r("  [" + i + "] " + test.name() + "           ....");
             rc = test.runTest(gl);
             if (rc == TEST_PASS) {
-                Log.r("           PASS");
+                Log.r("  [" + i + "] " + test.name() + "           PASS");
             } else {
-                Log.r("           FAIL          failure code: " + rc);
+                Log.r("  [" + i + "] " + test.name() + "           FAIL          failure code: " + rc);
             }
         }
     }

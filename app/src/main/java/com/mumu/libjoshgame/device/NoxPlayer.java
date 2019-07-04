@@ -155,6 +155,6 @@ public class NoxPlayer extends GameDevice implements IGameDevice {
                 break;
         }
 
-        System.out.println(String.format("%18s: <%s> %s: %s\n", thisTime, thisLevel, tag, msg));
+        System.out.println(String.format("%18s: <%s> %s: %s", thisTime, thisLevel, tag, msg));
     }
 }
