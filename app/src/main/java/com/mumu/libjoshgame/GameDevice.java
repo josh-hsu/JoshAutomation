@@ -48,6 +48,7 @@ public class GameDevice {
     public static final int MOUSE_RELEASE    = 4;
     public static final int MOUSE_MOVE_TO    = 5;
     public static final int MOUSE_SWIPE      = 6;
+    public static final int MOUSE_EVENT_MAX  = 7;
 
     protected boolean mInitialized = false;
     private String mDeviceName;

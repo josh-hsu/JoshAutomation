@@ -180,7 +180,7 @@ public class GameLibrary20 {
 
     public boolean colorsAreInRect(ScreenCoord rectLeftTop, ScreenCoord rectRightBottom, ArrayList<ScreenColor> colors)
             throws InterruptedException, ScreenshotErrorException  {
-        return colorsAreInRect(rectLeftTop, rectRightBottom, colors);
+        return mScreenService.colorsAreInRect(rectLeftTop, rectRightBottom, colors);
     }
 
 

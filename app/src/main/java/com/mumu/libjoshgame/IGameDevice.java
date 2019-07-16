@@ -43,7 +43,7 @@ public interface IGameDevice {
 
     /**
      * run normal shell command
-     * the result we be returned
+     * the result will be returned
      * @param command The command string send to device
      * @return The result of the command
      */
@@ -88,9 +88,9 @@ public interface IGameDevice {
 
     /**
      * log information into device
-     * @param level
-     * @param tag
-     * @param log
+     * @param level Log level defined in {@link GameLibrary20}
+     * @param tag Log tag label String
+     * @param log Log text String
      */
     void logDevice(int level, String tag, String log);
 }

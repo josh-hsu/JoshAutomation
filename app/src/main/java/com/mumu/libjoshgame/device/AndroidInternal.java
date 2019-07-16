@@ -245,7 +245,37 @@ public class AndroidInternal extends GameDevice implements IGameDevice, ServiceC
     }
 
     @Override
-    public int mouseEvent(int x1, int y1, int x2, int y2, int event) {
+    public int mouseEvent(int x, int y, int tx, int ty, int event) {
+        if (event < 0 || event >= MOUSE_EVENT_MAX) {
+            throw new IllegalArgumentException("Unknown mouse event " + event);
+        }
+
+        switch (event) {
+            case MOUSE_TAP:
+                runCommand("input tap " + x + " " + y);
+                break;
+            case MOUSE_DOUBLE_TAP:
+                runCommand("input tap " + x + " " + y);
+                runCommand("input tap " + x + " " + y);
+                break;
+            case MOUSE_TRIPLE_TAP:
+                runCommand("input tap " + x + " " + y);
+                runCommand("input tap " + x + " " + y);
+                runCommand("input tap " + x + " " + y);
+                break;
+            case MOUSE_PRESS:
+                break;
+            case MOUSE_RELEASE:
+                break;
+            case MOUSE_MOVE_TO:
+                break;
+            case MOUSE_SWIPE:
+                runCommand("input swipe " + x + " " + y + " " + tx + " " + ty);
+                break;
+            default: //should not happen
+                break;
+        }
+
         return 0;
     }
 
