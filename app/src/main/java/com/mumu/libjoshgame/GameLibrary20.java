@@ -2,7 +2,7 @@ package com.mumu.libjoshgame;
 
 import com.mumu.libjoshgame.device.AndroidInternal;
 import com.mumu.libjoshgame.device.NoxPlayer;
-import com.mumu.libjoshgame.service.DeviceInput;
+import com.mumu.libjoshgame.service.DeviceInteract;
 import com.mumu.libjoshgame.service.DeviceScreen;
 
 import java.util.ArrayList;
@@ -24,10 +24,10 @@ public class GameLibrary20 {
     public static final int DEVICE_TYPE_ANDROID_INTERNAL = 1;
     public static final int DEVICE_TYPE_NOX_PLAYER = 9;
 
-    private boolean      mDeviceReady;
-    private GameDevice   mDevice;
-    private DeviceScreen mScreenService;
-    private DeviceInput  mInputService;
+    private boolean        mDeviceReady;
+    private GameDevice     mDevice;
+    private DeviceScreen   mScreenService;
+    private DeviceInteract mInteractService;
 
     public GameLibrary20() {
         mDeviceReady = false;
@@ -99,7 +99,21 @@ public class GameLibrary20 {
 
     private void initGameLibraryInternal() {
         mScreenService = new DeviceScreen(mDevice);
-        mInputService = new DeviceInput(this, mDevice);
+        mInteractService = new DeviceInteract(this, mDevice);
+
+        //this is for debug only
+        //TODO: remove this when release
+        initGameLibraryInternalDefaultParams();
+    }
+
+    private void initGameLibraryInternalDefaultParams() {
+        mScreenService.setScreenshotPolicy(DeviceScreen.POLICY_DEFAULT);
+        mScreenService.setAmbiguousRange(new int[] {0x0A, 0x0A, 0x0A});
+        mScreenService.setScreenDimension(mDevice.getScreenDimension());
+        mScreenService.setGameOrientation(ScreenPoint.SO_Landscape);
+        mInteractService.setGameOrientation(ScreenPoint.SO_Landscape);
+        mInteractService.setInputShift(0x06);
+        mInteractService.setScreenDimension(mDevice.getScreenDimension());
     }
 
     // =============================
@@ -183,6 +197,36 @@ public class GameLibrary20 {
         return mScreenService.colorsAreInRect(rectLeftTop, rectRightBottom, colors);
     }
 
+    // =============================
+    //  DEVICE INPUT GL
+    // =============================
+    public int mouseClick(ScreenCoord coord) {
+        return mInteractService.mouseClick(coord);
+    }
+
+    public int mouseDoubleClick(ScreenCoord coord) {
+        return mInteractService.mouseDoubleClick(coord);
+    }
+
+    public int mouseTripleClick(ScreenCoord coord) {
+        return mInteractService.mouseTripleClick(coord);
+    }
+
+    public int mouseDown(ScreenCoord coord) {
+        return mInteractService.mouseDown(coord);
+    }
+
+    public int mouseMoveTo(ScreenCoord coord) {
+        return mInteractService.mouseMoveTo(coord);
+    }
+
+    public int mouseUp(ScreenCoord coord) {
+        return mInteractService.mouseUp(coord);
+    }
+
+    public int mouseSwipe(ScreenCoord coordStart, ScreenCoord coordEnd) {
+        return mInteractService.mouseSwipe(coordStart, coordEnd);
+    }
 
     //
     // utils

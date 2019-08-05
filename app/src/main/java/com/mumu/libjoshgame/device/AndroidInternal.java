@@ -24,11 +24,11 @@ import java.util.Map;
 
 public class AndroidInternal extends GameDevice implements IGameDevice, ServiceConnection {
     private static final String TAG = JoshGameLibrary.TAG;
-    private static final String DEVICE_NAME = "AndroidInternal";
-    private static final String DEVICE_VERSION = "1.0";
-    private static final int    DEVICE_SYS_TYPE = DEVICE_SYS_LINUX;
-    private static final String PRELOAD_PATH_INTERNAL = Environment.getExternalStorageDirectory().toString() + "/internal.dump";
-    private static final String PRELOAD_PATH_FIND_COLOR = Environment.getExternalStorageDirectory().toString() + "/find_color.dump";
+    private static final String DEVICE_NAME              = "AndroidInternal";
+    private static final String DEVICE_VERSION           = "1.0";
+    private static final int    DEVICE_SYS_TYPE          = DEVICE_SYS_LINUX;
+    private static final String PRELOAD_PATH_INTERNAL    = Environment.getExternalStorageDirectory().toString() + "/internal.dump";
+    private static final String PRELOAD_PATH_FIND_COLOR  = Environment.getExternalStorageDirectory().toString() + "/find_color.dump";
     private static final String PRELOAD_PATH_USER_SLOT_0 = Environment.getExternalStorageDirectory().toString() + "/user_slot_0.dump";
     private static final String PRELOAD_PATH_USER_SLOT_1 = Environment.getExternalStorageDirectory().toString() + "/user_slot_1.dump";
     private static final String PRELOAD_PATH_USER_SLOT_2 = Environment.getExternalStorageDirectory().toString() + "/user_slot_2.dump";

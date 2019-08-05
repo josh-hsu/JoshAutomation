@@ -16,6 +16,16 @@ import java.io.RandomAccessFile;
 public class GameDevice {
     private static final String TAG = GameLibrary20.TAG;
 
+    public static final int LOG_VERBOSE = 0;
+    public static final int LOG_DEBUG   = 1;
+    public static final int LOG_WARNING = 2;
+    public static final int LOG_ERROR   = 3;
+    public static final int LOG_FATAL   = 4;
+
+    public static final int DEVICE_SYS_WINDOWS = 0;
+    public static final int DEVICE_SYS_LINUX   = 1;
+    public static final int DEVICE_SYS_DARWIN  = 2;
+
     /**
      * SCREENSHOT_EMPTY screenshot slot is fully released
      * SCREENSHOT_OPENED screenshot is opened and acquired by Application
@@ -30,16 +40,6 @@ public class GameDevice {
     public static final int SCREENSHOT_DUMP_FAIL   = -8;
     public static final int SCREENSHOT_INDEX_ERROR = -3;
     public static final int SCREENSHOT_NO_ERROR    = 0;
-
-    public static final int DEVICE_SYS_WINDOWS = 0;
-    public static final int DEVICE_SYS_LINUX   = 1;
-    public static final int DEVICE_SYS_DARWIN  = 2;
-
-    public static final int LOG_VERBOSE = 0;
-    public static final int LOG_DEBUG   = 1;
-    public static final int LOG_WARNING = 2;
-    public static final int LOG_ERROR   = 3;
-    public static final int LOG_FATAL   = 4;
 
     public static final int MOUSE_TAP        = 0;
     public static final int MOUSE_DOUBLE_TAP = 1;
@@ -361,6 +361,35 @@ public class GameDevice {
     }
 
     /**
+     * query preloaded screenshot path count for indexing
+     * @return Total length of screenshot path count
+     */
+    public int getScreenshotSlotCount() {
+        if (mDeviceInterface == null) {
+            throw new RuntimeException("Fatal exception that device interface is null");
+        }
+
+        return mFilePaths.length;
+    }
+
+
+    public int mouseInteract(int x, int y, int dx, int dy, int type) {
+        if (mDeviceInterface == null) {
+            throw new RuntimeException("Fatal exception that device interface is null");
+        }
+
+        return mDeviceInterface.mouseEvent(x, y, dx, dy, type);
+    }
+
+    public int mouseInteract(int x, int y, int type) {
+        if (mDeviceInterface == null) {
+            throw new RuntimeException("Fatal exception that device interface is null");
+        }
+
+        return mDeviceInterface.mouseEvent(x, y, 0, 0, type);
+    }
+
+    /**
      * log to device
      * @param level The level defined in {@link GameLibrary20}
      * @param tag The tag of this message
@@ -382,16 +411,6 @@ public class GameDevice {
         return mLogger;
    }
 
-   /**
-     * query preloaded screenshot path count for indexing
-     * @return Total length of screenshot path count
-     */
-    public int getScreenshotSlotCount() {
-        if (mDeviceInterface == null) {
-            throw new RuntimeException("Fatal exception that device interface is null");
-        }
 
-        return mFilePaths.length;
-    }
 
 }

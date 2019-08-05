@@ -79,7 +79,13 @@ public class DeviceScreen {
         mScreenWidth = w;
     }
 
-    public void setScreenOrientation(int o) {
+    public void setScreenDimension(int[] dims) {
+        if (dims.length != 2)
+            throw new IllegalArgumentException("dimension should have index of exact 2.");
+        setScreenDimension(dims[0], dims[1]);
+    }
+
+    public void setGameOrientation(int o) {
         mCurrentGameOrientation = o;
     }
 
