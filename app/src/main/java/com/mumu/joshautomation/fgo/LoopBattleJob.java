@@ -190,7 +190,7 @@ public class LoopBattleJob extends AutoJob {
                             mShouldJobRunning = false;
                             return;
                         }
-
+/*
                         sleep(1000);
                         if (mFGO.battleHandleFriendRequest() < 0) {
                             sendMessage("沒有朋友請求，可能正常");
@@ -209,7 +209,7 @@ public class LoopBattleJob extends AutoJob {
                                 return;
                             }
                         }
-
+*/
                         if (battleCountLimit-- < 0) {
                             sendMessage("戰鬥次數達成，離開戰鬥");
                             mShouldJobRunning = false;
@@ -217,7 +217,25 @@ public class LoopBattleJob extends AutoJob {
                         }
 
                         stageCleared = true;
-                        nextOngoingState = FGORoutine.STATE_IN_HOME; //Next step: In home
+                        nextOngoingState = FGORoutine.STATE_IN_BATTLE_OVER; //Next step: In home
+                        break;
+                    /*
+                     * STATE_IN_BATTLE_OVER
+                     */
+                    case FGORoutine.STATE_IN_BATTLE_OVER:
+                        mFGO.tapOnContinue();
+                        sleep(1000);
+
+                        // handle AP not enough
+                        if (mFGO.battleHandleAPSupply() < 0) {
+                            playNotificationSound();
+                            mShouldJobRunning = false;
+                            return;
+                        }
+                        sleep(4000);
+
+                        mFGO.battleContinueSetup();
+                        nextOngoingState = FGORoutine.STATE_IN_BATTLE; //Next step: In battle
                         break;
                     default:
                         break;

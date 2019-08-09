@@ -33,6 +33,7 @@ class FGORoutine {
     public static final int STATE_UNKNOWN = -1;
     public static final int STATE_IN_HOME = 0;
     public static final int STATE_IN_BATTLE = 1;
+    public static final int STATE_IN_BATTLE_OVER = 2;
 
     FGORoutine(JoshGameLibrary gl, AutoJobEventListener el) {
         mGL = gl;
@@ -293,6 +294,10 @@ class FGORoutine {
         mGL.getInputService().tapOnScreen(mDef.getScreenCoord("pointLoopBattleStage"));
     }
 
+    public void tapOnContinue() {
+        mGL.getInputService().tapOnScreen(mDef.getScreenCoord("pointContinueBattle"));
+    }
+
     public void tapOnCard(int[] cardIndex) throws InterruptedException {
         for(int i : cardIndex) {
             ScreenCoord coord = ScreenCoord.getTwoPointCenter(
@@ -496,6 +501,13 @@ class FGORoutine {
         return 0;
     }
 
+    public int battleContinueSetup() throws InterruptedException {
+
+        sendMessage("選擇第一位好友");
+        mGL.getInputService().tapOnScreen(SCD("pointFriendSelectDefault"));
+
+        return 0;
+    }
     private int battleGetStage() throws InterruptedException {
         for(int i = 0; i < SPTList("battleStages").size(); i++) {
             sleep(100);

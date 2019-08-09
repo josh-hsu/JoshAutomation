@@ -64,6 +64,7 @@
 
         <screenpoint name="pointCloseButton">45,61,108,0xff,156,63,Landscape</screenpoint>
         <screencoord name="pointLoopBattleStage">718,1420,Portrait</screencoord>
+        <screencoord name="pointContinueBattle">230,1280,Portrait</screencoord>
 
         <!-- battle cards -->
         <screenpoint name="pointBattleButton">0x01,0xCE,0xF0,0xFF,218,1699,Portrait</screenpoint>
