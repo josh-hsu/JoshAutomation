@@ -159,15 +159,15 @@
 
         <!-- battle stage detect -->
         <screenpoints name="battleStages">
-            <screenpoint>204,204,204,0xFF,1304,29,Landscape</screenpoint>
+            <screenpoint>255,255,255,0xFF,1312,30,Landscape</screenpoint>
             <screenpoint>240,240,240,0xFF,1318,49,Landscape</screenpoint>
-            <screenpoint>211,211,211,0xFF,1304,49,Landscape</screenpoint>
+            <screenpoint>255,255,255,0xFF,1318,44,Landscape</screenpoint>
         </screenpoints>
 
         <!-- home screen -->
         <screenpoint name="pointHomeGiftBox">229,64,39,0xff,646,1013,Landscape</screenpoint>
         <screenpoint name="pointHomeOSiRaSe">0,0,4,0xff,219,78,Landscape</screenpoint>
-        <screenpoint name="pointHomeApAdd">201,142,85,0xff,262,1049,Landscape</screenpoint>
+        <screenpoint name="pointHomeApAdd">231,188,108,0xff,272,1042,Landscape</screenpoint>
         <screenpoint name="pointHomeApAddV2">0xfa,0xf6,0xc2,0xff,59,246,Portrait</screenpoint>
         <screenpoint name="pointMenuDownButton">0x31,0x39,0x65,0xff,53,1772,Portrait</screenpoint>
 
