@@ -52,8 +52,10 @@ public class DeviceScreen {
             mDevice = device;
 
         int[] resolution = device.getScreenDimension();
-        if (resolution.length != 2) {
-            throw new IllegalArgumentException("Device report illegal resolution length");
+        if (resolution == null || resolution.length != 2) {
+            //throw new IllegalArgumentException("Device report illegal resolution length");
+            mScreenWidth = 1080;
+            mScreenHeight = 2340;
         } else {
             mScreenWidth = resolution[0];
             mScreenHeight = resolution[1];
@@ -89,12 +91,6 @@ public class DeviceScreen {
         mCurrentGameOrientation = o;
     }
 
-    /*
-     * setScreenOffset (added in 1.34)
-     * this function can be called by JoshGameLibrary only
-     * shift an amount of offset for every point input
-     * we will treat this as portrait orientation
-     */
     public void setScreenOffset(int xOffset, int yOffset) {
         mScreenXOffset = xOffset;
         mScreenYOffset = yOffset;
@@ -299,7 +295,7 @@ public class DeviceScreen {
             dest.b = colorInfo[2];
             dest.t = colorInfo[3];
         } catch (InterruptedException e) {
-            Log.d(TAG, "File operation failed: " + e.toString());
+            Log.d(TAG, "File operation aborted by interrupt: " + e.toString());
             throw e;
         } catch (IOException e) {
             Log.d(TAG, "File operation failed: " + e.toString());

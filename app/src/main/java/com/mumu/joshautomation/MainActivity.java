@@ -32,15 +32,15 @@ import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.mumu.android.joshautomation.activity.GL20Fragment;
 import com.mumu.libjoshgame.Log;
 
 public class MainActivity extends AppCompatActivity
-        implements NavigationView.OnNavigationItemSelectedListener,
-        OutlineFragment.OnFragmentInteractionListener {
+        implements NavigationView.OnNavigationItemSelectedListener {
 
     public static final String TAG = "JATool";
     public static final int FRAG_IDX_OUTLINE = 0;
-    //public static final int FRAG_IDX_ELECTRICITY = 1;
+    public static final int FRAG_IDX_GL20 = 1;
 
     private FloatingActionButton mFab;
     private View mCoordinateLayoutView;
@@ -132,6 +132,11 @@ public class MainActivity extends AppCompatActivity
         } else if (id == R.id.nav_share) {
             fragment = null;
             showSnackBarMessage("Share function implementing");
+        } else if (id == R.id.nav_gl20) {
+            fragment = mFragmentList.get(FRAG_IDX_GL20);
+            if (actionBar != null) actionBar.setTitle(getString(R.string.drawer_gl20));
+            mFab.setVisibility(View.VISIBLE);
+            showSnackBarMessage("GL20 test is now beta");
         } else if (id == R.id.nav_send) {
             fragment = null;
             mShouldStartBugReport = true;
@@ -161,11 +166,6 @@ public class MainActivity extends AppCompatActivity
         drawer.closeDrawer(GravityCompat.START);
 
         return true;
-    }
-
-    @Override
-    public void onFragmentInteraction(Uri uri) {
-        Toast.makeText(this,"Hello from the activity", Toast.LENGTH_SHORT).show();
     }
 
     @Override
@@ -209,6 +209,7 @@ public class MainActivity extends AppCompatActivity
         mFragmentList = new ArrayList<>();
         try {
             mFragmentList.add(FRAG_IDX_OUTLINE, OutlineFragment.class.newInstance());
+            mFragmentList.add(FRAG_IDX_GL20, GL20Fragment.class.newInstance());
         } catch (Exception e) {
             Log.e(TAG, "initOnce fragment list failed: " + e.getMessage());
             e.printStackTrace();

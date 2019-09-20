@@ -1,4 +1,4 @@
-package com.mumu.joshautomation;
+package com.mumu.android.joshautomation.activity;
 
 import android.app.Activity;
 import android.content.Context;
@@ -8,21 +8,26 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.mumu.android.joshautomation.script.AutoJob;
+import com.mumu.android.joshautomation.script.AutoJobAction;
+import com.mumu.android.joshautomation.script.AutoJobEventListener;
+import com.mumu.android.joshautomation.script.AutoJobExample;
+import com.mumu.joshautomation.MainActivity;
+import com.mumu.joshautomation.MainFragment;
+import com.mumu.joshautomation.R;
 import com.mumu.libjoshgame.Log;
 
-public class MoneyFragment extends MainFragment {
-    private static final String TAG = "JATool";
+public class GL20Fragment extends MainFragment {
+    private static final String TAG = "GL20Activity";
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
 
-    private OnFragmentInteractionListener mListener;
-
-    public MoneyFragment() {
+    public GL20Fragment() {
         // Required empty public constructor
     }
 
-    public static MoneyFragment newInstance(String param1, String param2) {
-        MoneyFragment fragment = new MoneyFragment();
+    public static GL20Fragment newInstance(String param1, String param2) {
+        GL20Fragment fragment = new GL20Fragment();
         Bundle args = new Bundle();
         args.putString(ARG_PARAM1, param1);
         args.putString(ARG_PARAM2, param2);
@@ -33,6 +38,28 @@ public class MoneyFragment extends MainFragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        Context context = getContext();
+        AutoJobExample job = new AutoJobExample(context);
+        AutoJobEventListener el = new AutoJobEventListener() {
+            @Override
+            public void onMessageReceived(String msg, Object extra) {
+                Log.d(TAG, "MSG: " + msg);
+            }
+
+            @Override
+            public void onActionReceived(int what, AutoJobAction action) {
+
+            }
+
+            @Override
+            public void onJobDone(String jobName) {
+
+            }
+        };
+        job.setJobEventListener(el);
+        job.start();
+
     }
 
     @Override
@@ -42,27 +69,14 @@ public class MoneyFragment extends MainFragment {
         return inflater.inflate(R.layout.fragment_money, container, false);
     }
 
-    public void onButtonPressed(Uri uri) {
-        if (mListener != null) {
-            mListener.onFragmentInteraction(uri);
-        }
-    }
-
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
-        if (context instanceof OnFragmentInteractionListener) {
-            mListener = (OnFragmentInteractionListener) context;
-        } else {
-            throw new RuntimeException(context.toString()
-                    + " must implement OnFragmentInteractionListener");
-        }
     }
 
     @Override
     public void onDetach() {
         super.onDetach();
-        mListener = null;
     }
 
     @Override

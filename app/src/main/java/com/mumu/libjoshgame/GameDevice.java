@@ -178,7 +178,7 @@ public class GameDevice {
 
     /**
      * sendDeviceCommand
-     * send out device command, normally this should be used in test not publish
+     * send out device command, normally this should be used in test not release version
      *
      * @param synced Determine if you want to wait for command to finish.
      * @param cmd The command string.
@@ -202,10 +202,10 @@ public class GameDevice {
     /**
      * screenDump
      * make a screenshot at specific index of slot
-     * if the previous screenshot is not closed yet, it will return an error if forced
+     * If the previous screenshot is not closed yet, it will return an error. If forced
      * is not set. Note this will not open a file description for use, just doing dump
      * after a screen dump command is sent, it will sleep a period of time defined in function
-     * getWaitTransactionTimeMs()
+     * getWaitTransactionTimeMs() to make screenshot ready to use.
      *
      * @param index The index of screenshot slot to save in
      * @param forced True if ignoring the screenshot is in use
@@ -396,11 +396,12 @@ public class GameDevice {
      * @param msg Message to be logged
      */
     public void log(int level, String tag, String msg) {
-        if (mDeviceInterface == null || level == LOG_FATAL) {
+        if (mDeviceInterface == null)
             throw new RuntimeException("Fatal exception that device interface is null");
-        }
 
         mDeviceInterface.logDevice(level, tag, msg);
+        if (level == LOG_FATAL)
+            throw new RuntimeException("Fatal exception detected, throwing stack trace.");
    }
 
     /**

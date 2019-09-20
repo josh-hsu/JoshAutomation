@@ -6,6 +6,10 @@
             android:id="@+id/nav_outline"
             android:icon="@drawable/ic_menu_home_outline"
             android:title="@string/drawer_outline" />
+        <item
+            android:id="@+id/nav_gl20"
+            android:icon="@drawable/ic_menu_manage"
+            android:title="@string/drawer_gl20" />
     </group>
 
     <item android:title="@string/drawer_menu_social">

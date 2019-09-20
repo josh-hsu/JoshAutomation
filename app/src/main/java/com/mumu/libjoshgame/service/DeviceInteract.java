@@ -11,7 +11,7 @@ public class DeviceInteract {
     private GameDevice mDevice;
     private Logger Log; //the naming is just for easy use
 
-    private int mRandomInputShift = 0;
+    private int mRandomMouseInputShift = 0;
     private int mScreenWidth = -1;
     private int mScreenHeight = -1;
     private int mScreenXOffset = 0;
@@ -26,8 +26,10 @@ public class DeviceInteract {
             mDevice = device;
 
         int[] resolution = device.getScreenDimension();
-        if (resolution.length != 2) {
-            throw new IllegalArgumentException("Device report illegal resolution length");
+        if (resolution == null || resolution.length != 2) {
+            //throw new IllegalArgumentException("Device report illegal resolution length");
+            mScreenWidth = 1080;
+            mScreenHeight = 2340;
         } else {
             mScreenWidth = resolution[0];
             mScreenHeight = resolution[1];
@@ -62,14 +64,14 @@ public class DeviceInteract {
         mCurrentGameOrientation = orientation;
     }
 
-    public void setInputShift(int ran) {
-        mRandomInputShift = ran;
+    public void setMouseInputShift(int ran) {
+        mRandomMouseInputShift = ran;
     }
 
-    private int deviceInteract(int x, int y, int tx, int ty, int type) {
+    private int mouseInteract(int x, int y, int tx, int ty, int type) {
         int ret = 0;
-        int x_shift = (int) (Math.random() * mRandomInputShift) - mRandomInputShift /2;
-        int y_shift = (int) (Math.random() * mRandomInputShift) - mRandomInputShift /2;
+        int x_shift = (int) (Math.random() * mRandomMouseInputShift) - mRandomMouseInputShift /2;
+        int y_shift = (int) (Math.random() * mRandomMouseInputShift) - mRandomMouseInputShift /2;
 
         x = x + x_shift;
         y = y + y_shift;
@@ -88,11 +90,10 @@ public class DeviceInteract {
             case GameDevice.MOUSE_TAP:
             case GameDevice.MOUSE_DOUBLE_TAP:
             case GameDevice.MOUSE_TRIPLE_TAP:
-                ret = mDevice.mouseInteract(x, y, type);
-                break;
             case GameDevice.MOUSE_PRESS:
             case GameDevice.MOUSE_MOVE_TO:
             case GameDevice.MOUSE_RELEASE:
+                ret = mDevice.mouseInteract(x, y, type);
                 break;
             case GameDevice.MOUSE_SWIPE:
                 ret = mDevice.mouseInteract(x, y, tx, ty, type);
@@ -116,14 +117,14 @@ public class DeviceInteract {
         return coord;
     }
 
-    private int mouseInteractSingle(ScreenCoord coord1, int type) {
+    private int mouseInteractSingleCoord(ScreenCoord coord1, int type) {
         int ret;
         ScreenCoord coord = getCalculatedOffsetCoord(coord1);
 
         if (mCurrentGameOrientation != coord.orientation)
-            ret = deviceInteract(coord.y, mScreenWidth - coord.x, 0, 0, type);
+            ret = mouseInteract(coord.y, mScreenWidth - coord.x, 0, 0, type);
         else
-            ret = deviceInteract(coord.x, coord.y, 0, 0, type);
+            ret = mouseInteract(coord.x, coord.y, 0, 0, type);
 
         return ret;
     }
@@ -134,34 +135,34 @@ public class DeviceInteract {
         ScreenCoord coordEnd = getCalculatedOffsetCoord(end);
 
         if (mCurrentGameOrientation != start.orientation)
-            ret = deviceInteract(coordStart.y, mScreenWidth - coordStart.x, coordEnd.y, mScreenWidth - coordEnd.x, GameDevice.MOUSE_SWIPE);
+            ret = mouseInteract(coordStart.y, mScreenWidth - coordStart.x, coordEnd.y, mScreenWidth - coordEnd.x, GameDevice.MOUSE_SWIPE);
         else
-            ret = deviceInteract(coordStart.x, coordStart.y, coordEnd.x, coordEnd.y, GameDevice.MOUSE_SWIPE);
+            ret = mouseInteract(coordStart.x, coordStart.y, coordEnd.x, coordEnd.y, GameDevice.MOUSE_SWIPE);
 
         return ret;
     }
 
     public int mouseClick(ScreenCoord coord) {
-        return mouseInteractSingle(coord, GameDevice.MOUSE_TAP);
+        return mouseInteractSingleCoord(coord, GameDevice.MOUSE_TAP);
     }
 
     public int mouseDoubleClick(ScreenCoord coord) {
-        return mouseInteractSingle(coord, GameDevice.MOUSE_DOUBLE_TAP);
+        return mouseInteractSingleCoord(coord, GameDevice.MOUSE_DOUBLE_TAP);
     }
 
     public int mouseTripleClick(ScreenCoord coord) {
-        return mouseInteractSingle(coord, GameDevice.MOUSE_TRIPLE_TAP);
+        return mouseInteractSingleCoord(coord, GameDevice.MOUSE_TRIPLE_TAP);
     }
 
     public int mouseDown(ScreenCoord coord) {
-        return mouseInteractSingle(coord, GameDevice.MOUSE_PRESS);
+        return mouseInteractSingleCoord(coord, GameDevice.MOUSE_PRESS);
     }
 
     public int mouseMoveTo(ScreenCoord coord) {
-        return mouseInteractSingle(coord, GameDevice.MOUSE_MOVE_TO);
+        return mouseInteractSingleCoord(coord, GameDevice.MOUSE_MOVE_TO);
     }
 
     public int mouseUp(ScreenCoord coord) {
-        return mouseInteractSingle(coord, GameDevice.MOUSE_RELEASE);
+        return mouseInteractSingleCoord(coord, GameDevice.MOUSE_RELEASE);
     }
 }

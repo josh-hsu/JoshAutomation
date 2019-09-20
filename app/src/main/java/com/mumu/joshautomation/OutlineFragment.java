@@ -27,8 +27,6 @@ public class OutlineFragment extends MainFragment {
     private Button mStartServiceButton;
     private TextView mBarTextView;
 
-    private OnFragmentInteractionListener mListener;
-
     public OutlineFragment() {
         // Required empty public constructor
     }
@@ -60,18 +58,11 @@ public class OutlineFragment extends MainFragment {
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
-        if (context instanceof OnFragmentInteractionListener) {
-            mListener = (OnFragmentInteractionListener) context;
-        } else {
-            throw new RuntimeException(context.toString()
-                    + " must implement OnFragmentInteractionListener");
-        }
     }
 
     @Override
     public void onDetach() {
         super.onDetach();
-        mListener = null;
     }
 
     @Override
@@ -122,10 +113,6 @@ public class OutlineFragment extends MainFragment {
      */
     private void updateView() {
 
-    }
-
-    public interface OnFragmentInteractionListener {
-        void onFragmentInteraction(Uri uri);
     }
 
     private void startChatHeadService() {

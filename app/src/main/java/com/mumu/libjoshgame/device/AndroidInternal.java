@@ -22,6 +22,11 @@ import java.io.InputStreamReader;
 import java.lang.reflect.Method;
 import java.util.Map;
 
+/**
+ * AndroidInternal
+ * this class implements the old school JoshAutomation method of Android command executor
+ * import of Android related files here only
+ */
 public class AndroidInternal extends GameDevice implements IGameDevice, ServiceConnection {
     private static final String TAG = JoshGameLibrary.TAG;
     private static final String DEVICE_NAME              = "AndroidInternal";
@@ -136,7 +141,7 @@ public class AndroidInternal extends GameDevice implements IGameDevice, ServiceC
         };
         mPreloadedPathCount = mPreloadedPath.length;
 
-        return ret;
+        return super.init(DEVICE_NAME, this);
     }
 
     private int initCmdProxy() {
@@ -149,12 +154,13 @@ public class AndroidInternal extends GameDevice implements IGameDevice, ServiceC
             return 0;
         } catch (NoSuchMethodException e) {
             mPMPathAvailable = false;
-            Log.e(TAG, "Sorry, your device is not support PackageManager command runner. Fix your sw or try HackBinder.");
+            Log.w(TAG, "Sorry, your device is not support PackageManager command runner. Fix your sw or try HackBinder.");
         }
 
         // try to use binder connection
         // from here, the hackSS parameters should be ready
         if (!mPMPathAvailable) {
+            Log.d(TAG, "Try to set HackSS true");
             ret = setHackSS(true);
         }
 
@@ -192,6 +198,7 @@ public class AndroidInternal extends GameDevice implements IGameDevice, ServiceC
 
     @Override
     public int getScreenMainOrientation() {
+        // This simulates an Android phone device, the real orientation will be override by user
         return ScreenPoint.SO_Portrait;
     }
 
@@ -323,7 +330,7 @@ public class AndroidInternal extends GameDevice implements IGameDevice, ServiceC
                     try {
                         mHackBinder.transact(mSSCode, data, reply, 0);
                     } catch (RemoteException e) {
-                        Log.d(TAG, "transact failed " + e.getMessage());
+                        Log.w(TAG, "transact failed " + e.getMessage());
                         e.printStackTrace();
                     }
                 } else {

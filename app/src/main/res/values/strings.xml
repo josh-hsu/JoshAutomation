@@ -19,6 +19,7 @@
     <string name="drawer_title">您</string>
     <string name="drawer_subtitle">這裡沒有功能</string>
     <string name="drawer_outline">概覽與功能</string>
+    <string name="drawer_gl20">GL20 測試</string>
     <string name="drawer_electricity">帳號管理</string>
     <string name="drawer_menu_social">社群</string>
     <string name="drawer_send">問題回報</string>

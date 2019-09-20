@@ -109,11 +109,8 @@ public class GameLibrary20 {
     private void initGameLibraryInternalDefaultParams() {
         mScreenService.setScreenshotPolicy(DeviceScreen.POLICY_DEFAULT);
         mScreenService.setAmbiguousRange(new int[] {0x0A, 0x0A, 0x0A});
-        mScreenService.setScreenDimension(mDevice.getScreenDimension());
-        mScreenService.setGameOrientation(ScreenPoint.SO_Landscape);
         mInteractService.setGameOrientation(ScreenPoint.SO_Landscape);
-        mInteractService.setInputShift(0x06);
-        mInteractService.setScreenDimension(mDevice.getScreenDimension());
+        mInteractService.setMouseInputShift(0x06);
     }
 
     // =============================
@@ -243,6 +240,9 @@ public class GameLibrary20 {
         return true;
     }
 
+    //
+    // exceptions
+    //
     public static class DeviceNotInitializedException extends Exception {
         public DeviceNotInitializedException(String message) {
             super(message);
@@ -259,5 +259,41 @@ public class GameLibrary20 {
         }
 
         int getFailReason() {return failReason;}
+    }
+
+    public static class DeviceInputErrorException extends Exception {
+        public static final int ERROR_NO_SUCH_METHOD = 0;
+        public static final int ERROR_MOUSE_EVENT_TIMEOUT = 1;
+        public static final int ERROR_OTHERS = 2;
+        int failReason;
+
+        public DeviceInputErrorException(String message, int code) {
+            super(message);
+            failReason = code;
+        }
+
+        public int getFailReason() {
+            return failReason;
+        }
+
+        public String toString() {
+            StringBuilder sb = new StringBuilder();
+            sb.append("Device input error ");
+            switch (failReason) {
+                case ERROR_NO_SUCH_METHOD:
+                    sb.append("No such method.");
+                    break;
+                case ERROR_MOUSE_EVENT_TIMEOUT:
+                    sb.append("Mouse event timeout or failure, please check your device.");
+                    break;
+                case ERROR_OTHERS:
+                    sb.append("Other type of error check log to find out.");
+                    break;
+                default:
+                    sb.append("Unknown type of error.");
+                    break;
+            }
+            return sb.toString();
+        }
     }
 }
