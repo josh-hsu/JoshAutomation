@@ -11,8 +11,9 @@ import android.os.Parcel;
 import android.os.RemoteException;
 
 import com.mumu.libjoshgame.GameDevice;
+import com.mumu.libjoshgame.GameDeviceHWEventListener;
+import com.mumu.libjoshgame.GameLibrary20;
 import com.mumu.libjoshgame.IGameDevice;
-import com.mumu.libjoshgame.JoshGameLibrary;
 import com.mumu.libjoshgame.Log;
 import com.mumu.libjoshgame.ScreenPoint;
 
@@ -20,6 +21,7 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.lang.reflect.Method;
+import java.util.ArrayList;
 import java.util.Map;
 
 /**
@@ -28,9 +30,9 @@ import java.util.Map;
  * import of Android related files here only
  */
 public class AndroidInternal extends GameDevice implements IGameDevice, ServiceConnection {
-    private static final String TAG = JoshGameLibrary.TAG;
+    private static final String TAG = GameLibrary20.TAG;
     private static final String DEVICE_NAME              = "AndroidInternal";
-    private static final String DEVICE_VERSION           = "1.0";
+    private static final String DEVICE_VERSION           = "1.0.190924";
     private static final int    DEVICE_SYS_TYPE          = DEVICE_SYS_LINUX;
     private static final String PRELOAD_PATH_INTERNAL    = Environment.getExternalStorageDirectory().toString() + "/internal.dump";
     private static final String PRELOAD_PATH_FIND_COLOR  = Environment.getExternalStorageDirectory().toString() + "/find_color.dump";
@@ -55,6 +57,8 @@ public class AndroidInternal extends GameDevice implements IGameDevice, ServiceC
     private int mSSCode = 0;
 
     private int mWaitTransactTime = 150;
+
+    private ArrayList<GameDeviceHWEventListener> mVibratorEventListenerList;
 
     /**
      * init for AndroidInternal device
@@ -118,15 +122,11 @@ public class AndroidInternal extends GameDevice implements IGameDevice, ServiceC
             return -3;
         }
 
-        /* initial for this device is fully done, calling super's init */
-        ret = super.init(DEVICE_NAME, this);
-
-        if (ret != 0) {
-            mInitialized = false;
-            return ret;
+        ret = initDeviceHWInterface();
+        if (ret < 0) {
+            Log.e(TAG, "Initial for " + DEVICE_NAME + " error: device hw interface init failed with " + ret);
+            return -5;
         }
-
-        mInitialized = true;
 
         mPreloadedPath = new String[] {
                 PRELOAD_PATH_USER_SLOT_0,
@@ -141,7 +141,16 @@ public class AndroidInternal extends GameDevice implements IGameDevice, ServiceC
         };
         mPreloadedPathCount = mPreloadedPath.length;
 
-        return super.init(DEVICE_NAME, this);
+        /* initial for this device is fully done, calling super's init */
+        ret = super.init(DEVICE_NAME, this);
+
+        if (ret != 0) {
+            mInitialized = false;
+            return ret;
+        }
+
+        mInitialized = true;
+        return ret;
     }
 
     private int initCmdProxy() {
@@ -165,6 +174,12 @@ public class AndroidInternal extends GameDevice implements IGameDevice, ServiceC
         }
 
         return ret;
+    }
+
+    private int initDeviceHWInterface() {
+        // currently we only support vibrator
+        mVibratorEventListenerList = new ArrayList<>();
+        return 0;
     }
 
     @Override
@@ -287,6 +302,29 @@ public class AndroidInternal extends GameDevice implements IGameDevice, ServiceC
     }
 
     @Override
+    public int registerVibratorEvent(GameDeviceHWEventListener el) {
+        //TODO: implement needed for reading path
+        //      /sys/devices/platform/soc/c440000.qcom,spmi/spmi-0/spmi0-03/c440000.qcom,spmi:qcom,pm8150b@3:qcom,haptics@c000/state
+        if (mVibratorEventListenerList != null) {
+            if (!mVibratorEventListenerList.contains(el)) {
+                mVibratorEventListenerList.add(el);
+            } else {
+                Log.w(TAG, "This listener is already in list");
+            }
+        } else {
+            Log.e(TAG, "register vibrator event failed, event listener is null");
+            return -1;
+        }
+        return 0;
+    }
+
+    @Override
+    public int deregisterVibratorEvent(GameDeviceHWEventListener el) {
+        mVibratorEventListenerList.remove(el);
+        return 0;
+    }
+
+    @Override
     public String runShellCommand(String shellCmd) {
         String[] cmd = {"/system/bin/sh", "-c", shellCmd};
         StringBuilder sb = new StringBuilder();
@@ -403,7 +441,7 @@ public class AndroidInternal extends GameDevice implements IGameDevice, ServiceC
                 intent.setComponent(new ComponentName(mSSPackageName,
                         mSSPackageName + mSSServiceName));
                 if (!mContext.bindService(intent, this, Service.BIND_AUTO_CREATE)) {
-                    Log.d(TAG, "Cannot hack this device, parameter wrong or you don't have implement service");
+                    Log.w(TAG, "Cannot hack this device, parameter wrong or you don't have a implemented service");
                     mHackConnected = false;
                 }
             } catch (SecurityException e) {

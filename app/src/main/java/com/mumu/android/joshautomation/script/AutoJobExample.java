@@ -20,7 +20,7 @@ public class AutoJobExample extends AutoJob {
     private GameLibrary20 mGL;
     private AutoJobEventListener mListener;
 
-    public static final String jobName = "Example job"; //give your job a name
+    public static final String jobName = "GL20 Example Job"; //give your job a name
 
     public AutoJobExample(Context context) {
         super(jobName);

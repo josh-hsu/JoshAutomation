@@ -120,6 +120,10 @@ public class GameLibrary20 {
         return mDeviceReady && mDevice.getInitialized();
     }
 
+    public GameDevice getDevice() {
+        return mDevice;
+    }
+
     public String getDeviceName() throws DeviceNotInitializedException {
         if (!checkInit())
             return null;

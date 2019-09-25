@@ -389,6 +389,14 @@ public class GameDevice {
         return mDeviceInterface.mouseEvent(x, y, 0, 0, type);
     }
 
+    public String runShellCommand(String cmd) {
+        if (mDeviceInterface == null) {
+            throw new RuntimeException("Fatal exception that device interface is null");
+        }
+
+        return mDeviceInterface.runShellCommand(cmd);
+    }
+
     /**
      * log to device
      * @param level The level defined in {@link GameLibrary20}
@@ -413,5 +421,17 @@ public class GameDevice {
    }
 
 
+    public int registerVibratorEvent(GameDeviceHWEventListener el) {
+        if (mDeviceInterface == null)
+            throw new RuntimeException("Fatal exception that device interface is null");
 
+        return mDeviceInterface.registerVibratorEvent(el);
+    }
+
+    public int deregisterVibratorEvent(GameDeviceHWEventListener el) {
+        if (mDeviceInterface == null)
+            throw new RuntimeException("Fatal exception that device interface is null");
+
+        return mDeviceInterface.deregisterVibratorEvent(el);
+    }
 }

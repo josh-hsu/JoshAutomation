@@ -8,7 +8,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.mumu.android.joshautomation.script.AutoJob;
 import com.mumu.android.joshautomation.script.AutoJobAction;
 import com.mumu.android.joshautomation.script.AutoJobEventListener;
 import com.mumu.android.joshautomation.script.AutoJobExample;

@@ -93,4 +93,15 @@ public interface IGameDevice {
      * @param log Log text String
      */
     void logDevice(int level, String tag, String log);
+
+    /**
+     * register vibrator event such as on, off
+     * @return 0 upon success or
+     */
+    int registerVibratorEvent(GameDeviceHWEventListener el);
+
+    /**
+     * deregister vibrator event use the same listener object
+     */
+    int deregisterVibratorEvent(GameDeviceHWEventListener el);
 }
