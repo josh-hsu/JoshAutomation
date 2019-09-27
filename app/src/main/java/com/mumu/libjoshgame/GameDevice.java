@@ -50,6 +50,12 @@ public class GameDevice {
     public static final int MOUSE_SWIPE      = 6;
     public static final int MOUSE_EVENT_MAX  = 7;
 
+    public static final int HW_EVENT_VIBRATOR     = 0;
+    public static final int HW_EVENT_PROXIMITY    = 1;
+    public static final int HW_EVENT_SOUND        = 2;
+    public static final int HW_EVENT_CB_ONCHANGE  = 0;
+    public static final int HW_EVENT_CB_NEW_VALUE = 1;
+
     protected boolean mInitialized = false;
     private String mDeviceName;
     private IGameDevice mDeviceInterface;
@@ -420,18 +426,27 @@ public class GameDevice {
         return mLogger;
    }
 
-
-    public int registerVibratorEvent(GameDeviceHWEventListener el) {
+    public int registerHardwareEvent(int hardwareType, GameDeviceHWEventListener el) {
         if (mDeviceInterface == null)
             throw new RuntimeException("Fatal exception that device interface is null");
 
-        return mDeviceInterface.registerVibratorEvent(el);
+        switch (hardwareType) {
+            case HW_EVENT_VIBRATOR:
+            case HW_EVENT_PROXIMITY:
+            case HW_EVENT_SOUND:
+                return mDeviceInterface.registerEvent(hardwareType, el);
+            default:
+                Log.w(TAG, "Unsupported hw event type");
+                break;
+        }
+
+        return -1;
     }
 
-    public int deregisterVibratorEvent(GameDeviceHWEventListener el) {
+    public int deregisterHardwareEvent(int hardwareType, GameDeviceHWEventListener el) {
         if (mDeviceInterface == null)
             throw new RuntimeException("Fatal exception that device interface is null");
 
-        return mDeviceInterface.deregisterVibratorEvent(el);
+        return mDeviceInterface.deregisterEvent(hardwareType, el);
     }
 }

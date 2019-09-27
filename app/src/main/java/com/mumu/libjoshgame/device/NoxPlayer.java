@@ -1,6 +1,7 @@
 package com.mumu.libjoshgame.device;
 
 import com.mumu.libjoshgame.GameDevice;
+import com.mumu.libjoshgame.GameDeviceHWEventListener;
 import com.mumu.libjoshgame.IGameDevice;
 import com.mumu.libjoshgame.JoshGameLibrary;
 import com.mumu.libjoshgame.ScreenPoint;
@@ -156,5 +157,15 @@ public class NoxPlayer extends GameDevice implements IGameDevice {
         }
 
         System.out.println(String.format("%18s: <%s> %s: %s", thisTime, thisLevel, tag, msg));
+    }
+
+    @Override
+    public int registerEvent(int type, GameDeviceHWEventListener el) {
+        return 0;
+    }
+
+    @Override
+    public int deregisterEvent(int type, GameDeviceHWEventListener el) {
+        return 0;
     }
 }

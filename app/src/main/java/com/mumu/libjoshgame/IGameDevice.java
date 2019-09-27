@@ -98,10 +98,10 @@ public interface IGameDevice {
      * register vibrator event such as on, off
      * @return 0 upon success or
      */
-    int registerVibratorEvent(GameDeviceHWEventListener el);
+    int registerEvent(int type, GameDeviceHWEventListener el);
 
     /**
      * deregister vibrator event use the same listener object
      */
-    int deregisterVibratorEvent(GameDeviceHWEventListener el);
+    int deregisterEvent(int type, GameDeviceHWEventListener el);
 }

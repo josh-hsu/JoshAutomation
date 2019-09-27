@@ -58,7 +58,7 @@ public class AndroidInternal extends GameDevice implements IGameDevice, ServiceC
 
     private int mWaitTransactTime = 150;
 
-    private ArrayList<GameDeviceHWEventListener> mVibratorEventListenerList;
+    private AndroidHardwareEventMonitor mVibratorMonitor;
 
     /**
      * init for AndroidInternal device
@@ -178,7 +178,12 @@ public class AndroidInternal extends GameDevice implements IGameDevice, ServiceC
 
     private int initDeviceHWInterface() {
         // currently we only support vibrator
-        mVibratorEventListenerList = new ArrayList<>();
+        mVibratorMonitor = new AndroidHardwareEventMonitor("/sys/devices/platform/soc/c440000.qcom,spmi" +
+                "/spmi-0/spmi0-03/c440000.qcom,spmi:qcom,pm8150b@3:qcom,haptics@c000/state",
+                100,
+                HW_EVENT_CB_ONCHANGE
+                );
+        mVibratorMonitor.startMonitoring();
         return 0;
     }
 
@@ -302,26 +307,39 @@ public class AndroidInternal extends GameDevice implements IGameDevice, ServiceC
     }
 
     @Override
-    public int registerVibratorEvent(GameDeviceHWEventListener el) {
-        //TODO: implement needed for reading path
-        //      /sys/devices/platform/soc/c440000.qcom,spmi/spmi-0/spmi0-03/c440000.qcom,spmi:qcom,pm8150b@3:qcom,haptics@c000/state
-        if (mVibratorEventListenerList != null) {
-            if (!mVibratorEventListenerList.contains(el)) {
-                mVibratorEventListenerList.add(el);
-            } else {
-                Log.w(TAG, "This listener is already in list");
-            }
-        } else {
-            Log.e(TAG, "register vibrator event failed, event listener is null");
-            return -1;
+    public int registerEvent(int type, GameDeviceHWEventListener el) {
+        switch (type) {
+            case HW_EVENT_VIBRATOR:
+                mVibratorMonitor.addListener(el);
+                return 0;
+            case HW_EVENT_PROXIMITY:
+                break;
+            case HW_EVENT_SOUND:
+                break;
+            default:
+                break;
         }
-        return 0;
+
+        Log.w(TAG, "AndroidInternal doesn't support hardware type " + type);
+        return -3;
     }
 
     @Override
-    public int deregisterVibratorEvent(GameDeviceHWEventListener el) {
-        mVibratorEventListenerList.remove(el);
-        return 0;
+    public int deregisterEvent(int type, GameDeviceHWEventListener el) {
+        switch (type) {
+            case HW_EVENT_VIBRATOR:
+                mVibratorMonitor.removeListener(el);
+                return 0;
+            case HW_EVENT_PROXIMITY:
+                break;
+            case HW_EVENT_SOUND:
+                break;
+            default:
+                break;
+        }
+
+        Log.w(TAG, "AndroidInternal doesn't support hardware type " + type);
+        return -3;
     }
 
     @Override
@@ -393,6 +411,7 @@ public class AndroidInternal extends GameDevice implements IGameDevice, ServiceC
     @Override
     public int onExit() {
         setHackSS(false);
+        mVibratorMonitor.stopMonitoring();
         return 0;
     }
 
@@ -473,5 +492,103 @@ public class AndroidInternal extends GameDevice implements IGameDevice, ServiceC
     public void onServiceDisconnected(ComponentName name) {
         mHackConnected = false;
         Log.d(TAG, "Hack service disconnected.");
+    }
+
+    /**
+     * Android Hardware Event Monitor
+     * created for monitoring supported hardware event and callback to listeners
+     */
+    private class AndroidHardwareEventMonitor extends Thread {
+        private String fileMonitoringPath;
+        private int monitorPeriodMs;
+        private int monitorCallbackType;
+        private ArrayList<GameDeviceHWEventListener> listeners;
+        private boolean isLooping;
+        private int returnedValue;
+
+        AndroidHardwareEventMonitor(String path, int period, int cbType) {
+            fileMonitoringPath = path;
+            monitorPeriodMs = period;
+            monitorCallbackType = cbType;
+
+            returnedValue = 0;
+            isLooping = false;
+            listeners = new ArrayList<>();
+        }
+
+        void startMonitoring() {
+            this.start();
+        }
+
+        void stopMonitoring() {
+            this.interrupt();
+        }
+
+        boolean isMonitoring() {
+            return isLooping;
+        }
+
+        void addListener(GameDeviceHWEventListener l) {
+            if (!listeners.contains(l)) {
+                listeners.add(l);
+            } else {
+                Log.w(TAG, "This listener is already in list");
+            }
+
+            listeners.add(l);
+        }
+
+        void removeListener(GameDeviceHWEventListener l) {
+            listeners.remove(l);
+        }
+
+        void sendEventToListener(int type, Object data) {
+            for(GameDeviceHWEventListener l : listeners) {
+                l.onEvent(type, data);
+            }
+        }
+
+        @Override
+        public void run() {
+            String cmd = "cat " + fileMonitoringPath;
+            String value = "";
+
+            while (isLooping) {
+                try {
+                    value = runShellCommand(cmd);
+                    Integer intValue = Integer.parseInt(value);
+
+                    switch (monitorCallbackType) {
+                        case HW_EVENT_CB_ONCHANGE:
+                            if (intValue != returnedValue) {
+                                returnedValue = intValue;
+                                sendEventToListener(HW_EVENT_CB_ONCHANGE, intValue);
+                            }
+                            break;
+                        case HW_EVENT_CB_NEW_VALUE:
+                            sendEventToListener(HW_EVENT_CB_NEW_VALUE, intValue);
+                            break;
+                        default:
+                            Log.e(TAG, "Unsupported callback type, abort here.");
+                            isLooping = false;
+                            break;
+                    }
+
+                    Thread.sleep(monitorPeriodMs);
+                } catch (NumberFormatException e) {
+                    Log.e(TAG, "The path " + fileMonitoringPath + " returned unsupported value " + value);
+                    isLooping = false;
+                } catch (InterruptedException e) {
+                    Log.w(TAG, "The path " + fileMonitoringPath + " monitor was interrupted.");
+                    isLooping = false;
+                }
+            }
+        }
+
+        @Override
+        public void start() {
+            isLooping = true;
+            super.start();
+        }
     }
 }

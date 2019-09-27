@@ -3,6 +3,8 @@ package com.mumu.android.joshautomation.script;
 import android.content.Context;
 import android.util.Log;
 
+import com.mumu.libjoshgame.GameDevice;
+import com.mumu.libjoshgame.GameDeviceHWEventListener;
 import com.mumu.libjoshgame.GameLibrary20;
 import com.mumu.libjoshgame.ScreenCoord;
 import com.mumu.libjoshgame.ScreenPoint;
@@ -54,6 +56,13 @@ public class AutoJobExample extends AutoJob {
             Log.e(TAG, "Initial AndroidInternal failed");
             return null;
         }
+
+        mGL.getDevice().registerHardwareEvent(GameDevice.HW_EVENT_VIBRATOR, new GameDeviceHWEventListener() {
+            @Override
+            public void onEvent(int event, Object data) {
+                Log.d(TAG, "received hardware event from Android, cbType: " + event + ", data " + data);
+            }
+        });
 
         return mGL;
     }
