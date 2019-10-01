@@ -1,6 +1,7 @@
 package com.mumu.libjoshgame.service;
 
 import com.mumu.libjoshgame.GameDevice;
+import com.mumu.libjoshgame.GameDeviceHWEventListener;
 import com.mumu.libjoshgame.GameLibrary20;
 import com.mumu.libjoshgame.ScreenCoord;
 import com.mumu.libjoshgame.ScreenPoint;
@@ -19,6 +20,8 @@ public class DeviceInteract {
     private int mCurrentGameOrientation;
     private boolean mChatty = true;
 
+    private boolean mHWEventOnChanged = false;
+
     public DeviceInteract(GameLibrary20 gl, GameDevice device) {
         if (device == null)
             throw new RuntimeException("Initial DeviceScreen with null device");
@@ -28,6 +31,7 @@ public class DeviceInteract {
         int[] resolution = device.getScreenDimension();
         if (resolution == null || resolution.length != 2) {
             //throw new IllegalArgumentException("Device report illegal resolution length");
+            Log.w(TAG, "Auto detect for device resolution failed, use default 1080x2340. Override this.");
             mScreenWidth = 1080;
             mScreenHeight = 2340;
         } else {
@@ -164,5 +168,52 @@ public class DeviceInteract {
 
     public int mouseUp(ScreenCoord coord) {
         return mouseInteractSingleCoord(coord, GameDevice.MOUSE_RELEASE);
+    }
+
+    /**
+     * busy waiting for the first vibration event
+     * Note that this is only supported by some devices
+     * If this device doesn't support, it will return immediately
+     * @param timeoutMs The time in milliseconds to give up
+     * @throws InterruptedException if the main thread is interrupted, throws it.
+     */
+    public void waitUntilDeviceVibrate(int timeoutMs) throws InterruptedException {
+        int threadSleepTimeMs = 100;
+        int threadLoopCount = timeoutMs / threadSleepTimeMs + 1;
+        GameDeviceHWEventListener eventListener = null;
+        mHWEventOnChanged = false;
+
+        try {
+            eventListener = new GameDeviceHWEventListener() {
+                @Override
+                public void onEvent(int event, Object data) {
+                    if (event == GameDevice.HW_EVENT_CB_ONCHANGE) {
+                        int value = (Integer) data;
+                        Log.d(TAG, "On change callback event for vibrator: " + value);
+                        if (value == 1) {
+                            mHWEventOnChanged = true;
+                        }
+                    } else {
+                        Log.w(TAG, "Unknown callback event for vibrator: " + event);
+                    }
+                }
+            };
+
+            if (mDevice.registerHardwareEvent(GameDevice.HW_EVENT_VIBRATOR, eventListener) < 0) {
+                Log.e(TAG, "could not register vibrator event.");
+                return;
+            }
+
+            while (threadLoopCount-- > 0) {
+                if (mHWEventOnChanged) {
+                    Log.d(TAG, "detect vibration, end event pulling looping");
+                    return;
+                }
+                Thread.sleep(threadSleepTimeMs);
+            }
+        } finally { // note that the exception will be rethrown
+            mHWEventOnChanged = false;
+            mDevice.deregisterHardwareEvent(GameDevice.HW_EVENT_VIBRATOR, eventListener);
+        }
     }
 }

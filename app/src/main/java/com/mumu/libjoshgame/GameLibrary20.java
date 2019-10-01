@@ -124,28 +124,28 @@ public class GameLibrary20 {
         return mDevice;
     }
 
-    public String getDeviceName() throws DeviceNotInitializedException {
+    public String getDeviceName() {
         if (!checkInit())
             return null;
         else
             return mDevice.getName();
     }
 
-    public int[] getDeviceResolution() throws DeviceNotInitializedException {
+    public int[] getDeviceResolution() {
         if (!checkInit())
             return null;
         else
             return mDevice.getScreenDimension();
     }
 
-    public int getDeviceMainOrientation() throws DeviceNotInitializedException {
+    public int getDeviceMainOrientation() {
         if (!checkInit())
             return -1;
         else
             return mDevice.getScreenMainOrientation();
     }
 
-    public int getDeviceSystemType() throws DeviceNotInitializedException {
+    public int getDeviceSystemType() {
         if (!checkInit())
             return -1;
         else
@@ -229,19 +229,15 @@ public class GameLibrary20 {
         return mInteractService.mouseSwipe(coordStart, coordEnd);
     }
 
+    public void waitUntilVibrate(int timeoutMs) throws InterruptedException {
+        mInteractService.waitUntilDeviceVibrate(timeoutMs);
+    }
+
     //
     // utils
     //
-    private boolean checkInit() throws DeviceNotInitializedException {
-        boolean ret;
-        ret = getDeviceInitialized();
-
-        if (!ret) {
-            throw new DeviceNotInitializedException("No legal initialized device associated with the GL. " +
-                    "Have you called chooseDevice and initDevice correctly?");
-        }
-
-        return true;
+    private boolean checkInit() {
+        return getDeviceInitialized();
     }
 
     //
