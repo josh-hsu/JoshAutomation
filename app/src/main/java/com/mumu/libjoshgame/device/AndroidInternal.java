@@ -50,7 +50,7 @@ public class AndroidInternal extends GameDevice implements IGameDevice, ServiceC
 
     private boolean mPMPathAvailable = false;
     private Method mRunCmdMethod;
-    private boolean mHacked = false;
+    private boolean mHackRequest = false;
     private boolean mHackConnected = false;
     private IBinder mHackBinder;
     private String mSSPackageName, mSSServiceName, mSSInterfaceName;
@@ -178,9 +178,8 @@ public class AndroidInternal extends GameDevice implements IGameDevice, ServiceC
 
     private int initDeviceHWInterface() {
         // currently we only support vibrator
-        mVibratorMonitor = new AndroidHardwareEventMonitor("/sys/devices/platform/soc/c440000.qcom,spmi" +
-                "/spmi-0/spmi0-03/c440000.qcom,spmi:qcom,pm8150b@3:qcom,haptics@c000/state",
-                100,
+        mVibratorMonitor = new AndroidHardwareEventMonitor("/sys/devices/platform/soc/c440000.qcom,spmi/spmi-0/spmi0-03/c44*haptics*/state",
+                50,
                 HW_EVENT_CB_ONCHANGE
                 );
         mVibratorMonitor.startMonitoring();
@@ -230,7 +229,7 @@ public class AndroidInternal extends GameDevice implements IGameDevice, ServiceC
         if (mPMPathAvailable)
             return true;
 
-        return mHacked && mHackConnected;
+        return mHackRequest && mHackConnected;
     }
 
     /*
@@ -370,13 +369,13 @@ public class AndroidInternal extends GameDevice implements IGameDevice, ServiceC
     @Override
     public int runCommand(String cmd) {
         try {
-            if (!mHacked && mPMPathAvailable) {
+            if (!mHackRequest && mPMPathAvailable) {
                 if (mInitialized) {
                     mRunCmdMethod.invoke(mContext, cmd, "");
                 } else {
                     return -100;
                 }
-            } else if (mHacked && mHackConnected) {
+            } else if (mHackRequest && mHackConnected) {
                 if (mHackBinder != null) {
                     Parcel data = Parcel.obtain();
                     Parcel reply = Parcel.obtain();
@@ -393,6 +392,7 @@ public class AndroidInternal extends GameDevice implements IGameDevice, ServiceC
                     return -200;
                 }
             } else {
+                Log.e(TAG, "No command sending path, neither PPM path nor HackSS path is available.");
                 return -1;
             }
         } catch (Exception e)  {
@@ -444,10 +444,10 @@ public class AndroidInternal extends GameDevice implements IGameDevice, ServiceC
      */
     private int setHackSS(boolean hack) {
         int ret = 0;
-        mHacked = hack;
-        if (mHacked && !mHackConnected)
+        mHackRequest = hack;
+        if (mHackRequest && !mHackConnected)
             ret = connectToHackSS();
-        else if (!mHacked && mHackConnected)
+        else if (!mHackRequest && mHackConnected)
             ret = disconnectToHackSS();
 
         return ret;
@@ -467,7 +467,6 @@ public class AndroidInternal extends GameDevice implements IGameDevice, ServiceC
                 Log.e(TAG, "can't bind to Service. Your service is not implemented correctly");
                 return -1;
             }
-            mHackConnected = true;
         } else {
             Log.d(TAG, "Hack service is already connected");
         }
@@ -475,8 +474,10 @@ public class AndroidInternal extends GameDevice implements IGameDevice, ServiceC
     }
 
     synchronized private int disconnectToHackSS() {
-        if (mHackConnected)
+        if (mHackConnected && mHackBinder != null) {
             mContext.unbindService(this);
+            mHackBinder = null;
+        }
 
         return 0;
     }
@@ -555,17 +556,25 @@ public class AndroidInternal extends GameDevice implements IGameDevice, ServiceC
 
             while (isLooping) {
                 try {
+                    if(!getInitialized()) {
+                        Log.d(TAG, "Device is not connected to hackSS, wait for next second.");
+                        Thread.sleep(1000);
+                        continue;
+                    }
+
                     value = runShellCommand(cmd);
                     Integer intValue = Integer.parseInt(value);
 
                     switch (monitorCallbackType) {
                         case HW_EVENT_CB_ONCHANGE:
                             if (intValue != returnedValue) {
+                                Log.d(TAG, "Hardware event on changed: value = " + intValue);
                                 returnedValue = intValue;
                                 sendEventToListener(HW_EVENT_CB_ONCHANGE, intValue);
                             }
                             break;
                         case HW_EVENT_CB_NEW_VALUE:
+                            Log.d(TAG, "Hardware event new value: value = " + intValue);
                             sendEventToListener(HW_EVENT_CB_NEW_VALUE, intValue);
                             break;
                         default:
