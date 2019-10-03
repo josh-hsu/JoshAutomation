@@ -241,7 +241,7 @@ public class GameDevice {
         log(LOG_DEBUG, TAG, "trying to dump at index " + index + ", path is " + mFilePaths[index]);
         ret = mDeviceInterface.dumpScreen(mFilePaths[index]);
         if (ret < 0) {
-            Log.e(TAG, "dumpscreen failed, ret = " + ret);
+            log(LOG_ERROR, TAG, "dumpscreen failed, ret = " + ret);
             mFileState[index] = SCREENSHOT_EMPTY;
             return SCREENSHOT_DUMP_FAIL;
         }
@@ -367,6 +367,19 @@ public class GameDevice {
     }
 
     /**
+     * dumpScreenManual
+     * manual dump a screenshot at specific file path
+     * @param path Path to save the screenshot
+     */
+    public void dumpScreenManual(String path) {
+        if (mDeviceInterface == null) {
+            throw new RuntimeException("Fatal exception that device interface is null");
+        }
+
+        mDeviceInterface.dumpScreen(path);
+    }
+
+    /**
      * query preloaded screenshot path count for indexing
      * @return Total length of screenshot path count
      */
@@ -436,7 +449,7 @@ public class GameDevice {
             case HW_EVENT_SOUND:
                 return mDeviceInterface.registerEvent(hardwareType, el);
             default:
-                Log.w(TAG, "Unsupported hw event type");
+                log(LOG_WARNING, TAG,  "Unsupported hw event type");
                 break;
         }
 
@@ -448,5 +461,21 @@ public class GameDevice {
             throw new RuntimeException("Fatal exception that device interface is null");
 
         return mDeviceInterface.deregisterEvent(hardwareType, el);
+    }
+
+    public int startDevice() {
+        if (mDeviceInterface == null)
+            throw new RuntimeException("Fatal exception that device interface is null");
+
+        return mDeviceInterface.onStart();
+    }
+
+    public int destroyDevice() {
+        int ret = 0;
+
+        if (mDeviceInterface != null)
+            ret = mDeviceInterface.onExit();
+
+        return ret;
     }
 }

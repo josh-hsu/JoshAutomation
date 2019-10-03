@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.mumu.joshautomation;
+package com.mumu.android.joshautomation.content;
 
 import java.util.ArrayList;
 
@@ -32,18 +32,18 @@ public class AutoJobClasses {
              * Add Your Job Here !!  Add Your Job Here !!  Add Your Job Here !!
              * comment out the job you don't want to add to AutoJobHandler
              */
-            add(com.mumu.joshautomation.fgo.LoopBattleJob.class);
+            //add(com.mumu.joshautomation.fgo.LoopBattleJob.class);
             //add(com.mumu.joshautomation.fgo.AutoBattleJob.class);
             //add(com.mumu.joshautomation.fgo.PureBattleJob.class);
             //add(com.mumu.joshautomation.fgo.NewFlushJob.class);
             //add(com.mumu.joshautomation.fgo.TWAutoLoginJob.class);
-            add(com.mumu.joshautomation.fgo.AutoBoxJob.class);
+            //add(com.mumu.joshautomation.fgo.AutoBoxJob.class);
             //add(com.mumu.joshautomation.shinobi.ShinobiLoopBattleJob.class);
             //add(com.mumu.joshautomation.caocao.FlushJob.class);
             //add(com.mumu.joshautomation.caocao.FlushMoneyJob.class);
-            add(com.mumu.joshautomation.ro.ROAutoDrinkJob.class);
-            add(com.mumu.joshautomation.epic7.BattleTreasureReminder.class);
-            add(com.mumu.joshautomation.epic7.LoopBattleJob.class);
+            //add(com.mumu.joshautomation.ro.ROAutoDrinkJob.class);
+            //add(com.mumu.joshautomation.epic7.BattleTreasureReminder.class);
+            //add(com.mumu.joshautomation.epic7.LoopBattleJob.class);
         }
     };
 }

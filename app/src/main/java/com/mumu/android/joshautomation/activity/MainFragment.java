@@ -1,12 +1,12 @@
-package com.mumu.joshautomation;
+package com.mumu.android.joshautomation.activity;
 
 import android.app.Activity;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.View;
 
-import com.mumu.libjoshgame.Log;
 
 /**
  * MainFragment is a type of Fragment that organizes all abstract

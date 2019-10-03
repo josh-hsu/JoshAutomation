@@ -58,7 +58,6 @@ public class ScreenPoint {
         int unit = 66;
 
         if (formattedString == null) {
-            Log.w(TAG, "ScreenPoint: String is null.");
             coord = null;
             color = null;
         } else if (formattedString.length() == 8) { //8-digits format
@@ -103,12 +102,12 @@ public class ScreenPoint {
                     coord = new ScreenCoord(x, y, o);
                     color = new ScreenColor((byte)(r & 0xFF), (byte)(g & 0xFF), (byte)(b & 0xFF), (byte)(t & 0xFF));
                 } catch (NumberFormatException e) {
-                    Log.e(TAG, "Data not legal " + e.getMessage());
+                    //Log.e(TAG, "Data not legal " + e.getMessage());
                     coord = null;
                     color = null;
                 }
             } else {
-                Log.w(TAG, "ScreenPoint: String " + formattedString + " is not legal.");
+                //Log.w(TAG, "ScreenPoint: String " + formattedString + " is not legal.");
                 coord = null;
                 color = null;
             }

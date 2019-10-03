@@ -152,6 +152,66 @@ public class GameLibrary20 {
             return mDevice.getDeviceSystemType();
     }
 
+    public int setScreenResolution(int width, int height) {
+        if (!checkInit())
+            return -1;
+
+        mScreenService.setScreenDimension(width, height);
+        mInteractService.setScreenDimension(width, height);
+        return 0;
+    }
+
+    public int setScreenMainOrientation(int orient) {
+        if (!checkInit())
+            return -1;
+
+        mScreenService.setGameOrientation(orient);
+        mInteractService.setGameOrientation(orient);
+        return 0;
+    }
+
+    public int setScreenAmbiguousRange(int[] range) {
+        if (!checkInit())
+            return -1;
+
+        if(range.length != 3)
+            return -2;
+
+        mScreenService.setAmbiguousRange(range);
+        return 0;
+    }
+
+    public int setScreenOffset(int xOffset, int yOffset, int offsetOrientation) {
+        if (!checkInit())
+            return -1;
+
+        if (offsetOrientation == ScreenPoint.SO_Landscape) {
+            mInteractService.setScreenOffset(yOffset, xOffset);
+            mScreenService.setScreenOffset(yOffset, xOffset);
+        } else {
+            mInteractService.setScreenOffset(xOffset, yOffset);
+            mScreenService.setScreenOffset(xOffset, yOffset);
+        }
+
+        return 0;
+    }
+
+    public int setMouseShift(int ran) {
+        if (!checkInit())
+            return -1;
+
+        mInteractService.setMouseInputShift(ran);
+        return 0;
+    }
+
+    public int setDeviceCommandTransactionTime(int transTimeMs) {
+        if (!checkInit())
+            return -1;
+
+        mDevice.setWaitTransactionTimeMs(transTimeMs);
+        return 0;
+    }
+
     // =============================
     //  DEVICE SCREEN GL
     // =============================
@@ -196,6 +256,10 @@ public class GameLibrary20 {
     public boolean colorsAreInRect(ScreenCoord rectLeftTop, ScreenCoord rectRightBottom, ArrayList<ScreenColor> colors)
             throws InterruptedException, ScreenshotErrorException  {
         return mScreenService.colorsAreInRect(rectLeftTop, rectRightBottom, colors);
+    }
+
+    public void dumpScreenshotManual(String path) {
+        mDevice.dumpScreenManual(path);
     }
 
     // =============================

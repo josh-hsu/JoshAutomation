@@ -1,4 +1,4 @@
-package com.mumu.joshautomation;
+package com.mumu.android.joshautomation.activity;
 
 import android.app.Activity;
 import android.content.Context;
@@ -9,6 +9,7 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.provider.Settings;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,7 +17,8 @@ import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.mumu.libjoshgame.Log;
+import com.mumu.android.joshautomation.R;
+import com.mumu.android.joshautomation.service.HeadService;
 
 public class OutlineFragment extends MainFragment {
     private static final String TAG = "JATool";

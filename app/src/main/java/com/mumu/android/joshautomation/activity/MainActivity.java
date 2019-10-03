@@ -1,4 +1,4 @@
-package com.mumu.joshautomation;
+package com.mumu.android.joshautomation.activity;
 
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -9,19 +9,22 @@ import android.os.Environment;
 import android.provider.Settings;
 import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
+import android.support.design.widget.NavigationView;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.FragmentManager;
-import android.support.v7.app.ActionBar;
-import android.view.View;
-import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.Toast;
+
+import com.mumu.android.joshautomation.R;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -31,9 +34,6 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.List;
-
-import com.mumu.android.joshautomation.activity.GL20Fragment;
-import com.mumu.libjoshgame.Log;
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
@@ -232,7 +232,7 @@ public class MainActivity extends AppCompatActivity
     }
 
     private void requestPermissions() {
-        String[] perms = {"android.permission.WRITE_EXTERNAL_STORAGE"};
+        String[] perms = {"android.permission.WRITE_EXTERNAL_STORAGE", "android.permission.FOREGROUND_SERVICE"};
         int permsRequestCode = 200;
 
         if (Build.VERSION.SDK_INT > Build.VERSION_CODES.LOLLIPOP_MR1) {
@@ -242,7 +242,7 @@ public class MainActivity extends AppCompatActivity
     }
 
     private void requestPermissionsOnStart() {
-        String[] perms = {"android.permission.WRITE_EXTERNAL_STORAGE"};
+        String[] perms = {"android.permission.WRITE_EXTERNAL_STORAGE", "android.permission.FOREGROUND_SERVICE"};
         int permsRequestCode = 201;
 
         if (Build.VERSION.SDK_INT > Build.VERSION_CODES.LOLLIPOP_MR1) {

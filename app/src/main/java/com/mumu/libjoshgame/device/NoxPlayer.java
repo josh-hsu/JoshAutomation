@@ -2,8 +2,8 @@ package com.mumu.libjoshgame.device;
 
 import com.mumu.libjoshgame.GameDevice;
 import com.mumu.libjoshgame.GameDeviceHWEventListener;
+import com.mumu.libjoshgame.GameLibrary20;
 import com.mumu.libjoshgame.IGameDevice;
-import com.mumu.libjoshgame.JoshGameLibrary;
 import com.mumu.libjoshgame.ScreenPoint;
 
 import java.io.BufferedReader;
@@ -15,7 +15,7 @@ import java.util.Calendar;
 import java.util.Locale;
 
 public class NoxPlayer extends GameDevice implements IGameDevice {
-    private static final String TAG = JoshGameLibrary.TAG;
+    private static final String TAG = GameLibrary20.TAG;
     private static final String DEVICE_NAME = "NoxPlayer";
     private static final String DEVICE_VERSION = "1.0";
     private static final int    DEVICE_SYS_TYPE = DEVICE_SYS_LINUX;

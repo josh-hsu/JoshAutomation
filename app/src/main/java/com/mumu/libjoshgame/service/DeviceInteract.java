@@ -28,6 +28,8 @@ public class DeviceInteract {
         else
             mDevice = device;
 
+        Log = mDevice.getLogger();
+
         int[] resolution = device.getScreenDimension();
         if (resolution == null || resolution.length != 2) {
             //throw new IllegalArgumentException("Device report illegal resolution length");
@@ -44,8 +46,6 @@ public class DeviceInteract {
             throw new IllegalArgumentException("Device report illegal default screen orientation");
         else
             mCurrentGameOrientation = orientation;
-
-        Log = mDevice.getLogger();
     }
 
     public void setScreenDimension(int w, int h) {

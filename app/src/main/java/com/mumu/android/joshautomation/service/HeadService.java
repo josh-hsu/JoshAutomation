@@ -13,8 +13,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.mumu.joshautomation;
+package com.mumu.android.joshautomation.service;
 
+import android.app.Notification;
+import android.app.NotificationChannel;
+import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.app.Service;
 import android.content.Context;
@@ -26,8 +29,9 @@ import android.os.Build;
 import android.os.Environment;
 import android.os.Handler;
 import android.os.IBinder;
-import android.support.v7.app.AlertDialog;
 import android.support.v4.app.NotificationCompat;
+import android.support.v7.app.AlertDialog;
+import android.util.Log;
 import android.view.ContextThemeWrapper;
 import android.view.Display;
 import android.view.LayoutInflater;
@@ -40,30 +44,24 @@ import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
-import com.mumu.joshautomation.caocao.FlushJob;
-import com.mumu.joshautomation.caocao.FlushMoneyJob;
-import com.mumu.joshautomation.epic7.BattleTreasureReminder;
-import com.mumu.joshautomation.fgo.AutoBattleJob;
-import com.mumu.joshautomation.fgo.LoopBattleJob;
-import com.mumu.joshautomation.fgo.NewFlushJob;
-import com.mumu.joshautomation.fgo.PureBattleJob;
-import com.mumu.joshautomation.fgo.TWAutoLoginJob;
-import com.mumu.joshautomation.ro.ROAutoDrinkJob;
-import com.mumu.joshautomation.fgo.AutoBoxJob;
-import com.mumu.joshautomation.screencapture.PointSelectionActivity;
-import com.mumu.joshautomation.script.AutoJob;
-import com.mumu.joshautomation.script.AutoJobAction;
-import com.mumu.joshautomation.script.AutoJobEventListener;
-import com.mumu.joshautomation.script.AutoJobHandler;
-import com.mumu.joshautomation.script.DefinitionLoader;
-import com.mumu.joshautomation.shinobi.ShinobiLoopBattleJob;
-import com.mumu.libjoshgame.JoshGameLibrary;
-import com.mumu.libjoshgame.Log;
+import com.mumu.android.joshautomation.R;
+import com.mumu.android.joshautomation.activity.AppPreferenceActivity;
+import com.mumu.android.joshautomation.activity.MainActivity;
+import com.mumu.android.joshautomation.content.AppPreferenceValue;
+import com.mumu.android.joshautomation.content.AutoJobClasses;
+import com.mumu.android.joshautomation.content.DefinitionLoader;
+import com.mumu.android.joshautomation.script.AutoJob;
+import com.mumu.android.joshautomation.script.AutoJobAction;
+import com.mumu.android.joshautomation.script.AutoJobEventListener;
+import com.mumu.android.joshautomation.script.AutoJobHandler;
+import com.mumu.libjoshgame.GameLibrary20;
 import com.mumu.libjoshgame.ScreenPoint;
 
-import java.util.ArrayList;
 
-public class HeadService extends Service implements AutoJobEventListener{
+import java.util.ArrayList;
+import java.util.HashMap;
+
+public class HeadService extends Service implements AutoJobEventListener {
     private static final String TAG = "HeadService";
     private final Handler mHandler = new Handler();
     private final String mPngFilePath = Environment.getExternalStorageDirectory().toString() + "/select.png";
@@ -89,7 +87,7 @@ public class HeadService extends Service implements AutoJobEventListener{
     private boolean mMessageThreadRunning = false;
     private static int mDumpCount = 0;
 
-    private JoshGameLibrary mGL;
+    private GameLibrary20 mGL;
     private AppPreferenceValue mAPV;
     private AutoJobHandler mAutoJobHandler;
     private static boolean mAutoJobAdded = false;
@@ -135,7 +133,7 @@ public class HeadService extends Service implements AutoJobEventListener{
     private final Runnable mDumpScreenRunnable = new Runnable() {
         @Override
         public void run() {
-            /* Call our library to dump screen, this might take a while */
+            /* TODO: implement this
             try {
                 mGL.getCaptureService().dumpScreenPNG(mPngFilePath);
                 mGL.getCaptureService().dumpScreen(mDumpFilePath);
@@ -143,14 +141,13 @@ public class HeadService extends Service implements AutoJobEventListener{
                 e.printStackTrace();
             }
 
-            /* show icon view back */
             configAllIconShowing(HeadIconView.VISIBLE);
 
-            /* show result screen */
             Intent intent = new Intent();
             intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
             intent.setClass(HeadService.this, PointSelectionActivity.class);
             startActivity(intent);
+            */
         }
     };
 
@@ -191,17 +188,39 @@ public class HeadService extends Service implements AutoJobEventListener{
 
     // provide our service not be able to kill
     private void initNotification() {
-        Intent intent = new Intent(this, MainActivity.class);
-        PendingIntent contentIntent = PendingIntent.getActivity(this, 0, intent, 0);
+        Notification notification;
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            String NOTIFICATION_CHANNEL_ID = "com.mumu.android.joshautomation";
+            String channelName = "My Background Service";
+            NotificationChannel chan = new NotificationChannel(NOTIFICATION_CHANNEL_ID, channelName, NotificationManager.IMPORTANCE_NONE);
+            chan.setLightColor(Color.BLUE);
+            chan.setLockscreenVisibility(Notification.VISIBILITY_PRIVATE);
+            NotificationManager manager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+            assert manager != null;
+            manager.createNotificationChannel(chan);
 
-        NotificationCompat.Builder mBuilder =
-                new NotificationCompat.Builder(this)
-                        .setSmallIcon(R.drawable.ic_bookmarked)
-                        .setContentTitle("自動腳本服務")
-                        .setContentText("服務已經啟用")
-                        .setContentIntent(contentIntent); //Required on Gingerbread and below
+            NotificationCompat.Builder notificationBuilder = new NotificationCompat.Builder(this, NOTIFICATION_CHANNEL_ID);
+            notification = notificationBuilder.setOngoing(true)
+                    .setSmallIcon(R.drawable.ic_bookmarked)
+                    .setContentTitle("自動腳本服務")
+                    .setPriority(NotificationManager.IMPORTANCE_HIGH)
+                    .setCategory(Notification.CATEGORY_SERVICE)
+                    .build();
+        } else {
+            Intent intent = new Intent(this, MainActivity.class);
+            PendingIntent contentIntent = PendingIntent.getActivity(this, 0, intent, 0);
 
-        startForeground(1235, mBuilder.build());
+            NotificationCompat.Builder mBuilder =
+                    new NotificationCompat.Builder(this)
+                            .setSmallIcon(R.drawable.ic_bookmarked)
+                            .setContentTitle("自動腳本服務")
+                            .setContentText("服務已經啟用")
+                            .setContentIntent(contentIntent); //Required on Gingerbread and below
+
+            notification = mBuilder.build();
+        }
+
+        startForeground(1235, notification);
     }
 
     private void initGamePanelViews() {
@@ -320,6 +339,50 @@ public class HeadService extends Service implements AutoJobEventListener{
         configHeadIconShowing(HeadIconView.VISIBLE);
     }
 
+    private GameLibrary20 initGameLibrary20() {
+        int ret;
+        GameLibrary20 gl20 = new GameLibrary20();
+        String hackSSPackageName = "com.mumu.joshautomationservice";
+        String hackSSServiceName = ".CommandService";
+        String hackSSIntfName = "";
+        String hackSSTransactCode = "1";
+        HashMap<String, String> hackSSParameters = new HashMap<>();
+
+        if (mAPV.getPrefs().getBoolean("ssEnabled", false)) {
+            hackSSPackageName = mAPV.getPrefs().getString("ssPackageName", "com.mumu.joshautomationservice");
+            hackSSServiceName = mAPV.getPrefs().getString("ssServiceName", ".CommandService");
+            hackSSIntfName = mAPV.getPrefs().getString("ssInterfaceName", "");
+            hackSSTransactCode = mAPV.getPrefs().getString("ssTransactCode", "1");
+        }
+
+        hackSSParameters.put("packageName", hackSSPackageName);
+        hackSSParameters.put("serviceName", hackSSServiceName);
+        hackSSParameters.put("interfaceName", hackSSIntfName);
+        hackSSParameters.put("code", hackSSTransactCode);
+
+        Object[] initObjects = new Object[] {this, hackSSParameters};
+
+        ret = gl20.chooseDevice(GameLibrary20.DEVICE_TYPE_ANDROID_INTERNAL);
+        if (ret < 0) {
+            android.util.Log.e(TAG, "Device is not here?");
+            return null;
+        }
+
+        ret = gl20.setDeviceEssentials(null);
+        if (ret < 0) {
+            android.util.Log.e(TAG, "Set device essentials failed");
+            return null;
+        }
+
+        ret = gl20.initDevice(initObjects);
+        if (ret < 0) {
+            android.util.Log.e(TAG, "Initial AndroidInternal failed");
+            return null;
+        }
+
+        return gl20;
+    }
+
     private void initGameLibrary() {
         int w, h;
         int userWidth, userHeight, userAmbValue, userTouchShift;
@@ -368,51 +431,31 @@ public class HeadService extends Service implements AutoJobEventListener{
                 h = size.y;
         }
 
-        mGL = JoshGameLibrary.getInstance();
-        mGL.setContext(mContext);
+        mGL = initGameLibrary20();
 
         // Check if user override settings
         if (userWidth != 0 && userHeight != 0)
-            mGL.setScreenDimension(userWidth, userHeight);
+            mGL.setScreenResolution(userWidth, userHeight);
         else
-            mGL.setScreenDimension(w, h);
+            mGL.setScreenResolution(w, h);
 
-        mGL.getCaptureService().setChatty(mAPV.getPrefs().getBoolean("captureServiceChatty", false));
+        //mGL.getCaptureService().setChatty(mAPV.getPrefs().getBoolean("captureServiceChatty", false));
 
         if (userAmbValue != 0)
-            mGL.setAmbiguousRange(new int[]{userAmbValue, userAmbValue, userAmbValue});
-        else
-            mGL.setAmbiguousRange(new int[]{JoshGameLibrary.DEFAULT_AMBIGUOUS_VALUE,
-                    JoshGameLibrary.DEFAULT_AMBIGUOUS_VALUE, JoshGameLibrary.DEFAULT_AMBIGUOUS_VALUE});
+            mGL.setScreenAmbiguousRange(new int[]{userAmbValue, userAmbValue, userAmbValue});
 
         if (userScreenXOffset != 0 || userScreenYOffset != 0)
             mGL.setScreenOffset(userScreenXOffset, userScreenYOffset, ScreenPoint.SO_Portrait);
 
         if (userTouchShift != 0)
-            mGL.setTouchShift(userTouchShift);
-        else
-            mGL.setTouchShift(JoshGameLibrary.DEFAULT_TOUCH_SHIFT);
+            mGL.setMouseShift(userTouchShift);
 
         if (userWaitTransactTime != 0)
-            mGL.setWaitTransactionTime(userWaitTransactTime);
-        else
-            mGL.setWaitTransactionTime(JoshGameLibrary.DEFAULT_WAIT_TRANSACT_TIME);
+            mGL.setDeviceCommandTransactionTime(userWaitTransactTime);
 
-        if (mAPV.getPrefs().getBoolean("ssEnabled", false)) {
-            String pn = mAPV.getPrefs().getString("ssPackageName", "");
-            String sn = mAPV.getPrefs().getString("ssServiceName", "");
-            String in = mAPV.getPrefs().getString("ssInterfaceName", "");
-            int code = Integer.parseInt(mAPV.getPrefs().getString("ssTransactCode", "0"));
-            mGL.setHackParams(pn, sn, in, code);
-            mGL.setHackSS(true);
-        } else {
-            mGL.setHackSS(false);
-        }
-
-        mGL.getCaptureService().setChatty(mAPV.getPrefs().getBoolean("captureServiceChatty", false));
     }
 
-    private void initAutoJobs () {
+    private void initAutoJobs() {
         mAutoJobHandler = AutoJobHandler.getHandler();
 
         if (!mAutoJobAdded) {
@@ -441,6 +484,10 @@ public class HeadService extends Service implements AutoJobEventListener{
     @Override
     public void onDestroy() {
         super.onDestroy();
+
+        if (mGL != null) {
+            mGL.getDevice().destroyDevice();
+        }
 
         // Game tool
         for (HeadIconView icon : mHeadIconList) {
@@ -522,9 +569,9 @@ public class HeadService extends Service implements AutoJobEventListener{
         // head service is responsible for setting orientation
         int orientation = getResources().getConfiguration().orientation;
         if (orientation == 1)
-            mGL.setGameOrientation(ScreenPoint.SO_Portrait);
+            mGL.setScreenMainOrientation(ScreenPoint.SO_Portrait);
         else
-            mGL.setGameOrientation(ScreenPoint.SO_Landscape);
+            mGL.setScreenMainOrientation(ScreenPoint.SO_Landscape);
 
         configAllIconShowing(HeadIconView.INVISIBLE);
         mHandler.postDelayed(mDumpScreenRunnable, 100);
@@ -534,7 +581,8 @@ public class HeadService extends Service implements AutoJobEventListener{
         if (isLongPress) {
             String filename = mDumpFilePath + mDumpCount;
             try {
-                mGL.getCaptureService().dumpScreen(filename);
+                mGL.dumpScreenshotManual(filename);
+                Thread.sleep(1000);
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
@@ -585,12 +633,13 @@ public class HeadService extends Service implements AutoJobEventListener{
     public void onJobDone(String job) {
         Log.d(TAG, "Job " + job + " has done");
 
-        if (job.equals(PureBattleJob.jobName)) {
+        //TODO: implement here
+        /*if (job.equals(PureBattleJob.jobName)) {
             mMessageText = "完成單次戰鬥";
         } else if (job.equals(AutoBattleJob.jobName)) {
             mScriptRunning = false;
             mMessageText = "循環戰鬥結束";
-        }
+        }*/
     }
 
     @Override

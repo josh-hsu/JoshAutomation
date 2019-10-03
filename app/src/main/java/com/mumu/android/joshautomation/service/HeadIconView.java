@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.mumu.joshautomation;
+package com.mumu.android.joshautomation.service;
 
 import android.graphics.PixelFormat;
 import android.view.Gravity;
@@ -55,7 +55,7 @@ public class HeadIconView {
         mLayoutParams = new WindowManager.LayoutParams(
                 WindowManager.LayoutParams.WRAP_CONTENT,
                 WindowManager.LayoutParams.WRAP_CONTENT,
-                WindowManager.LayoutParams.TYPE_PHONE,
+                WindowManager.LayoutParams.TYPE_APPLICATION_OVERLAY,
                 WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE,
                 PixelFormat.TRANSLUCENT);
 

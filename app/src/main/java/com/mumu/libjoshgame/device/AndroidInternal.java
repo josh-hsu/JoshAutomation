@@ -9,12 +9,12 @@ import android.os.Environment;
 import android.os.IBinder;
 import android.os.Parcel;
 import android.os.RemoteException;
+import android.util.Log;
 
 import com.mumu.libjoshgame.GameDevice;
 import com.mumu.libjoshgame.GameDeviceHWEventListener;
 import com.mumu.libjoshgame.GameLibrary20;
 import com.mumu.libjoshgame.IGameDevice;
-import com.mumu.libjoshgame.Log;
 import com.mumu.libjoshgame.ScreenPoint;
 
 import java.io.BufferedReader;

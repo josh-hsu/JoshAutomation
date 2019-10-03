@@ -14,13 +14,13 @@
  * limitations under the License.
  */
 
-package com.mumu.joshautomation.script;
+package com.mumu.android.joshautomation.content;
 
 import android.content.res.Resources;
 import android.os.Environment;
+import android.util.Log;
 import android.util.SparseArray;
 
-import com.mumu.libjoshgame.Log;
 import com.mumu.libjoshgame.ScreenColor;
 import com.mumu.libjoshgame.ScreenCoord;
 import com.mumu.libjoshgame.ScreenPoint;
@@ -44,7 +44,7 @@ import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 
 /*
- * DefinitionLoader (added in version 1.52)
+ * DefinitionLoader
  * Load a specific resolution of definition set
  * Usage:
  * DefinitionLoader mDF = DefinitionLoader.getInstance();

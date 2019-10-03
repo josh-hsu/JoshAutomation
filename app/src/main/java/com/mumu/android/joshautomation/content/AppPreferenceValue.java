@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.mumu.joshautomation;
+package com.mumu.android.joshautomation.content;
 
 import android.content.Context;
 import android.content.SharedPreferences;

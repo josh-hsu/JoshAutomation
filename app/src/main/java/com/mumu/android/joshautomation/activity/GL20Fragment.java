@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.net.Uri;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -11,10 +12,7 @@ import android.view.ViewGroup;
 import com.mumu.android.joshautomation.script.AutoJobAction;
 import com.mumu.android.joshautomation.script.AutoJobEventListener;
 import com.mumu.android.joshautomation.script.AutoJobExample;
-import com.mumu.joshautomation.MainActivity;
-import com.mumu.joshautomation.MainFragment;
-import com.mumu.joshautomation.R;
-import com.mumu.libjoshgame.Log;
+import com.mumu.android.joshautomation.R;
 
 public class GL20Fragment extends MainFragment {
     private static final String TAG = "GL20Activity";

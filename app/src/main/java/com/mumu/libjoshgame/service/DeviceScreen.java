@@ -492,7 +492,4 @@ public class DeviceScreen {
 
         return true;
     }
-
-
-
 }

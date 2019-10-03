@@ -1,22 +1,22 @@
 <preference-headers
     xmlns:android="http://schemas.android.com/apk/res/android">
 
-    <header android:fragment="com.mumu.joshautomation.AppPreferenceActivity$SystemPrefFragment"
+    <header android:fragment="com.mumu.android.joshautomation.activity.AppPreferenceActivity$SystemPrefFragment"
         android:icon="@mipmap/ic_script_select"
         android:title="@string/settings_fragment_title_2"
         android:summary="@string/settings_fragment_summary_2" />
 
-    <header android:fragment="com.mumu.joshautomation.AppPreferenceActivity$FGOPrefFragment"
+    <header android:fragment="com.mumu.android.joshautomation.activity.AppPreferenceActivity$FGOPrefFragment"
         android:icon="@mipmap/ic_fgo"
         android:title="@string/settings_fragment_title_1"
         android:summary="@string/settings_fragment_summary_1" />
 
-    <header android:fragment="com.mumu.joshautomation.AppPreferenceActivity$ShinobiPrefFragment"
+    <header android:fragment="com.mumu.android.joshautomation.activity.AppPreferenceActivity$ShinobiPrefFragment"
         android:icon="@mipmap/ic_fgo"
         android:title="@string/settings_fragment_title_3"
         android:summary="@string/settings_fragment_summary_3" />
 
-    <header android:fragment="com.mumu.joshautomation.AppPreferenceActivity$ROPrefFragment"
+    <header android:fragment="com.mumu.android.joshautomation.activity.AppPreferenceActivity$ROPrefFragment"
         android:icon="@mipmap/ic_fgo"
         android:title="@string/settings_fragment_title_4"
         android:summary="@string/settings_fragment_summary_4" />

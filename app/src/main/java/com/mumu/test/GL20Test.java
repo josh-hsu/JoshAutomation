@@ -29,15 +29,11 @@ public class GL20Test {
         @Override public int runTest(Object arg) {
             if (arg instanceof GameLibrary20) {
                 GameLibrary20 gl = (GameLibrary20) arg;
-                try {
-                    int[] resolution = gl.getDeviceResolution();
-                    if (resolution == null)
-                        return TEST_FAIL_GL_RETURN_NOT_EXPECTED;
-                    if (resolution.length != 2)
-                        return TEST_FAIL_GL_RETURN_NOT_EXPECTED;
-                } catch (GameLibrary20.DeviceNotInitializedException e) {
-                    return TEST_FAIL_GL_DEV_NOT_INIT;
-                }
+                int[] resolution = gl.getDeviceResolution();
+                if (resolution == null)
+                    return TEST_FAIL_GL_RETURN_NOT_EXPECTED;
+                if (resolution.length != 2)
+                    return TEST_FAIL_GL_RETURN_NOT_EXPECTED;
                 return TEST_PASS;
             }
             return TEST_FAIL_INTERNAL_ILLEGAL;
@@ -49,13 +45,10 @@ public class GL20Test {
         @Override public int runTest(Object arg) {
             if (arg instanceof GameLibrary20) {
                 GameLibrary20 gl = (GameLibrary20) arg;
-                try {
-                    String name = gl.getDeviceName();
-                    if (name == null || name.equals(""))
-                        return TEST_FAIL_GL_RETURN_NOT_EXPECTED;
-                } catch (GameLibrary20.DeviceNotInitializedException e) {
-                    return TEST_FAIL_GL_DEV_NOT_INIT;
-                }
+                String name = gl.getDeviceName();
+                if (name == null || name.equals(""))
+                    return TEST_FAIL_GL_RETURN_NOT_EXPECTED;
+
                 return TEST_PASS;
             }
             return TEST_FAIL_INTERNAL_ILLEGAL;
@@ -67,17 +60,14 @@ public class GL20Test {
         @Override public int runTest(Object arg) {
             if (arg instanceof GameLibrary20) {
                 GameLibrary20 gl = (GameLibrary20) arg;
-                try {
-                    int sysType = gl.getDeviceSystemType();
-                    if (sysType < 0)
-                        return TEST_FAIL_GL_RETURN_NOT_EXPECTED;
-                    else if (sysType != GameDevice.DEVICE_SYS_WINDOWS &&
-                            sysType != GameDevice.DEVICE_SYS_LINUX &&
-                            sysType != GameDevice.DEVICE_SYS_DARWIN)
-                        return TEST_FAIL_GL_RETURN_NOT_EXPECTED;
-                } catch (GameLibrary20.DeviceNotInitializedException e) {
-                    return TEST_FAIL_GL_DEV_NOT_INIT;
-                }
+                int sysType = gl.getDeviceSystemType();
+                if (sysType < 0)
+                    return TEST_FAIL_GL_RETURN_NOT_EXPECTED;
+                else if (sysType != GameDevice.DEVICE_SYS_WINDOWS &&
+                        sysType != GameDevice.DEVICE_SYS_LINUX &&
+                        sysType != GameDevice.DEVICE_SYS_DARWIN)
+                    return TEST_FAIL_GL_RETURN_NOT_EXPECTED;
+
                 return TEST_PASS;
             }
             return TEST_FAIL_INTERNAL_ILLEGAL;
