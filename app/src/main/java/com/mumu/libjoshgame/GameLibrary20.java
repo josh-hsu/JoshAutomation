@@ -212,6 +212,14 @@ public class GameLibrary20 {
         return 0;
     }
 
+    public int useHardwareSimulatedInput(boolean enable) {
+        if (!checkInit())
+            return -1;
+
+        mDevice.setHardwareSimulatedInput(enable);
+        return 0;
+    }
+
     // =============================
     //  DEVICE SCREEN GL
     // =============================

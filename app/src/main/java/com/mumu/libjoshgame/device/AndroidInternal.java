@@ -266,6 +266,11 @@ public class AndroidInternal extends GameDevice implements IGameDevice, ServiceC
     }
 
     @Override
+    public int setHWSimulatedInput(boolean enable) {
+        return 0;
+    }
+
+    @Override
     public int dumpScreen(String path) {
         return runCommand("screencap " + path);
     }

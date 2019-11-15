@@ -22,7 +22,6 @@ import android.content.SharedPreferences;
 /*
  * AppPreferenceValue
  * This class ease the pain of getting user's preference value
- * Note: the static context should be removed at next version
  */
 public class AppPreferenceValue {
     private static AppPreferenceValue mAppPreferenceValue = new AppPreferenceValue();

@@ -9,9 +9,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.mumu.android.joshautomation.script.AutoJobAction;
-import com.mumu.android.joshautomation.script.AutoJobEventListener;
-import com.mumu.android.joshautomation.script.AutoJobExample;
 import com.mumu.android.joshautomation.R;
 
 public class GL20Fragment extends MainFragment {
@@ -37,26 +34,6 @@ public class GL20Fragment extends MainFragment {
         super.onCreate(savedInstanceState);
 
         Context context = getContext();
-        AutoJobExample job = new AutoJobExample(context);
-        AutoJobEventListener el = new AutoJobEventListener() {
-            @Override
-            public void onMessageReceived(String msg, Object extra) {
-                Log.d(TAG, "MSG: " + msg);
-            }
-
-            @Override
-            public void onActionReceived(int what, AutoJobAction action) {
-
-            }
-
-            @Override
-            public void onJobDone(String jobName) {
-
-            }
-        };
-        job.setJobEventListener(el);
-        job.start();
-
     }
 
     @Override

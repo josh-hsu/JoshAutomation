@@ -41,7 +41,7 @@ import com.mumu.android.joshautomation.R;
 import com.mumu.android.joshautomation.service.HeadService;
 //import com.mumu.joshautomation.fgo.BattleArgument;
 //import com.mumu.joshautomation.fgo.BattleArgumentDialog;
-import com.mumu.android.joshautomation.script.AutoJobHandler;
+import com.mumu.android.joshautomation.autojob.AutoJobHandler;
 
 import java.util.ArrayList;
 import java.util.List;

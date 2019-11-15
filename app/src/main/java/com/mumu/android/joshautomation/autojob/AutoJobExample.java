@@ -1,15 +1,10 @@
-package com.mumu.android.joshautomation.script;
+package com.mumu.android.joshautomation.autojob;
 
-import android.content.Context;
 import android.util.Log;
 
-import com.mumu.libjoshgame.GameDevice;
-import com.mumu.libjoshgame.GameDeviceHWEventListener;
 import com.mumu.libjoshgame.GameLibrary20;
 import com.mumu.libjoshgame.ScreenCoord;
 import com.mumu.libjoshgame.ScreenPoint;
-
-import java.util.HashMap;
 
 /**
  * AutoJobExample
@@ -24,62 +19,15 @@ public class AutoJobExample extends AutoJob {
 
     public static final String jobName = "GL20 Example Job"; //give your job a name
 
-    public AutoJobExample(Context context) {
+    public AutoJobExample(GameLibrary20 gl) {
         super(jobName);
 
         /* JoshGameLibrary basic initial */
-        mGL = initGL20(context);
+        mGL = gl;
 
         if (mGL == null) {
             Log.e(TAG, "initial GL20 failed.");
         }
-    }
-
-    private GameLibrary20 initGL20(Context context) {
-        int ret;
-        GameLibrary20 mGL = new GameLibrary20();
-
-        ret = mGL.chooseDevice(GameLibrary20.DEVICE_TYPE_ANDROID_INTERNAL);
-        if (ret < 0) {
-            Log.e(TAG, "Device is not here?");
-            return null;
-        }
-
-        ret = mGL.setDeviceEssentials(null);
-        if (ret < 0) {
-            Log.e(TAG, "Set device essentials failed");
-            return null;
-        }
-
-        ret = mGL.initDevice(prepareInitAndroidInternal(context));
-        if (ret < 0) {
-            Log.e(TAG, "Initial AndroidInternal failed");
-            return null;
-        }
-
-        mGL.getDevice().registerHardwareEvent(GameDevice.HW_EVENT_VIBRATOR, new GameDeviceHWEventListener() {
-            @Override
-            public void onEvent(int event, Object data) {
-                Log.d(TAG, "received hardware event from Android, cbType: " + event + ", data " + data);
-            }
-        });
-
-        return mGL;
-    }
-
-    private Object[] prepareInitAndroidInternal(Context context) {
-        String hackSSPackageName = "com.mumu.joshautomationservice";
-        String hackSSServiceName = ".CommandService";
-        String hackSSIntfName = "";
-        String hackSSTransactCode = "1";
-
-        HashMap<String, String> hackSSParameters = new HashMap<>();
-        hackSSParameters.put("packageName", hackSSPackageName);
-        hackSSParameters.put("serviceName", hackSSServiceName);
-        hackSSParameters.put("interfaceName", hackSSIntfName);
-        hackSSParameters.put("code", hackSSTransactCode);
-
-        return new Object[] {context, hackSSParameters};
     }
 
     /*

@@ -183,6 +183,20 @@ public class GameDevice {
     }
 
     /**
+     * use hardware simulated way to send input command
+     * it is used to prevent our tool been detected by games or apps
+     * @param enable True if we want to use hardware simulation otherwise False can be set
+     * @return 0 if both supported and switched to selected mode, -9 if not supported, otherwise
+     *         -1 will be returned.
+     */
+    public int setHardwareSimulatedInput(boolean enable) {
+        if (mDeviceInterface != null)
+            return mDeviceInterface.setHWSimulatedInput(enable);
+        else
+            return -1;
+    }
+
+    /**
      * sendDeviceCommand
      * send out device command, normally this should be used in test not release version
      *

@@ -75,6 +75,15 @@ public interface IGameDevice {
     void setWaitTransactionTimeMsOverride(int ms);
 
     /**
+     * use hardware simulated way to send input command
+     * it is used to prevent our tool been detected by games or apps
+     * @param enable True if we want to use hardware simulation otherwise False can be set
+     * @return 0 if both supported and switched to selected mode, -9 if not supported, otherwise
+     *         -1 will be returned.
+     */
+    int setHWSimulatedInput(boolean enable);
+
+    /**
      * when the device has been activated, this method should be called
      * @return 0 upon success
      */

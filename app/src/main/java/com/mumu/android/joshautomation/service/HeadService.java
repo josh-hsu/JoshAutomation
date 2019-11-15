@@ -50,13 +50,12 @@ import com.mumu.android.joshautomation.activity.MainActivity;
 import com.mumu.android.joshautomation.content.AppPreferenceValue;
 import com.mumu.android.joshautomation.content.AutoJobClasses;
 import com.mumu.android.joshautomation.content.DefinitionLoader;
-import com.mumu.android.joshautomation.script.AutoJob;
-import com.mumu.android.joshautomation.script.AutoJobAction;
-import com.mumu.android.joshautomation.script.AutoJobEventListener;
-import com.mumu.android.joshautomation.script.AutoJobHandler;
+import com.mumu.android.joshautomation.autojob.AutoJob;
+import com.mumu.android.joshautomation.autojob.AutoJobAction;
+import com.mumu.android.joshautomation.autojob.AutoJobEventListener;
+import com.mumu.android.joshautomation.autojob.AutoJobHandler;
 import com.mumu.libjoshgame.GameLibrary20;
 import com.mumu.libjoshgame.ScreenPoint;
-
 
 import java.util.ArrayList;
 import java.util.HashMap;

@@ -6,6 +6,10 @@ import com.mumu.libjoshgame.GameLibrary20;
 import com.mumu.libjoshgame.ScreenCoord;
 import com.mumu.libjoshgame.ScreenPoint;
 
+/**
+ * DeviceInteract handles the arithmetic and algorithm of inputs
+ * including mouse point, touch screen and other sensors. This class is hardware independent.
+ */
 public class DeviceInteract {
     private static final String TAG = GameLibrary20.TAG;
 
@@ -21,6 +25,7 @@ public class DeviceInteract {
     private boolean mChatty = true;
 
     private boolean mHWEventOnChanged = false;
+    private boolean mHardwareSimulated = false;
 
     public DeviceInteract(GameLibrary20 gl, GameDevice device) {
         if (device == null)

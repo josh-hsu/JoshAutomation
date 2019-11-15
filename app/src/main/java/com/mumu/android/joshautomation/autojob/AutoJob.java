@@ -1,4 +1,4 @@
-package com.mumu.android.joshautomation.script;
+package com.mumu.android.joshautomation.autojob;
 
 /**
  * AutoJob

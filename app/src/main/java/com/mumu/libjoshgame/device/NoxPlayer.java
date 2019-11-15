@@ -76,6 +76,11 @@ public class NoxPlayer extends GameDevice implements IGameDevice {
     }
 
     @Override
+    public int setHWSimulatedInput(boolean enable) {
+        return 0;
+    }
+
+    @Override
     public int getWaitTransactionTimeMs() {
         return 0;
     }
