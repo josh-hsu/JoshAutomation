@@ -556,7 +556,7 @@ public class HeadService extends Service implements AutoJobEventListener {
                 });
         AlertDialog alert = builder.create();
         Window win = alert.getWindow();
-        if (win != null) win.setType(WindowManager.LayoutParams.TYPE_SYSTEM_ALERT);
+        if (win != null) win.setType(WindowManager.LayoutParams.TYPE_APPLICATION_OVERLAY);
         alert.show();
     }
 
@@ -715,7 +715,7 @@ public class HeadService extends Service implements AutoJobEventListener {
 
         AlertDialog alert = builder.create();
         Window win = alert.getWindow();
-        if (win != null) win.setType(WindowManager.LayoutParams.TYPE_SYSTEM_ALERT);
+        if (win != null) win.setType(WindowManager.LayoutParams.TYPE_APPLICATION_OVERLAY);
         alert.show();
     }
 
@@ -745,7 +745,7 @@ public class HeadService extends Service implements AutoJobEventListener {
 
         alertDialog.setView(view);
         Window win = alertDialog.getWindow();
-        if (win != null) win.setType(WindowManager.LayoutParams.TYPE_SYSTEM_ALERT);
+        if (win != null) win.setType(WindowManager.LayoutParams.TYPE_APPLICATION_OVERLAY);
         alertDialog.show();
     }
 
@@ -766,7 +766,7 @@ public class HeadService extends Service implements AutoJobEventListener {
             mActionProgressDialog.setCancelable(true);
             mActionProgressDialog.setMessage(action.getSummary());
             Window win = mActionProgressDialog.getWindow();
-            if (win != null) win.setType(WindowManager.LayoutParams.TYPE_SYSTEM_ALERT);
+            if (win != null) win.setType(WindowManager.LayoutParams.TYPE_APPLICATION_OVERLAY);
             mActionProgressDialog.show();
         } else if (command.startsWith("UPDATE:")) {
             int progress;

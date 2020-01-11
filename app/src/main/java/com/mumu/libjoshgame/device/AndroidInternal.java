@@ -32,7 +32,7 @@ import java.util.Map;
 public class AndroidInternal extends GameDevice implements IGameDevice, ServiceConnection {
     private static final String TAG = GameLibrary20.TAG;
     private static final String DEVICE_NAME              = "AndroidInternal";
-    private static final String DEVICE_VERSION           = "1.0.190924";
+    private static final String DEVICE_VERSION           = "1.0.200111";
     private static final int    DEVICE_SYS_TYPE          = DEVICE_SYS_LINUX;
     private static final String PRELOAD_PATH_INTERNAL    = Environment.getExternalStorageDirectory().toString() + "/internal.dump";
     private static final String PRELOAD_PATH_FIND_COLOR  = Environment.getExternalStorageDirectory().toString() + "/find_color.dump";
@@ -57,6 +57,7 @@ public class AndroidInternal extends GameDevice implements IGameDevice, ServiceC
     private int mSSCode = 0;
 
     private int mWaitTransactTime = 150;
+    private boolean mUseHWSimulatedInput = false;
 
     private AndroidHardwareEventMonitor mVibratorMonitor;
 
@@ -267,6 +268,7 @@ public class AndroidInternal extends GameDevice implements IGameDevice, ServiceC
 
     @Override
     public int setHWSimulatedInput(boolean enable) {
+        mUseHWSimulatedInput = enable;
         return 0;
     }
 
@@ -275,11 +277,18 @@ public class AndroidInternal extends GameDevice implements IGameDevice, ServiceC
         return runCommand("screencap " + path);
     }
 
+    private int mouseEventHWSimulated(int x, int y, int tx, int ty, int event) {
+        return 0;
+    }
+
     @Override
     public int mouseEvent(int x, int y, int tx, int ty, int event) {
         if (event < 0 || event >= MOUSE_EVENT_MAX) {
             throw new IllegalArgumentException("Unknown mouse event " + event);
         }
+
+        if (mUseHWSimulatedInput)
+            return mouseEventHWSimulated(x, y, tx, ty, event);
 
         switch (event) {
             case MOUSE_TAP:
