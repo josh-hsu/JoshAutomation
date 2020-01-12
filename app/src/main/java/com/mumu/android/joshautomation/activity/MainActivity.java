@@ -232,7 +232,7 @@ public class MainActivity extends AppCompatActivity
     }
 
     private void requestPermissions() {
-        String[] perms = {"android.permission.WRITE_EXTERNAL_STORAGE", "android.permission.FOREGROUND_SERVICE"};
+        String[] perms = {"android.permission.READ_EXTERNAL_STORAGE", "android.permission.WRITE_EXTERNAL_STORAGE", "android.permission.FOREGROUND_SERVICE"};
         int permsRequestCode = 200;
 
         if (Build.VERSION.SDK_INT > Build.VERSION_CODES.LOLLIPOP_MR1) {
@@ -242,7 +242,7 @@ public class MainActivity extends AppCompatActivity
     }
 
     private void requestPermissionsOnStart() {
-        String[] perms = {"android.permission.WRITE_EXTERNAL_STORAGE", "android.permission.FOREGROUND_SERVICE"};
+        String[] perms = {"android.permission.READ_EXTERNAL_STORAGE", "android.permission.WRITE_EXTERNAL_STORAGE", "android.permission.FOREGROUND_SERVICE"};
         int permsRequestCode = 201;
 
         if (Build.VERSION.SDK_INT > Build.VERSION_CODES.LOLLIPOP_MR1) {

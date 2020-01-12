@@ -391,6 +391,7 @@ public class GameDevice {
         }
 
         mDeviceInterface.dumpScreen(path);
+        mDeviceInterface.dumpScreenPng(path + ".png");
     }
 
     /**

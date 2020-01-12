@@ -91,6 +91,11 @@ public class NoxPlayer extends GameDevice implements IGameDevice {
     }
 
     @Override
+    public int dumpScreenPng(String path) {
+        return 0;
+    }
+
+    @Override
     public int mouseEvent(int x1, int y1, int x2, int y2, int event) {
         return 0;
     }

@@ -22,6 +22,13 @@ public interface IGameDevice {
     int dumpScreen(String path);
 
     /**
+     * dump screen for the path and convert to png format
+     * @param path The path should be in the list of preloaded paths
+     * @return 0 upon success
+     */
+    int dumpScreenPng(String path);
+
+    /**
      * deal with the mouse or touch screen events
      * @param x1 source x-axis coordination
      * @param y1 source y-axis coordination

@@ -277,6 +277,11 @@ public class AndroidInternal extends GameDevice implements IGameDevice, ServiceC
         return runCommand("screencap " + path);
     }
 
+    @Override
+    public int dumpScreenPng(String path) {
+        return runCommand("screencap -p " + path);
+    }
+
     private int mouseEventHWSimulated(int x, int y, int tx, int ty, int event) {
         return 0;
     }

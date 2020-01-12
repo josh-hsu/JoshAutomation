@@ -47,6 +47,7 @@ import android.widget.TextView;
 import com.mumu.android.joshautomation.R;
 import com.mumu.android.joshautomation.activity.AppPreferenceActivity;
 import com.mumu.android.joshautomation.activity.MainActivity;
+import com.mumu.android.joshautomation.activity.PointSelectionActivity;
 import com.mumu.android.joshautomation.content.AppPreferenceValue;
 import com.mumu.android.joshautomation.content.AutoJobClasses;
 import com.mumu.android.joshautomation.content.DefinitionLoader;
@@ -132,10 +133,9 @@ public class HeadService extends Service implements AutoJobEventListener {
     private final Runnable mDumpScreenRunnable = new Runnable() {
         @Override
         public void run() {
-            /* TODO: implement this
             try {
-                mGL.getCaptureService().dumpScreenPNG(mPngFilePath);
-                mGL.getCaptureService().dumpScreen(mDumpFilePath);
+                mGL.dumpScreenshotManual(mDumpFilePath);
+                mGL.requestRefresh();
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
@@ -146,7 +146,6 @@ public class HeadService extends Service implements AutoJobEventListener {
             intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
             intent.setClass(HeadService.this, PointSelectionActivity.class);
             startActivity(intent);
-            */
         }
     };
 
@@ -465,13 +464,13 @@ public class HeadService extends Service implements AutoJobEventListener {
                         AutoJob job = (AutoJob) object;
                         mAutoJobHandler.addJob(job);
                         mAutoJobHandler.setJobEventListener(job.getJobName(), this);
-                        mAutoJobHandler.setExtra(job.getJobName(), this); //for first initial we setExtra ourselves
+                        mAutoJobHandler.setExtra(job.getJobName(), mGL); //set game library to jobs
                     } else {
                         Log.e(TAG, "class " + clazz.getName() + " is not an AutoJob");
                     }
                 }
             } catch (Exception e) {
-                Log.e(TAG, "AutoJob list contains an error, aborting");
+                Log.e(TAG, "AutoJob list contains an error, aborting message: " + e.getMessage());
                 return;
             }
 
