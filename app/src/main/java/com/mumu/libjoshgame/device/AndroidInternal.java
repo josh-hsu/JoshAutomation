@@ -619,4 +619,63 @@ public class AndroidInternal extends GameDevice implements IGameDevice, ServiceC
             super.start();
         }
     }
+
+    /**
+     * Android Hardware Input Helper
+     * created for hardware simulate touch event
+     */
+    private class AndroidHardwareInputHelper {
+        int EV_SYN = 0;
+        int EV_ABS = 3;
+        int EV_BTN = 1;
+        int ABS_MT_TRACKING_ID = 0x0039; //57
+        int ABS_MT_PRESSURE    = 0x0030; //48
+        int ABS_MT_POSITION_X  = 0x0035; //53
+        int ABS_MT_POSITION_Y  = 0x0036; //54
+        int BTN_TOUCH          = 0x014a; //330
+        int SYN_REPORT         = 0x0000;
+        int TOUCH_DOWN = 1;
+        int TOUCH_UP   = 0;
+        int SYNC       = 0;
+
+        private String devicePath = "/dev/input/event6"; //default path
+
+        AndroidHardwareInputHelper() {
+            devicePath = getTouchDevicePath();
+        }
+
+        AndroidHardwareInputHelper(String path) {
+            devicePath = path;
+        }
+
+        String getTouchDevicePath() {
+            String getEvent = "getevent -i";
+            String grepCmd = "grep -B 10 KEY | grep -B 10 0011 | grep device | awk '{split($0,a,\":\"); print a[2]}'";
+            String result = runShellCommand(getEvent + " | " + grepCmd);
+            Log.d(TAG, "The touch device path of this Android device is " + result);
+            return result;
+        }
+
+        void sendTouchSync() {
+            String syncCommand = "sendevent " + devicePath + " " + EV_SYN + " " + SYN_REPORT + " " + SYNC;
+            runCommand(syncCommand);
+        }
+
+        void updateTouchPos(int x, int y) {
+            String tapCommandX = "sendevent " + devicePath + " " + EV_ABS + " " + ABS_MT_POSITION_X + " " + x;
+            String tapCommandY = "sendevent " + devicePath + " " + EV_ABS + " " + ABS_MT_POSITION_Y + " " + y;
+            runCommand(tapCommandX);
+            runCommand(tapCommandY);
+        }
+
+        void sendTouchDown() {
+            String downCommand = "sendevent " + devicePath + " " + EV_BTN + " " + BTN_TOUCH + " " + TOUCH_DOWN;
+            runCommand(downCommand);
+        }
+
+        void sendTouchUp() {
+            String downCommand = "sendevent " + devicePath + " " + EV_BTN + " " + BTN_TOUCH + " " + TOUCH_UP;
+            runCommand(downCommand);
+        }
+    }
 }
