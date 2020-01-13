@@ -1,4 +1,4 @@
-package com.mumu.android.joshautomation.scripts;
+package com.mumu.android.joshautomation.scripts.epic7;
 
 import android.util.Log;
 
@@ -12,6 +12,7 @@ public class Epic7AutoReplayJob extends AutoJob {
     private static final String TAG = "Epic7AutoReplay";
     private MainJobRoutine mRoutine;
     private GameLibrary20 mGL;
+    private Epic7Routine mEpic7;
     private AutoJobEventListener mListener;
 
     public Epic7AutoReplayJob() {
@@ -26,6 +27,8 @@ public class Epic7AutoReplayJob extends AutoJob {
     public void start() {
         super.start();
         Log.d(TAG, "starting job " + getJobName());
+        mEpic7 = new Epic7Routine(mGL, mListener);
+        mGL.useHardwareSimulatedInput(false);
         mRoutine = null;
         mRoutine = new MainJobRoutine();
         mRoutine.start();
@@ -94,9 +97,8 @@ public class Epic7AutoReplayJob extends AutoJob {
                 sendMessage("Starting job");
 
                 // tap a screen coordination
-                sleep(5000);
+                sleep(3000);
                 mGL.mouseClick(pointScreenCenter);
-                mGL.mouseSwipe(pointScreen1, pointScreen2);
 
                 shouldRunning = false;
                 sendMessage("Job is done");

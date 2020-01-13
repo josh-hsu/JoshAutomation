@@ -15,6 +15,8 @@
  */
 package com.mumu.android.joshautomation.content;
 
+import com.mumu.android.joshautomation.scripts.epic7.Epic7AutoReplayJob;
+
 import java.util.ArrayList;
 
 /*
@@ -44,7 +46,7 @@ public class AutoJobClasses {
             //add(com.mumu.joshautomation.ro.ROAutoDrinkJob.class);
             //add(com.mumu.joshautomation.epic7.BattleTreasureReminder.class);
             //add(com.mumu.joshautomation.epic7.LoopBattleJob.class);
-            add(com.mumu.android.joshautomation.scripts.Epic7AutoReplayJob.class);
+            add(Epic7AutoReplayJob.class);
         }
     };
 }

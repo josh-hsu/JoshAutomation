@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <!--
-   Copyright (C) 2019 The Josh Tool Project. All rights reserved
+   Copyright (C) 2020 The Josh Tool Project. All rights reserved
 
    Licensed under the Apache License, Version 2.0 (the "License");
    you may not use this file except in compliance with the License.
@@ -53,7 +53,7 @@
    1.53 -> 1.54   (NOT OK, add 0.01)
    This number will be considered as floating number so don't use another dots
 -->
-<definitions version="1.55">
+<definitions version="2.0">
 
     <!-- Kirin has panel of 1080x2340 -->
     <defset resolution="1080x2340">
