@@ -23,6 +23,7 @@ import java.io.InputStreamReader;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Map;
+import java.util.Random;
 
 /**
  * AndroidInternal
@@ -32,7 +33,7 @@ import java.util.Map;
 public class AndroidInternal extends GameDevice implements IGameDevice, ServiceConnection {
     private static final String TAG = GameLibrary20.TAG;
     private static final String DEVICE_NAME              = "AndroidInternal";
-    private static final String DEVICE_VERSION           = "1.0.200111";
+    private static final String DEVICE_VERSION           = "1.0.200113";
     private static final int    DEVICE_SYS_TYPE          = DEVICE_SYS_LINUX;
     private static final String PRELOAD_PATH_INTERNAL    = Environment.getExternalStorageDirectory().toString() + "/internal.dump";
     private static final String PRELOAD_PATH_FIND_COLOR  = Environment.getExternalStorageDirectory().toString() + "/find_color.dump";
@@ -60,6 +61,7 @@ public class AndroidInternal extends GameDevice implements IGameDevice, ServiceC
     private boolean mUseHWSimulatedInput = false;
 
     private AndroidHardwareEventMonitor mVibratorMonitor;
+    private AndroidHardwareInputHelper mHWInputHelper;
 
     /**
      * init for AndroidInternal device
@@ -184,6 +186,9 @@ public class AndroidInternal extends GameDevice implements IGameDevice, ServiceC
                 HW_EVENT_CB_ONCHANGE
                 );
         mVibratorMonitor.startMonitoring();
+
+        // initial hardware input helper
+        mHWInputHelper = new AndroidHardwareInputHelper();
         return 0;
     }
 
@@ -283,6 +288,34 @@ public class AndroidInternal extends GameDevice implements IGameDevice, ServiceC
     }
 
     private int mouseEventHWSimulated(int x, int y, int tx, int ty, int event) {
+        switch (event) {
+            case MOUSE_TAP:
+                mHWInputHelper.tap(x, y);
+                break;
+            case MOUSE_DOUBLE_TAP:
+                mHWInputHelper.tap(x, y);
+                mHWInputHelper.tap(x, y);
+                break;
+            case MOUSE_TRIPLE_TAP:
+                mHWInputHelper.tap(x, y);
+                mHWInputHelper.tap(x, y);
+                mHWInputHelper.tap(x, y);
+                break;
+            case MOUSE_PRESS:
+                mHWInputHelper.press(x, y);
+                break;
+            case MOUSE_RELEASE:
+                mHWInputHelper.release(x, y);
+                break;
+            case MOUSE_MOVE_TO:
+                mHWInputHelper.moveTo(x, y);
+                break;
+            case MOUSE_SWIPE:
+                mHWInputHelper.swipe(x, y, tx, ty);
+                break;
+            default: //should not happen
+                break;
+        }
         return 0;
     }
 
@@ -641,41 +674,103 @@ public class AndroidInternal extends GameDevice implements IGameDevice, ServiceC
         private String devicePath = "/dev/input/event6"; //default path
 
         AndroidHardwareInputHelper() {
-            devicePath = getTouchDevicePath();
+            String path = getTouchDevicePath();
+            if (path != null)
+                devicePath = path;
         }
 
         AndroidHardwareInputHelper(String path) {
             devicePath = path;
         }
 
-        String getTouchDevicePath() {
+        private String getTouchDevicePath() {
             String getEvent = "getevent -i";
             String grepCmd = "grep -B 10 KEY | grep -B 10 0011 | grep device | awk '{split($0,a,\":\"); print a[2]}'";
             String result = runShellCommand(getEvent + " | " + grepCmd);
             Log.d(TAG, "The touch device path of this Android device is " + result);
-            return result;
+
+            if (result.contains("/dev/input"))
+                return result;
+
+            return null;
         }
 
-        void sendTouchSync() {
+        private int getPressure() {
+            int max = 0x23;
+            int min = 0x13;
+            Random r = new Random();
+            return r.nextInt((max - min) + 1) + min;
+        }
+
+        private void delayMs(int milli) {
+            try {
+                Thread.sleep(milli);
+            } catch (InterruptedException e) {
+                Log.d(TAG, "Tap delay interrupted.");
+            }
+        }
+
+        private void sendTouchSync() {
             String syncCommand = "sendevent " + devicePath + " " + EV_SYN + " " + SYN_REPORT + " " + SYNC;
             runCommand(syncCommand);
         }
 
-        void updateTouchPos(int x, int y) {
+        private void updateTouchPos(int x, int y) {
+            String pressureCmd = "sendevent " + devicePath + " " + EV_ABS + " " + ABS_MT_PRESSURE + " " + getPressure();
             String tapCommandX = "sendevent " + devicePath + " " + EV_ABS + " " + ABS_MT_POSITION_X + " " + x;
             String tapCommandY = "sendevent " + devicePath + " " + EV_ABS + " " + ABS_MT_POSITION_Y + " " + y;
+            runCommand(pressureCmd);
             runCommand(tapCommandX);
             runCommand(tapCommandY);
         }
 
-        void sendTouchDown() {
+        private void sendTouchDown() {
             String downCommand = "sendevent " + devicePath + " " + EV_BTN + " " + BTN_TOUCH + " " + TOUCH_DOWN;
             runCommand(downCommand);
         }
 
-        void sendTouchUp() {
+        private void sendTouchUp() {
             String downCommand = "sendevent " + devicePath + " " + EV_BTN + " " + BTN_TOUCH + " " + TOUCH_UP;
             runCommand(downCommand);
+        }
+
+        public void tap(int x, int y) {
+            press(x, y);
+            release();
+            delayMs(50);
+        }
+
+        public void swipe(int x1, int y1, int x2, int y2) {
+            Log.e(TAG, "swipe not supported currently might cause issue");
+            press(x1, y2);
+            moveTo(x2, y2);
+            release();
+        }
+
+        public void press(int x, int y) {
+            updateTouchPos(x, y);
+            sendTouchDown();
+            sendTouchSync();
+            delayMs(30);
+        }
+
+        public void moveTo(int x, int y) {
+            updateTouchPos(x, y);
+            sendTouchSync();
+            delayMs(30);
+        }
+
+        public void release(int x, int y) {
+            updateTouchPos(x, y);
+            sendTouchUp();
+            sendTouchSync();
+            delayMs(30);
+        }
+
+        public void release() {
+            sendTouchUp();
+            sendTouchSync();
+            delayMs(30);
         }
     }
 }
