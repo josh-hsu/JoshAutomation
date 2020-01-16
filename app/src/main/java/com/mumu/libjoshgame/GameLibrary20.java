@@ -266,6 +266,32 @@ public class GameLibrary20 {
         return mScreenService.colorsAreInRect(rectLeftTop, rectRightBottom, colors);
     }
 
+    public boolean waitOnColor(ScreenPoint point, int timeoutMs) throws InterruptedException, ScreenshotErrorException {
+        final int checkInterval = 100; //100 ms check frequency
+        int checkCount = timeoutMs / 100;
+
+        while (!mScreenService.colorIs(point) && checkCount > 0) {
+            //colors are not matched, sleep in..
+            Thread.sleep(checkInterval);
+        }
+
+        // return true is waiting successful
+        return checkCount > 0;
+    }
+
+    public boolean waitOnColors(ArrayList<ScreenPoint> points, int timeoutMs) throws InterruptedException, ScreenshotErrorException {
+        final int checkInterval = 100; //100 ms check frequency
+        int checkCount = timeoutMs / 100;
+
+        while (!mScreenService.colorsAre(points) && checkCount-- > 0) {
+            //colors are not matched, sleep in..
+            Thread.sleep(checkInterval);
+        }
+
+        // return true is waiting successful
+        return checkCount > 0;
+    }
+
     public void dumpScreenshotManual(String path) {
         mDevice.dumpScreenManual(path);
     }

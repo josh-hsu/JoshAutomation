@@ -209,6 +209,7 @@ public class AndroidInternal extends GameDevice implements IGameDevice, ServiceC
                     int[] ret = new int[2];
                     ret[0] = Integer.parseInt(sizeXY[0]);
                     ret[1] = Integer.parseInt(sizeXY[1]);
+                    Log.d(TAG, "screen dimension is [" + ret[0] + "] x [" + ret[1] + "]");
 
                     return ret;
                 } catch (NumberFormatException e) {
@@ -420,6 +421,7 @@ public class AndroidInternal extends GameDevice implements IGameDevice, ServiceC
 
     @Override
     public int runCommand(String cmd) {
+        Log.d(TAG, "cmd: " + cmd);
         try {
             if (!mHackRequest && mPMPathAvailable) {
                 if (mInitialized) {

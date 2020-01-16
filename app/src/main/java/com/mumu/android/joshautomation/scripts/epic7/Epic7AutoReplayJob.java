@@ -85,9 +85,6 @@ public class Epic7AutoReplayJob extends AutoJob {
      * Your script implementation should be here
      */
     private class MainJobRoutine extends Thread {
-        ScreenCoord pointScreenCenter = new ScreenCoord(500, 1090, ScreenPoint.SO_Portrait);
-        ScreenCoord pointScreen1 = new ScreenCoord(100, 1090, ScreenPoint.SO_Portrait);
-        ScreenCoord pointScreen2 = new ScreenCoord(900, 1990, ScreenPoint.SO_Portrait);
 
         private void main() throws Exception {
             boolean shouldRunning = true;
@@ -97,8 +94,11 @@ public class Epic7AutoReplayJob extends AutoJob {
                 sendMessage("Starting job");
 
                 // tap a screen coordination
-                sleep(3000);
-                mGL.mouseClick(pointScreenCenter);
+                mGL.setScreenMainOrientation(ScreenPoint.SO_Landscape);
+                mGL.useHardwareSimulatedInput(false);
+                mGL.setScreenAmbiguousRange(new int[]{25,25,25});
+
+                mEpic7.battleRoutine(10, 120*1000);
 
                 shouldRunning = false;
                 sendMessage("Job is done");

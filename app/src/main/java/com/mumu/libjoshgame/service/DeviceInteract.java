@@ -86,12 +86,12 @@ public class DeviceInteract {
         y = y + y_shift;
 
         if (mScreenHeight > 0 && y > (mCurrentGameOrientation == ScreenPoint.SO_Portrait ? mScreenHeight : mScreenWidth))
-            y = mScreenHeight;
+            y = (mCurrentGameOrientation == ScreenPoint.SO_Portrait ? mScreenHeight : mScreenWidth);
         else if (y < 0)
             y = 0;
 
         if (mScreenWidth > 0 && x > (mCurrentGameOrientation == ScreenPoint.SO_Landscape ? mScreenHeight : mScreenWidth))
-            x = mScreenWidth;
+            x = (mCurrentGameOrientation == ScreenPoint.SO_Portrait ? mScreenHeight : mScreenWidth);
         else if (x < 0)
             x = 0;
 

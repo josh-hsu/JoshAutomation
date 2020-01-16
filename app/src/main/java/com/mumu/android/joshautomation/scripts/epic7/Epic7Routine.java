@@ -19,25 +19,20 @@ public class Epic7Routine {
     private AutoJobEventListener mCallbacks;
     private DefinitionLoader.DefData mDef;
 
-    private static final int sPreBattleStage1 = 0;
-    private static final int sInBattleStage1  = 1;
-    private static final int sPreBattleStage2 = 2;
-    private static final int sInBattleStage2  = 3;
-    private static final int sPreBattleStage3 = 4;
-    private static final int sInBattleStage3  = 5;
-    private static final int sBattleResult    = 6;
-    private static final int sBattleUnknown   = -1;
-
     Epic7Routine(GameLibrary20 gl, AutoJobEventListener el) {
         mGL = gl;
         mCallbacks = el;
 
         String resolution = mGL.getDeviceResolution()[0] + "x" + mGL.getDeviceResolution()[1];
         mDef = DefinitionLoader.getInstance().requestDefData(R.raw.epic7_definitions, "epic7_definitions.xml", resolution);
+
+        if (mGL != null) {
+            mGL.setScreenMainOrientation(ScreenPoint.SO_Landscape);
+        }
     }
 
     private void sendMessage(String msg) {
-        boolean verboseMode = AppPreferenceValue.getInstance().getPrefs().getBoolean("debugLogPref", false);
+        boolean verboseMode = AppPreferenceValue.getInstance().getPrefs().getBoolean("debugLogPref", true);
 
         // Send message to screen
         if (mCallbacks != null)
@@ -69,66 +64,84 @@ public class Epic7Routine {
     // Definition getter
     public DefinitionLoader.DefData getDef() {return mDef;}
 
-    public int getBattleStage() throws InterruptedException, GameLibrary20.ScreenshotErrorException {
-        mGL.requestRefresh();
-        if (mGL.colorsAre(SPTList("pointInBattleToken"))) {
-            if (mGL.colorIs(SPT("pointInBattleStage1")))
-                return sInBattleStage1;
-            else if (mGL.colorIs(SPT("pointInBattleStage2")))
-                return sInBattleStage2;
-            else if (mGL.colorIs(SPT("pointInBattleStage3")))
-                return sInBattleStage3;
-            return sInBattleStage1;
-        } else if (mGL.colorsAre(SPTList("pointPreBattleToken"))) {
-            return sPreBattleStage1;
-        } else if (mGL.colorsAre(SPTList("pointBattleClearToken"))) {
-            return sBattleResult;
+    private int battleCheckActivity() throws InterruptedException, GameLibrary20.ScreenshotErrorException {
+        if (mGL.waitOnColors(SPTList("pPreBattle_noActivity"), 5*1000)) {
+            sendMessage("沒體了，吃葉子");
+            mGL.mouseClick(SPTList("pPreBattle_noActivity").get(2).coord);
+            Thread.sleep(1000);
+            return 1;
         }
 
-        return sBattleUnknown;
+        return 0;
     }
 
-    public int battleRoutine(int loop) throws InterruptedException, GameLibrary20.ScreenshotErrorException {
-        int loopingCounter = 100; // 10 second for preBattle status
+    public int battleRoutine(int loop, int timeoutMs) throws InterruptedException, GameLibrary20.ScreenshotErrorException {
         int loopingBattle = loop;
-        boolean hasAutoBattle = false;
 
         while (loopingBattle-- > 0) {
-            switch (getBattleStage()) {
-                case sInBattleStage1:
-                case sInBattleStage2:
-                case sInBattleStage3:
-                    sendMessage("戰鬥內");
-                    if (!hasAutoBattle) {
-                        hasAutoBattle = true;
-                        mGL.mouseClick(SCD("pointAutoBattleButton"));
-                    }
-                    sleep(100);
-                    break;
-                case sPreBattleStage1: //out of stage keep tap on forward
-                    sendMessage("戰鬥外");
-                    if (hasAutoBattle) {
-                        hasAutoBattle = false;
-                        mGL.mouseClick(SCD("pointAutoBattleButton"));
-                    }
+            int waitForResultCount = 100; //10 seconds
+            int winOrFail = 0; //0: unknown, 1: win, 2: fail
 
-                    while (getBattleStage() == sPreBattleStage1 && loopingCounter-- > 0) {
-                        mGL.mouseClick(SCD("pointForwardStage"));
-                        sleep(100);
-                    }
+            if (mGL.waitOnColors(SPTList("pPreBattle"), 10*1000)) {
+                sendMessage("戰鬥準備畫面確認");
+                mGL.mouseClick(SPTList("pPreBattle").get(0).coord); //enter battle
+                mGL.mouseClick(SPTList("pPreBattle").get(0).coord); //enter battle
+                mGL.mouseClick(SPTList("pPreBattle").get(0).coord); //enter battle
 
-                    if (loopingCounter <= 0) {
-                        sendMessage("花太多時間在戰鬥外");
-                        return -1;
+                //check if no activity
+                if (battleCheckActivity() > 0) {
+                    loopingBattle++; //restore a looping count
+                    continue;
+                }
+
+                //waiting for vibration event
+                mGL.waitUntilVibrate(timeoutMs);
+
+                //waiting for victory or fail
+                while(waitForResultCount-- > 0) {
+                    if (mGL.colorsAre(SPTList("pPostBattle1_Victory"))) {
+                        winOrFail = 1;
+                        break;
                     }
-                    break;
-                case sBattleResult:
-                    sendMessage("戰鬥結束");
-                    break;
-                case sBattleUnknown:
-                default:
-                    sendMessage("例外發生，等他一下");
-                    sleep(2000);
+                    if (mGL.colorsAre(SPTList("pPostBattle4_failed"))) {
+                        winOrFail = 2;
+                        break;
+                    }
+                    Thread.sleep(100);
+                }
+
+                if (winOrFail == 1) {
+                    sendMessage("打贏了");
+                    mGL.mouseClick(SPTList("pPostBattle1_Victory").get(0).coord); //press anywhere
+
+                    //check if MVP shown
+                    if (!mGL.waitOnColors(SPTList("pPostBattle2_MVP"), 3 * 1000)) {
+                        sendMessage("MVP沒出現");
+                        return -3;
+                    }
+                    Thread.sleep(1000);
+                    mGL.mouseClick(SPTList("pPostBattle2_MVP").get(0).coord); //press next
+
+                    //check rebattle
+                    if (!mGL.waitOnColors(SPTList("pPostBattle3_reBattle"), 3 * 1000)) {
+                        sendMessage("再戰按鈕未出現");
+                        return -4;
+                    }
+                    Thread.sleep(1000);
+                    mGL.mouseClick(SPTList("pPostBattle3_reBattle").get(0).coord); //press next
+                } else if (winOrFail == 2) {
+                    sendMessage("打輸了");
+                    Thread.sleep(1000);
+                    mGL.mouseClick(SPTList("pPostBattle4_failed").get(0).coord);
+                } else {
+                    sendMessage("沒輸沒贏WTF?");
+                    Thread.sleep(1000);
+                    return -2;
+                }
+            } else {
+                sendMessage("不在戰鬥準備畫面");
+                sleep(1000);
+                return -1;
             }
         }
 

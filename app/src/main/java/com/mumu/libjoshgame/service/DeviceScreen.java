@@ -28,7 +28,7 @@ public class DeviceScreen {
      */
     public static final int POLICY_STRICT = 1;
     public static final int POLICY_MANUAL = 2;
-    public static final int POLICY_DEFAULT = POLICY_MANUAL;
+    public static final int POLICY_DEFAULT = POLICY_STRICT;
 
     private GameDevice mDevice;
     private Logger Log; //the naming is just for easy use
@@ -295,10 +295,10 @@ public class DeviceScreen {
             dest.b = colorInfo[2];
             dest.t = colorInfo[3];
         } catch (InterruptedException e) {
-            Log.d(TAG, "File operation aborted by interrupt: " + e.toString());
+            Log.e(TAG, "File operation aborted by interrupt: " + e.toString());
             throw e;
         } catch (IOException e) {
-            Log.d(TAG, "File operation failed: " + e.toString());
+            Log.e(TAG, "File operation failed: " + e.toString());
             throw new ScreenshotErrorException("screenshot error", ret);
         }
 
