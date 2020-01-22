@@ -152,6 +152,14 @@ public class GameLibrary20 {
             return mDevice.getDeviceSystemType();
     }
 
+    public int setChatty(boolean chatty) {
+        if (!checkInit())
+            return -1;
+
+        mScreenService.setChatty(chatty);
+        return 0;
+    }
+
     public int setScreenResolution(int width, int height) {
         if (!checkInit())
             return -1;

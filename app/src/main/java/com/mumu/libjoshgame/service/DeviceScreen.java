@@ -43,7 +43,7 @@ public class DeviceScreen {
     private int mScreenshotPolicy = POLICY_DEFAULT;
     private int mScreenshotSlotCount;
     private int mScreenshotCurrentSlot;
-    private boolean mChatty = true;
+    private boolean mChatty = false;
 
     public DeviceScreen(GameDevice device) {
         if (device == null)
@@ -190,10 +190,10 @@ public class DeviceScreen {
             if (ret == GameDevice.SCREENSHOT_IN_USE)
                 ret = mDevice.screenDump(index, true);
             else if (ret == GameDevice.SCREENSHOT_DUMP_FAIL)
-                throw new InterruptedException();
+                throw new InterruptedException("screenshot dump failed");
 
             if (ret == GameDevice.SCREENSHOT_CLOSE_FAIL)
-                throw new InterruptedException();
+                throw new InterruptedException("screenshot close failed");
         }
 
         return ret;

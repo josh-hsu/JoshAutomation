@@ -57,7 +57,7 @@ public class AndroidInternal extends GameDevice implements IGameDevice, ServiceC
     private String mSSPackageName, mSSServiceName, mSSInterfaceName;
     private int mSSCode = 0;
 
-    private int mWaitTransactTime = 150;
+    private int mWaitTransactTime = 200;
     private boolean mUseHWSimulatedInput = false;
 
     private AndroidHardwareEventMonitor mVibratorMonitor;

@@ -362,19 +362,19 @@ public class HeadService extends Service implements AutoJobEventListener {
 
         ret = gl20.chooseDevice(GameLibrary20.DEVICE_TYPE_ANDROID_INTERNAL);
         if (ret < 0) {
-            android.util.Log.e(TAG, "Device is not here?");
+            Log.e(TAG, "Device is not here?");
             return null;
         }
 
         ret = gl20.setDeviceEssentials(null);
         if (ret < 0) {
-            android.util.Log.e(TAG, "Set device essentials failed");
+            Log.e(TAG, "Set device essentials failed");
             return null;
         }
 
         ret = gl20.initDevice(initObjects);
         if (ret < 0) {
-            android.util.Log.e(TAG, "Initial AndroidInternal failed");
+            Log.e(TAG, "Initial AndroidInternal failed");
             return null;
         }
 
@@ -409,25 +409,12 @@ public class HeadService extends Service implements AutoJobEventListener {
         // Initial DefinitionLoader
         DefinitionLoader.getInstance().setResources(mContext.getResources());
 
+        // Initial display size
         Display display = mWindowManager.getDefaultDisplay();
         Point size = new Point();
-        display.getSize(size);
-
-        // we always treat the short edge as width
-        // TODO: we need to find a new way to get actual panel width and height
-        if (size.x > size.y) {
-            w = size.y;
-            if (size.x > 2000)
-                h = 2160;
-            else
-                h = size.x;
-        } else {
-            w = size.x;
-            if (size.y > 2000)
-                h = 2160;
-            else
-                h = size.y;
-        }
+        display.getRealSize(size);
+        w = size.x;
+        h = size.y;
 
         mGL = initGameLibrary20();
 
@@ -437,7 +424,7 @@ public class HeadService extends Service implements AutoJobEventListener {
         else
             mGL.setScreenResolution(w, h);
 
-        //mGL.getCaptureService().setChatty(mAPV.getPrefs().getBoolean("captureServiceChatty", false));
+        mGL.setChatty(mAPV.getPrefs().getBoolean("captureServiceChatty", false));
 
         if (userAmbValue != 0)
             mGL.setScreenAmbiguousRange(new int[]{userAmbValue, userAmbValue, userAmbValue});
