@@ -212,8 +212,8 @@ public class DeviceScreen {
                 colorWithinRange(src.g, dest.g, mAmbiguousRange[2]);
 
         if (mChatty) {
-            Log.d(TAG, "Source: (" + src.r + ", " + src.g + ", " + src.b + "), " +
-                    " Destination: (" + dest.r + ", " + dest.g + ", " + dest.b + ") ");
+            Log.d(TAG, "Source (" + src.r + ", " + src.g + ", " + src.b + "), " +
+                    " Compare to (" + dest.r + ", " + dest.g + ", " + dest.b + ") ");
         }
 
         return result;

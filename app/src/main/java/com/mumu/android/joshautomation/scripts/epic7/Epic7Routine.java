@@ -68,7 +68,7 @@ public class Epic7Routine {
         if (mGL.waitOnColors(SPTList("pPreBattle_noActivity"), 5*1000)) {
             sendMessage("沒體了，吃葉子");
             mGL.mouseClick(SPTList("pPreBattle_noActivity").get(2).coord);
-            Thread.sleep(1000);
+            sleep(1000);
             return 1;
         }
 
@@ -112,6 +112,7 @@ public class Epic7Routine {
 
                 if (winOrFail == 1) {
                     sendMessage("打贏了");
+                    sleep(1000);
                     mGL.mouseClick(SPTList("pPostBattle1_Victory").get(0).coord); //press anywhere
 
                     //check if MVP shown
@@ -119,23 +120,23 @@ public class Epic7Routine {
                         sendMessage("MVP沒出現");
                         return -3;
                     }
-                    Thread.sleep(1000);
+                    sleep(1000);
                     mGL.mouseClick(SPTList("pPostBattle2_MVP").get(0).coord); //press next
 
                     //check rebattle
-                    if (!mGL.waitOnColors(SPTList("pPostBattle3_reBattle"), 3 * 1000)) {
+                    if (!mGL.waitOnColors(SPTList("pPostBattle3_reBattle"), 5 * 1000)) {
                         sendMessage("再戰按鈕未出現");
                         return -4;
                     }
-                    Thread.sleep(1000);
+                    sleep(1000);
                     mGL.mouseClick(SPTList("pPostBattle3_reBattle").get(0).coord); //press next
                 } else if (winOrFail == 2) {
                     sendMessage("打輸了");
-                    Thread.sleep(1000);
+                    sleep(1000);
                     mGL.mouseClick(SPTList("pPostBattle4_failed").get(0).coord);
                 } else {
                     sendMessage("沒輸沒贏WTF?");
-                    Thread.sleep(1000);
+                    sleep(1000);
                     return -2;
                 }
             } else {

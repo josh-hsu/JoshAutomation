@@ -252,7 +252,6 @@ public class GameDevice {
             }
         }
 
-        log(LOG_DEBUG, TAG, "trying to dump at index " + index + ", path is " + mFilePaths[index]);
         ret = mDeviceInterface.dumpScreen(mFilePaths[index]);
         if (ret < 0) {
             log(LOG_ERROR, TAG, "dumpscreen failed, ret = " + ret);

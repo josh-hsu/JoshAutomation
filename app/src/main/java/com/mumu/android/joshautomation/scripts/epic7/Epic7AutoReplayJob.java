@@ -102,6 +102,7 @@ public class Epic7AutoReplayJob extends AutoJob {
 
                 shouldRunning = false;
                 sendMessage("Job is done");
+                mListener.onJobDone(TAG);
             }
         }
 

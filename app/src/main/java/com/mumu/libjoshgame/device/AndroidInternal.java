@@ -421,7 +421,6 @@ public class AndroidInternal extends GameDevice implements IGameDevice, ServiceC
 
     @Override
     public int runCommand(String cmd) {
-        Log.d(TAG, "cmd: " + cmd);
         try {
             if (!mHackRequest && mPMPathAvailable) {
                 if (mInitialized) {

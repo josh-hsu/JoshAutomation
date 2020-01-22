@@ -41,13 +41,13 @@ public class AppPreferenceValue {
     public void init(Context ctx) {
         if (ctx != null) {
             mContext = ctx;
-            mFgoPrefs = mContext.getSharedPreferences("com.mumu.joshautomation_preferences", Context.MODE_PRIVATE);
+            mFgoPrefs = mContext.getSharedPreferences("com.mumu.android.joshautomation_preferences", Context.MODE_PRIVATE);
             mInitialized = true;
         }
     }
 
     public SharedPreferences getPrefs() {
-        mFgoPrefs = mContext.getSharedPreferences("com.mumu.joshautomation_preferences", Context.MODE_PRIVATE);
+        mFgoPrefs = mContext.getSharedPreferences("com.mumu.android.joshautomation_preferences", Context.MODE_PRIVATE);
         return mFgoPrefs;
     }
 }

@@ -406,6 +406,9 @@ public class HeadService extends Service implements AutoJobEventListener {
             userWaitTransactTime = 0;
         }
 
+        Log.d(TAG, "APV: [w:" + userWidth + "],[h:" + userHeight + "],[amb:" + userAmbValue + "]");
+        Log.d(TAG, "APV: [ts:" + userTouchShift + "],[trans:" + userWaitTransactTime + "]");
+
         // Initial DefinitionLoader
         DefinitionLoader.getInstance().setResources(mContext.getResources());
 
@@ -619,12 +622,8 @@ public class HeadService extends Service implements AutoJobEventListener {
         Log.d(TAG, "Job " + job + " has done");
 
         //TODO: implement here
-        /*if (job.equals(PureBattleJob.jobName)) {
-            mMessageText = "完成單次戰鬥";
-        } else if (job.equals(AutoBattleJob.jobName)) {
-            mScriptRunning = false;
-            mMessageText = "循環戰鬥結束";
-        }*/
+        mMessageText = "腳本結束" + job;
+        mScriptRunning = false;
     }
 
     @Override
