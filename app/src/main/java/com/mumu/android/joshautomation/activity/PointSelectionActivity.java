@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2016 The Josh Tool Project
+ * Copyright (C) 2020 The Josh Tool Project
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -42,11 +42,12 @@ import android.widget.TextView;
 
 import com.mumu.android.joshautomation.R;
 import com.mumu.android.joshautomation.content.AppPreferenceValue;
+import com.mumu.android.joshautomation.content.AppSharedObject;
 import com.mumu.libjoshgame.GameLibrary20;
 import com.mumu.libjoshgame.ScreenPoint;
 
 public class PointSelectionActivity extends AppCompatActivity {
-    private static final String TAG = "JATool";
+    private static final String TAG = "PointSelect";
     private static final int UI_ANIMATION_DELAY = 300;
     public static final int ZOOM_FLAG_START = 0;
     public static final int ZOOM_FLAG_MOVE = 1;
@@ -59,6 +60,7 @@ public class PointSelectionActivity extends AppCompatActivity {
     private GameLibrary20 mGL;
     private String mPointInfo;
     private ScreenPoint mPointTouched;
+    private int mSlot;
 
     /* View declaration */
     private WindowManager mWindowManager;
@@ -109,8 +111,8 @@ public class PointSelectionActivity extends AppCompatActivity {
         mDownZoomImageView = (ImageView) findViewById(R.id.idZoomViewBottom);
         mInfoTextView = (TextView) findViewById(R.id.idInfoTextView);
         mWindowManager = (WindowManager) getSystemService(WINDOW_SERVICE);
-
-        mGL = new GameLibrary20();
+        mSlot = getIntent().getIntExtra("slot", 0);
+        mGL = AppSharedObject.getInstance().getGL20();
 
         Bitmap pngFileMap = BitmapFactory.decodeFile(mPngFilePath);
 
@@ -218,11 +220,11 @@ public class PointSelectionActivity extends AppCompatActivity {
         kUserPoint.coord.orientation = ScreenPoint.SO_Portrait;
         kUserPoint.coord.x = x;
         kUserPoint.coord.y = y;
-        /*try {
-            mGL.getCaptureService().getColorOnDump(kUserPoint.color, mDumpFilePath, kUserPoint.coord);
-        } catch (InterruptedException e) {
+        try {
+            kUserPoint.color = mGL.getColorOnScreen(mSlot, kUserPoint.coord, false);
+        } catch (Exception e) {
             e.printStackTrace();
-        }*/
+        }
         mPointTouched = kUserPoint;
     }
 

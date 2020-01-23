@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2019 The Josh Tool Project
+ * Copyright (C) 2020 The Josh Tool Project
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,6 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package com.mumu.android.joshautomation.service;
 
 import android.app.Notification;
@@ -26,6 +27,7 @@ import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.Point;
 import android.os.Build;
+import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
 import android.os.IBinder;
@@ -49,6 +51,7 @@ import com.mumu.android.joshautomation.activity.AppPreferenceActivity;
 import com.mumu.android.joshautomation.activity.MainActivity;
 import com.mumu.android.joshautomation.activity.PointSelectionActivity;
 import com.mumu.android.joshautomation.content.AppPreferenceValue;
+import com.mumu.android.joshautomation.content.AppSharedObject;
 import com.mumu.android.joshautomation.content.AutoJobClasses;
 import com.mumu.android.joshautomation.content.DefinitionLoader;
 import com.mumu.android.joshautomation.autojob.AutoJob;
@@ -67,7 +70,7 @@ public class HeadService extends Service implements AutoJobEventListener {
     private final String mPngFilePath = Environment.getExternalStorageDirectory().toString() + "/select.png";
     private final String mDumpFilePath = Environment.getExternalStorageDirectory().toString() + "/select.dump";
     private static final int mUpdateUIInterval = 100;
-    private static final int mMessageLastTime = 3; //3 seconds
+    private static final int mMessageLastTime = 5; //5 seconds
     private Context mContext;
 
     // View objects
@@ -134,8 +137,12 @@ public class HeadService extends Service implements AutoJobEventListener {
         @Override
         public void run() {
             try {
+                int currentSlot = mGL.getCurrentSlot();
                 mGL.dumpScreenshotManual(mDumpFilePath);
+                mGL.setActiveSlot(1, true);
                 mGL.requestRefresh();
+                mGL.setActiveSlot(currentSlot, false);
+                Thread.sleep(1250);
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
@@ -144,7 +151,10 @@ public class HeadService extends Service implements AutoJobEventListener {
 
             Intent intent = new Intent();
             intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            intent.putExtra("slot", 1);
+
             intent.setClass(HeadService.this, PointSelectionActivity.class);
+
             startActivity(intent);
         }
     };
@@ -420,6 +430,7 @@ public class HeadService extends Service implements AutoJobEventListener {
         h = size.y;
 
         mGL = initGameLibrary20();
+        AppSharedObject.getInstance().setGL20(mGL);
 
         // Check if user override settings
         if (userWidth != 0 && userHeight != 0)
