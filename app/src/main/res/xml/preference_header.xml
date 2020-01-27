@@ -6,6 +6,11 @@
         android:title="@string/settings_fragment_title_2"
         android:summary="@string/settings_fragment_summary_2" />
 
+    <header android:fragment="com.mumu.android.joshautomation.activity.AppPreferenceActivity$Epic7PrefFragment"
+        android:icon="@mipmap/ic_fgo"
+        android:title="@string/settings_fragment_title_5"
+        android:summary="@string/settings_fragment_summary_5" />
+
     <header android:fragment="com.mumu.android.joshautomation.activity.AppPreferenceActivity$FGOPrefFragment"
         android:icon="@mipmap/ic_fgo"
         android:title="@string/settings_fragment_title_1"

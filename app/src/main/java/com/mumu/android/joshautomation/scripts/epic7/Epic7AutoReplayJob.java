@@ -20,6 +20,7 @@ import android.util.Log;
 
 import com.mumu.android.joshautomation.autojob.AutoJob;
 import com.mumu.android.joshautomation.autojob.AutoJobEventListener;
+import com.mumu.android.joshautomation.content.AppPreferenceValue;
 import com.mumu.libjoshgame.GameLibrary20;
 import com.mumu.libjoshgame.ScreenCoord;
 import com.mumu.libjoshgame.ScreenPoint;
@@ -104,6 +105,8 @@ public class Epic7AutoReplayJob extends AutoJob {
 
         private void main() throws Exception {
             boolean shouldRunning = true;
+            int battleCount = AppPreferenceValue.getInstance().getPrefs().getInt("epic7PerfBattleCount", 10);
+            int battleTimeout = AppPreferenceValue.getInstance().getPrefs().getInt("epic7PerfBattleTimeout", 120);
 
             while (shouldRunning) {
                 // setup gl for game spec
@@ -111,7 +114,7 @@ public class Epic7AutoReplayJob extends AutoJob {
                 mGL.useHardwareSimulatedInput(false);
                 mGL.setScreenAmbiguousRange(new int[]{25,25,25});
 
-                mEpic7.battleRoutine(10, 120*1000);
+                mEpic7.battleRoutine(battleCount, battleTimeout*1000);
 
                 shouldRunning = false;
                 mListener.onJobDone(TAG);
