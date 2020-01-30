@@ -105,8 +105,8 @@ public class Epic7AutoReplayJob extends AutoJob {
 
         private void main() throws Exception {
             boolean shouldRunning = true;
-            int battleCount = AppPreferenceValue.getInstance().getPrefs().getInt("epic7PerfBattleCount", 10);
-            int battleTimeout = AppPreferenceValue.getInstance().getPrefs().getInt("epic7PerfBattleTimeout", 120);
+            int battleCount = Integer.parseInt(AppPreferenceValue.getInstance().getPrefs().getString("epic7PerfBattleCount", "10"));
+            int battleTimeout = Integer.parseInt(AppPreferenceValue.getInstance().getPrefs().getString("epic7PerfBattleTimeout", "120"));
 
             while (shouldRunning) {
                 // setup gl for game spec
