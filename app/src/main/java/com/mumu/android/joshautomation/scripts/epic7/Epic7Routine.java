@@ -80,23 +80,29 @@ public class Epic7Routine {
     // Definition getter
     public DefinitionLoader.DefData getDef() {return mDef;}
 
-    private int battleCheckActivity() throws InterruptedException, GameLibrary20.ScreenshotErrorException {
+    private int battleCheckActivity(boolean useLeaf) throws InterruptedException, GameLibrary20.ScreenshotErrorException {
         if (mGL.waitOnColors(SPTList("pPreBattle_noActivity"), 5*1000)) {
-            sendMessage("沒體了，吃葉子");
-            mGL.mouseClick(SPTList("pPreBattle_noActivity").get(2).coord);
-            sleep(1000);
-            return 1;
+            if (useLeaf) {
+                sendMessage("沒體了，吃葉子");
+                mGL.mouseClick(SPTList("pPreBattle_noActivity").get(2).coord);
+                sleep(1000);
+                return 1;
+            } else {
+                sendMessage("沒體了，結束");
+                return -1;
+            }
         }
 
         return 0;
     }
 
-    public int battleRoutine(int loop, int timeoutMs) throws InterruptedException, GameLibrary20.ScreenshotErrorException {
+    public int battleRoutine(int loop, int timeoutMs, boolean useLeaf) throws InterruptedException, GameLibrary20.ScreenshotErrorException {
         int loopingBattle = loop;
 
         while (loopingBattle-- > 0) {
             int waitForResultCount = 100; //10 seconds
             int winOrFail = 0; //0: unknown, 1: win, 2: fail
+            int ret = 0;
 
             if (mGL.waitOnColors(SPTList("pPreBattle"), 10*1000)) {
                 sendMessage("戰鬥準備畫面確認");
@@ -105,9 +111,12 @@ public class Epic7Routine {
                 mGL.mouseClick(SPTList("pPreBattle").get(0).coord); //enter battle
 
                 //check if no activity
-                if (battleCheckActivity() > 0) {
+                ret = battleCheckActivity(useLeaf);
+                if (ret == 1) {
                     loopingBattle++; //restore a looping count
                     continue;
+                } else if (ret < 0) {
+                    break;
                 }
 
                 //waiting for vibration event

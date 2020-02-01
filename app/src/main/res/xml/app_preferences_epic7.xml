@@ -15,5 +15,10 @@
             android:summary="設定一場戰鬥 timeout 的秒數，預設 120 秒"
             android:defaultValue="120"
             android:maxLength="4"/>
+        <CheckBoxPreference
+            android:key="epic7PerfBattleUseLeaf"
+            android:title="是否吃葉子"
+            android:summary="戰鬥場數內要是沒有行動力，是否吃葉子呢？"
+            android:defaultValue="true"/>
     </PreferenceCategory>
 </PreferenceScreen>
