@@ -304,9 +304,17 @@ public class GameLibrary20 {
         return checkCount > 0;
     }
 
+    /**
+     * waiting on screen matching all colors in the points
+     * @param points The point set of target coordination and color
+     * @param timeoutMs Timeout in milliseconds
+     * @return Ture if matching, False if timed out
+     * @throws InterruptedException If user has stopped the script
+     * @throws ScreenshotErrorException If screenshot cannot be done
+     */
     public boolean waitOnColors(ArrayList<ScreenPoint> points, int timeoutMs) throws InterruptedException, ScreenshotErrorException {
         final int checkInterval = 100; //100 ms check frequency
-        int checkCount = timeoutMs / 100;
+        int checkCount = timeoutMs / checkInterval;
 
         while (!mScreenService.colorsAre(points) && checkCount-- > 0) {
             //colors are not matched, sleep in..

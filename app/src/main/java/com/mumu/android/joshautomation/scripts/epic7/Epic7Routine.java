@@ -143,10 +143,13 @@ public class Epic7Routine {
                     //check if MVP shown
                     if (!mGL.waitOnColors(SPTList("pPostBattle2_MVP"), 3 * 1000)) {
                         sendMessage("MVP沒出現");
-                        return -3;
+                        mGL.mouseClick(SPTList("pPostBattle3_reBattle").get(0).coord); //press next
+                        sleep(1000);
+                        continue;
+                    } else {
+                        sleep(1000);
+                        mGL.mouseClick(SPTList("pPostBattle2_MVP").get(0).coord); //press next
                     }
-                    sleep(1000);
-                    mGL.mouseClick(SPTList("pPostBattle2_MVP").get(0).coord); //press next
 
                     //check rebattle
                     if (!mGL.waitOnColors(SPTList("pPostBattle3_reBattle"), 5 * 1000)) {

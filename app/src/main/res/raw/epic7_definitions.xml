@@ -53,11 +53,11 @@
    1.53 -> 1.54   (NOT OK, add 0.01)
    This number will be considered as floating number so don't use another dots
 -->
-<definitions version="2.0">
+<definitions version="2.01">
 
     <defset resolution="1080x2340">
         <screenpoints name="pPreBattle">
-            <screenpoint>29,94,15,0xFF,2036,1027,L</screenpoint>
+            <screenpoint>3,19,19,0xFF,2010,1000,L</screenpoint>
             <screenpoint>5,33,18,0xFF,2041,981,L</screenpoint>
         </screenpoints>
 
