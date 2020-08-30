@@ -17,6 +17,7 @@
 package com.mumu.android.joshautomation.content;
 
 import com.mumu.android.joshautomation.scripts.epic7.Epic7AutoReplayJob;
+import com.mumu.android.joshautomation.scripts.light.LightAutoJob;
 
 import java.util.ArrayList;
 
@@ -48,6 +49,7 @@ public class AutoJobClasses {
             //add(com.mumu.joshautomation.epic7.BattleTreasureReminder.class);
             //add(com.mumu.joshautomation.epic7.LoopBattleJob.class);
             add(Epic7AutoReplayJob.class);
+            add(LightAutoJob.class);
         }
     };
 }
