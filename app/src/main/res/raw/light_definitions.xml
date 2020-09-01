@@ -57,7 +57,14 @@
 
     <defset resolution="1080x2340">
         <screenpoints name="pPreBattle1">
-            <screenpoint>109,92,73,0xFF,1287,992,L</screenpoint>
+            <screenpoint>217,186,117,0xFF,1443,1025,L</screenpoint>
+            <screenpoint>236,234,231,0xFF,1396,990,L</screenpoint>
+        </screenpoints>
+
+        <screenpoints name="pPreBattle1_0">
+            <screenpoint>109,92,73,0xFF,1458,971,L</screenpoint>
+            <screenpoint>243,242,240,0xFF,1394,975,L</screenpoint>
+            <screenpoint>233,209,141,0xFF,1386,1017,L</screenpoint>
         </screenpoints>
 
         <screenpoints name="pPreBattle2">

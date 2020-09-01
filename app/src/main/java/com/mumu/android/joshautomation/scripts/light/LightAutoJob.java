@@ -95,7 +95,7 @@ public class LightAutoJob extends AutoJob {
                 // setup gl for game spec
                 mGL.setScreenMainOrientation(ScreenPoint.SO_Landscape);
                 mGL.useHardwareSimulatedInput(false);
-                mGL.setScreenAmbiguousRange(new int[]{10,10,10});
+                mGL.setScreenAmbiguousRange(new int[]{20,20,20});
 
                 mLight.battleRoutine();
             }

@@ -325,6 +325,32 @@ public class GameLibrary20 {
         return checkCount > 0;
     }
 
+    /**
+     * waiting on screen to match one of the ScreenPoint set
+     * and returns the index of the set
+     * @param points The array of the point set
+     * @param timeoutMs Timeout in milliseconds
+     * @return The index of matching set, -1 if timeout happened
+     * @throws InterruptedException If user has stopped the script
+     * @throws ScreenshotErrorException If screenshot cannot be done
+     */
+    public int waitOnOneOfColors(ArrayList<ScreenPoint>[] points, int timeoutMs) throws InterruptedException, ScreenshotErrorException {
+        final int checkInterval = 100; //100 ms check frequency
+        int checkCount = timeoutMs / checkInterval;
+
+        while (checkCount-- > 0) {
+            //colors are not matched, sleep in..
+            for(int i = 0; i < points.length; i++) {
+                if (mScreenService.colorsAre(points[i]))
+                    return i;
+            }
+            Thread.sleep(checkInterval);
+        }
+
+        // return true is waiting successful
+        return -1;
+    }
+
     public void dumpScreenshotManual(String path) {
         mDevice.dumpScreenManual(path);
     }

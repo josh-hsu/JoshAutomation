@@ -69,22 +69,28 @@ public class LightRoutine {
         int count = 0;
         int waitTimeoutMs = 30 * 1000;
         int waitBattleEndMs = 30 * 60 * 1000;
+        ArrayList<ScreenPoint>[] waitList;
+        int waitListEvent = -1;
 
-        if(!mGL.waitOnColors(SPTList("pPreBattle1"), waitTimeoutMs)) {
+        waitList = new ArrayList[]{SPTList("pPreBattle1"), SPTList("pPreBattle1_0")};
+        waitListEvent = mGL.waitOnOneOfColors(waitList, waitTimeoutMs);
+        if(waitListEvent < 0) {
             sendMessage("找不到按鈕1");
             return false;
         }
-        sendMessage("找到按鈕1");
+        sendMessage("找到按鈕1: " + waitListEvent);
         mGL.mouseClick(SPTList("pPreBattle1").get(0).coord);
-        sleep(2500);
+        sleep(1600);
 
-        if(!mGL.waitOnColors(SPTList("pPreBattle2"), waitTimeoutMs)) {
-            sendMessage("找不到按鈕2");
-            return false;
+        if (waitListEvent == 0) {
+            if (!mGL.waitOnColors(SPTList("pPreBattle2"), waitTimeoutMs)) {
+                sendMessage("找不到按鈕2");
+                return false;
+            }
+            sendMessage("找到按鈕2");
+            mGL.mouseClick(SPTList("pPreBattle2").get(0).coord);
+            sleep(1600);
         }
-        sendMessage("找到按鈕2");
-        mGL.mouseClick(SPTList("pPreBattle2").get(0).coord);
-        sleep(2500);
 
         if(!mGL.waitOnColors(SPTList("pPreBattle3"), waitTimeoutMs)) {
             sendMessage("找不到按鈕3");
@@ -105,20 +111,29 @@ public class LightRoutine {
         mGL.mouseClick(SPTList("pAutoBattle").get(0).coord);
 
         sleep(5*1000);
-        if(!mGL.waitOnColors(SPTList("pTapScreen"), waitBattleEndMs)) {
-            sendMessage("找不到tap");
-            return false;
-        }
-        sendMessage("找到按鈕tap");
-        mGL.mouseClick(SPTList("pTapScreen").get(0).coord);
 
-        if(!mGL.waitOnColors(SPTList("pSkipResult"), waitTimeoutMs)) {
-            sendMessage("找不到result");
-            return false;
+        waitList = new ArrayList[]{SPTList("pTapScreen"), SPTList("pPreBattle1")};
+        int eventHappened = mGL.waitOnOneOfColors(waitList, waitBattleEndMs);
+        switch (eventHappened) {
+            case 0:
+                sendMessage("找到按鈕tap");
+                mGL.mouseClick(SPTList("pTapScreen").get(0).coord);
+
+                if(!mGL.waitOnColors(SPTList("pSkipResult"), waitTimeoutMs)) {
+                    sendMessage("找不到result");
+                    return false;
+                }
+                sendMessage("找到按鈕skip");
+                mGL.mouseClick(SPTList("pSkipResult").get(0).coord);
+                sleep(2000);
+                break;
+            case 1:
+                sendMessage("回到頭了");
+                break;
+            default:
+                sendMessage("狀態不明");
+                return false;
         }
-        sendMessage("找到按鈕result");
-        mGL.mouseClick(SPTList("pSkipResult").get(0).coord);
-        sleep(2500);
 
         return true;
     }
