@@ -137,4 +137,32 @@ public class LightRoutine {
 
         return true;
     }
+
+    public boolean battleRoutineDisordered() throws GameLibrary20.ScreenshotErrorException, InterruptedException {
+        ArrayList<ScreenPoint>[] waitList;
+        int waitListEvent = -1;
+        int waitBattleEndMs = 30 * 60 * 1000;
+
+        // it needs to prioritize these points
+        waitList = new ArrayList[] {
+                SPTList("pTapScreen"),
+                SPTList("pSkipResult"),
+                SPTList("pAutoBattle"),
+                SPTList("pPreBattle1"),
+                SPTList("pPreBattle1_0"),
+                SPTList("pPreBattle2"),
+                SPTList("pPreBattle3"),
+        };
+
+        waitListEvent = mGL.waitOnOneOfColors(waitList, waitBattleEndMs);
+        if (waitListEvent >= 0) {
+            mGL.mouseClick(waitList[waitListEvent].get(0).coord);
+            sleep(1000);
+        } else {
+            sendMessage("等待逾時");
+            return false;
+        }
+
+        return true;
+    }
 }

@@ -4,9 +4,6 @@ import android.util.Log;
 
 import com.mumu.android.joshautomation.autojob.AutoJob;
 import com.mumu.android.joshautomation.autojob.AutoJobEventListener;
-import com.mumu.android.joshautomation.content.AppPreferenceValue;
-import com.mumu.android.joshautomation.scripts.epic7.Epic7AutoReplayJob;
-import com.mumu.android.joshautomation.scripts.epic7.Epic7Routine;
 import com.mumu.libjoshgame.GameLibrary20;
 import com.mumu.libjoshgame.ScreenPoint;
 
@@ -97,7 +94,7 @@ public class LightAutoJob extends AutoJob {
                 mGL.useHardwareSimulatedInput(false);
                 mGL.setScreenAmbiguousRange(new int[]{20,20,20});
 
-                mLight.battleRoutine();
+                mLight.battleRoutineDisordered();
             }
             mListener.onJobDone(TAG);
         }
