@@ -17,6 +17,7 @@
 package com.mumu.android.joshautomation.activity;
 
 import android.app.Activity;
+import android.app.ActivityManager;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageInfo;
@@ -88,8 +89,8 @@ public class OutlineFragment extends MainFragment {
         Log.d(TAG, "Fab click from outline");
         final Activity activity = getActivity();
         if (activity instanceof MainActivity) {
-            final MainActivity deskClockActivity = (MainActivity) activity;
-            deskClockActivity.showSnackBarMessage("Test for outline");
+            final MainActivity mainActivity = (MainActivity) activity;
+            mainActivity.showSnackBarMessage("Test for outline");
         }
     }
 
@@ -118,9 +119,20 @@ public class OutlineFragment extends MainFragment {
         mStartServiceButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                startChatHeadService();
+                if (!isChatHeadServiceRunning()) {
+                    startChatHeadService();
+                    ((Button) view).setText(R.string.outline_stop_service);
+                } else {
+                    stopChatHeadService();
+                    ((Button) view).setText(R.string.outline_start_service);
+                }
             }
         });
+        if (!isChatHeadServiceRunning()) {
+            mStartServiceButton.setText(R.string.outline_start_service);
+        } else {
+            mStartServiceButton.setText(R.string.outline_stop_service);
+        }
 
         mBarTextView = (TextView) view.findViewById(R.id.textViewElectricBarView);
         mBarTextView.setText("App 版本: " + getVersionName(getContext()));
@@ -131,6 +143,22 @@ public class OutlineFragment extends MainFragment {
      */
     private void updateView() {
 
+    }
+
+    private boolean isChatHeadServiceRunning() {
+        ActivityManager manager = (ActivityManager) getContext().getSystemService(Context.ACTIVITY_SERVICE);
+        for (ActivityManager.RunningServiceInfo service : manager.getRunningServices(Integer.MAX_VALUE)) {
+            if (HeadService.class.getName().equals(service.service.getClassName())) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private void stopChatHeadService() {
+        if (isChatHeadServiceRunning()) {
+            getContext().stopService(new Intent(getContext(), HeadService.class));
+        }
     }
 
     private void startChatHeadService() {

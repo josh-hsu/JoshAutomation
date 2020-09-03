@@ -197,9 +197,12 @@ public class HeadService extends Service implements AutoJobEventListener {
     // provide our service not be able to kill
     private void initNotification() {
         Notification notification;
+        String NOTIFICATION_CHANNEL_ID = "com.mumu.android.joshautomation";
+        String channelName = "My Background Service";
+        Intent intent = new Intent(this, MainActivity.class);
+        PendingIntent contentIntent = PendingIntent.getActivity(this, 0, intent, 0);
+
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            String NOTIFICATION_CHANNEL_ID = "com.mumu.android.joshautomation";
-            String channelName = "My Background Service";
             NotificationChannel chan = new NotificationChannel(NOTIFICATION_CHANNEL_ID, channelName, NotificationManager.IMPORTANCE_NONE);
             chan.setLightColor(Color.BLUE);
             chan.setLockscreenVisibility(Notification.VISIBILITY_PRIVATE);
@@ -210,22 +213,21 @@ public class HeadService extends Service implements AutoJobEventListener {
             NotificationCompat.Builder notificationBuilder = new NotificationCompat.Builder(this, NOTIFICATION_CHANNEL_ID);
             notification = notificationBuilder.setOngoing(true)
                     .setSmallIcon(R.drawable.ic_bookmarked)
-                    .setContentTitle("自動腳本服務")
+                    .setContentTitle(getString(R.string.headservice_notification_title))
+                    .setContentText(getString(R.string.headservice_notification_text))
                     .setPriority(NotificationManager.IMPORTANCE_HIGH)
                     .setCategory(Notification.CATEGORY_SERVICE)
+                    .setContentIntent(contentIntent)
                     .build();
         } else {
-            Intent intent = new Intent(this, MainActivity.class);
-            PendingIntent contentIntent = PendingIntent.getActivity(this, 0, intent, 0);
-
-            NotificationCompat.Builder mBuilder =
-                    new NotificationCompat.Builder(this)
+            NotificationCompat.Builder notificationBuilder =
+                    new NotificationCompat.Builder(this, NOTIFICATION_CHANNEL_ID)
                             .setSmallIcon(R.drawable.ic_bookmarked)
-                            .setContentTitle("自動腳本服務")
-                            .setContentText("服務已經啟用")
-                            .setContentIntent(contentIntent); //Required on Gingerbread and below
+                            .setContentTitle(getString(R.string.headservice_notification_title))
+                            .setContentText(getString(R.string.headservice_notification_text))
+                            .setContentIntent(contentIntent);
 
-            notification = mBuilder.build();
+            notification = notificationBuilder.build();
         }
 
         startForeground(1235, notification);

@@ -18,7 +18,7 @@
     <!-- drawer -->
     <string name="drawer_title">您</string>
     <string name="drawer_subtitle">這裡沒有功能</string>
-    <string name="drawer_outline">概覽與功能</string>
+    <string name="drawer_outline">概覽</string>
     <string name="drawer_gl20">GL20 測試</string>
     <string name="drawer_electricity">帳號管理</string>
     <string name="drawer_menu_social">社群</string>
@@ -55,6 +55,8 @@
     <string name="outline_current_progress">登入進度(按此停止): </string>
     <string name="outline_current_finish">已完成第 </string>
     <string name="outline_start_screen_capture">啟用抓點抓色</string>
+    <string name="outline_start_service">啟動服務工具欄</string>
+    <string name="outline_stop_service">停止服務工具欄</string>
 
     <!-- Settings -->
     <string name="settings_fragment_title_1">FGO 設定</string>
@@ -81,6 +83,8 @@
     <string name="headservice_stop_title">停止服務</string>
     <string name="headservice_stop_info">確定要停止JA自動腳本服務嗎？</string>
     <string name="headservice_stop_button">停止</string>
+    <string name="headservice_notification_title">自動腳本服務</string>
+    <string name="headservice_notification_text">服務已經啟用，點擊停用服務。</string>
 
     <!-- Start up dialog -->
     <string name="startup_confirm">確定</string>
