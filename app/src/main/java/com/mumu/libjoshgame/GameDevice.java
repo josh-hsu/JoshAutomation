@@ -74,7 +74,7 @@ public class GameDevice {
 
     protected boolean mInitialized = false;
     private String mDeviceName;
-    private IGameDevice mDeviceInterface;
+    private GameDeviceBasics mDeviceInterface;
     private Logger mLogger;
 
     private String[] mFilePaths;
@@ -100,7 +100,7 @@ public class GameDevice {
      * @param deviceName The name of the device
      * @return 0 if success, -1 if illegal arguments
      */
-    protected int init(String deviceName, IGameDevice deviceInterface) {
+    protected int init(String deviceName, GameDeviceBasics deviceInterface) {
         // verify the input parameters
         if (deviceName == null) {
             log(LOG_ERROR, TAG, "Initial for NULL device name is not allowed");

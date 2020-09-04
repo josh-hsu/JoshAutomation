@@ -19,7 +19,7 @@ package com.mumu.libjoshgame.device;
 import com.mumu.libjoshgame.GameDevice;
 import com.mumu.libjoshgame.GameDeviceHWEventListener;
 import com.mumu.libjoshgame.GameLibrary20;
-import com.mumu.libjoshgame.IGameDevice;
+import com.mumu.libjoshgame.GameDeviceBasics;
 import com.mumu.libjoshgame.ScreenPoint;
 
 import java.io.BufferedReader;
@@ -30,7 +30,7 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Locale;
 
-public class NoxPlayer extends GameDevice implements IGameDevice {
+public class NoxPlayer extends GameDevice implements GameDeviceBasics {
     private static final String TAG = GameLibrary20.TAG;
     private static final String DEVICE_NAME = "NoxPlayer";
     private static final String DEVICE_VERSION = "1.0";

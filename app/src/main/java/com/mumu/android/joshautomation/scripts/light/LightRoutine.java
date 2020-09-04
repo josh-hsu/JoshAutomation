@@ -64,105 +64,29 @@ public class LightRoutine {
     // Definition getter
     public DefinitionLoader.DefData getDef() {return mDef;}
 
-    public boolean battleRoutine() throws InterruptedException, GameLibrary20.ScreenshotErrorException {
-        // all battle
-        int count = 0;
-        int waitTimeoutMs = 30 * 1000;
-        int waitBattleEndMs = 30 * 60 * 1000;
-        ArrayList<ScreenPoint>[] waitList;
-        int waitListEvent = -1;
-
-        waitList = new ArrayList[]{SPTList("pPreBattle1"), SPTList("pPreBattle1_0")};
-        waitListEvent = mGL.waitOnOneOfColors(waitList, waitTimeoutMs);
-        if(waitListEvent < 0) {
-            sendMessage("找不到按鈕1");
-            return false;
-        }
-        sendMessage("找到按鈕1: " + waitListEvent);
-        mGL.mouseClick(SPTList("pPreBattle1").get(0).coord);
-        sleep(1600);
-
-        if (waitListEvent == 0) {
-            if (!mGL.waitOnColors(SPTList("pPreBattle2"), waitTimeoutMs)) {
-                sendMessage("找不到按鈕2");
-                return false;
-            }
-            sendMessage("找到按鈕2");
-            mGL.mouseClick(SPTList("pPreBattle2").get(0).coord);
-            sleep(1600);
-        }
-
-        if(!mGL.waitOnColors(SPTList("pPreBattle3"), waitTimeoutMs)) {
-            sendMessage("找不到按鈕3");
-            return false;
-        }
-        sendMessage("找到按鈕3");
-        mGL.mouseClick(SPTList("pPreBattle3").get(0).coord);
-        sleep(2500);
-
-        // start battle
-        sendMessage("戰鬥進入");
-
-        if(!mGL.waitOnColors(SPTList("pAutoBattle"), waitTimeoutMs)) {
-            sendMessage("找不到自動戰鬥");
-            return false;
-        }
-        sendMessage("找到按鈕AUTO");
-        mGL.mouseClick(SPTList("pAutoBattle").get(0).coord);
-
-        sleep(5*1000);
-
-        waitList = new ArrayList[]{SPTList("pTapScreen"), SPTList("pPreBattle1")};
-        int eventHappened = mGL.waitOnOneOfColors(waitList, waitBattleEndMs);
-        switch (eventHappened) {
-            case 0:
-                sendMessage("找到按鈕tap");
-                mGL.mouseClick(SPTList("pTapScreen").get(0).coord);
-
-                if(!mGL.waitOnColors(SPTList("pSkipResult"), waitTimeoutMs)) {
-                    sendMessage("找不到result");
-                    return false;
-                }
-                sendMessage("找到按鈕skip");
-                mGL.mouseClick(SPTList("pSkipResult").get(0).coord);
-                sleep(2000);
-                break;
-            case 1:
-                sendMessage("回到頭了");
-                break;
-            default:
-                sendMessage("狀態不明");
-                return false;
-        }
-
-        return true;
-    }
-
-    public boolean battleRoutineDisordered() throws GameLibrary20.ScreenshotErrorException, InterruptedException {
-        ArrayList<ScreenPoint>[] waitList;
-        int waitListEvent = -1;
+    public void battleRoutineDisordered() throws GameLibrary20.ScreenshotErrorException, InterruptedException {
+        ArrayList<ArrayList<ScreenPoint>> waitList;
+        int waitListEvent;
         int waitBattleEndMs = 30 * 60 * 1000;
 
         // it needs to prioritize these points
-        waitList = new ArrayList[] {
-                SPTList("pTapScreen"),
-                SPTList("pSkipResult"),
-                SPTList("pAutoBattle"),
-                SPTList("pPreBattle1"),
-                SPTList("pPreBattle1_0"),
-                SPTList("pPreBattle2"),
-                SPTList("pPreBattle3"),
-        };
+        // lower index has higher priority
+        waitList = new ArrayList<ArrayList<ScreenPoint>>() {{
+                add(SPTList("pTapScreen"));
+                add(SPTList("pSkipResult"));
+                add(SPTList("pAutoBattle"));
+                add(SPTList("pPreBattle1"));
+                add(SPTList("pPreBattle1_0"));
+                add(SPTList("pPreBattle2"));
+                add(SPTList("pPreBattle3"));
+        }};
 
-        waitListEvent = mGL.waitOnOneOfColors(waitList, waitBattleEndMs);
+        waitListEvent = mGL.waitOnMatchingColorSets(waitList, waitBattleEndMs);
         if (waitListEvent >= 0) {
-            mGL.mouseClick(waitList[waitListEvent].get(0).coord);
+            mGL.mouseClick(waitList.get(waitListEvent).get(0).coord);
             sleep(1000);
         } else {
             sendMessage("等待逾時");
-            return false;
         }
-
-        return true;
     }
 }

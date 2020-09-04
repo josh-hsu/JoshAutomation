@@ -30,7 +30,7 @@ import android.util.Log;
 import com.mumu.libjoshgame.GameDevice;
 import com.mumu.libjoshgame.GameDeviceHWEventListener;
 import com.mumu.libjoshgame.GameLibrary20;
-import com.mumu.libjoshgame.IGameDevice;
+import com.mumu.libjoshgame.GameDeviceBasics;
 import com.mumu.libjoshgame.ScreenPoint;
 
 import java.io.BufferedReader;
@@ -46,10 +46,10 @@ import java.util.Random;
  * this class implements the old school JoshAutomation method of Android command executor
  * import of Android related files here only
  */
-public class AndroidInternal extends GameDevice implements IGameDevice, ServiceConnection {
+public class AndroidInternal extends GameDevice implements GameDeviceBasics, ServiceConnection {
     private static final String TAG = GameLibrary20.TAG;
     private static final String DEVICE_NAME              = "AndroidInternal";
-    private static final String DEVICE_VERSION           = "1.0.200113";
+    private static final String DEVICE_VERSION           = "1.0.200904";
     private static final int    DEVICE_SYS_TYPE          = DEVICE_SYS_LINUX;
     private static final String PRELOAD_PATH_INTERNAL    = Environment.getExternalStorageDirectory().toString() + "/internal.dump";
     private static final String PRELOAD_PATH_FIND_COLOR  = Environment.getExternalStorageDirectory().toString() + "/find_color.dump";
@@ -196,15 +196,26 @@ public class AndroidInternal extends GameDevice implements IGameDevice, ServiceC
     }
 
     private int initDeviceHWInterface() {
-        // currently we only support vibrator
-        mVibratorMonitor = new AndroidHardwareEventMonitor("/sys/devices/platform/soc/c440000.qcom,spmi/spmi-0/spmi0-03/c44*haptics*/state",
-                50,
-                HW_EVENT_CB_ONCHANGE
-                );
-        mVibratorMonitor.startMonitoring();
+        // these function is only available for SM8150 devices
+        boolean doInitHWInterface = false;
 
-        // initial hardware input helper
-        mHWInputHelper = new AndroidHardwareInputHelper();
+        if (AndroidHardwareDeviceMKTNames.isAsusDevice(this)) {
+            doInitHWInterface = AndroidHardwareDeviceMKTNames.getMKTName(this).equals(AndroidHardwareDeviceMKTNames.ASUS_ZENFONE_6) ||
+                    AndroidHardwareDeviceMKTNames.getMKTName(this).equals(AndroidHardwareDeviceMKTNames.ASUS_ROG_2);
+        }
+
+        if (doInitHWInterface) {
+            // currently we only support vibrator
+            mVibratorMonitor = new AndroidHardwareEventMonitor("/sys/devices/platform/soc/c440000.qcom,spmi/spmi-0/spmi0-03/c44*haptics*/state",
+                    50,
+                    HW_EVENT_CB_ONCHANGE
+            );
+            mVibratorMonitor.startMonitoring();
+
+            // initial hardware input helper
+            mHWInputHelper = new AndroidHardwareInputHelper();
+        }
+
         return 0;
     }
 
@@ -562,6 +573,36 @@ public class AndroidInternal extends GameDevice implements IGameDevice, ServiceC
     public void onServiceDisconnected(ComponentName name) {
         mHackConnected = false;
         Log.d(TAG, "Hack service disconnected.");
+    }
+
+    private static class AndroidHardwareDeviceMKTNames {
+        final static String asusMKTPropertyName = "ro.asus.product.mkt_name";
+        final static String asusMKTPropertyName2 = "ro.vendor.asus.product.mkt_name";
+        final static String brandPropertyName = "ro.product.system.brand";
+
+        final static String BRAND_ASUS = "asus";
+        final static String ASUS_ZENFONE_6 = "ZenFone6";
+        final static String ASUS_ZENFONE_7 = "ZenFone7";
+        final static String ASUS_ROG_3 = "ROG_Phone3";
+        final static String ASUS_ROG_2 = "ROG_Phone2";
+
+        public static boolean isAsusDevice(GameDevice gameDevice) {
+            String brand = gameDevice.runShellCommand(brandPropertyName);
+
+            return brand.equals(BRAND_ASUS);
+        }
+
+        public static String getMKTName(GameDevice gameDevice) {
+            String mkt1 = gameDevice.runShellCommand(asusMKTPropertyName);
+            String mkt2 = gameDevice.runShellCommand(asusMKTPropertyName2);
+
+            if (mkt1 != null && !mkt1.equals(""))
+                return mkt1;
+            else if (mkt2 != null && !mkt2.equals(""))
+                return mkt2;
+            else
+                return "";
+        }
     }
 
     /**

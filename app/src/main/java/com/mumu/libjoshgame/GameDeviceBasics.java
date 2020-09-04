@@ -16,7 +16,7 @@
 
 package com.mumu.libjoshgame;
 
-public interface IGameDevice {
+public interface GameDeviceBasics {
 
     /**
      * query preloaded screenshot paths for further screen dump
