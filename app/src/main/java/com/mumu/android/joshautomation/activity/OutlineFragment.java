@@ -22,6 +22,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
+import android.graphics.drawable.AnimationDrawable;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -30,7 +31,11 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.Animation;
+import android.view.animation.LinearInterpolator;
+import android.view.animation.RotateAnimation;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -42,9 +47,13 @@ public class OutlineFragment extends MainFragment {
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
 
-    private Button mSettingButton;
     private Button mStartServiceButton;
     private TextView mBarTextView;
+    private ImageView mCircleImageView;
+    private ImageView mTRexImageView;
+    private ImageView mBirdImageView;
+
+    private RotateAnimation mCircleAnimation;
 
     public OutlineFragment() {
         // Required empty public constructor
@@ -106,32 +115,39 @@ public class OutlineFragment extends MainFragment {
     }
 
     private void prepareView(View view) {
-        mSettingButton = (Button) view.findViewById(R.id.button_setting);
+        mCircleAnimation = new RotateAnimation(0, 360, Animation.RELATIVE_TO_SELF, 0.5f, Animation.RELATIVE_TO_SELF, 0.5f);
         mStartServiceButton = (Button) view.findViewById(R.id.button_start_service);
-
-        mSettingButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                startPreferenceActivity();
-            }
-        });
+        mCircleImageView = (ImageView) view.findViewById(R.id.imageViewCircle);
+        mCircleImageView.setImageResource(R.drawable.ic_circle);
+        mTRexImageView = (ImageView) view.findViewById(R.id.imageTRex);
+        mBirdImageView = (ImageView) view.findViewById(R.id.imageBird);
+        mBirdImageView.setVisibility(View.INVISIBLE);
 
         mStartServiceButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 if (!isChatHeadServiceRunning()) {
                     startChatHeadService();
+                    spinTheCircle(true);
+                    runTRexRun(true);
+                    birdFlyingOnce();
                     ((Button) view).setText(R.string.outline_stop_service);
                 } else {
                     stopChatHeadService();
+                    spinTheCircle(false);
+                    runTRexRun(false);
                     ((Button) view).setText(R.string.outline_start_service);
                 }
             }
         });
         if (!isChatHeadServiceRunning()) {
             mStartServiceButton.setText(R.string.outline_start_service);
+            spinTheCircle(false);
+            runTRexRun(false);
         } else {
             mStartServiceButton.setText(R.string.outline_stop_service);
+            spinTheCircle(true);
+            runTRexRun(true);
         }
 
         mBarTextView = (TextView) view.findViewById(R.id.textViewElectricBarView);
@@ -143,6 +159,35 @@ public class OutlineFragment extends MainFragment {
      */
     private void updateView() {
 
+    }
+
+    private void spinTheCircle(boolean start) {
+        mCircleAnimation.setDuration(2000);
+        mCircleAnimation.setRepeatCount(-1);
+        mCircleAnimation.setInterpolator(new LinearInterpolator());
+
+        if (start) {
+            mCircleImageView.startAnimation(mCircleAnimation);
+        } else {
+            mCircleImageView.clearAnimation();
+        }
+    }
+
+    private void runTRexRun(boolean run) {
+        if (run) {
+            mTRexImageView.setImageResource(R.drawable.t_rex_running_anim);
+            AnimationDrawable animationDrawable = (AnimationDrawable) mTRexImageView.getDrawable();
+            animationDrawable.start();
+        } else {
+            mTRexImageView.setImageResource(R.mipmap.rex2);
+        }
+    }
+
+    private void birdFlyingOnce() {
+        mBirdImageView.setVisibility(View.VISIBLE);
+        mBirdImageView.setImageResource(R.drawable.bird_flying_anim);
+        AnimationDrawable animationDrawable = (AnimationDrawable) mBirdImageView.getDrawable();
+        animationDrawable.start();
     }
 
     private boolean isChatHeadServiceRunning() {

@@ -389,7 +389,10 @@ public class AndroidInternal extends GameDevice implements GameDeviceBasics, Ser
     public int registerEvent(int type, GameDeviceHWEventListener el) {
         switch (type) {
             case HW_EVENT_VIBRATOR:
-                mVibratorMonitor.addListener(el);
+                if (mVibratorMonitor != null)
+                    mVibratorMonitor.addListener(el);
+                else
+                    break;
                 return 0;
             case HW_EVENT_PROXIMITY:
                 break;
@@ -407,7 +410,10 @@ public class AndroidInternal extends GameDevice implements GameDeviceBasics, Ser
     public int deregisterEvent(int type, GameDeviceHWEventListener el) {
         switch (type) {
             case HW_EVENT_VIBRATOR:
-                mVibratorMonitor.removeListener(el);
+                if (mVibratorMonitor != null)
+                    mVibratorMonitor.removeListener(el);
+                else
+                    break;
                 return 0;
             case HW_EVENT_PROXIMITY:
                 break;
@@ -491,7 +497,8 @@ public class AndroidInternal extends GameDevice implements GameDeviceBasics, Ser
     @Override
     public int onExit() {
         setHackSS(false);
-        mVibratorMonitor.stopMonitoring();
+        if (mVibratorMonitor != null)
+            mVibratorMonitor.stopMonitoring();
         return 0;
     }
 
