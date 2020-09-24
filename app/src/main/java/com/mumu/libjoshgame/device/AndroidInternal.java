@@ -228,7 +228,10 @@ public class AndroidInternal extends GameDevice implements GameDeviceBasics, Ser
         Display display = wm.getDefaultDisplay();
         DisplayMetrics metrics = new DisplayMetrics();
         display.getRealMetrics(metrics);
-        return new int[] {metrics.widthPixels, metrics.heightPixels};
+        if (metrics.heightPixels > metrics.widthPixels)
+            return new int[] {metrics.widthPixels, metrics.heightPixels};
+        else
+            return new int[] {metrics.heightPixels, metrics.widthPixels};
     }
 
     @Override
