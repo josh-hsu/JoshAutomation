@@ -16,6 +16,7 @@
 
 package com.mumu.android.joshautomation.activity;
 
+import android.animation.ObjectAnimator;
 import android.app.Activity;
 import android.app.ActivityManager;
 import android.content.Context;
@@ -23,6 +24,7 @@ import android.content.Intent;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.graphics.drawable.AnimationDrawable;
+import android.media.Image;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -40,6 +42,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.mumu.android.joshautomation.R;
+import com.mumu.android.joshautomation.anim.TRexAnimator;
 import com.mumu.android.joshautomation.service.HeadService;
 
 public class OutlineFragment extends MainFragment {
@@ -54,6 +57,7 @@ public class OutlineFragment extends MainFragment {
     private ImageView mBirdImageView;
 
     private RotateAnimation mCircleAnimation;
+    private TRexAnimator mTRex;
 
     public OutlineFragment() {
         // Required empty public constructor
@@ -123,19 +127,20 @@ public class OutlineFragment extends MainFragment {
         mBirdImageView = (ImageView) view.findViewById(R.id.imageBird);
         mBirdImageView.setVisibility(View.INVISIBLE);
 
+        mTRex = new TRexAnimator(mTRexImageView, mBirdImageView, null);
+
         mStartServiceButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 if (!isChatHeadServiceRunning()) {
                     startChatHeadService();
                     spinTheCircle(true);
-                    runTRexRun(true);
-                    birdFlyingOnce();
+                    mTRex.startMovie();
                     ((Button) view).setText(R.string.outline_stop_service);
                 } else {
                     stopChatHeadService();
                     spinTheCircle(false);
-                    runTRexRun(false);
+                    mTRex.stopMovie();
                     ((Button) view).setText(R.string.outline_start_service);
                 }
             }
@@ -143,11 +148,11 @@ public class OutlineFragment extends MainFragment {
         if (!isChatHeadServiceRunning()) {
             mStartServiceButton.setText(R.string.outline_start_service);
             spinTheCircle(false);
-            runTRexRun(false);
+            mTRex.stopMovie();
         } else {
             mStartServiceButton.setText(R.string.outline_stop_service);
             spinTheCircle(true);
-            runTRexRun(true);
+            mTRex.startMovie();
         }
 
         mBarTextView = (TextView) view.findViewById(R.id.textViewElectricBarView);
@@ -171,23 +176,6 @@ public class OutlineFragment extends MainFragment {
         } else {
             mCircleImageView.clearAnimation();
         }
-    }
-
-    private void runTRexRun(boolean run) {
-        if (run) {
-            mTRexImageView.setImageResource(R.drawable.t_rex_running_anim);
-            AnimationDrawable animationDrawable = (AnimationDrawable) mTRexImageView.getDrawable();
-            animationDrawable.start();
-        } else {
-            mTRexImageView.setImageResource(R.mipmap.rex2);
-        }
-    }
-
-    private void birdFlyingOnce() {
-        mBirdImageView.setVisibility(View.VISIBLE);
-        mBirdImageView.setImageResource(R.drawable.bird_flying_anim);
-        AnimationDrawable animationDrawable = (AnimationDrawable) mBirdImageView.getDrawable();
-        animationDrawable.start();
     }
 
     private boolean isChatHeadServiceRunning() {

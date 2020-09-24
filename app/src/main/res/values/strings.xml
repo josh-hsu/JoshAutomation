@@ -3,7 +3,7 @@
     <!-- project parameters -->
     <string name="electric_data_file_name">electric_records.xml</string>
 
-    <string name="app_name">AutoJob 2.0</string>
+    <string name="app_name">AutoJob 2</string>
 
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
