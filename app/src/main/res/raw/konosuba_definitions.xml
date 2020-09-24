@@ -92,6 +92,12 @@
             <screenpoint>228,0,110,0xFF,1333,200,L</screenpoint>
         </screenpoints>
 
+        <screenpoints name="pLevelUp">
+            <screenpoint>231,7,113,0xFF,1510,336,L</screenpoint>
+            <screenpoint>228,0,110,0xFF,842,404,L</screenpoint>
+            <screenpoint>228,0,110,0xFF,1506,352,L</screenpoint>
+        </screenpoints>
+
     </defset>
 
     <!-- Not support for 720p devices, this is a demo defset -->
