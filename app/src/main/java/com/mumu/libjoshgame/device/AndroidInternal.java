@@ -25,7 +25,10 @@ import android.os.Environment;
 import android.os.IBinder;
 import android.os.Parcel;
 import android.os.RemoteException;
+import android.util.DisplayMetrics;
 import android.util.Log;
+import android.view.Display;
+import android.view.WindowManager;
 
 import com.mumu.libjoshgame.GameDevice;
 import com.mumu.libjoshgame.GameDeviceHWEventListener;
@@ -49,7 +52,7 @@ import java.util.Random;
 public class AndroidInternal extends GameDevice implements GameDeviceBasics, ServiceConnection {
     private static final String TAG = GameLibrary20.TAG;
     private static final String DEVICE_NAME              = "AndroidInternal";
-    private static final String DEVICE_VERSION           = "1.0.200904";
+    private static final String DEVICE_VERSION           = "1.0.200924";
     private static final int    DEVICE_SYS_TYPE          = DEVICE_SYS_LINUX;
     private static final String PRELOAD_PATH_INTERNAL    = Environment.getExternalStorageDirectory().toString() + "/internal.dump";
     private static final String PRELOAD_PATH_FIND_COLOR  = Environment.getExternalStorageDirectory().toString() + "/find_color.dump";
@@ -221,32 +224,11 @@ public class AndroidInternal extends GameDevice implements GameDeviceBasics, Ser
 
     @Override
     public int[] getScreenDimension() {
-        String wmResult = runShellCommand("wm size");
-        String[] wmSize = wmResult.split(":");
-
-        if (wmSize.length == 2) {
-            String sizeString = wmSize[1];
-            String[] sizeXY = sizeString.split("x");
-
-            if (sizeXY.length == 2) {
-                if (sizeXY[0].startsWith(" "))
-                    sizeXY[0] = sizeXY[0].substring(1);
-
-                try {
-                    int[] ret = new int[2];
-                    ret[0] = Integer.parseInt(sizeXY[0]);
-                    ret[1] = Integer.parseInt(sizeXY[1]);
-                    Log.d(TAG, "screen dimension is [" + ret[0] + "] x [" + ret[1] + "]");
-
-                    return ret;
-                } catch (NumberFormatException e) {
-                    Log.e(TAG, "Parse size error " + sizeString);
-                }
-            }
-        }
-
-        Log.e(TAG, "wm size returned error " + wmResult);
-        return null;
+        WindowManager wm = (WindowManager) mContext.getSystemService(Context.WINDOW_SERVICE);
+        Display display = wm.getDefaultDisplay();
+        DisplayMetrics metrics = new DisplayMetrics();
+        display.getRealMetrics(metrics);
+        return new int[] {metrics.widthPixels, metrics.heightPixels};
     }
 
     @Override

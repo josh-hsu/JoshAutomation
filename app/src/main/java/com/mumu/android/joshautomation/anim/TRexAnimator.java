@@ -88,7 +88,6 @@ public class TRexAnimator {
 
                 @Override
                 public void onAnimationEnd(Animator animator) {
-                    Log.d(TAG, "Bird flying ended.");
                     mBirdView.animate().translationX(0).translationY(0);
                     mBirdView.setVisibility(View.INVISIBLE);
                     birdFlying = false;
@@ -109,11 +108,9 @@ public class TRexAnimator {
         private void eventTrigger(int event) {
             switch (event) {
                 case EVENT_DO_NOTHING:
-                    Log.d(TAG, "Do nothing");
                     break;
                 case EVENT_BIRD_FLYING:
                     if (!birdFlying) {
-                        Log.d(TAG, "fly a bird ... ");
                         birdFlyingOnce();
                     }
                     break;

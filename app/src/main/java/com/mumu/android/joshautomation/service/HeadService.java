@@ -78,9 +78,9 @@ public class HeadService extends Service implements AutoJobEventListener {
     private ArrayList<HeadIconView> mHeadIconList;
     private static final int IDX_HEAD_ICON = 0;
     private static final int IDX_MSG_TEXT = 1;
-    private static final int IDX_CAPTURE_ICON = 2;
+    private static final int IDX_PLAY_ICON = 2;
     private static final int IDX_SETTING_ICON = 3;
-    private static final int IDX_PLAY_ICON = 4;
+    private static final int IDX_CAPTURE_ICON = 4;
 
     private int mTouchHeadIconCount = 0;
     private int mSameMsgCount = 0;
@@ -234,11 +234,14 @@ public class HeadService extends Service implements AutoJobEventListener {
     }
 
     private void initGamePanelViews() {
+        int offsetY = 0;
+        final int offsetYIncrement = 120;
+        final boolean enableDebugButton = AppPreferenceValue.getInstance().getPrefs().getBoolean("captureAndCalibration", false);
         mHeadIconList = new ArrayList<>();
         mWindowManager = (WindowManager) getSystemService(WINDOW_SERVICE);
 
         // Head Icon
-        HeadIconView headIcon = new HeadIconView(new ImageView(this), mWindowManager, 0, 0);
+        HeadIconView headIcon = new HeadIconView(new ImageView(this), mWindowManager, 0, offsetY);
         headIcon.getImageView().setImageResource(R.mipmap.ic_launcher);
         headIcon.setOnTapListener(new HeadIconView.OnTapListener() {
             @Override
@@ -254,6 +257,7 @@ public class HeadService extends Service implements AutoJobEventListener {
             }
         });
         mHeadIconList.add(headIcon);
+        offsetY += offsetYIncrement;
 
         // Message Text Icon
         HeadIconView msgText = new HeadIconView(new TextView(this), mWindowManager, 120, 20);
@@ -261,13 +265,13 @@ public class HeadService extends Service implements AutoJobEventListener {
         msgText.getView().setBackgroundColor(Color.WHITE);
         mHeadIconList.add(msgText);
 
-        // Capture Icon
-        HeadIconView captureIcon = new HeadIconView(new ImageView(this), mWindowManager, 0, 120);
-        captureIcon.getImageView().setImageResource(R.drawable.ic_menu_camera);
-        captureIcon.setOnTapListener(new HeadIconView.OnTapListener() {
+        // Start and Stop control Icon
+        HeadIconView startIcon = new HeadIconView(new ImageView(this), mWindowManager, 0, offsetY);
+        startIcon.getImageView().setImageResource(R.drawable.ic_play);
+        startIcon.setOnTapListener(new HeadIconView.OnTapListener() {
             @Override
             public void onTap(View view) {
-                configCapture();
+                configScriptStatus();
             }
 
             @Override
@@ -275,10 +279,11 @@ public class HeadService extends Service implements AutoJobEventListener {
 
             }
         });
-        mHeadIconList.add(captureIcon);
+        mHeadIconList.add(startIcon);
+        offsetY += offsetYIncrement;
 
         // Setting Icon
-        HeadIconView settingIcon = new HeadIconView(new ImageView(this), mWindowManager, 0, 240);
+        HeadIconView settingIcon = new HeadIconView(new ImageView(this), mWindowManager, 0, offsetY);
         settingIcon.getImageView().setImageResource(R.drawable.ic_menu_settings);
         settingIcon.setOnTapListener(new HeadIconView.OnTapListener() {
             @Override
@@ -293,38 +298,42 @@ public class HeadService extends Service implements AutoJobEventListener {
             }
         });
         mHeadIconList.add(settingIcon);
+        offsetY += offsetYIncrement;
 
-        // Start and Stop control Icon
-        HeadIconView startIcon = new HeadIconView(new ImageView(this), mWindowManager, 0, 360);
-        startIcon.getImageView().setImageResource(R.drawable.ic_play);
-        startIcon.setOnTapListener(new HeadIconView.OnTapListener() {
-            @Override
-            public void onTap(View view) {
-                configScriptStatus();
-            }
+        if (enableDebugButton) {
+            // Capture Icon
+            HeadIconView captureIcon = new HeadIconView(new ImageView(this), mWindowManager, 0, offsetY);
+            captureIcon.getImageView().setImageResource(R.drawable.ic_menu_camera);
+            captureIcon.setOnTapListener(new HeadIconView.OnTapListener() {
+                @Override
+                public void onTap(View view) {
+                    configCapture();
+                }
 
-            @Override
-            public void onLongPress(View view) {
+                @Override
+                public void onLongPress(View view) {
 
-            }
-        });
-        mHeadIconList.add(startIcon);
+                }
+            });
+            mHeadIconList.add(captureIcon);
+            offsetY += offsetYIncrement;
 
-        // auto correction control Icon
-        HeadIconView acIcon = new HeadIconView(new ImageView(this), mWindowManager, 0, 480);
-        acIcon.getImageView().setImageResource(R.drawable.ic_menu_slideshow);
-        acIcon.setOnTapListener(new HeadIconView.OnTapListener() {
-            @Override
-            public void onTap(View view) {
-                configAutoCorrection();
-            }
+            // auto correction control Icon
+            HeadIconView acIcon = new HeadIconView(new ImageView(this), mWindowManager, 0, offsetY);
+            acIcon.getImageView().setImageResource(R.drawable.ic_menu_slideshow);
+            acIcon.setOnTapListener(new HeadIconView.OnTapListener() {
+                @Override
+                public void onTap(View view) {
+                    configAutoCorrection();
+                }
 
-            @Override
-            public void onLongPress(View view) {
+                @Override
+                public void onLongPress(View view) {
 
-            }
-        });
-        mHeadIconList.add(acIcon);
+                }
+            });
+            mHeadIconList.add(acIcon);
+        }
 
         // Share the same on move listener for moving at the same time
         HeadIconView.OnMoveListener moveListener = new HeadIconView.OnMoveListener() {
