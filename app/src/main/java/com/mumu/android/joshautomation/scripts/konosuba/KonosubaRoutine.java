@@ -77,6 +77,7 @@ public class KonosubaRoutine {
                 add(SPTList("pNext"));
                 add(SPTList("pAgain"));
                 add(SPTList("pChickenCheck"));
+                add(SPTList("pBondUp"));
         }};
 
         waitListEvent = mGL.waitOnMatchingColorSets(waitList, waitBattleEndMs);
