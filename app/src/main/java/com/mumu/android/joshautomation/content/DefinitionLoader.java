@@ -63,6 +63,7 @@ public class DefinitionLoader {
     private final String ATTR_VERSION = "version";
     private final String ATTR_RESOLUTION = "resolution";
     private final String ATTR_NAME = "name";
+    private final String ATTR_SAPA = "sapa";
 
     private Resources mRes;
     private static DefinitionLoader mSelf;
@@ -293,6 +294,7 @@ public class DefinitionLoader {
         for(int i = 0; i < screenpointsList.getLength(); i++) {
             Element element = (Element) screenpointsList.item(i);
             String name = element.getAttribute(ATTR_NAME);
+            String sapa = element.getAttribute(ATTR_SAPA);
             NodeList points = element.getElementsByTagName(TAG_SCREENPOINT);
             int pointCount = points.getLength();
             ArrayList<ScreenPoint> spSet = new ArrayList<>();
@@ -306,6 +308,10 @@ public class DefinitionLoader {
             }
 
             defData.addScreenPoints(name, spSet);
+            if (sapa.equals("true")) {
+                defData.addScreenPointsSapa(name);
+                Log.d(TAG, "     SAPA: true");
+            }
         }
 
         // parse screencoords array
@@ -359,6 +365,7 @@ public class DefinitionLoader {
         private HashMap<String, ArrayList<ScreenPoint>> screenpoints = new HashMap<>();
         private HashMap<String, ArrayList<ScreenCoord>> screencoords = new HashMap<>();
         private HashMap<String, ArrayList<ScreenColor>> screencolors = new HashMap<>();
+        private ArrayList<String> sapaList = new ArrayList<>();
 
         public void setResolution(String res) {
             resolution = res;
@@ -397,6 +404,10 @@ public class DefinitionLoader {
             screenpoints.put(name, data);
         }
 
+        public void addScreenPointsSapa(String name) {
+            sapaList.add(name);
+        }
+
         public void addScreenCoords(String name, ArrayList<ScreenCoord> data) {
             screencoords.put(name, data);
         }
@@ -416,6 +427,8 @@ public class DefinitionLoader {
         public ScreenColor getScreenColor(String name) {
             return screencolor.get(name);
         }
+
+        public ArrayList<String> getSapaList() { return sapaList; }
 
         public ArrayList<ScreenPoint> getScreenPoints(String name) {
             return screenpoints.get(name);

@@ -482,6 +482,7 @@ public class HeadService extends Service implements AutoJobEventListener {
                     }
                 }
             } catch (Exception e) {
+                e.printStackTrace();
                 Log.e(TAG, "AutoJob list contains an error, aborting message: " + e.getMessage());
                 return;
             }

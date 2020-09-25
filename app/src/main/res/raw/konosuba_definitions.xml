@@ -22,7 +22,7 @@
    1. single point   <screenpoint name="pointName">r,g,b,a,x,y,o</screenpoint>
    2. single coord   <screencoord name="coordName">x,y,o</screencoord>
    3. single color   <screencolor name="colorName">r,g,b,a</screencolor>
-   4. point set      <screenpoints name="pointSetName">
+   4. point set      <screenpoints name="pointSetName" sapa="true">
                          <screenpoint>r,g,b,a,x,y,o</screenpoint>
                          ...
                          <screenpoint>r,g,b,a,x,y,o</screenpoint>
@@ -41,6 +41,7 @@
    NOTE: integer value can be represented as decimal or hexadecimal (started with 0x).
          orientation can be represented as Portrait/Landscape, P(p)/L(l) or 0/1.
    NOTE: no space is allowed.
+   NOTE: sapa (See Any Press Any) is only available for screenpoints
 -->
 
 <!--
@@ -53,46 +54,46 @@
    1.53 -> 1.54   (NOT OK, add 0.01)
    This number will be considered as floating number so don't use another dots
 -->
-<definitions version="1.0">
+<definitions version="1.01">
 
     <defset resolution="1080x2340">
-        <screenpoints name="pPrepare">
+        <screenpoints name="pPrepare" sapa="true">
             <screenpoint>88,42,13,0xFF,1728,819,L</screenpoint>
             <screenpoint>250,240,230,0xFF,1770,824,L</screenpoint>
             <screenpoint>250,240,230,0xFF,1849,826,L</screenpoint>
         </screenpoints>
 
-        <screenpoints name="pTeam">
+        <screenpoints name="pTeam" sapa="true">
             <screenpoint>79,30,0,0xFF,1772,1005,L</screenpoint>
             <screenpoint>250,240,230,0xFF,1818,1006,L</screenpoint>
             <screenpoint>250,240,230,0xFF,1866,997,L</screenpoint>
         </screenpoints>
 
-        <screenpoints name="pNext">
+        <screenpoints name="pNext" sapa="true">
             <screenpoint>97,50,23,0xFF,1108,983,L</screenpoint>
             <screenpoint>250,240,230,0xFF,1130,977,L</screenpoint>
             <screenpoint>250,240,230,0xFF,1189,978,L</screenpoint>
         </screenpoints>
 
-        <screenpoints name="pAgain">
+        <screenpoints name="pAgain" sapa="true">
             <screenpoint>60,50,40,0xFF,1112,985,L</screenpoint>
             <screenpoint>242,229,216,0xFF,1012,957,L</screenpoint>
             <screenpoint>242,229,213,0xFF,1268,985,L</screenpoint>
         </screenpoints>
 
-        <screenpoints name="pChickenCheck">
+        <screenpoints name="pChickenCheck" sapa="true">
             <screenpoint>96,50,22,0xFF,1315,737,L</screenpoint>
             <screenpoint>183,96,15,0xFF,824,598,L</screenpoint>
             <screenpoint>250,240,230,0xFF,1040,733,L</screenpoint>
         </screenpoints>
 
-        <screenpoints name="pBondUp">
+        <screenpoints name="pBondUp" sapa="true">
             <screenpoint>254,194,63,0xFF,1464,187,L</screenpoint>
             <screenpoint>228,0,110,0xFF,1933,139,L</screenpoint>
             <screenpoint>228,0,110,0xFF,1333,200,L</screenpoint>
         </screenpoints>
 
-        <screenpoints name="pLevelUp">
+        <screenpoints name="pLevelUp" sapa="true">
             <screenpoint>231,7,113,0xFF,1510,336,L</screenpoint>
             <screenpoint>228,0,110,0xFF,842,404,L</screenpoint>
             <screenpoint>228,0,110,0xFF,1506,352,L</screenpoint>
