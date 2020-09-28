@@ -53,9 +53,26 @@
             android:layout_width="50dp"
             android:layout_height="50dp"
             android:layout_above="@+id/imageTRex"
-            android:layout_marginBottom="100dp"
             android:layout_alignParentEnd="true"
+            android:layout_marginBottom="70dp"
             app:srcCompat="@mipmap/bird0" />
+
+        <ImageView
+            android:id="@+id/imageCloud"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:layout_above="@+id/imageTRex"
+            android:layout_marginBottom="120dp"
+            android:layout_alignParentEnd="true"
+            app:srcCompat="@mipmap/cloud0" />
+
+        <ImageView
+            android:id="@+id/imageCactus"
+            android:layout_width="70dp"
+            android:layout_height="70dp"
+            android:layout_alignParentBottom="true"
+            android:layout_alignParentEnd="true"
+            app:srcCompat="@mipmap/cloud0" />
 
         <ImageView
             android:id="@+id/imageTRexRoad"

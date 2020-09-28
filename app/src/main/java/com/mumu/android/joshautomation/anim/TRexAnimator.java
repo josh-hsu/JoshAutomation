@@ -16,15 +16,16 @@ import java.util.Random;
 
 public class TRexAnimator {
     private static final String TAG = "TRexAnimator";
-    private ImageView mTRexView, mBirdView, mCloudView;
+    private ImageView mTRexView, mBirdView, mCloudView, mCactusView;
     private boolean mTriggerRunning = false;
     private Handler mHandler = new Handler(Looper.getMainLooper());
     TRexAnimationTrigger mTrigger;
 
-    public TRexAnimator(ImageView trex, ImageView bird, ImageView cloud) {
+    public TRexAnimator(ImageView trex, ImageView bird, ImageView cloud, ImageView cactus) {
         mTRexView = trex;
         mBirdView = bird;
         mCloudView = cloud;
+        mCactusView = cactus;
     }
 
     public void startMovie() {
@@ -50,11 +51,13 @@ public class TRexAnimator {
         final int EVENT_CLOUD_PRESENT = 2;
         final int EVENT_CACTUS_PRESENT = 3;
         final int EVENT_MAX = 4;
-        int eventTriggerPeriodMs = 2000;
-        int birdFlyingPeriodMs = 6000;
+        int eventTriggerPeriodMs = 800;
+        int birdFlyingPeriodMs = 4000;
+        int cloudFlyingPeriodMs = 8000;
 
         boolean running = true;
         boolean birdFlying = false;
+        boolean cloudFlying = false;
 
         public void pause() {
             running = false;
@@ -68,6 +71,37 @@ public class TRexAnimator {
             } else {
                 mTRexView.setImageResource(R.mipmap.rex2);
             }
+        }
+
+        private void cloudFlyingOnce() {
+            cloudFlying = true;
+            mCloudView.setVisibility(View.VISIBLE);
+            ObjectAnimator movingAnimation = ObjectAnimator.ofFloat(mCloudView, "translationX", -1080f);
+            movingAnimation.setDuration(cloudFlyingPeriodMs);
+            movingAnimation.start();
+            movingAnimation.addListener(new Animator.AnimatorListener() {
+                @Override
+                public void onAnimationStart(Animator animator) {
+
+                }
+
+                @Override
+                public void onAnimationEnd(Animator animator) {
+                    mCloudView.animate().translationX(0).translationY(0);
+                    mCloudView.setVisibility(View.INVISIBLE);
+                    cloudFlying = false;
+                }
+
+                @Override
+                public void onAnimationCancel(Animator animator) {
+
+                }
+
+                @Override
+                public void onAnimationRepeat(Animator animator) {
+
+                }
+            });
         }
 
         private void birdFlyingOnce() {
@@ -115,6 +149,8 @@ public class TRexAnimator {
                     }
                     break;
                 case EVENT_CLOUD_PRESENT:
+                    if (!cloudFlying)
+                        cloudFlyingOnce();
                     break;
                 case EVENT_CACTUS_PRESENT:
                     break;

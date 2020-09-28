@@ -55,6 +55,8 @@ public class OutlineFragment extends MainFragment {
     private ImageView mCircleImageView;
     private ImageView mTRexImageView;
     private ImageView mBirdImageView;
+    private ImageView mCactusImageView;
+    private ImageView mCloudImageView;
 
     private RotateAnimation mCircleAnimation;
     private TRexAnimator mTRex;
@@ -124,10 +126,15 @@ public class OutlineFragment extends MainFragment {
         mCircleImageView = (ImageView) view.findViewById(R.id.imageViewCircle);
         mCircleImageView.setImageResource(R.drawable.ic_circle);
         mTRexImageView = (ImageView) view.findViewById(R.id.imageTRex);
+
         mBirdImageView = (ImageView) view.findViewById(R.id.imageBird);
         mBirdImageView.setVisibility(View.INVISIBLE);
+        mCactusImageView = (ImageView) view.findViewById(R.id.imageCactus);
+        mCactusImageView.setVisibility(View.INVISIBLE);
+        mCloudImageView = (ImageView) view.findViewById(R.id.imageCloud);
+        mCloudImageView.setVisibility(View.INVISIBLE);
 
-        mTRex = new TRexAnimator(mTRexImageView, mBirdImageView, null);
+        mTRex = new TRexAnimator(mTRexImageView, mBirdImageView, mCloudImageView, mCactusImageView);
 
         mStartServiceButton.setOnClickListener(new View.OnClickListener() {
             @Override
