@@ -5,14 +5,12 @@ import android.util.Log;
 import com.mumu.android.joshautomation.content.AppPreferenceValue;
 import com.mumu.android.joshautomation.content.DefinitionLoader;
 import com.mumu.libjoshgame.GameLibrary20;
-import com.mumu.libjoshgame.ScreenColor;
-import com.mumu.libjoshgame.ScreenCoord;
 import com.mumu.libjoshgame.ScreenPoint;
 
 import java.util.ArrayList;
 
 public class SeeAnyPressAnyJob extends AutoJob {
-    protected String TAG;
+    protected final String TAG = "SAPAJob";
     private MainJobRoutine mRoutine;
     private GameLibrary20 mGL;
     private DefinitionLoader.DefData mDef;
@@ -26,7 +24,6 @@ public class SeeAnyPressAnyJob extends AutoJob {
 
     public SeeAnyPressAnyJob(String name, int rawDefId, String defName, int mainOrientation, int timeout) {
         super(name);
-        TAG = name;
         mRawDefId = rawDefId;
         mDefName = defName;
         mMainOrientation = mainOrientation;
@@ -36,7 +33,7 @@ public class SeeAnyPressAnyJob extends AutoJob {
     @Override
     public void start() {
         super.start();
-        Log.d(TAG, "start");
+        Log.d(TAG, "started job " + getJobName());
         initOnce();
         mGL.useHardwareSimulatedInput(false);
         mRoutine = new MainJobRoutine();
@@ -72,7 +69,7 @@ public class SeeAnyPressAnyJob extends AutoJob {
     }
 
     public void setJobEventListener(AutoJobEventListener el) {
-        Log.d(TAG, "setJobEventListener");
+        Log.d(TAG, "setJobEventListener " + getJobName());
         mListener = el;
     }
 
@@ -88,7 +85,7 @@ public class SeeAnyPressAnyJob extends AutoJob {
             Log.d(TAG, msg);
     }
 
-    private void sleep(int time) throws InterruptedException {
+    private void sleepMs(int time) throws InterruptedException {
         try {
             String sleepMultiplier = AppPreferenceValue.getInstance().getPrefs().getString("battleSpeed", "1.0");
             Double sleepMultiplyValue = Double.parseDouble(sleepMultiplier);
@@ -97,14 +94,6 @@ public class SeeAnyPressAnyJob extends AutoJob {
             Thread.sleep(time);
         }
     }
-
-    // Definition helper functions
-    private ScreenPoint SPT(String name) { if (mDef.getScreenPoint(name) == null) { sendMessage("找不到"+name); } return mDef.getScreenPoint(name);}
-    private ScreenCoord SCD(String name) { if (mDef.getScreenCoord(name) == null) { sendMessage("找不到"+name); } return mDef.getScreenCoord(name);}
-    private ScreenColor SCL(String name) { if (mDef.getScreenColor(name) == null) { sendMessage("找不到"+name); } return mDef.getScreenColor(name);}
-    private ArrayList<ScreenPoint> SPTList(String name) {if (mDef.getScreenPoints(name) == null) { sendMessage("找不到"+name); } return mDef.getScreenPoints(name);}
-    private ArrayList<ScreenCoord> SCDList(String name) {if (mDef.getScreenCoords(name) == null) { sendMessage("找不到"+name); } return mDef.getScreenCoords(name);}
-    private ArrayList<ScreenColor> SCLList(String name) {if (mDef.getScreenColors(name) == null) { sendMessage("找不到"+name); } return mDef.getScreenColors(name);}
 
     /*
      * MainJobRoutine
@@ -121,22 +110,20 @@ public class SeeAnyPressAnyJob extends AutoJob {
             // lower index has higher priority
             waitList = new ArrayList<ArrayList<ScreenPoint>>();
             for(String sapaName : mDef.getSapaList()) {
-                waitList.add(SPTList(sapaName));
+                waitList.add(mDef.getScreenPoints(sapaName));
             }
 
             waitListEvent = mGL.waitOnMatchingColorSets(waitList, waitBattleEndMs);
             if (waitListEvent >= 0) {
                 mGL.mouseClick(waitList.get(waitListEvent).get(0).coord);
-                sleep(1000);
+                sleepMs(1000);
             } else {
                 sendMessage("等待逾時");
             }
         }
 
         private void main() throws Exception {
-            boolean shouldRunning = true;
-
-            while (shouldRunning) {
+            while (isShouldJobRunning()) {
                 // setup gl for game spec
                 mGL.setScreenMainOrientation(ScreenPoint.SO_Landscape);
                 mGL.useHardwareSimulatedInput(false);
@@ -151,7 +138,7 @@ public class SeeAnyPressAnyJob extends AutoJob {
             try {
                 main();
             } catch (Exception e) {
-                Log.e(TAG, "Routine caught an exception " + e.getMessage());
+                Log.e(TAG, "Script " + getJobName() + " routine caught an exception " + e.getMessage());
             }
         }
     }
