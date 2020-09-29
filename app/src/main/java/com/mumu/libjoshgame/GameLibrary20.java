@@ -340,11 +340,14 @@ public class GameLibrary20 {
         int checkCount = timeoutMs / checkInterval;
 
         while (checkCount-- > 0) {
-            //colors are not matched, sleep in..
+            requestRefresh();
+            setScreenshotPolicy(DeviceScreen.POLICY_MANUAL);
             for(int i = 0; i < points.size(); i++) {
                 if (mScreenService.colorsAre(points.get(i)))
                     return i;
             }
+            setScreenshotPolicy(DeviceScreen.POLICY_DEFAULT);
+            //colors are not matched, sleep in..
             Thread.sleep(checkInterval);
         }
 
