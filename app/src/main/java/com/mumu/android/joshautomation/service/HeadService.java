@@ -477,6 +477,7 @@ public class HeadService extends Service implements AutoJobEventListener {
                         mAutoJobHandler.addJob(job);
                         mAutoJobHandler.setJobEventListener(job.getJobName(), this);
                         mAutoJobHandler.setExtra(job.getJobName(), mGL); //set game library to jobs
+                        mAutoJobHandler.setExtra(job.getJobName(), mContext);
                     } else {
                         Log.e(TAG, "class " + clazz.getName() + " is not an AutoJob");
                     }

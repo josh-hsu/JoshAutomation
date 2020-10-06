@@ -16,11 +16,13 @@
 
 package com.mumu.android.joshautomation.activity;
 
+import android.app.Activity;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
+import android.net.Uri;
 import android.os.Bundle;
 import android.preference.EditTextPreference;
 import android.preference.ListPreference;
@@ -33,11 +35,11 @@ import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.Toast;
 
 import com.mumu.android.joshautomation.R;
+import com.mumu.android.joshautomation.content.AppPreferenceValue;
 import com.mumu.android.joshautomation.service.HeadService;
 //import com.mumu.joshautomation.fgo.BattleArgument;
 //import com.mumu.joshautomation.fgo.BattleArgumentDialog;
@@ -47,28 +49,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class AppPreferenceActivity extends PreferenceActivity {
-    public static final String TAG = "JATool";
-
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-
-        final Context context = this;
-
-        // Add a button to the header list.
-        if (hasHeaders()) {
-            Log.d(TAG, "Launched App preference header");
-            Button button = new Button(this);
-            button.setText(getString(R.string.settings_restore_data_from_sdcard));
-            button.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    startService(new Intent(context, HeadService.class));
-                }
-            });
-            setListFooter(button);
-        }
-    }
+    public static final String TAG = "GL20";
 
     @Override
     protected void onPostCreate(Bundle savedInstanceState) {
@@ -109,6 +90,7 @@ public class AppPreferenceActivity extends PreferenceActivity {
      * System Preference Fragment
      */
     public static class SystemPrefFragment extends PreferenceFragment {
+        static final int PICK_FILE_RESULT_CODE = 1302;
         @Override
         public void onCreate(Bundle savedInstanceState) {
             super.onCreate(savedInstanceState);
@@ -119,7 +101,7 @@ public class AppPreferenceActivity extends PreferenceActivity {
             PreferenceManager.setDefaultValues(getActivity(),
                     R.xml.app_preferences, false);
 
-            // Load the app_preferences_fgo from an XML resource
+            // Load the app_preferences from an XML resource
             addPreferencesFromResource(R.xml.app_preferences);
 
             // Add start service button listener
@@ -127,6 +109,15 @@ public class AppPreferenceActivity extends PreferenceActivity {
             myPref.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
                 public boolean onPreferenceClick(Preference preference) {
                     getContext().startService(new Intent(getContext(), HeadService.class));
+                    return true;
+                }
+            });
+
+            // Add SAPA XML selector
+            myPref = findPreference("selectSAPAJobScript");
+            myPref.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
+                public boolean onPreferenceClick(Preference preference) {
+                    startFileSelector();
                     return true;
                 }
             });
@@ -150,6 +141,29 @@ public class AppPreferenceActivity extends PreferenceActivity {
             scriptSelectPref.setEntries(entriesArray.toArray(new CharSequence[entriesArray.size()]));
             scriptSelectPref.setDefaultValue("0");
             scriptSelectPref.setEntryValues(entriesValueArray.toArray(new CharSequence[entriesValueArray.size()]));
+        }
+
+        void startFileSelector() {
+            Intent filePickerIntent = new Intent(Intent.ACTION_OPEN_DOCUMENT);
+            filePickerIntent.addFlags(Intent.FLAG_GRANT_PERSISTABLE_URI_PERMISSION);
+            filePickerIntent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+            filePickerIntent.setType("text/xml");
+            filePickerIntent = Intent.createChooser(filePickerIntent, "請選擇腳本 XML 檔案");
+            startActivityForResult(filePickerIntent, PICK_FILE_RESULT_CODE);
+        }
+
+        @Override
+        public void onActivityResult(int requestCode, int resultCode, Intent data) {
+            switch (requestCode) {
+                case PICK_FILE_RESULT_CODE:
+                    if (resultCode == Activity.RESULT_OK) {
+                        Uri fileUri = data.getData();
+                        Log.d(TAG, "Save path " + fileUri);
+                        getContext().getSharedPreferences("com.mumu.android.joshautomation_preferences", Context.MODE_PRIVATE).edit()
+                                .putString("selectSAPAJobScript", fileUri.toString()).apply();
+                    }
+                    break;
+            }
         }
     }
 

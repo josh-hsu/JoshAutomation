@@ -15,6 +15,10 @@
             android:title="選擇腳本"
             android:summary="點擊選擇"
             android:defaultValue="0"/>
+        <Preference
+            android:title="選擇 SAPA 腳本 XML 檔案"
+            android:key="selectSAPAJobScript"
+            android:summary="透過檔案管理頁面選擇看到什麼點什麼的 XML 定義檔案。"/>
         <CheckBoxPreference
             android:key="scriptExecuteLoopPref"
             android:title="重複執行"
@@ -23,7 +27,7 @@
         <EditTextPreference
             android:key="scriptExecuteTimePref"
             android:title="腳本執行次數"
-            android:summary="當重複執行啟用時腳本執行的次數，0表示重複到按下終止為止，依據腳本是否支援重複執行而有效"
+            android:summary="當重複執行啟用時腳本執行的次數，0 表示重複到按下終止為止，依據腳本是否支援重複執行而有效"
             android:defaultValue="1"
             android:maxLength="40"/>
     </PreferenceCategory>

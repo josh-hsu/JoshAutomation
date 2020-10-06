@@ -251,20 +251,16 @@ public class MainActivity extends AppCompatActivity
         String[] perms = {"android.permission.READ_EXTERNAL_STORAGE", "android.permission.WRITE_EXTERNAL_STORAGE", "android.permission.FOREGROUND_SERVICE"};
         int permsRequestCode = 200;
 
-        if (Build.VERSION.SDK_INT > Build.VERSION_CODES.LOLLIPOP_MR1) {
-            Log.d(TAG, "This is device software version above Marshmallow, requesting permission of external storage");
-            requestPermissions(perms, permsRequestCode);
-        }
+        Log.d(TAG, "This is device software version above Marshmallow, requesting permission of external storage");
+        requestPermissions(perms, permsRequestCode);
     }
 
     private void requestPermissionsOnStart() {
         String[] perms = {"android.permission.READ_EXTERNAL_STORAGE", "android.permission.WRITE_EXTERNAL_STORAGE", "android.permission.FOREGROUND_SERVICE"};
         int permsRequestCode = 201;
 
-        if (Build.VERSION.SDK_INT > Build.VERSION_CODES.LOLLIPOP_MR1) {
-            Log.d(TAG, "This is device software version above Marshmallow, requesting permission of external storage");
-            requestPermissions(perms, permsRequestCode);
-        }
+        Log.d(TAG, "This is device software version above Marshmallow, requesting permission of external storage");
+        requestPermissions(perms, permsRequestCode);
     }
 
     private void showOutlineFragment() {
@@ -296,7 +292,7 @@ public class MainActivity extends AppCompatActivity
         Uri path_electricity = Uri.fromFile(file_electricity);
         File file_log = new File(Environment.getExternalStorageDirectory(), "log.txt");
         Uri path_log = Uri.fromFile(file_log);
-        String to[] = {"alenbos0517@gmail.com"};
+        String[] to = {"alenbos0517@gmail.com"};
         Intent emailIntent = new Intent(Intent.ACTION_SEND_MULTIPLE);
 
         saveDataFileToSdcard(getString(R.string.electric_data_file_name));

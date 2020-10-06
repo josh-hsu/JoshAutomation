@@ -16,6 +16,7 @@
 
 package com.mumu.android.joshautomation.content;
 
+import com.mumu.android.joshautomation.autojob.SelectableSAPAJob;
 import com.mumu.android.joshautomation.scripts.epic7.Epic7AutoReplayJob;
 import com.mumu.android.joshautomation.scripts.konosuba.KonosubaAutoJob;
 import com.mumu.android.joshautomation.scripts.light.LightAutoJob;
@@ -52,6 +53,7 @@ public class AutoJobClasses {
             add(Epic7AutoReplayJob.class);
             add(LightAutoJob.class);
             add(KonosubaAutoJob.class);
+            add(SelectableSAPAJob.class);
         }
     };
 }
