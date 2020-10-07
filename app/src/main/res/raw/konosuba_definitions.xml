@@ -56,7 +56,7 @@
 -->
 
 <definitions version="1.01">
-    <defset resolution="1080x2340">
+    <defset resolution="1080x2340" orientation="landscape" sapaTimeout="60">
         <screenpoints name="pPrepare" sapa="true">
             <screenpoint>88,42,13,0xFF,1728,819,L</screenpoint>
             <screenpoint>250,240,230,0xFF,1770,824,L</screenpoint>

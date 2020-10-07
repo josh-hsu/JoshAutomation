@@ -62,6 +62,8 @@ public class DefinitionLoader {
     private final String TAG_SCREENCOLORS = "screencolors";
     private final String ATTR_VERSION = "version";
     private final String ATTR_RESOLUTION = "resolution";
+    private final String ATTR_ORIENTATION = "orientation";
+    private final String ATTR_SAPA_TIMEOUT = "sapaTimeout";
     private final String ATTR_NAME = "name";
     private final String ATTR_SAPA = "sapa";
 
@@ -199,7 +201,7 @@ public class DefinitionLoader {
     }
 
     private DefData parse(InputStream in, String resolutionRequested) throws Exception {
-        String documentVersion = "unknown_version";
+        String documentVersion, documentOrientation = "", documentSapaTimeout = "";
 
         DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
         DocumentBuilder builder = factory.newDocumentBuilder();
@@ -221,13 +223,17 @@ public class DefinitionLoader {
             Log.d(TAG, "Resolution is " + resolution + " for defset " + i);
             if (resolution.equals(resolutionRequested)) {
                 targetDefset = defsets.item(i);
-                Log.d(TAG, "Resolution matched at index " + i);
+                documentOrientation = element.getAttribute(ATTR_ORIENTATION);
+                documentSapaTimeout = element.getAttribute(ATTR_SAPA_TIMEOUT);
+                Log.d(TAG, "Resolution matched at index " + i + ", ori: " +
+                        documentOrientation + ", timeout: " + documentSapaTimeout);
             }
         }
 
         // parse matched resolution data if any
         if (targetDefset != null) {
-            return parseDefData((Element)targetDefset, resolutionRequested, documentVersion);
+            return parseDefData((Element)targetDefset, resolutionRequested, documentVersion,
+                    documentOrientation, documentSapaTimeout);
         } else {
             Log.w(TAG, "No defset found for resolution " + resolutionRequested);
         }
@@ -235,7 +241,7 @@ public class DefinitionLoader {
         return null;
     }
 
-    private DefData parseDefData(Element target, String resolutionRequested, String xmlVersion) {
+    private DefData parseDefData(Element target, String resolutionRequested, String xmlVersion, String xmlOrientation, String xmlSapaTimeout) {
         DefData defData = new DefData();
         NodeList screenpointList = target.getElementsByTagName(TAG_SCREENPOINT);
         NodeList screencoordList = target.getElementsByTagName(TAG_SCREENCOORD);
@@ -246,6 +252,8 @@ public class DefinitionLoader {
 
         defData.setResolution(resolutionRequested);
         defData.setVersion(xmlVersion);
+        defData.setOrientation(xmlOrientation);
+        defData.setSapaTimeout(xmlSapaTimeout);
 
         Log.d(TAG, "This resolution has " + screenpointList.getLength() + " " + TAG_SCREENPOINT);
         Log.d(TAG, "This resolution has " + screencoordList.getLength() + " " + TAG_SCREENCOORD);
@@ -358,6 +366,8 @@ public class DefinitionLoader {
     public class DefData {
         private String resolution; //defset resolution
         private double version; //defset version
+        private int orientation = ScreenPoint.SO_Landscape;
+        private int sapaTimeout = 60;
 
         private HashMap<String, ScreenPoint> screenpoint = new HashMap<>();
         private HashMap<String, ScreenCoord> screencoord = new HashMap<>();
@@ -386,6 +396,30 @@ public class DefinitionLoader {
 
         public double getVersion() {
             return version;
+        }
+
+        public void setOrientation(String orient) {
+            if (orient.equals("landscape") || orient.equals("Landscape"))
+                orientation = ScreenPoint.SO_Landscape;
+            else if (orient.equals("portrait") || orient.equals("Portrait"))
+                orientation = ScreenPoint.SO_Portrait;
+        }
+
+        public int getOrientation() {
+            return orientation;
+        }
+
+        public void setSapaTimeout(String timeout) {
+            try {
+                sapaTimeout = Integer.parseInt(timeout);
+            } catch (NumberFormatException e) {
+                Log.e(TAG, "SapaTimeout " + timeout + " is not an integer");
+                sapaTimeout = 60;
+            }
+        }
+
+        public int getSapaTimeout() {
+            return sapaTimeout;
         }
 
         public void addScreenPoint(String name, ScreenPoint data) {

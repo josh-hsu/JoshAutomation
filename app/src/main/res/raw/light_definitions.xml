@@ -54,7 +54,7 @@
    This number will be considered as floating number so don't use another dots
 -->
 <definitions version="1.01">
-    <defset resolution="1080x2340">
+    <defset resolution="1080x2340" orientation="landscape" sapaTimeout="1800">
         <screenpoints name="pTapScreen" sapa="true">
             <screenpoint>231,231,231,0xFF,1114,1024,L</screenpoint>
             <screenpoint>253,253,253,0xFF,1305,1014,L</screenpoint>

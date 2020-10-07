@@ -1,7 +1,6 @@
 package com.mumu.android.joshautomation.autojob;
 
 import android.content.Context;
-import android.content.Intent;
 import android.net.Uri;
 import android.util.Log;
 
@@ -26,8 +25,8 @@ public class SelectableSAPAJob extends AutoJob {
     private AutoJobEventListener mListener;
     private Context mContext;
 
-    private static final int mMainOrientation = ScreenPoint.SO_Landscape;
-    private static final int mWaitTimeout = 60;
+    private int mMainOrientation = ScreenPoint.SO_Landscape;
+    private int mWaitTimeout = 60;
 
     public SelectableSAPAJob() {
         super(TAG);
@@ -42,6 +41,7 @@ public class SelectableSAPAJob extends AutoJob {
             super.stop();
         }
         mGL.useHardwareSimulatedInput(false);
+        mGL.setScreenMainOrientation(mMainOrientation);
         mRoutine = new MainJobRoutine();
         mRoutine.start();
     }
@@ -74,11 +74,12 @@ public class SelectableSAPAJob extends AutoJob {
         try {
             InputStream fileInputStream = mContext.getContentResolver().openInputStream(fileUri);
             mDef = DefinitionLoader.getInstance().requestDefData(fileInputStream, resolution);
+            mMainOrientation = mDef.getOrientation();
+            mWaitTimeout = mDef.getSapaTimeout();
         } catch (FileNotFoundException e) {
             Log.e(TAG, "File not found: " + fileUri.getPath());
             return -1;
         }
-        mGL.setScreenMainOrientation(mMainOrientation);
         return 0;
     }
 
@@ -139,7 +140,7 @@ public class SelectableSAPAJob extends AutoJob {
         private void main() throws Exception {
             while (isShouldJobRunning()) {
                 // setup gl for game spec
-                mGL.setScreenMainOrientation(ScreenPoint.SO_Landscape);
+                mGL.setScreenMainOrientation(mMainOrientation);
                 mGL.useHardwareSimulatedInput(false);
                 mGL.setScreenAmbiguousRange(new int[]{20,20,20});
 
