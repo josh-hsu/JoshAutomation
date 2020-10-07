@@ -10,6 +10,7 @@ import com.mumu.libjoshgame.GameLibrary20;
 import com.mumu.libjoshgame.ScreenPoint;
 
 import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 
@@ -70,15 +71,24 @@ public class SelectableSAPAJob extends AutoJob {
     private int init() {
         String resolution = mGL.getDeviceResolution()[0] + "x" + mGL.getDeviceResolution()[1];
         String rawFileUri = AppPreferenceValue.getInstance().getPrefs().getString("selectSAPAJobScript", "");
+        InputStream fileInputStream = null;
         Uri fileUri = Uri.parse(rawFileUri);
         try {
-            InputStream fileInputStream = mContext.getContentResolver().openInputStream(fileUri);
+            fileInputStream = mContext.getContentResolver().openInputStream(fileUri);
             mDef = DefinitionLoader.getInstance().requestDefData(fileInputStream, resolution);
             mMainOrientation = mDef.getOrientation();
             mWaitTimeout = mDef.getSapaTimeout();
         } catch (FileNotFoundException e) {
             Log.e(TAG, "File not found: " + fileUri.getPath());
             return -1;
+        } finally {
+            if (fileInputStream != null) {
+                try {
+                    fileInputStream.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
         }
         return 0;
     }
