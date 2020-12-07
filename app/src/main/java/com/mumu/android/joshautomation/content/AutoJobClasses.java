@@ -18,8 +18,10 @@ package com.mumu.android.joshautomation.content;
 
 import com.mumu.android.joshautomation.autojob.SelectableSAPAJob;
 import com.mumu.android.joshautomation.scripts.epic7.Epic7AutoReplayJob;
+import com.mumu.android.joshautomation.scripts.fgo.FGOLoopBattleJob;
 import com.mumu.android.joshautomation.scripts.konosuba.KonosubaAutoJob;
 import com.mumu.android.joshautomation.scripts.light.LightAutoJob;
+import com.mumu.android.joshautomation.scripts.saga.SagaAutoJob;
 
 import java.util.ArrayList;
 
@@ -54,6 +56,8 @@ public class AutoJobClasses {
             add(LightAutoJob.class);
             add(KonosubaAutoJob.class);
             add(SelectableSAPAJob.class);
+            add(FGOLoopBattleJob.class);
+            add(SagaAutoJob.class);
         }
     };
 }

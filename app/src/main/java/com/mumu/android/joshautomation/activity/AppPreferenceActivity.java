@@ -41,8 +41,8 @@ import android.widget.Toast;
 import com.mumu.android.joshautomation.R;
 import com.mumu.android.joshautomation.content.AppPreferenceValue;
 import com.mumu.android.joshautomation.service.HeadService;
-//import com.mumu.joshautomation.fgo.BattleArgument;
-//import com.mumu.joshautomation.fgo.BattleArgumentDialog;
+import com.mumu.android.joshautomation.scripts.fgo.BattleArgument;
+import com.mumu.android.joshautomation.scripts.fgo.BattleArgumentDialog;
 import com.mumu.android.joshautomation.autojob.AutoJobHandler;
 
 import java.util.ArrayList;
@@ -197,8 +197,8 @@ public class AppPreferenceActivity extends PreferenceActivity {
             Preference.OnPreferenceClickListener singleBattleArgClicked = new Preference.OnPreferenceClickListener() {
                 @Override
                 public boolean onPreferenceClick(Preference preference) {
-                    //TODO: must implement
-                    /*SharedPreferences sharedPrefs = PreferenceManager.getDefaultSharedPreferences(getContext());
+                    // TODO: must implement
+                    SharedPreferences sharedPrefs = PreferenceManager.getDefaultSharedPreferences(getContext());
                     String prefKey = preference.getKey();
                     Intent intent = new Intent(getContext(), BattleArgumentDialog.class);
 
@@ -208,7 +208,7 @@ public class AppPreferenceActivity extends PreferenceActivity {
 
                     intent.putExtras(bundle);
                     startActivity(intent);
-                    battleArgDialogPressed = true;*/
+                    battleArgDialogPressed = true;
                     return false;
                 }
             };
@@ -273,12 +273,12 @@ public class AppPreferenceActivity extends PreferenceActivity {
             if (pref instanceof  ListPreference) {
                 ListPreference listPref = (ListPreference) pref;
 
-                //TODO: implement here
-                /*if (key.equals("battleArgPref")) {
+                // TODO: implement here
+                if (key.equals("battleArgPref")) {
                     BattleArgument arg = new BattleArgument(listPref.getValue());
                     String valueDisplayed = arg.getName() + ": " + arg.getArgs();
                     pref.setSummary(valueDisplayed);
-                } else */if (key.equals("battlePolicyPrefs")) {
+                } else if (key.equals("battlePolicyPrefs")) {
                     pref.setSummary(listPref.getValue() + ": " + listPref.getEntry());
                 } else if (key.equals("battleEatApple")) {
                     pref.setSummary(listPref.getEntry());
@@ -298,14 +298,14 @@ public class AppPreferenceActivity extends PreferenceActivity {
             for(int i = 0; i < battleArgCount; i++) {
                 String key = keyPrefix + i;
                 String value = sharedPrefs.getString(key, "");
-                //TODO: implement here
-                /*if (!value.equals("")) {
+                // TODO: implement here
+                if (!value.equals("")) {
                     BattleArgument arg = new BattleArgument(value);
                     String valueDisplayed = arg.getName() + ": " + arg.getArgs();
                     findPreference(key).setSummary(valueDisplayed);
                 } else {
                     findPreference(key).setSummary("無");
-                }*/
+                }
             }
 
             // call refresh for arg list pref
@@ -313,7 +313,7 @@ public class AppPreferenceActivity extends PreferenceActivity {
         }
 
         private void refreshBattleArgs() {
-            /* TODO: must implement
+            // TODO: must implement
             SharedPreferences sharedPrefs = PreferenceManager.getDefaultSharedPreferences(getContext());
             ListPreference selectPref = (ListPreference) findPreference("battleArgPref");
             CharSequence[] battleArgEntries = new CharSequence[battleArgCount];
@@ -328,7 +328,7 @@ public class AppPreferenceActivity extends PreferenceActivity {
             }
 
             selectPref.setEntries(battleArgEntries);
-            selectPref.setEntryValues(battleArgValues);*/
+            selectPref.setEntryValues(battleArgValues);
         }
     }
 

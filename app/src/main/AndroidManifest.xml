@@ -45,11 +45,11 @@
             </intent-filter>
         </service>
 
-        <!--activity
-            android:name=".fgo.BattleArgumentDialog"
+        <activity
+            android:name=".scripts.fgo.BattleArgumentDialog"
             android:label="@string/title_activity_battle_argument_dialog"
             android:theme="@style/Theme.AppCompat.Dialog">
-        </activity> -->
+        </activity>
     </application>
 
 </manifest>
