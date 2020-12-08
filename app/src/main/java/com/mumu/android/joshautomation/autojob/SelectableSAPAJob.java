@@ -58,7 +58,6 @@ public class SelectableSAPAJob extends AutoJob {
         }
     }
 
-
     @Override
     public void setExtra(Object object) {
         if (object instanceof GameLibrary20) {
@@ -125,7 +124,6 @@ public class SelectableSAPAJob extends AutoJob {
      * Your script implementation should be here
      */
     private class MainJobRoutine extends Thread {
-
         public void seePointAndPressPoint() throws GameLibrary20.ScreenshotErrorException, InterruptedException {
             ArrayList<ArrayList<ScreenPoint>> waitList;
             int waitListEvent;

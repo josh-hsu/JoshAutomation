@@ -95,6 +95,13 @@ public class DefinitionLoader {
         return mLoaderInitialized;
     }
 
+    /**
+     * request DefData of specific resolution from resource ID and given a file name of copy one
+     * @param rawFileId Resource ID such as R.raw.some_definitions
+     * @param rawFileName File name for a copy of definition such as some_definitions.xml
+     * @param resolution Resolution of DefSet in definition XML such as 1080x2340
+     * @return DefSet of request or null if not found
+     */
     public DefData requestDefData(int rawFileId , String rawFileName, String resolution) {
         DefData defDataFromResource, defDataFromFile = null;
         InputStream resInputStream = null, fileInputStream = null;

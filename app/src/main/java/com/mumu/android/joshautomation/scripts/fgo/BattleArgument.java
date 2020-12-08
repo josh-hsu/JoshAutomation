@@ -1,5 +1,6 @@
 package com.mumu.android.joshautomation.scripts.fgo;
 
+import android.support.annotation.NonNull;
 import android.util.Log;
 import com.mumu.android.joshautomation.autojob.AutoJob;
 import com.mumu.android.joshautomation.autojob.AutoJobEventListener;
@@ -74,6 +75,7 @@ public class BattleArgument {
         return mCmdString;
     }
 
+    @NonNull
     public String toString() {
         return mCmdString;
     }
@@ -101,6 +103,7 @@ public class BattleArgument {
             change_target = chtg;
         }
 
+        @NonNull
         public String toString() {
             if (change_target == -1)
                 return "(Skill: " + skill + " Target: " + target + ")";
