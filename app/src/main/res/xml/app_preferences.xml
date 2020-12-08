@@ -15,6 +15,10 @@
             android:title="選擇腳本"
             android:summary="點擊選擇"
             android:defaultValue="0"/>
+        <Preference
+            android:title="選擇 SAPA 腳本 XML 檔案"
+            android:key="selectSAPAJobScript"
+            android:summary="透過檔案管理頁面選擇看到什麼點什麼的 XML 定義檔案。"/>
         <CheckBoxPreference
             android:key="scriptExecuteLoopPref"
             android:title="重複執行"
@@ -23,12 +27,30 @@
         <EditTextPreference
             android:key="scriptExecuteTimePref"
             android:title="腳本執行次數"
-            android:summary="當重複執行啟用時腳本執行的次數，0表示重複到按下終止為止，依據腳本是否支援重複執行而有效"
+            android:summary="當重複執行啟用時腳本執行的次數，0 表示重複到按下終止為止，依據腳本是否支援重複執行而有效"
             android:defaultValue="1"
             android:maxLength="40"/>
     </PreferenceCategory>
 
-    <PreferenceCategory android:title="Binder 設定">
+    <PreferenceCategory android:title="開發者設定" >
+        <CheckBoxPreference
+            android:key="debugLogPref"
+            android:title="偵錯模式"
+            android:summary="Log 全開模式"
+            android:defaultValue="false"/>
+        <CheckBoxPreference
+            android:key="captureAndCalibration"
+            android:title="抓點服務偵錯模式"
+            android:summary="開啟額外互動按鈕，如抓點以及校正。"
+            android:defaultValue="false"/>
+        <CheckBoxPreference
+            android:key="userInteractTextView"
+            android:title="使用者互動文字"
+            android:summary="打開時，將會顯示腳本運作的互動文字供使用者了解現在運作狀況。"
+            android:defaultValue="true"/>
+    </PreferenceCategory>
+
+    <PreferenceCategory android:title="Binder 設定 (1.x限定)" android:enabled="false">
         <CheckBoxPreference
             android:key="ssEnabled"
             android:title="啟用 Binder 控制"
@@ -61,25 +83,7 @@
             android:maxLength="6"/>
     </PreferenceCategory>
 
-    <PreferenceCategory android:title="開發者設定">
-        <CheckBoxPreference
-            android:key="debugLogPref"
-            android:title="偵錯模式"
-            android:summary="Log 全開模式"
-            android:defaultValue="false"/>
-        <CheckBoxPreference
-            android:key="captureServiceChatty"
-            android:title="抓點服務偵錯模式"
-            android:summary="CaptureService Log 全開模式"
-            android:defaultValue="false"/>
-        <CheckBoxPreference
-            android:key="userInteractTextView"
-            android:title="使用者互動文字"
-            android:summary="打開時，將會顯示腳本運作的互動文字供使用者了解現在運作狀況。"
-            android:defaultValue="true"/>
-    </PreferenceCategory>
-
-    <PreferenceCategory android:title="複寫系統設定">
+    <PreferenceCategory android:title="複寫系統設定 (1.x限定)" android:enabled="false">
         <EditTextPreference
             android:key="userSetWidth"
             android:title="螢幕寬度"

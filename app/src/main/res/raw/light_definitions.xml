@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<!--
+   Copyright (C) 2020 The Josh Tool Project. All rights reserved
+
+   Licensed under the Apache License, Version 2.0 (the "License");
+   you may not use this file except in compliance with the License.
+   You may obtain a copy of the License at
+
+        http://www.apache.org/licenses/LICENSE-2.0
+
+   Unless required by applicable law or agreed to in writing, software
+   distributed under the License is distributed on an "AS IS" BASIS,
+   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+   See the License for the specific language governing permissions and
+   limitations under the License.
+-->
+
+<!--
+   Josh Automation Game Definition XML file format
+
+   1. single point   <screenpoint name="pointName">r,g,b,a,x,y,o</screenpoint>
+   2. single coord   <screencoord name="coordName">x,y,o</screencoord>
+   3. single color   <screencolor name="colorName">r,g,b,a</screencolor>
+   4. point set      <screenpoints name="pointSetName">
+                         <screenpoint>r,g,b,a,x,y,o</screenpoint>
+                         ...
+                         <screenpoint>r,g,b,a,x,y,o</screenpoint>
+                     </screenpoints>
+   5. coord set      <screencoords name="coordSetName">
+                         <screenpoint>x,y,o</screenpoint>
+                         ...
+                         <screenpoint>x,y,o</screenpoint>
+                     </screencoords>
+   6. color set      <screencolors name="colorSetName">
+                         <screencolor>r,g,b,a</screencolor>
+                         ...
+                         <screencolor>r,g,b,a</screencolor>
+                     </screencolors>
+
+   NOTE: integer value can be represented as decimal or hexadecimal (started with 0x).
+         orientation can be represented as Portrait/Landscape, P(p)/L(l) or 0/1.
+   NOTE: no space is allowed.
+-->
+
+<!--
+   if you like to modify it, make sure to update version number in following manners
+   Add a floating number value between 0.001 and 0.009 to current version
+   1.53 -> 1.531  (OK, add 0.001)
+   1.53 -> 1.5310 (OK, add 0.001)
+   1.53 -> 1.5311 (OK, add 0.0011)
+   1.53 -> 1.532  (OK, add 0.002)
+   1.53 -> 1.54   (NOT OK, add 0.01)
+   This number will be considered as floating number so don't use another dots
+-->
+<definitions version="1.01">
+    <defset resolution="1080x2340" orientation="landscape" sapaTimeout="1800">
+        <screenpoints name="pTapScreen" sapa="true">
+            <screenpoint>231,231,231,0xFF,1114,1024,L</screenpoint>
+            <screenpoint>253,253,253,0xFF,1305,1014,L</screenpoint>
+        </screenpoints>
+
+        <screenpoints name="pSkipResult" sapa="true">
+            <screenpoint>77,76,77,0xFF,1256,862,L</screenpoint>
+            <screenpoint>236,236,236,0xFF,1186,880,L</screenpoint>
+        </screenpoints>
+
+        <screenpoints name="pAutoBattle" sapa="true">
+            <screenpoint>190,190,190,0xFF,2244,998,L</screenpoint>
+        </screenpoints>
+
+        <screenpoints name="pPreBattle1" sapa="true">
+            <screenpoint>217,186,117,0xFF,1443,1025,L</screenpoint>
+            <screenpoint>236,234,231,0xFF,1396,990,L</screenpoint>
+        </screenpoints>
+
+        <screenpoints name="pPreBattle1_0" sapa="true">
+            <screenpoint>109,92,73,0xFF,1458,971,L</screenpoint>
+            <screenpoint>243,242,240,0xFF,1394,975,L</screenpoint>
+            <screenpoint>233,209,141,0xFF,1386,1017,L</screenpoint>
+        </screenpoints>
+
+        <screenpoints name="pPreBattle2" sapa="true">
+            <screenpoint>109,92,73,0xFF,1288,978,L</screenpoint>
+        </screenpoints>
+
+        <screenpoints name="pPreBattle3" sapa="true">
+            <screenpoint>109,92,73,0xFF,1293,990,L</screenpoint>
+        </screenpoints>
+
+        <screenpoints name="pBattleFail" sapa="true">
+            <screenpoint>109,92,73,0xFF,1104,788,L</screenpoint>
+        </screenpoints>
+    </defset>
+
+    <!-- Not support for 720p devices, this is a demo defset -->
+    <defset resolution="720x1280">
+        <screenpoint name="test">1,1,1,1,333,333,L</screenpoint>
+    </defset>
+</definitions>

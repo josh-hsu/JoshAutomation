@@ -1,0 +1,149 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<!--
+   Copyright (C) 2020 The Josh Tool Project. All rights reserved
+
+   Licensed under the Apache License, Version 2.0 (the "License");
+   you may not use this file except in compliance with the License.
+   You may obtain a copy of the License at
+
+        http://www.apache.org/licenses/LICENSE-2.0
+
+   Unless required by applicable law or agreed to in writing, software
+   distributed under the License is distributed on an "AS IS" BASIS,
+   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+   See the License for the specific language governing permissions and
+   limitations under the License.
+-->
+
+<!--
+   Josh Automation Game Definition XML file format
+
+   1. single point   <screenpoint name="pointName">r,g,b,a,x,y,o</screenpoint>
+   2. single coord   <screencoord name="coordName">x,y,o</screencoord>
+   3. single color   <screencolor name="colorName">r,g,b,a</screencolor>
+   4. point set      <screenpoints name="pointSetName" sapa="true">
+                         <screenpoint>r,g,b,a,x,y,o</screenpoint>
+                         ...
+                         <screenpoint>r,g,b,a,x,y,o</screenpoint>
+                     </screenpoints>
+   5. coord set      <screencoords name="coordSetName">
+                         <screenpoint>x,y,o</screenpoint>
+                         ...
+                         <screenpoint>x,y,o</screenpoint>
+                     </screencoords>
+   6. color set      <screencolors name="colorSetName">
+                         <screencolor>r,g,b,a</screencolor>
+                         ...
+                         <screencolor>r,g,b,a</screencolor>
+                     </screencolors>
+
+   NOTE: integer value can be represented as decimal or hexadecimal (started with 0x).
+         orientation can be represented as Portrait/Landscape, P(p)/L(l) or 0/1.
+   NOTE: no space is allowed.
+   NOTE: sapa (See Any Press Any) is only available for screenpoints
+-->
+
+<!--
+   if you like to modify it, make sure to update version number in following manners
+   Add a floating number value between 0.001 and 0.009 to current version
+   1.53 -> 1.531  (OK, add 0.001)
+   1.53 -> 1.5310 (OK, add 0.001)
+   1.53 -> 1.5311 (OK, add 0.0011)
+   1.53 -> 1.532  (OK, add 0.002)
+   1.53 -> 1.54   (NOT OK, add 0.01)
+   This number will be considered as floating number so don't use another dots
+-->
+
+<definitions version="1.01">
+    <defset resolution="1080x2340" orientation="landscape" sapaTimeout="60">
+        <screenpoints name="pPrepare" sapa="true">
+            <screenpoint>88,42,13,0xFF,1728,819,L</screenpoint>
+            <screenpoint>250,240,230,0xFF,1770,824,L</screenpoint>
+            <screenpoint>250,240,230,0xFF,1849,826,L</screenpoint>
+        </screenpoints>
+
+        <screenpoints name="pTeam" sapa="true">
+            <screenpoint>79,30,0,0xFF,1772,1005,L</screenpoint>
+            <screenpoint>250,240,230,0xFF,1818,1006,L</screenpoint>
+            <screenpoint>250,240,230,0xFF,1866,997,L</screenpoint>
+        </screenpoints>
+
+        <screenpoints name="pNext" sapa="true">
+            <screenpoint>97,50,23,0xFF,1108,983,L</screenpoint>
+            <screenpoint>250,240,230,0xFF,1130,977,L</screenpoint>
+            <screenpoint>250,240,230,0xFF,1189,978,L</screenpoint>
+        </screenpoints>
+
+        <screenpoints name="pAgain" sapa="true">
+            <screenpoint>60,50,40,0xFF,1112,985,L</screenpoint>
+            <screenpoint>242,229,216,0xFF,1012,957,L</screenpoint>
+            <screenpoint>242,229,213,0xFF,1268,985,L</screenpoint>
+        </screenpoints>
+
+        <screenpoints name="pEndNext" sapa="true">
+            <screenpoint>96,32,4,0xFF,1255,988,L</screenpoint>
+            <screenpoint>250,240,230,0xFF,1134,956,L</screenpoint>
+            <screenpoint>250,240,230,0xFF,1181,970,L</screenpoint>
+        </screenpoints>
+
+        <screenpoints name="pBossHARD" sapa="true">
+            <screenpoint>214,120,79,0xFF,1381,694,L</screenpoint>
+            <screenpoint>58,52,39,0xFF,1431,328,L</screenpoint>
+            <screenpoint>240,218,173,0xFF,1504,671,L</screenpoint>
+        </screenpoints>
+
+        <screenpoints name="pBossPrepare" sapa="true">
+            <screenpoint>80,31,1,0xFF,1702,817,L</screenpoint>
+            <screenpoint>250,240,230,0xFF,1741,814,L</screenpoint>
+            <screenpoint>250,240,230,0xFF,1870,816,L</screenpoint>
+        </screenpoints>
+
+        <screenpoints name="pArenaChallenge" sapa="true">
+            <screenpoint>148,40,40,0xFF,1180,776,L</screenpoint>
+            <screenpoint>138,34,34,0xFF,973,792,L</screenpoint>
+            <screenpoint>118,3,3,0xFF,1375,782,L</screenpoint>
+        </screenpoints>
+
+        <screenpoints name="pArenaHARD" sapa="true">
+            <screenpoint>186,106,12,0xFF,1439,444,L</screenpoint>
+            <screenpoint>186,106,12,0xFF,1514,450,L</screenpoint>
+            <screenpoint>181,114,16,0xFF,1374,687,L</screenpoint>
+        </screenpoints>
+
+        <screenpoints name="pArenaPrepare" sapa="true">
+            <screenpoint>250,240,230,0xFF,1377,843,L</screenpoint>
+            <screenpoint>84,36,7,0xFF,1358,832,L</screenpoint>
+            <screenpoint>115,43,0,0xFF,1653,843,L</screenpoint>
+        </screenpoints>
+
+        <screenpoints name="pArenaReward" sapa="true">
+            <screenpoint>249,240,229,0xFF,1156,923,L</screenpoint>
+            <screenpoint>249,240,229,0xFF,1171,937,L</screenpoint>
+            <screenpoint>249,240,229,0xFF,1189,935,L</screenpoint>
+        </screenpoints>
+
+        <screenpoints name="pChickenCheck" sapa="true">
+            <screenpoint>96,50,22,0xFF,1315,737,L</screenpoint>
+            <screenpoint>183,96,15,0xFF,824,598,L</screenpoint>
+            <screenpoint>250,240,230,0xFF,1040,733,L</screenpoint>
+        </screenpoints>
+
+        <screenpoints name="pBondUp" sapa="true">
+            <screenpoint>254,194,63,0xFF,1464,187,L</screenpoint>
+            <screenpoint>228,0,110,0xFF,1933,139,L</screenpoint>
+            <screenpoint>228,0,110,0xFF,1333,200,L</screenpoint>
+        </screenpoints>
+
+        <screenpoints name="pLevelUp" sapa="true">
+            <screenpoint>231,7,113,0xFF,1510,336,L</screenpoint>
+            <screenpoint>228,0,110,0xFF,842,404,L</screenpoint>
+            <screenpoint>228,0,110,0xFF,1506,352,L</screenpoint>
+        </screenpoints>
+    </defset>
+
+    <!-- Not support for 720p devices, this is a demo defset -->
+    <defset resolution="720x1280">
+        <screenpoint name="test">1,1,1,1,333,333,L</screenpoint>
+    </defset>
+</definitions>

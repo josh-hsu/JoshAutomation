@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <!--
-   Copyright (C) 2019 The Josh Tool Project. All rights reserved
+   Copyright (C) 2020 The Josh Tool Project. All rights reserved
 
    Licensed under the Apache License, Version 2.0 (the "License");
    you may not use this file except in compliance with the License.
@@ -53,59 +53,47 @@
    1.53 -> 1.54   (NOT OK, add 0.01)
    This number will be considered as floating number so don't use another dots
 -->
-<definitions version="1.55">
+<definitions version="2.01">
 
-    <!-- Kirin has panel of 1080x2340 -->
     <defset resolution="1080x2340">
-        <screenpoints name="pointPost2ndBattle" deprecated="true">
-            <screenpoint>253,253,253,0xFF,87,232,L</screenpoint>
-            <screenpoint>225,225,225,0xFF,268,216,L</screenpoint>
-            <screenpoint>242,242,242,0xFF,263,222,L</screenpoint>
-            <screenpoint>246,246,246,0xFF,260,231,L</screenpoint>
-            <screenpoint>163,178,116,0xFF,179,90,L</screenpoint>
+        <screenpoints name="pPreBattle">
+            <screenpoint>3,19,19,0xFF,2010,1000,L</screenpoint>
+            <screenpoint>5,33,18,0xFF,2041,981,L</screenpoint>
         </screenpoints>
 
-        <screenpoints name="pointInBattleToken"> <!-- this is the gauge of Yaka -->
-            <screenpoint>164,133,93,0xFF,1556,929,L</screenpoint>
-            <screenpoint>153,124,86,0xFF,1575,1064,L</screenpoint>
+        <screenpoints name="pPreBattle_noActivity">
+            <screenpoint>126,99,84,0xFF,1072,525,L</screenpoint>
+            <screenpoint>1,71,215,0xFF,1259,533,L</screenpoint>
+            <screenpoint>5,37,20,0xFF,1206,754,L</screenpoint>
         </screenpoints>
 
-        <screenpoints name="pointPreBattleToken"> <!-- this is the map view -->
-            <screenpoint>65,135,218,0xFF,184,110,L</screenpoint>
-            <screenpoint>22,83,152,0xFF,162,89,L</screenpoint>
+        <screenpoints name="pPostBattle1_Victory">
+            <screenpoint>83,120,161,0xFF,1097,280,L</screenpoint>
+            <screenpoint>253,253,169,0xFF,1167,151,L</screenpoint>
         </screenpoints>
 
-        <screenpoint name="pointInBattleStage1">167,167,167,0xFF,266,16,L</screenpoint>
-        <screenpoint name="pointInBattleStage2">176,176,176,0xFF,270,35,L</screenpoint>
-        <screenpoint name="pointInBattleStage3">178,177,176,0xFF,262,26,L</screenpoint>
-
-        <screenpoints name="pointBattleClearToken"> <!-- this is the STAGE CLEAR icon -->
-            <screenpoint>170,69,33,0xFF,1152,139,L</screenpoint>
-            <screenpoint>88,121,146,0xFF,1170,90,L</screenpoint>
-            <screenpoint>253,255,172,0xFF,1166,152,L</screenpoint>
+        <screenpoints name="pPostBattle2_MVP">
+            <screenpoint>107,192,27,0xFF,2271,990,L</screenpoint>
+            <screenpoint>197,152,95,0xFF,155,227,L</screenpoint>
+            <screenpoint>255,149,15,0xFF,131,44,L</screenpoint>
         </screenpoints>
 
-        <screenpoints name="pointBattleClearAgain"> <!-- this is the DO IT AGAIN icon -->
-            <screenpoint>184,128,80,0xFF,1927,974,L</screenpoint>
+        <screenpoints name="pPostBattle3_reBattle">
+            <screenpoint>30,18,13,0xFF,2120,993,L</screenpoint>
+            <screenpoint>229,220,209,0xFF,1937,997,L</screenpoint>
         </screenpoints>
 
-        <screenpoints name="pointBattleClearSupportNext">
-            <screenpoint>96,181,24,0xFF,1839,960,L</screenpoint>
-            <screenpoint>6,34,20,0xFF,1621,945,L</screenpoint>
+        <screenpoints name="pPostBattle4_failed">
+            <screenpoint>22,10,4,0xFF,2103,989,L</screenpoint>
+            <screenpoint>104,84,55,0xFF,1303,623,L</screenpoint>
         </screenpoints>
 
-        <screenpoints name="pointBattleClearTeamNext">
-            <screenpoint>206,208,190,0xFF,1432,964,L</screenpoint>
-            <screenpoint>18,71,14,0xFF,1690,993,L</screenpoint>
-        </screenpoints>
 
-        <screencoord name="pointAutoBattleButton">2115,54,L</screencoord>
-        <screencoord name="pointForwardStage">2115,54,L</screencoord>
     </defset>
 
     <!-- Not support for 720p devices, this is a demo defset -->
     <defset resolution="720x1280">
-        <screenpoint name="pointPost2ndBattle">1,1,1,1,333,333,L</screenpoint>
+        <screenpoint name="test">1,1,1,1,333,333,L</screenpoint>
     </defset>
 
 </definitions>

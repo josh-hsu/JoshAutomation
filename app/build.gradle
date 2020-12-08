@@ -1,14 +1,14 @@
 apply plugin: 'com.android.application'
 
 android {
-    compileSdkVersion 26
+    compileSdkVersion 29
     buildToolsVersion '28.0.3'
     defaultConfig {
-        applicationId "com.mumu.joshautomation"
-        minSdkVersion 23
-        targetSdkVersion 23   /* do not modify this */
-        versionCode 33
-        versionName "1.8"
+        applicationId "com.mumu.android.joshautomation"
+        minSdkVersion 26
+        targetSdkVersion 29   /* do not modify this */
+        versionCode 106
+        versionName "2.04"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
     }
     buildTypes {
