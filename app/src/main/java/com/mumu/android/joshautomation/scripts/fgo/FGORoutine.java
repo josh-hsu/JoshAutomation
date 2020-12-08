@@ -296,6 +296,10 @@ class FGORoutine {
         mGL.mouseClick(mDef.getScreenCoord("pointContinueBattle"));
     }
 
+    public void tapOnContinue() {
+        mGL.getInputService().tapOnScreen(mDef.getScreenCoord("pointContinueBattle"));
+    }
+
     public void tapOnCard(int[] cardIndex) throws InterruptedException {
         for(int i : cardIndex) {
             ScreenCoord coord = ScreenCoord.getTwoPointCenter(
