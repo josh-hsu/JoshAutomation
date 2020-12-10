@@ -165,10 +165,11 @@
         </screenpoints>
 
         <!-- home screen -->
-        <screenpoint name="pointHomeGiftBox">229,64,39,0xff,646,1013,Landscape</screenpoint>
         <screenpoint name="pointHomeOSiRaSe">0,0,4,0xff,219,78,Landscape</screenpoint>
-        <screenpoint name="pointHomeApAdd">251,249,246,0xff,380,979,Landscape</screenpoint>
-        <screenpoint name="pointMenuDownButton">0x31,0x39,0x65,0xff,53,1772,Portrait</screenpoint>
+        <!-- home with stage selection -->
+        <screenpoint name="pointHomeGiftBox">228,63,38,0xff,768,953,Landscape</screenpoint>
+        <screenpoint name="pointHomeApAdd">253,235,158,0xff,370,969,Landscape</screenpoint>
+        <screenpoint name="pointSaintStone">96,85,255,0xff,479,824,Landscape</screenpoint>
 
         <!-- NEXT button location -->
         <screencoord name="pointRightNextStart">1640,156,Landscape</screencoord>
@@ -226,9 +227,8 @@
         <!-- battle results -->
         <screenpoint name="pointBattleResult" deprecated="true">236,236,235,0xff,832,74,Landscape</screenpoint>
         <screenpoints name="pointBattleResults">
-            <screenpoint>254,254,254,0xff,958,64,Landscape</screenpoint>
-            <screenpoint>235,185,37,0xff,342,280,Landscape</screenpoint>
-            <screenpoint>210,175,56,0xff,389,609,Landscape</screenpoint>
+            <screenpoint>237,192,39,0xff,369,278,Landscape</screenpoint>
+            <screenpoint>230,179,26,0xff,751,280,Landscape</screenpoint>
         </screenpoints>
         <screenpoints name="pointBattleResults_2"> <!-- for first servant has more than 10 bonds -->
             <screenpoint>254,254,254,0xff,958,64,Landscape</screenpoint>

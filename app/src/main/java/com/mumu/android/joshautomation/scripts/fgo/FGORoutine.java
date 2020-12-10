@@ -373,7 +373,7 @@ class FGORoutine {
                 sendMessage("不合法的技能" + sk.skill);
             }
 
-            sleep(2500);
+            sleep(2800);
         }
     }
 
@@ -749,15 +749,13 @@ class FGORoutine {
     }
 
     public int waitForUserMode(int maxTry) throws Exception {
-        return 0;/*
         while (maxTry-- > 0) {
             if (mGL.colorIs(SPT("pointHomeApAdd"))) {
                 return 0;
             }
             sleep(100);
         }
-
-        return -1;*/
+        return -1;
     }
 
     /* =======================
@@ -769,8 +767,7 @@ class FGORoutine {
     }
 
     public boolean isInUserMode() throws Exception {
-        return true;
-        //return mGL.colorIs(SPT("pointHomeApAdd"));
+        return mGL.colorIs(SPT("pointHomeApAdd")) || mGL.colorIs(SPT("pointHomeGiftBox"));
     }
 
     /*
