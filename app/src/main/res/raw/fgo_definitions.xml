@@ -255,10 +255,10 @@
         <screenpoint name="pointAPChargeGoldAppleConfirm">0,0,0,0xff,1449,844,Landscape</screenpoint>
 
         <!-- Autobox -->
-        <screencoord name="pointBoxOpen">625,640,Landscape</screencoord>
-        <screencoord name="pointBoxReset">1700,375,Landscape</screencoord>
-        <screencoord name="pointBoxResetConfirm">1270,820,Landscape</screencoord>
-        <screencoord name="pointBoxReseted">1010,850,Landscape</screencoord>
+        <screencoord name="pointBoxOpen">853,629,Landscape</screencoord>
+        <screencoord name="pointBoxReset">1895,371,Landscape</screencoord>
+        <screencoord name="pointBoxResetConfirm">1441,851,Landscape</screencoord>
+        <screencoord name="pointBoxReseted">1141,852,Landscape</screencoord>
 
     </defset>
 

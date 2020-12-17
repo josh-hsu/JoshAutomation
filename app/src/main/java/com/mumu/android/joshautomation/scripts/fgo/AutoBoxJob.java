@@ -26,6 +26,7 @@ public class AutoBoxJob extends AutoJob {
     @Override
     public void start() {
         super.start();
+        mFGO = new FGORoutine(mGL, mListener);
         Log.d(TAG, "starting job " + getJobName());
         mRoutine = null;
         mRoutine = new MainJobRoutine();
@@ -60,7 +61,6 @@ public class AutoBoxJob extends AutoJob {
      */
     public void setJobEventListener(AutoJobEventListener el) {
         mListener = el;
-        mFGO = new FGORoutine(mGL, mListener);
     }
 
     /*
