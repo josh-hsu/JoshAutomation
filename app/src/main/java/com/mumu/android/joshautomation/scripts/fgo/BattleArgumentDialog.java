@@ -13,7 +13,6 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 
-
 import com.mumu.android.joshautomation.R;
 
 import java.util.ArrayList;
@@ -125,7 +124,8 @@ public class BattleArgumentDialog extends Activity {
 
             String[] parsedArgs = args.split("\\|");
             for(int i = 0; i < parsedArgs.length; i++) {
-                mArgs.add(i, new StringBuilder(""));
+                if (i > mArgs.size() - 1)
+                    mArgs.add(i, new StringBuilder(""));
                 mArgs.get(i).append(parsedArgs[i]);
             }
 
