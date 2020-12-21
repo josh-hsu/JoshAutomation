@@ -26,6 +26,7 @@ public class AutoBoxJob extends AutoJob {
     @Override
     public void start() {
         super.start();
+        mGL.setScreenMainOrientation(ScreenPoint.SO_Landscape);
         mFGO = new FGORoutine(mGL, mListener);
         Log.d(TAG, "starting job " + getJobName());
         mRoutine = null;
