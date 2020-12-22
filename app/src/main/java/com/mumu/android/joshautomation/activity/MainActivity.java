@@ -16,7 +16,10 @@
 
 package com.mumu.android.joshautomation.activity;
 
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Build;
@@ -28,6 +31,7 @@ import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.FragmentManager;
+import android.support.v4.content.LocalBroadcastManager;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBar;
@@ -54,7 +58,7 @@ import java.util.List;
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
 
-    public static final String TAG = "JATool";
+    public static final String TAG = "JoshAutomation";
     public static final int FRAG_IDX_OUTLINE = 0;
     public static final int FRAG_IDX_GL20 = 1;
 
@@ -63,6 +67,18 @@ public class MainActivity extends AppCompatActivity
     private List<MainFragment> mFragmentList;
     private MainFragment mCurrentPresentFragment;
     private boolean mShouldStartBugReport = false;
+
+    // broadcast receiver for getting message from HeadService
+    private BroadcastReceiver mMsgReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            String message = intent.getStringExtra(getString(R.string.broadcast_msg_body_extra));
+            if (mCurrentPresentFragment != null)
+                mCurrentPresentFragment.onBroadcastMessageReceived(message);
+            else
+                Log.w(TAG, "No present fragment to handle broadcast message");
+        }
+    };
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -91,6 +107,18 @@ public class MainActivity extends AppCompatActivity
         showOutlineFragment();
 
         requestPermissionsOnStart();
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        LocalBroadcastManager.getInstance(this).registerReceiver(mMsgReceiver, new IntentFilter(getString(R.string.broadcast_msg_action)));
+    }
+
+    @Override
+    protected void onPause() {
+        LocalBroadcastManager.getInstance(this).unregisterReceiver(mMsgReceiver);
+        super.onPause();
     }
 
     @Override
@@ -288,24 +316,24 @@ public class MainActivity extends AppCompatActivity
     }
 
     private void startBugReportActivity() {
-        File file_electricity = new File(Environment.getExternalStorageDirectory(), getString(R.string.electric_data_file_name));
-        Uri path_electricity = Uri.fromFile(file_electricity);
-        File file_log = new File(Environment.getExternalStorageDirectory(), "log.txt");
-        Uri path_log = Uri.fromFile(file_log);
+        //File file_electricity = new File(Environment.getExternalStorageDirectory(), getString(R.string.electric_data_file_name));
+        //Uri path_electricity = Uri.fromFile(file_electricity);
+        //File file_log = new File(Environment.getExternalStorageDirectory(), "log.txt");
+        //Uri path_log = Uri.fromFile(file_log);
         String[] to = {"alenbos0517@gmail.com"};
         Intent emailIntent = new Intent(Intent.ACTION_SEND_MULTIPLE);
 
-        saveDataFileToSdcard(getString(R.string.electric_data_file_name));
-        saveDataFileToSdcard("log.txt");
+        //saveDataFileToSdcard(getString(R.string.electric_data_file_name));
+        //saveDataFileToSdcard("log.txt");
         emailIntent.setType("vnd.android.cursor.dir/email");
         emailIntent.putExtra(Intent.EXTRA_EMAIL, to);
         emailIntent.putExtra(Intent.EXTRA_SUBJECT, getString(R.string.bugreport_subject));
         emailIntent.putExtra(Intent.EXTRA_TEXT, getString(R.string.bugreport_context));
 
-        ArrayList<Uri> uris = new ArrayList<>();
-        uris.add(path_electricity);
-        uris.add(path_log);
-        emailIntent.putParcelableArrayListExtra(Intent.EXTRA_STREAM, uris);
+        //ArrayList<Uri> uris = new ArrayList<>();
+        //uris.add(path_electricity);
+        //uris.add(path_log);
+        //emailIntent.putParcelableArrayListExtra(Intent.EXTRA_STREAM, uris);
 
         startActivity(Intent.createChooser(emailIntent , getString(R.string.bugreport_send_out_via)));
 

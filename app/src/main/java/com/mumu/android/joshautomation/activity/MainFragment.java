@@ -23,13 +23,12 @@ import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.View;
 
-
 /**
  * MainFragment is a type of Fragment that organizes all abstract
  * functions to be implemented by its children
  */
 public class MainFragment extends Fragment {
-    final static String TAG = "JATool";
+    final static String TAG = "JoshAutomation";
     protected FloatingActionButton mFab;
 
     public void onFabClick(View view){
@@ -41,6 +40,10 @@ public class MainFragment extends Fragment {
     }
 
     public void onSettingClick() {
+        // Do nothing here , only in derived classes
+    }
+
+    public void onBroadcastMessageReceived(String msg) {
         // Do nothing here , only in derived classes
     }
 

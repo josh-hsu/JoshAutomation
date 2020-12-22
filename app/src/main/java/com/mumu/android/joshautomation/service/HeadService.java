@@ -32,6 +32,7 @@ import android.os.Environment;
 import android.os.Handler;
 import android.os.IBinder;
 import android.support.v4.app.NotificationCompat;
+import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.app.AlertDialog;
 import android.util.Log;
 import android.view.ContextThemeWrapper;
@@ -131,6 +132,14 @@ public class HeadService extends Service implements AutoJobEventListener {
         if (!mScriptRunning) {
             mHeadIconList.get(IDX_PLAY_ICON).getImageView().setImageResource(R.drawable.ic_play);
         }
+    }
+
+    private void sendBroadcastMsgToActivity(String msg) {
+        // The string "my-integer" will be used to filer the intent
+        Intent intent = new Intent(getString(R.string.broadcast_msg_action));
+        // Adding some data
+        intent.putExtra(getString(R.string.broadcast_msg_body_extra), msg);
+        LocalBroadcastManager.getInstance(this).sendBroadcast(intent);
     }
 
     private final Runnable mDumpScreenRunnable = new Runnable() {
@@ -639,6 +648,7 @@ public class HeadService extends Service implements AutoJobEventListener {
     @Override
     public void onMessageReceived(String msg, Object extra) {
         mMessageText = msg;
+        sendBroadcastMsgToActivity(msg);
     }
 
     @Override

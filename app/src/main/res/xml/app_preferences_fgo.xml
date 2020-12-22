@@ -9,7 +9,8 @@
             android:summary="" />
         <PreferenceScreen
             android:key="battleArgSetPref"
-            android:title="戰鬥參數建立">
+            android:title="戰鬥參數建立"
+            android:summary="@string/settings_battle_arg_create_summary">
             <Preference
                 android:title="戰鬥參數設定 1"
                 android:summary=""

@@ -49,7 +49,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class AppPreferenceActivity extends PreferenceActivity {
-    public static final String TAG = "GL20";
+    public static final String TAG = "JoshAutomation";
 
     @Override
     protected void onPostCreate(Bundle savedInstanceState) {

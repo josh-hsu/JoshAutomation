@@ -2,7 +2,6 @@ package com.mumu.android.joshautomation.anim;
 
 import android.animation.Animator;
 import android.animation.ObjectAnimator;
-import android.animation.ValueAnimator;
 import android.graphics.drawable.AnimationDrawable;
 import android.os.Handler;
 import android.os.Looper;

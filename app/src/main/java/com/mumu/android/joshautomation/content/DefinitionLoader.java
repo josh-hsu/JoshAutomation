@@ -262,12 +262,12 @@ public class DefinitionLoader {
         defData.setOrientation(xmlOrientation);
         defData.setSapaTimeout(xmlSapaTimeout);
 
-        Log.d(TAG, "This resolution has " + screenpointList.getLength() + " " + TAG_SCREENPOINT);
-        Log.d(TAG, "This resolution has " + screencoordList.getLength() + " " + TAG_SCREENCOORD);
-        Log.d(TAG, "This resolution has " + screencolorList.getLength() + " " + TAG_SCREENCOLOR);
-        Log.d(TAG, "This resolution has " + screenpointsList.getLength() + " " + TAG_SCREENPOINTS);
-        Log.d(TAG, "This resolution has " + screencoordsList.getLength() + " " + TAG_SCREENCOORDS);
-        Log.d(TAG, "This resolution has " + screencolorsList.getLength() + " " + TAG_SCREENCOLORS);
+        Log.v(TAG, "This resolution has " + screenpointList.getLength() + " " + TAG_SCREENPOINT);
+        Log.v(TAG, "This resolution has " + screencoordList.getLength() + " " + TAG_SCREENCOORD);
+        Log.v(TAG, "This resolution has " + screencolorList.getLength() + " " + TAG_SCREENCOLOR);
+        Log.v(TAG, "This resolution has " + screenpointsList.getLength() + " " + TAG_SCREENPOINTS);
+        Log.v(TAG, "This resolution has " + screencoordsList.getLength() + " " + TAG_SCREENCOORDS);
+        Log.v(TAG, "This resolution has " + screencolorsList.getLength() + " " + TAG_SCREENCOLORS);
 
         // parse screenpoint (with name only)
         for(int i = 0; i < screenpointList.getLength(); i++) {
@@ -276,7 +276,7 @@ public class DefinitionLoader {
             String data = getElementValue(element);
             if (!name.equals("")) {
                 ScreenPoint sp = new ScreenPoint(data);
-                Log.d(TAG, "Name " + name + ":" + sp.toString());
+                Log.v(TAG, "Name " + name + ":" + sp.toString());
                 defData.addScreenPoint(name, sp);
             }
         }
@@ -288,7 +288,7 @@ public class DefinitionLoader {
             String data = getElementValue(element);
             if (!name.equals("")) {
                 ScreenCoord sc = new ScreenCoord(data);
-                Log.d(TAG, "Name " + name + ":" + sc.toString());
+                Log.v(TAG, "Name " + name + ":" + sc.toString());
                 defData.addScreenCoord(name, sc);
             }
         }
@@ -300,7 +300,7 @@ public class DefinitionLoader {
             String data = getElementValue(element);
             if (!name.equals("")) {
                 ScreenColor sc = new ScreenColor(data);
-                Log.d(TAG, "Name " + name + ":" + sc.toString());
+                Log.v(TAG, "Name " + name + ":" + sc.toString());
                 defData.addScreenColor(name, sc);
             }
         }
@@ -319,13 +319,13 @@ public class DefinitionLoader {
                 String data = getElementValue(points.item(j));
                 ScreenPoint sp = new ScreenPoint(data);
                 spSet.add(j, sp);
-                Log.d(TAG, "     <" + j + "> " + sp.toString());
+                Log.v(TAG, "     <" + j + "> " + sp.toString());
             }
 
             defData.addScreenPoints(name, spSet);
             if (sapa.equals("true")) {
                 defData.addScreenPointsSapa(name);
-                Log.d(TAG, "     SAPA: true");
+                Log.v(TAG, "     SAPA: true");
             }
         }
 
@@ -337,12 +337,12 @@ public class DefinitionLoader {
             int coordCount = coords.getLength();
             ArrayList<ScreenCoord> scSet = new ArrayList<>();
 
-            Log.d(TAG, "Coord set name = " + name);
+            Log.v(TAG, "Coord set name = " + name);
             for(int j = 0; j < coordCount; j++) {
                 String data = getElementValue(coords.item(j));
                 ScreenCoord sp = new ScreenCoord(data);
                 scSet.add(j, sp);
-                Log.d(TAG, "     <" + j + "> " + sp.toString());
+                Log.v(TAG, "     <" + j + "> " + sp.toString());
             }
 
             defData.addScreenCoords(name, scSet);
@@ -356,7 +356,7 @@ public class DefinitionLoader {
             int colorCount = colors.getLength();
             ArrayList<ScreenColor> scSet = new ArrayList<>();
 
-            Log.d(TAG, "Color set name = " + name);
+            Log.v(TAG, "Color set name = " + name);
             for(int j = 0; j < colorCount; j++) {
                 String data = getElementValue(colors.item(j));
                 ScreenColor sc = new ScreenColor(data);

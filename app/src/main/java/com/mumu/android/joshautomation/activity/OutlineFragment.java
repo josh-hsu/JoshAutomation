@@ -16,17 +16,13 @@
 
 package com.mumu.android.joshautomation.activity;
 
-import android.animation.ObjectAnimator;
 import android.app.Activity;
 import android.app.ActivityManager;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
-import android.graphics.drawable.AnimationDrawable;
-import android.media.Image;
 import android.net.Uri;
-import android.os.Build;
 import android.os.Bundle;
 import android.provider.Settings;
 import android.util.Log;
@@ -38,6 +34,7 @@ import android.view.animation.LinearInterpolator;
 import android.view.animation.RotateAnimation;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -45,13 +42,20 @@ import com.mumu.android.joshautomation.R;
 import com.mumu.android.joshautomation.anim.TRexAnimator;
 import com.mumu.android.joshautomation.service.HeadService;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.Locale;
+
 public class OutlineFragment extends MainFragment {
-    private static final String TAG = "JATool";
+    private static final String TAG = "JoshAutomation";
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
 
     private Button mStartServiceButton;
     private TextView mBarTextView;
+    private TextView mLogTextView;
+    private ScrollView mLogScrollView;
     private ImageView mCircleImageView;
     private ImageView mTRexImageView;
     private ImageView mBirdImageView;
@@ -60,6 +64,7 @@ public class OutlineFragment extends MainFragment {
 
     private RotateAnimation mCircleAnimation;
     private TRexAnimator mTRex;
+    private static StringBuilder mLogString = new StringBuilder();
 
     public OutlineFragment() {
         // Required empty public constructor
@@ -86,7 +91,7 @@ public class OutlineFragment extends MainFragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.fragment_ontline, container, false);
+        return inflater.inflate(R.layout.fragment_outline, container, false);
     }
 
     @Override
@@ -120,11 +125,26 @@ public class OutlineFragment extends MainFragment {
         Log.d(TAG, "Detail click on electricity fragment");
     }
 
+    @Override
+    public void onBroadcastMessageReceived(String msg) {
+        Date date = new Date();
+        DateFormat sdf = new SimpleDateFormat("HH:mm:ss", Locale.TAIWAN);
+        String time = sdf.format(date);
+
+        mLogString.append(time);
+        mLogString.append(" ");
+        mLogString.append(msg);
+        mLogString.append('\n');
+        updateView();
+    }
+
     private void prepareView(View view) {
         mCircleAnimation = new RotateAnimation(0, 360, Animation.RELATIVE_TO_SELF, 0.5f, Animation.RELATIVE_TO_SELF, 0.5f);
         mStartServiceButton = (Button) view.findViewById(R.id.button_start_service);
         mCircleImageView = (ImageView) view.findViewById(R.id.imageViewCircle);
         mCircleImageView.setImageResource(R.drawable.ic_circle);
+        mLogTextView = view.findViewById(R.id.textViewLogs);
+        mLogScrollView = view.findViewById(R.id.scrollViewLogs);
         mTRexImageView = (ImageView) view.findViewById(R.id.imageTRex);
 
         mBirdImageView = (ImageView) view.findViewById(R.id.imageBird);
@@ -144,20 +164,24 @@ public class OutlineFragment extends MainFragment {
                     spinTheCircle(true);
                     mTRex.startMovie();
                     ((Button) view).setText(R.string.outline_stop_service);
+                    view.setBackgroundResource(R.drawable.enable);
                 } else {
                     stopChatHeadService();
                     spinTheCircle(false);
                     mTRex.stopMovie();
                     ((Button) view).setText(R.string.outline_start_service);
+                    view.setBackgroundResource(R.drawable.disable);
                 }
             }
         });
         if (!isChatHeadServiceRunning()) {
             mStartServiceButton.setText(R.string.outline_start_service);
+            mStartServiceButton.setBackgroundResource(R.drawable.disable);
             spinTheCircle(false);
             mTRex.stopMovie();
         } else {
             mStartServiceButton.setText(R.string.outline_stop_service);
+            mStartServiceButton.setBackgroundResource(R.drawable.enable);
             spinTheCircle(true);
             mTRex.startMovie();
         }
@@ -170,7 +194,15 @@ public class OutlineFragment extends MainFragment {
      * updateView will be called when mUpdateRunnable is triggered
      */
     private void updateView() {
+        Log.d(TAG, "update text");
+        mLogTextView.setText(mLogString.toString());
 
+        mLogScrollView.post(new Runnable() {
+            @Override
+            public void run() {
+                mLogScrollView.fullScroll(ScrollView.FOCUS_DOWN);
+            }
+        });
     }
 
     private void spinTheCircle(boolean start) {
@@ -202,23 +234,16 @@ public class OutlineFragment extends MainFragment {
     }
 
     private void startChatHeadService() {
-        if (Build.VERSION.SDK_INT >= 23) {
-            //Toast.makeText(getContext(), R.string.startup_permit_system_alarm, Toast.LENGTH_SHORT).show();
-            if (!Settings.canDrawOverlays(getContext())) {
-                Intent intent = new Intent(Settings.ACTION_MANAGE_OVERLAY_PERMISSION,
-                        Uri.parse("package:" + getContext().getPackageName()));
-                startActivityForResult(intent, 10);
-                Log.d(TAG, "No permission for drawing on screen, prompt one.");
-            } else {
-                //Toast.makeText(getContext(), R.string.headservice_how_to_stop, Toast.LENGTH_SHORT).show();
-                getContext().startService(new Intent(getContext(), HeadService.class));
-                //returnHomeScreen();
-            }
+        Toast.makeText(getContext(), R.string.startup_permit_system_alarm, Toast.LENGTH_SHORT).show();
+        if (!Settings.canDrawOverlays(getContext())) {
+            Intent intent = new Intent(Settings.ACTION_MANAGE_OVERLAY_PERMISSION,
+                    Uri.parse("package:" + getContext().getPackageName()));
+            startActivityForResult(intent, 10);
+            Log.d(TAG, "No permission for drawing on screen, prompt one.");
         } else {
             Log.d(TAG, "Permission granted, starting service.");
             Toast.makeText(getContext(), R.string.headservice_how_to_stop, Toast.LENGTH_SHORT).show();
             getContext().startService(new Intent(getContext(), HeadService.class));
-            //returnHomeScreen();
         }
     }
 

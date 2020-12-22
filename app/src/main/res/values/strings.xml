@@ -18,7 +18,7 @@
     <!-- drawer -->
     <string name="drawer_title">您</string>
     <string name="drawer_subtitle">這裡沒有功能</string>
-    <string name="drawer_outline">概覽</string>
+    <string name="drawer_outline">AutoJob 2</string>
     <string name="drawer_gl20">GL20 測試</string>
     <string name="drawer_electricity">帳號管理</string>
     <string name="drawer_menu_social">社群</string>
@@ -55,8 +55,8 @@
     <string name="outline_current_progress">登入進度(按此停止): </string>
     <string name="outline_current_finish">已完成第 </string>
     <string name="outline_start_screen_capture">啟用抓點抓色</string>
-    <string name="outline_start_service">啟動服務工具欄</string>
-    <string name="outline_stop_service">停止服務工具欄</string>
+    <string name="outline_start_service">啟動</string>
+    <string name="outline_stop_service">停止</string>
 
     <!-- Settings -->
     <string name="settings_fragment_title_1">FGO 設定</string>
@@ -77,6 +77,7 @@
     <string name="settings_restore_finished">備份資料已成功復原。</string>
     <string name="settings_default_battle_arg">bc6|eg7|j8</string>
     <string name="settings_battle_arg_instruction">技能　　： abc, efg, ijk\n技能目標： 1, 2, 3\n寶具　　： 6, 7, 8\n御主技能： x, y, z\n換人技能： w 123|123\n回合區隔： #\n關卡區隔： |\n範例: a1b6|w13e7|xij38\n第一關: 技能a目標1, 技能b沒目標,\n               第一人寶具\n第二關: 把第一人換成後面第三人,\n               技能e無目標, 第二人寶具\n第三關: 御主技能1, 技能i無目標\n               技能j目標第3人, 第三人寶具</string>
+    <string name="settings_battle_arg_create_summary">點此建立戰鬥所需的技能配置，可以依據不同回合設定，依據選卡策略選卡。</string>
 
     <!-- HeadService -->
     <string name="headservice_how_to_stop">服務已啟動，長按圖示可終止服務</string>
@@ -140,4 +141,8 @@
     <string name="ba_arg_3">關卡3:</string>
     <string name="ba_confirm">確定</string>
     <string name="ba_cancel">取消</string>
+
+    <!-- Activity and Service text -->
+    <string name="broadcast_msg_action">Parcel_Broadcast_MSG</string>
+    <string name="broadcast_msg_body_extra">Parcel_Broadcast_MSG_BODY</string>
 </resources>

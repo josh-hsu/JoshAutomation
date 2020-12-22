@@ -28,7 +28,7 @@ import android.view.ViewGroup;
 import com.mumu.android.joshautomation.R;
 
 public class GL20Fragment extends MainFragment {
-    private static final String TAG = "GL20Activity";
+    private static final String TAG = "JoshAutomation";
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
 
@@ -71,7 +71,7 @@ public class GL20Fragment extends MainFragment {
 
     @Override
     public void onFabClick(View view) {
-        Log.d(TAG, "Fab click from money");
+        Log.d(TAG, "Fab click from gl20");
         final Activity activity = getActivity();
         if (activity instanceof MainActivity) {
             final MainActivity deskClockActivity = (MainActivity) activity;
