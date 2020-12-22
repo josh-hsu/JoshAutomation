@@ -5,8 +5,8 @@
 
     <string name="app_name">AutoJob 2</string>
 
-    <string name="navigation_drawer_open">Open navigation drawer</string>
-    <string name="navigation_drawer_close">Close navigation drawer</string>
+    <string name="navigation_drawer_open" translatable="false">Open navigation drawer</string>
+    <string name="navigation_drawer_close" translatable="false">Close navigation drawer</string>
 
     <string name="action_settings">設定</string>
     <string name="action_detail">所有資料</string>
@@ -16,8 +16,8 @@
     <string name="action_cancel">取消</string>
 
     <!-- drawer -->
-    <string name="drawer_title">您</string>
-    <string name="drawer_subtitle">這裡沒有功能</string>
+    <string name="drawer_title">作者</string>
+    <string name="drawer_subtitle">Main program: Josh Hsu (許朝翔)\nFGO script: Cliff Yu (余宗哲)</string>
     <string name="drawer_outline">AutoJob 2</string>
     <string name="drawer_gl20">GL20 測試</string>
     <string name="drawer_electricity">帳號管理</string>
@@ -82,7 +82,7 @@
     <!-- HeadService -->
     <string name="headservice_how_to_stop">服務已啟動，長按圖示可終止服務</string>
     <string name="headservice_stop_title">停止服務</string>
-    <string name="headservice_stop_info">確定要停止JA自動腳本服務嗎？</string>
+    <string name="headservice_stop_info">確定要停止服務嗎？</string>
     <string name="headservice_stop_button">停止</string>
     <string name="headservice_notification_title">自動腳本服務</string>
     <string name="headservice_notification_text">服務已經啟用，點擊停用服務。</string>
@@ -97,7 +97,7 @@
 
     <!-- Capture view -->
     <string name="capture_point_default_info">觸碰位置取得資訊</string>
-    <string name="title_activity_battle_argument_dialog">BattleArgumentDialog</string>
+    <string name="title_activity_battle_argument_dialog" translatable="false">BattleArgumentDialog</string>
 
     <!-- Battle Argument -->
     <string name="ba_name_prefix">戰鬥參數名稱</string>
@@ -143,6 +143,6 @@
     <string name="ba_cancel">取消</string>
 
     <!-- Activity and Service text -->
-    <string name="broadcast_msg_action">Parcel_Broadcast_MSG</string>
-    <string name="broadcast_msg_body_extra">Parcel_Broadcast_MSG_BODY</string>
+    <string name="broadcast_msg_action" translatable="false">Parcel_Broadcast_MSG</string>
+    <string name="broadcast_msg_body_extra" translatable="false">Parcel_Broadcast_MSG_BODY</string>
 </resources>
