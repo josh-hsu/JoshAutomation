@@ -145,4 +145,5 @@
     <!-- Activity and Service text -->
     <string name="broadcast_msg_action" translatable="false">Parcel_Broadcast_MSG</string>
     <string name="broadcast_msg_body_extra" translatable="false">Parcel_Broadcast_MSG_BODY</string>
+    <string name="screen_capture_slot" translatable="false">SC_SLOT</string>
 </resources>

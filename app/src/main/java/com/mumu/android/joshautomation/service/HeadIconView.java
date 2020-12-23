@@ -21,6 +21,7 @@ import android.view.Gravity;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.WindowManager;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -80,6 +81,8 @@ public class HeadIconView {
                         initialY = mLayoutParams.y;
                         initialTouchX = event.getRawX();
                         initialTouchY = event.getRawY();
+                        if(mOnTapListener != null)
+                            mOnTapListener.onTouched(mView);
                         return true;
                     case MotionEvent.ACTION_UP:
                         touchUpTime = System.currentTimeMillis();
@@ -91,6 +94,8 @@ public class HeadIconView {
                             if (mOnTapListener != null)
                                 mOnTapListener.onLongPress(mView);
                         }
+                        if(mOnTapListener != null)
+                            mOnTapListener.onReleased(mView);
                         return true;
                     case MotionEvent.ACTION_MOVE:
                         if (mIsMovable && mOnMoveListener != null) {
@@ -122,6 +127,10 @@ public class HeadIconView {
 
     public TextView getTextView() {
         return (TextView) mView;
+    }
+
+    public Button getButton() {
+        return (Button) mView;
     }
 
     /*
@@ -160,6 +169,8 @@ public class HeadIconView {
     public interface OnTapListener {
         void onTap(View view);
         void onLongPress(View view);
+        void onTouched(View view);
+        void onReleased(View view);
     }
 
     public interface OnMoveListener {

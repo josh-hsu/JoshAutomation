@@ -111,7 +111,7 @@ public class PointSelectionActivity extends AppCompatActivity {
         mDownZoomImageView = (ImageView) findViewById(R.id.idZoomViewBottom);
         mInfoTextView = (TextView) findViewById(R.id.idInfoTextView);
         mWindowManager = (WindowManager) getSystemService(WINDOW_SERVICE);
-        mSlot = getIntent().getIntExtra("slot", 0);
+        mSlot = getIntent().getIntExtra(getString(R.string.screen_capture_slot), 0);
         mGL = AppSharedObject.getInstance().getGL20();
 
         Bitmap pngFileMap = BitmapFactory.decodeFile(mPngFilePath);

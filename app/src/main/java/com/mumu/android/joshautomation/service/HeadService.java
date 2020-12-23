@@ -27,7 +27,6 @@ import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.Point;
 import android.os.Build;
-import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
 import android.os.IBinder;
@@ -42,6 +41,7 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
@@ -77,6 +77,7 @@ public class HeadService extends Service implements AutoJobEventListener {
     // View objects
     private WindowManager mWindowManager;
     private ArrayList<HeadIconView> mHeadIconList;
+    private ArrayList<HeadIconView> mJobListButtonList = new ArrayList<>();
     private static final int IDX_HEAD_ICON = 0;
     private static final int IDX_MSG_TEXT = 1;
     private static final int IDX_PLAY_ICON = 2;
@@ -88,6 +89,7 @@ public class HeadService extends Service implements AutoJobEventListener {
     private String mMessageText = "";
     private String mLastMessage = "";
     private boolean mScriptRunning = false;
+    private boolean mJobListShowing = false;
     private boolean mMessageThreadRunning = false;
     private static int mDumpCount = 0;
 
@@ -145,10 +147,11 @@ public class HeadService extends Service implements AutoJobEventListener {
     private final Runnable mDumpScreenRunnable = new Runnable() {
         @Override
         public void run() {
+            final int captureSlot = 1;
             try {
                 int currentSlot = mGL.getCurrentSlot();
                 mGL.dumpScreenshotManual(mDumpFilePath);
-                mGL.setActiveSlot(1, true);
+                mGL.setActiveSlot(captureSlot, true);
                 mGL.requestRefresh();
                 mGL.setActiveSlot(currentSlot, false);
                 Thread.sleep(1250);
@@ -160,10 +163,8 @@ public class HeadService extends Service implements AutoJobEventListener {
 
             Intent intent = new Intent();
             intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-            intent.putExtra("slot", 1);
-
+            intent.putExtra(getString(R.string.screen_capture_slot), captureSlot);
             intent.setClass(HeadService.this, PointSelectionActivity.class);
-
             startActivity(intent);
         }
     };
@@ -186,21 +187,22 @@ public class HeadService extends Service implements AutoJobEventListener {
 
         mAPV = AppPreferenceValue.getInstance();
         mAPV.init(mContext);
+        mWindowManager = (WindowManager) getSystemService(WINDOW_SERVICE);
 
-        // initial game panel view
-        initGamePanelViews();
-
-        // initial game library, this should never fail and follow up initGamePanelViews
+        // initial game library, this should never fail
         initGameLibrary();
 
         // initial auto jobs, this should never fail and follow up by initGameLibrary
         initAutoJobs();
 
+        // initial game panel view, this should never fail and follow up by initAutoJobs
+        initGamePanelViews();
+
         // initial a notification
         initNotification();
 
-        mMessageThreadRunning = true;
-        new GetMessageThread().start();
+        // initial user readable message thread handler
+        initMessageDisplayThread();
     }
 
     // provide our service not be able to kill
@@ -242,12 +244,62 @@ public class HeadService extends Service implements AutoJobEventListener {
         startForeground(1235, notification);
     }
 
+    private void initJobListButtonViews() {
+        int jobCount = mAutoJobHandler.getJobCount();
+        int initX = (int) mHeadIconList.get(0).getView().getX() + 120;
+        int initY = (int) mHeadIconList.get(0).getView().getY();
+
+        if (jobCount <= 0) {
+                Log.w(TAG, "No job is the job list ???");
+                return;
+        }
+
+        for(int i = 0; i < jobCount; i++) {
+            AutoJob autoJob = mAutoJobHandler.getJob(i);
+            HeadIconView button = new HeadIconView(new Button(mContext), mWindowManager,
+                    initX, initY + i * 100);
+            button.getButton().setText(autoJob.getJobName());
+            button.getButton().setTag(i);
+            button.setOnTapListener(new HeadIconView.OnTapListener() {
+                @Override
+                public void onTap(View view) {
+                    Log.d(TAG, "tap on button job " + view.getTag());
+
+                    if (mScriptRunning) {
+                        Log.d(TAG, "Stop current job first");
+                        onMessageReceived("更改腳本，暫停執行中的腳本", null);
+                        configJobRunning();
+                    }
+                    mAPV.getPrefs().edit().putString("scriptSelectPref", (int)view.getTag() + "").apply();
+                    configJobList();
+                }
+
+                @Override
+                public void onLongPress(View view) {
+
+                }
+
+                @Override
+                public void onTouched(View view) {
+
+                }
+
+                @Override
+                public void onReleased(View view) {
+
+                }
+            });
+            button.addView();
+            button.setVisibility(HeadIconView.INVISIBLE);
+            mJobListButtonList.add(button);
+        }
+    }
+
     private void initGamePanelViews() {
         int offsetY = 0;
         final int offsetYIncrement = 120;
         final boolean enableDebugButton = AppPreferenceValue.getInstance().getPrefs().getBoolean("captureAndCalibration", false);
         mHeadIconList = new ArrayList<>();
-        mWindowManager = (WindowManager) getSystemService(WINDOW_SERVICE);
 
         // Head Icon
         HeadIconView headIcon = new HeadIconView(new ImageView(this), mWindowManager, 0, offsetY);
@@ -263,6 +315,14 @@ public class HeadService extends Service implements AutoJobEventListener {
             @Override
             public void onLongPress(View view) {
                 showExitConfirmDialog();
+            }
+
+            @Override
+            public void onTouched(View view) {
+            }
+
+            @Override
+            public void onReleased(View view) {
             }
         });
         mHeadIconList.add(headIcon);
@@ -280,12 +340,19 @@ public class HeadService extends Service implements AutoJobEventListener {
         startIcon.setOnTapListener(new HeadIconView.OnTapListener() {
             @Override
             public void onTap(View view) {
-                configScriptStatus();
+                configJobRunning();
             }
 
             @Override
             public void onLongPress(View view) {
+            }
 
+            @Override
+            public void onTouched(View view) {
+            }
+
+            @Override
+            public void onReleased(View view) {
             }
         });
         mHeadIconList.add(startIcon);
@@ -302,13 +369,45 @@ public class HeadService extends Service implements AutoJobEventListener {
 
             @Override
             public void onLongPress(View view) {
-                Log.d(TAG, "config setting icon");
                 configSettings(true);
+            }
+
+            @Override
+            public void onTouched(View view) {
+            }
+
+            @Override
+            public void onReleased(View view) {
             }
         });
         mHeadIconList.add(settingIcon);
         offsetY += offsetYIncrement;
 
+        // Job List Icon
+        HeadIconView jobListIcon = new HeadIconView(new ImageView(this), mWindowManager, 0, offsetY);
+        jobListIcon.getImageView().setImageResource(R.drawable.ic_job_list);
+        jobListIcon.setOnTapListener(new HeadIconView.OnTapListener() {
+            @Override
+            public void onTap(View view) {
+                configJobList();
+            }
+
+            @Override
+            public void onLongPress(View view) {
+            }
+
+            @Override
+            public void onTouched(View view) {
+            }
+
+            @Override
+            public void onReleased(View view) {
+            }
+        });
+        mHeadIconList.add(jobListIcon);
+        offsetY += offsetYIncrement;
+
+        // These buttons will be initialized if debug button is enabled in Setting
         if (enableDebugButton) {
             // Capture Icon
             HeadIconView captureIcon = new HeadIconView(new ImageView(this), mWindowManager, 0, offsetY);
@@ -321,7 +420,14 @@ public class HeadService extends Service implements AutoJobEventListener {
 
                 @Override
                 public void onLongPress(View view) {
+                }
 
+                @Override
+                public void onTouched(View view) {
+                }
+
+                @Override
+                public void onReleased(View view) {
                 }
             });
             mHeadIconList.add(captureIcon);
@@ -338,7 +444,14 @@ public class HeadService extends Service implements AutoJobEventListener {
 
                 @Override
                 public void onLongPress(View view) {
+                }
 
+                @Override
+                public void onTouched(View view) {
+                }
+
+                @Override
+                public void onReleased(View view) {
                 }
             });
             mHeadIconList.add(acIcon);
@@ -365,6 +478,9 @@ public class HeadService extends Service implements AutoJobEventListener {
 
         // Set default visibility
         configHeadIconShowing(HeadIconView.VISIBLE);
+
+        // initial job list button, default not showing
+        initJobListButtonViews();
     }
 
     private GameLibrary20 initGameLibrary20() {
@@ -502,6 +618,11 @@ public class HeadService extends Service implements AutoJobEventListener {
         }
     }
 
+    private void initMessageDisplayThread() {
+        mMessageThreadRunning = true;
+        new GetMessageThread().start();
+    }
+
     @Override
     public void onDestroy() {
         super.onDestroy();
@@ -618,7 +739,7 @@ public class HeadService extends Service implements AutoJobEventListener {
         }
     }
 
-    private void configScriptStatus() {
+    private void configJobRunning() {
         String currentSelectIndexPref = mAPV.getPrefs().getString("scriptSelectPref", "0");
         int currentSelectIndex = Integer.parseInt(currentSelectIndexPref);
         Log.d(TAG, "select " + currentSelectIndex);
@@ -632,6 +753,13 @@ public class HeadService extends Service implements AutoJobEventListener {
         }
 
         mScriptRunning = !mScriptRunning;
+    }
+
+    private void configJobList() {
+        for(HeadIconView view: mJobListButtonList) {
+            view.setVisibility(mJobListShowing ? HeadIconView.INVISIBLE : HeadIconView.VISIBLE);
+        }
+        mJobListShowing = !mJobListShowing;
     }
 
     private void configAutoCorrection() {
@@ -669,7 +797,7 @@ public class HeadService extends Service implements AutoJobEventListener {
         action.handleAction(mHandler, new Runnable() {
             @Override
             public void run() {
-                doingScriptAction(what, action);
+                executeAction(what, action);
             }
         });
 
@@ -694,7 +822,7 @@ public class HeadService extends Service implements AutoJobEventListener {
      * Action handler
      * ==========================
      */
-    private void doingScriptAction(int what, AutoJobAction action) {
+    private synchronized void executeAction(int what, AutoJobAction action) {
         switch (what) {
             case ACTION_SHOW_DIALOG:
                 actionShowDialog(action);
