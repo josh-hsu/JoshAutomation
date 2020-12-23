@@ -6,6 +6,7 @@
 2. 安裝 [JoshAutomation](https://github.com/josh-hsu/JoshAutomation/tree/master/release) APK 至您的手機
 
 ## 設定 JoshAutomation (大小寫注意)
+<< 2.0 版本之後此步驟不須設定 >>
 1. 打開 JoshAutomation，您必須先同意使用外部儲存空間，按下 打開設定 > 腳本與系統設定
 2. 元件名稱請填: com.mumu.joshautomationservice
 3. 服務名稱請填: .CommandService      (注意前面有的點 . 不要忽略了)
