@@ -53,9 +53,9 @@
    1.53 -> 1.54   (NOT OK, add 0.01)
    This number will be considered as floating number so don't use another dots
 -->
-<definitions version="1.53">
+<definitions version="2.0">
 
-    <defset resolution="1080x1920">
+    <defset resolution="1080x2340">
         <screenpoint name="pointIntroPage">0x44,0x44,0x75,0xFF,824,1035,P</screenpoint>
 
         <screenpoint name="pointSkipDialog">0xff,0xff,0xff,0xff,982,1743,Portrait</screenpoint>
@@ -152,9 +152,9 @@
             <screencoord>789,67,Landscape</screencoord>
         </screencoords>
         <screenpoints name="char100NPChars">
-            <screenpoint>0xFF,0xFF,0xFF,0xFF,362,1000,Landscape</screenpoint>
-            <screenpoint>0xFF,0xFF,0xFF,0xFF,838,1000,Landscape</screenpoint>
-            <screenpoint>0xFF,0xFF,0xFF,0xFF,1317,1000,Landscape</screenpoint>
+            <screenpoint>0xFF,0xFF,0xFF,0xFF,437,964,Landscape</screenpoint>
+            <screenpoint>0xFF,0xFF,0xFF,0xFF,913,964,Landscape</screenpoint>
+            <screenpoint>0xFF,0xFF,0xFF,0xFF,1390,964,Landscape</screenpoint>
         </screenpoints>
 
         <!-- battle stage detect -->

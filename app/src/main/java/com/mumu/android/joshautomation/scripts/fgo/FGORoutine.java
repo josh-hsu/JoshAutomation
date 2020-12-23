@@ -40,10 +40,7 @@ class FGORoutine {
         // FGO game 1080p related resolution should treat as the same
         // i.e., 1080x1920, 1080x2160, 1080x2246 ... etc are the same.
         String resolution = gl.getDeviceResolution()[0] + "x" + gl.getDeviceResolution()[1];
-        if (gl.getDeviceResolution()[0] == 1080)
-            mDef = DefinitionLoader.getInstance().requestDefData(R.raw.fgo_definitions, "fgo_definitions.xml", "1080x1920");
-        else
-            mDef = DefinitionLoader.getInstance().requestDefData(R.raw.fgo_definitions, "fgo_definitions.xml", resolution);
+        mDef = DefinitionLoader.getInstance().requestDefData(R.raw.fgo_definitions, "fgo_definitions.xml", resolution);
     }
 
     private void sendMessage(String msg) {
