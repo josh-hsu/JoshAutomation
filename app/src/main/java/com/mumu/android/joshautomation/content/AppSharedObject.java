@@ -18,6 +18,14 @@ package com.mumu.android.joshautomation.content;
 
 import com.mumu.libjoshgame.GameLibrary20;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.Locale;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
+
 /**
  * App Shared Object
  * This class holds the objects initialized by HeadService and available for
@@ -26,9 +34,12 @@ import com.mumu.libjoshgame.GameLibrary20;
 public class AppSharedObject {
     private static AppSharedObject mSelf;
     private GameLibrary20 mGL;
+    private ArrayList<LogMessage> mLogBuffer;
+    private Lock mBufferLock;
 
     private AppSharedObject() {
-
+        mLogBuffer = new ArrayList<>();
+        mBufferLock = new ReentrantLock();
     }
 
     public static AppSharedObject getInstance() {
@@ -43,5 +54,45 @@ public class AppSharedObject {
 
     public void setGL20(GameLibrary20 gl20) {
         mGL = gl20;
+    }
+
+    public ArrayList<LogMessage> getLogBuffer() {
+        return mLogBuffer;
+    }
+
+    public void cleanLogBuffer() {
+        mBufferLock.lock();
+        try {
+            mLogBuffer.clear();
+        } finally {
+            mBufferLock.unlock();
+        }
+    }
+
+    public void addLog(String log) {
+        mBufferLock.lock();
+        try {
+            if (mLogBuffer != null)
+                mLogBuffer.add(new LogMessage(log));
+        } finally {
+            mBufferLock.unlock();
+        }
+    }
+
+    public static class LogMessage {
+        private String dateString;
+        private String logMsg;
+
+        public LogMessage (String msg) {
+            Date date = new Date();
+            DateFormat sdf = new SimpleDateFormat("HH:mm:ss", Locale.TAIWAN);
+            dateString = sdf.format(date);
+            logMsg = msg;
+        }
+
+        @Override
+        public String toString() {
+            return dateString + " " + logMsg;
+        }
     }
 }

@@ -40,12 +40,8 @@ import android.widget.Toast;
 
 import com.mumu.android.joshautomation.R;
 import com.mumu.android.joshautomation.anim.TRexAnimator;
+import com.mumu.android.joshautomation.content.AppSharedObject;
 import com.mumu.android.joshautomation.service.HeadService;
-
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.Locale;
 
 public class OutlineFragment extends MainFragment {
     private static final String TAG = "JoshAutomation";
@@ -121,20 +117,19 @@ public class OutlineFragment extends MainFragment {
     }
 
     @Override
+    public void onResume() {
+        super.onResume();
+        updateView();
+    }
+
+    @Override
     public void onDetailClick() {
         Log.d(TAG, "Detail click on electricity fragment");
     }
 
     @Override
     public void onBroadcastMessageReceived(String msg) {
-        Date date = new Date();
-        DateFormat sdf = new SimpleDateFormat("HH:mm:ss", Locale.TAIWAN);
-        String time = sdf.format(date);
-
-        mLogString.append(time);
-        mLogString.append(" ");
-        mLogString.append(msg);
-        mLogString.append('\n');
+        // here we only update the view
         updateView();
     }
 
@@ -194,7 +189,12 @@ public class OutlineFragment extends MainFragment {
      * updateView will be called when mUpdateRunnable is triggered
      */
     private void updateView() {
-        Log.d(TAG, "update text");
+        for(AppSharedObject.LogMessage log : AppSharedObject.getInstance().getLogBuffer()) {
+            mLogString.append(log.toString());
+            mLogString.append('\n');
+        }
+        AppSharedObject.getInstance().cleanLogBuffer();
+
         mLogTextView.setText(mLogString.toString());
 
         mLogScrollView.post(new Runnable() {

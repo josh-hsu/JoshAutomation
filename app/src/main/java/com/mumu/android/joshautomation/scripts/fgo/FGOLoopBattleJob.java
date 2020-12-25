@@ -1,7 +1,5 @@
 package com.mumu.android.joshautomation.scripts.fgo;
 
-import android.util.Log;
-
 import com.mumu.android.joshautomation.autojob.AutoJob;
 import com.mumu.android.joshautomation.autojob.AutoJobEventListener;
 import com.mumu.android.joshautomation.content.AppPreferenceValue;
@@ -15,7 +13,6 @@ public class FGOLoopBattleJob extends AutoJob {
     private AutoJobEventListener mListener;
 
     private FGORoutine mFGO;
-    private FGOLoopBattleJob mSelf;
     private BattleArgument mBattleArg;
     private boolean mWaitSkip = false;
 
@@ -220,7 +217,7 @@ public class FGOLoopBattleJob extends AutoJob {
 
             sleep(1000);
             sendMessage("結束循環戰鬥");
-            mListener.onJobDone(mSelf.getJobName());
+            mListener.onJobDone(getJobName());
             sleep(1000);
         }
 

@@ -37,10 +37,15 @@ class FGORoutine {
         mGL = gl;
         mCallbacks = el;
 
-        // FGO game 1080p related resolution should treat as the same
-        // i.e., 1080x1920, 1080x2160, 1080x2246 ... etc are the same.
-        String resolution = gl.getDeviceResolution()[0] + "x" + gl.getDeviceResolution()[1];
-        mDef = DefinitionLoader.getInstance().requestDefData(R.raw.fgo_definitions, "fgo_definitions.xml", resolution);
+        // FGO has changed to full screen game on non-legacy HD displays
+        int[] deviceResolution = gl.getDeviceResolution();
+        if (deviceResolution != null) {
+            String targetResolution = deviceResolution[0]+ "x" + deviceResolution[1];
+            String rawDefName = "fgo_definitions.xml";
+            mDef = DefinitionLoader.getInstance().requestDefData(R.raw.fgo_definitions, rawDefName, targetResolution);
+        } else {
+            sendMessage("函式庫初始化失敗");
+        }
     }
 
     private void sendMessage(String msg) {

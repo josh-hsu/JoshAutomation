@@ -144,6 +144,10 @@ public class HeadService extends Service implements AutoJobEventListener {
         LocalBroadcastManager.getInstance(this).sendBroadcast(intent);
     }
 
+    private void sendBroadcastMsgToBuffer(String msg) {
+        AppSharedObject.getInstance().addLog(msg);
+    }
+
     private final Runnable mDumpScreenRunnable = new Runnable() {
         @Override
         public void run() {
@@ -777,6 +781,7 @@ public class HeadService extends Service implements AutoJobEventListener {
     public void onMessageReceived(String msg, Object extra) {
         mMessageText = msg;
         sendBroadcastMsgToActivity(msg);
+        sendBroadcastMsgToBuffer(msg);
     }
 
     @Override

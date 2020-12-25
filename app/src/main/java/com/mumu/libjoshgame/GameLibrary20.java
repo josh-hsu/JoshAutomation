@@ -21,7 +21,6 @@ import com.mumu.libjoshgame.device.NoxPlayer;
 import com.mumu.libjoshgame.service.DeviceInteract;
 import com.mumu.libjoshgame.service.DeviceScreen;
 
-import java.io.Serializable;
 import java.util.ArrayList;
 
 /**
