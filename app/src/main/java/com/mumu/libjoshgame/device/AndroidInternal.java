@@ -203,9 +203,12 @@ public class AndroidInternal extends GameDevice implements GameDeviceBasics, Ser
         boolean doInitHWInterface = false;
 
         if (AndroidHardwareDeviceMKTNames.isAsusDevice(this)) {
-            doInitHWInterface = AndroidHardwareDeviceMKTNames.getMKTName(this).equals(AndroidHardwareDeviceMKTNames.ASUS_ZENFONE_6) ||
-                    AndroidHardwareDeviceMKTNames.getMKTName(this).equals(AndroidHardwareDeviceMKTNames.ASUS_ROG_2);
-        }
+            String mktName = AndroidHardwareDeviceMKTNames.getMKTName(this);
+            Log.d(TAG, "ASUS device: " + mktName);
+            doInitHWInterface = mktName.equals(AndroidHardwareDeviceMKTNames.ASUS_ZENFONE_6) ||
+                    mktName.equals(AndroidHardwareDeviceMKTNames.ASUS_ROG_2);
+        } else
+            Log.d(TAG, "NOT ASUS device");
 
         if (doInitHWInterface) {
             // currently we only support vibrator
@@ -578,22 +581,26 @@ public class AndroidInternal extends GameDevice implements GameDeviceBasics, Ser
         final static String ASUS_ROG_3 = "ROG_Phone3";
         final static String ASUS_ROG_2 = "ROG_Phone2";
 
-        public static boolean isAsusDevice(GameDevice gameDevice) {
-            String brand = gameDevice.runShellCommand(brandPropertyName);
+        private static String getProperty(String property) {
+            return "getprop " + property;
+        }
 
+        public static boolean isAsusDevice(GameDevice gameDevice) {
+            String brand = gameDevice.runShellCommand(getProperty(brandPropertyName));
             return brand.equals(BRAND_ASUS);
         }
 
         public static String getMKTName(GameDevice gameDevice) {
-            String mkt1 = gameDevice.runShellCommand(asusMKTPropertyName);
-            String mkt2 = gameDevice.runShellCommand(asusMKTPropertyName2);
+            String mkt1 = gameDevice.runShellCommand(getProperty(asusMKTPropertyName));
+            String mkt2 = gameDevice.runShellCommand(getProperty(asusMKTPropertyName2));
+            Log.d(TAG, "mkt1 " + mkt1 + ", mkt2 " + mkt2);
 
             if (mkt1 != null && !mkt1.equals(""))
                 return mkt1;
             else if (mkt2 != null && !mkt2.equals(""))
                 return mkt2;
             else
-                return "";
+                return "UNKNOWN";
         }
     }
 
