@@ -17,6 +17,7 @@
 package com.mumu.android.joshautomation.content;
 
 import com.mumu.android.joshautomation.autojob.SelectableSAPAJob;
+import com.mumu.android.joshautomation.scripts.claudia.ClaudiaAutoEventJob;
 import com.mumu.android.joshautomation.scripts.epic7.Epic7AutoReplayJob;
 import com.mumu.android.joshautomation.scripts.fgo.AutoBoxJob;
 import com.mumu.android.joshautomation.scripts.fgo.FGOLoopBattleJob;
@@ -60,6 +61,7 @@ public class AutoJobClasses {
             add(FGOLoopBattleJob.class);
             add(AutoBoxJob.class);
             add(SagaAutoJob.class);
+            add(ClaudiaAutoEventJob.class);
         }
     };
 }
