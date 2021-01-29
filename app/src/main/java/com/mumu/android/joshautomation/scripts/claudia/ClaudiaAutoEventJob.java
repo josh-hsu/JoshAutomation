@@ -90,7 +90,8 @@ public class ClaudiaAutoEventJob extends AutoJob {
         private void main() throws Exception {
             boolean shouldRunning = true;
             int battleCount = 300;
-            boolean battleUseMH = true;
+            boolean battleUseMH = AppPreferenceValue.getInstance().getPrefs().getBoolean("claudiaPerfBattleUseMonsterHunter", true);
+            boolean battleUseMHFriend = AppPreferenceValue.getInstance().getPrefs().getBoolean("claudiaPerfBattleUseMonsterHunterFriend", true);
 
             while (shouldRunning) {
                 // setup gl for game spec
@@ -112,6 +113,9 @@ public class ClaudiaAutoEventJob extends AutoJob {
                         case ClaudiaRoutine.STAGE_IN_BATTLE_RESULT:
                             sendMessage("結果");
                             mClaudia.postBattle();
+                        case ClaudiaRoutine.STAGE_IN_SELECT_FRIEND:
+                            sendMessage("選朋友畫面");
+                            mClaudia.preBattleSelectFriend(battleUseMHFriend);
                             break;
                     }
                     sleep(500);

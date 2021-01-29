@@ -23,6 +23,7 @@ public class ClaudiaRoutine {
     public static final int STAGE_IN_GO_BATTLE = 0;
     public static final int STAGE_IN_BATTLE = 1;
     public static final int STAGE_IN_BATTLE_RESULT = 2;
+    public static final int STAGE_IN_SELECT_FRIEND = 3;
 
     ClaudiaRoutine(GameLibrary20 gl, AutoJobEventListener el) {
         mGL = gl;
@@ -79,13 +80,15 @@ public class ClaudiaRoutine {
             return STAGE_IN_BATTLE;
         else if (mGL.colorsAre(SPTList("pBattleResult")))
             return STAGE_IN_BATTLE_RESULT;
+        else if (mGL.colorsAre(SPTList("pBattleFriend")))
+            return STAGE_IN_SELECT_FRIEND;
         else
             return -1;
     }
 
-    private void selectFriendWithMonsterHunter() throws InterruptedException, GameLibrary20.ScreenshotErrorException {
+    private void selectFriendWithMonsterHunter(boolean useMHFriend) throws InterruptedException, GameLibrary20.ScreenshotErrorException {
         ArrayList<ArrayList<ScreenPoint>> friendMHArrays = new ArrayList<>();
-        int index = 0;
+        int index = 1;
         friendMHArrays.add(SPTList("pBattleFriend1"));
         friendMHArrays.add(SPTList("pBattleFriend2"));
         friendMHArrays.add(SPTList("pBattleFriend3"));
@@ -94,10 +97,15 @@ public class ClaudiaRoutine {
         friendMHArrays.add(SPTList("pBattleFriend6"));
         friendMHArrays.add(SPTList("pBattleFriend7"));
 
+        if (!useMHFriend) {
+            mGL.mouseClick(SPTList("pBattleFriend").get(0).coord);
+            sleep(1000);
+            return;
+        }
+
         mGL.setScreenshotPolicy(DeviceScreen.POLICY_MANUAL);
         mGL.requestRefresh();
         for(ArrayList<ScreenPoint> friendPoint : friendMHArrays) {
-            index++;
             if (mGL.colorsAre(friendPoint)) {
                 ScreenCoord screenCoord = new ScreenCoord(friendPoint.get(0).coord.x - 400,
                         friendPoint.get(0).coord.y, friendPoint.get(0).coord.orientation);
@@ -106,6 +114,12 @@ public class ClaudiaRoutine {
                 sleep(1000);
                 break;
             }
+            index++;
+        }
+        if (index > friendMHArrays.size()) {
+            sendMessage("你沒朋友");
+            mGL.mouseClick(SPTList("pBattleFriend").get(0).coord);
+            sleep(1000);
         }
         mGL.setScreenshotPolicy(DeviceScreen.POLICY_DEFAULT);
     }
@@ -125,7 +139,7 @@ public class ClaudiaRoutine {
             sendMessage("沒有魔獸獵人");
         }
 
-        sendMessage("換對友");
+        sendMessage("換隊友");
         sleep(500);
         mGL.mouseClick(SCDList("cBattleMembers").get(3));
         sleep(500);
@@ -146,6 +160,28 @@ public class ClaudiaRoutine {
         sleep(500);
         mGL.mouseClick(SCDList("cBattleMembers").get(0));
         sleep(500);
+        mGL.mouseClick(SCDList("cBattleMembers").get(0));
+        sleep(500);
+        mGL.mouseClick(SCDList("cBattleMembers").get(0));
+        sleep(500);
+    }
+
+    private void randomClickSkills() throws InterruptedException, GameLibrary20.ScreenshotErrorException {
+        mGL.mouseClick(SPTList("pBattleAttack").get(0).coord);
+        sleep(150);
+        mGL.mouseClick(SCDList("cBattleSkills").get(0));
+        sleep(150);
+        mGL.mouseClick(SPTList("pBattleAttack").get(0).coord);
+        sleep(150);
+        mGL.mouseClick(SCDList("cBattleSkills").get(1));
+        sleep(150);
+        mGL.mouseClick(SPTList("pBattleAttack").get(0).coord);
+        sleep(150);
+        mGL.mouseClick(SCDList("cBattleSkills").get(2));
+        sleep(150);
+        mGL.mouseClick(SPTList("pBattleAttack").get(0).coord);
+        sleep(150);
+        mGL.mouseClick(SCDList("cBattleSkills").get(3));
     }
 
     /*
@@ -164,21 +200,7 @@ public class ClaudiaRoutine {
                 detectMonsterHunter();
                 monsterHunterUsed = true;
             }
-            mGL.mouseClick(SPTList("pBattleAttack").get(0).coord);
-            sleep(150);
-            mGL.mouseClick(SCDList("cBattleSkills").get(0));
-            sleep(150);
-            mGL.mouseClick(SPTList("pBattleAttack").get(0).coord);
-            sleep(150);
-            mGL.mouseClick(SCDList("cBattleSkills").get(1));
-            sleep(150);
-            mGL.mouseClick(SPTList("pBattleAttack").get(0).coord);
-            sleep(150);
-            mGL.mouseClick(SCDList("cBattleSkills").get(2));
-            sleep(150);
-            mGL.mouseClick(SPTList("pBattleAttack").get(0).coord);
-            sleep(150);
-            mGL.mouseClick(SCDList("cBattleSkills").get(3));
+            randomClickSkills();
         }
 
         sendMessage("結果出現");
@@ -186,7 +208,7 @@ public class ClaudiaRoutine {
     }
 
     /*
-     * Handle RESULT -> BATTLE_GO
+     * Handle RESULT -> SELECT_FRIEND
      */
     public int postBattle() throws InterruptedException, GameLibrary20.ScreenshotErrorException {
         int timeout = 10000; //10 seconds
@@ -208,17 +230,14 @@ public class ClaudiaRoutine {
         mGL.mouseClick(SPTList("pBattleAgain").get(0).coord);
         sleep(2000);
 
+        return -1;
+    }
+
+    public void preBattleSelectFriend(boolean useMHFriend) throws InterruptedException, GameLibrary20.ScreenshotErrorException {
         if (mGL.colorsAre(SPTList("pBattleFriend"))) {
-            selectFriendWithMonsterHunter();
+            selectFriendWithMonsterHunter(useMHFriend);
             sleep(1000);
         }
-
-        if (mGL.colorsAre(SPTList("pBattleGo"))) {
-            sendMessage("出現出發");
-            return 0;
-        }
-
-        return -1;
     }
 
     /*

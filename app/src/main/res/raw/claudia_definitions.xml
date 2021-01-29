@@ -138,7 +138,7 @@
         </screenpoints>
 
         <screenpoints name="pBattleFriend4">
-            <screenpoint>38,85,95,0xFF,881,960,P</screenpoint>
+            <screenpoint>36,84,95,0xFF,881,1210,P</screenpoint>
             <screenpoint>166,123,51,0xFF,892,1210,P</screenpoint>
         </screenpoints>
 

@@ -11,6 +11,11 @@
         android:title="@string/settings_fragment_title_5"
         android:summary="@string/settings_fragment_summary_5" />
 
+    <header android:fragment="com.mumu.android.joshautomation.activity.AppPreferenceActivity$ClaudiaPrefFragment"
+        android:icon="@mipmap/ic_fgo"
+        android:title="@string/settings_fragment_title_6"
+        android:summary="@string/settings_fragment_summary_6" />
+
     <header android:fragment="com.mumu.android.joshautomation.activity.AppPreferenceActivity$FGOPrefFragment"
         android:icon="@drawable/fgo"
         android:title="@string/settings_fragment_title_1"

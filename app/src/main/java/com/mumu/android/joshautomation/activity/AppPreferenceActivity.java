@@ -419,5 +419,38 @@ public class AppPreferenceActivity extends PreferenceActivity {
             }
         }
     }
+
+    /**
+     * Claudia Preference Fragment
+     */
+    public static class ClaudiaPrefFragment extends PreferenceFragment implements SharedPreferences.OnSharedPreferenceChangeListener{
+        @Override
+        public void onCreate(Bundle savedInstanceState) {
+            super.onCreate(savedInstanceState);
+
+            // Make sure default values are applied.  In a real app, you would
+            // want this in a shared function that is used to retrieve the
+            // SharedPreferences wherever they are needed.
+            PreferenceManager.setDefaultValues(getActivity(),
+                    R.xml.app_preferences_claudia, false);
+
+            // Load the app_preferences_fgo from an XML resource
+            addPreferencesFromResource(R.xml.app_preferences_claudia);
+
+            //if you are using default SharedPreferences
+            SharedPreferences sharedPrefs = PreferenceManager.getDefaultSharedPreferences(getContext());
+
+            onSharedPreferenceChanged(sharedPrefs, "claudiaPerfBattleTimeout");
+        }
+
+        @Override
+        public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
+            Preference pref = findPreference(key);
+            if (pref instanceof EditTextPreference) {
+                EditTextPreference listPref = (EditTextPreference) pref;
+                pref.setSummary(listPref.getText());
+            }
+        }
+    }
 }
 

@@ -69,6 +69,8 @@
     <string name="settings_fragment_summary_4">在程式 RO 底下的腳本設定</string>
     <string name="settings_fragment_title_5">Epic 7 設定</string>
     <string name="settings_fragment_summary_5">在程式 Epic 7 底下的腳本設定</string>
+    <string name="settings_fragment_title_6">最後的克勞迪亞設定</string>
+    <string name="settings_fragment_summary_6">在程式最後的克勞迪亞底下的腳本設定</string>
     <string name="settings_restore_data_from_sdcard">開啟服務</string>
     <string name="settings_restore_title">恢復上次備份</string>
     <string name="settings_restore_subtitle">注意！您即將恢復上次備份資料，從上個備份至今你輸入的資料將會遺失。確定嗎？</string>
