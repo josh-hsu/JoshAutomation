@@ -53,7 +53,7 @@
    1.53 -> 1.54   (NOT OK, add 0.01)
    This number will be considered as floating number so don't use another dots
 -->
-<definitions version="1.0">
+<definitions version="1.1">
 
     <defset resolution="1080x2340" orientation="portrait">
         <screenpoints name="pBattleGo">
@@ -76,6 +76,13 @@
             <screencoord>872,2025,P</screencoord>
         </screencoords>
 
+        <screencoords name="cBattleMembers">
+            <screencoord>149,1606,P</screencoord>
+            <screencoord>407,1606,P</screencoord>
+            <screencoord>682,1616,P</screencoord>
+            <screencoord>965,1604,P</screencoord>
+        </screencoords>
+
         <screenpoints name="pBattleMagic">
             <screenpoint>42,20,134,0xFF,584,2202,P</screenpoint>
             <screenpoint>48,38,54,0xFF,525,2192,P</screenpoint>
@@ -85,6 +92,17 @@
         <screenpoints name="pBattleMonsterHunter">
             <screenpoint>90,59,60,0xFF,170,1810,P</screenpoint>
             <screenpoint>216,216,216,0xFF,355,1792,P</screenpoint>
+        </screenpoints>
+
+        <screenpoints name="pBattleCancelMagic">
+            <screenpoint>31,81,90,0xFF,801,2256,P</screenpoint>
+            <screenpoint>18,43,51,0xFF,711,2253,P</screenpoint>
+        </screenpoints>
+
+        <screenpoints name="pBattleBossGauge">
+            <screenpoint>241,217,71,0xFF,61,151,P</screenpoint>
+            <screenpoint>124,107,57,0xFF,52,144,P</screenpoint>
+            <screenpoint>70,61,13,0xFF,130,145,P</screenpoint>
         </screenpoints>
 
         <screenpoints name="pBattleResult">
@@ -102,6 +120,41 @@
         <screenpoints name="pBattleFriend">
             <screenpoint>28,38,40,0xFF,410,505,P</screenpoint>
             <screenpoint>224,224,207,0xFF,909,607,P</screenpoint>
+        </screenpoints>
+
+        <screenpoints name="pBattleFriend1">
+            <screenpoint>57,75,76,0xFF,883,463,P</screenpoint>
+            <screenpoint>180,131,50,0xFF,894,465,P</screenpoint>
+        </screenpoints>
+
+        <screenpoints name="pBattleFriend2">
+            <screenpoint>52,92,96,0xFF,881,710,P</screenpoint>
+            <screenpoint>183,132,66,0xFF,891,710,P</screenpoint>
+        </screenpoints>
+
+        <screenpoints name="pBattleFriend3">
+            <screenpoint>42,99,116,0xFF,880,960,P</screenpoint>
+            <screenpoint>141,97,29,0xFF,893,960,P</screenpoint>
+        </screenpoints>
+
+        <screenpoints name="pBattleFriend4">
+            <screenpoint>38,85,95,0xFF,881,960,P</screenpoint>
+            <screenpoint>166,123,51,0xFF,892,1210,P</screenpoint>
+        </screenpoints>
+
+        <screenpoints name="pBattleFriend5">
+            <screenpoint>40,86,95,0xFF,881,1458,P</screenpoint>
+            <screenpoint>177,128,78,0xFF,894,1460,P</screenpoint>
+        </screenpoints>
+
+        <screenpoints name="pBattleFriend6">
+            <screenpoint>36,106,127,0xFF,880,1704,P</screenpoint>
+            <screenpoint>164,119,44,0xFF,893,1708,P</screenpoint>
+        </screenpoints>
+
+        <screenpoints name="pBattleFriend7">
+            <screenpoint>48,95,107,0xFF,880,1955,P</screenpoint>
+            <screenpoint>183,140,70,0xFF,892,1959,P</screenpoint>
         </screenpoints>
     </defset>
 </definitions>
