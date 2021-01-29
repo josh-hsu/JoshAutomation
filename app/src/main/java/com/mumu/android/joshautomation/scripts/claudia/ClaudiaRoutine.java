@@ -99,8 +99,10 @@ public class ClaudiaRoutine {
         for(ArrayList<ScreenPoint> friendPoint : friendMHArrays) {
             index++;
             if (mGL.colorsAre(friendPoint)) {
+                ScreenCoord screenCoord = new ScreenCoord(friendPoint.get(0).coord.x - 400,
+                        friendPoint.get(0).coord.y, friendPoint.get(0).coord.orientation);
                 sendMessage("找到第" + index + "朋友有MH");
-                mGL.mouseClick(friendPoint.get(0).coord);
+                mGL.mouseClick(screenCoord);
                 sleep(1000);
                 break;
             }
