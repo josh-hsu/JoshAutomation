@@ -127,6 +127,10 @@ public class ClaudiaAutoEventJob extends AutoJob {
                             sendMessage("網路錯誤");
                             mClaudia.handleNetworkError();
                             break;
+                        case ClaudiaRoutine.STAGE_IN_FRIEND_REQUEST:
+                            sendMessage("請求朋友");
+                            mClaudia.handleFriendRequest();
+                            break;
                     }
                     sleep(500);
                 }

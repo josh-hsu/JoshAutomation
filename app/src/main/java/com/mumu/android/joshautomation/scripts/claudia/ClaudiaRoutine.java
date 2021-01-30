@@ -26,6 +26,7 @@ public class ClaudiaRoutine {
     public static final int STAGE_IN_SELECT_FRIEND = 3;
     public static final int STAGE_IN_BATTLE_AGAIN = 4;
     public static final int STAGE_IN_NETWORK_ERROR = 5;
+    public static final int STAGE_IN_FRIEND_REQUEST = 6;
 
     ClaudiaRoutine(GameLibrary20 gl, AutoJobEventListener el) {
         mGL = gl;
@@ -88,6 +89,8 @@ public class ClaudiaRoutine {
             return STAGE_IN_BATTLE_AGAIN;
         else if (mGL.colorsAre(SPTList("pNetworkError")))
             return STAGE_IN_NETWORK_ERROR;
+        else if (mGL.colorsAre(SPTList("pFriendRequest")))
+            return STAGE_IN_FRIEND_REQUEST;
         else
             return -1;
     }
@@ -199,6 +202,10 @@ public class ClaudiaRoutine {
         mGL.mouseClick(SPTList("pNetworkError").get(0).coord);
     }
 
+    public void handleFriendRequest() {
+        mGL.mouseClick(SPTList("pFriendRequest").get(0).coord);
+    }
+
     /*
      * Handle ATTACK -> RESULT
      */
@@ -226,7 +233,7 @@ public class ClaudiaRoutine {
      * Handle RESULT -> AGAIN
      */
     public int postBattle() throws InterruptedException, GameLibrary20.ScreenshotErrorException {
-        int timeout = 10000; //10 seconds
+        int timeout = 6000; //10 seconds
         int sleepInterval = 250; // 250 ms
         int retryCount = timeout / sleepInterval;
 
@@ -292,7 +299,7 @@ public class ClaudiaRoutine {
         }
 
         if (retryCount <= 0) {
-            sendMessage("處理結果失敗了，你可能升級或斷線了");
+            sendMessage("逾時");
             return -1;
         }
 

@@ -123,6 +123,12 @@
             <screenpoint>27,60,68,0xFF,675,1299,P</screenpoint>
         </screenpoints>
 
+        <screenpoints name="pFriendRequest">
+            <screenpoint>35,129,137,0xFF,734,1363,P</screenpoint>
+            <screenpoint>31,98,108,0xFF,908,1114,P</screenpoint>
+            <screenpoint>63,164,172,0xFF,923,1396,P</screenpoint>
+        </screenpoints>
+
         <screenpoints name="pBattleFriend">
             <screenpoint>28,38,40,0xFF,410,505,P</screenpoint>
             <screenpoint>224,224,207,0xFF,909,607,P</screenpoint>
