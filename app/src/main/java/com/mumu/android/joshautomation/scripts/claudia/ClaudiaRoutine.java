@@ -24,6 +24,8 @@ public class ClaudiaRoutine {
     public static final int STAGE_IN_BATTLE = 1;
     public static final int STAGE_IN_BATTLE_RESULT = 2;
     public static final int STAGE_IN_SELECT_FRIEND = 3;
+    public static final int STAGE_IN_BATTLE_AGAIN = 4;
+    public static final int STAGE_IN_NETWORK_ERROR = 5;
 
     ClaudiaRoutine(GameLibrary20 gl, AutoJobEventListener el) {
         mGL = gl;
@@ -52,7 +54,7 @@ public class ClaudiaRoutine {
     private void sleep(int time) throws InterruptedException {
         try {
             String sleepMultiplier = AppPreferenceValue.getInstance().getPrefs().getString("battleSpeed", "1.0");
-            Double sleepMultiplyValue = Double.parseDouble(sleepMultiplier);
+            double sleepMultiplyValue = Double.parseDouble(sleepMultiplier);
             Thread.sleep((long) (time * sleepMultiplyValue));
         } catch (NumberFormatException e) {
             Thread.sleep(time);
@@ -82,6 +84,10 @@ public class ClaudiaRoutine {
             return STAGE_IN_BATTLE_RESULT;
         else if (mGL.colorsAre(SPTList("pBattleFriend")))
             return STAGE_IN_SELECT_FRIEND;
+        else if (mGL.colorsAre(SPTList("pBattleAgain")))
+            return STAGE_IN_BATTLE_AGAIN;
+        else if (mGL.colorsAre(SPTList("pNetworkError")))
+            return STAGE_IN_NETWORK_ERROR;
         else
             return -1;
     }
@@ -117,7 +123,7 @@ public class ClaudiaRoutine {
             index++;
         }
         if (index > friendMHArrays.size()) {
-            sendMessage("你沒朋友");
+            sendMessage("你沒MH朋友");
             mGL.mouseClick(SPTList("pBattleFriend").get(0).coord);
             sleep(1000);
         }
@@ -130,13 +136,13 @@ public class ClaudiaRoutine {
         mGL.mouseClick(SPTList("pBattleMagic").get(0).coord);
         sleep(800);
         if (mGL.colorsAre(SPTList("pBattleMonsterHunter"))) {
-            sendMessage("有魔獸獵人");
+            sendMessage("有魔獸獵人自己");
             mGL.mouseClick(SPTList("pBattleMonsterHunter").get(0).coord);
             sleep(100);
             mGL.mouseClick(SPTList("pBattleMonsterHunter").get(0).coord);
             p1HasMH = true;
         } else {
-            sendMessage("沒有魔獸獵人");
+            sendMessage("沒有魔獸獵人自己");
         }
 
         sendMessage("換隊友");
@@ -150,10 +156,10 @@ public class ClaudiaRoutine {
             sleep(1000);
         }
         if (mGL.colorsAre(SPTList("pBattleMonsterHunter"))) {
-            sendMessage("有魔獸獵人");
+            sendMessage("有魔獸獵人戰友");
             mGL.mouseClick(SPTList("pBattleMonsterHunter").get(0).coord);
         } else {
-            sendMessage("沒有魔獸獵人");
+            sendMessage("沒有魔獸獵人戰友");
             if (mGL.colorsAre(SPTList("pBattleCancelMagic")))
                 mGL.mouseClick(SPTList("pBattleCancelMagic").get(0).coord);
         }
@@ -167,21 +173,30 @@ public class ClaudiaRoutine {
     }
 
     private void randomClickSkills() throws InterruptedException, GameLibrary20.ScreenshotErrorException {
+        if (mGL.colorsAre(SPTList("pBattleCancelMagic"))) {
+            sendMessage("亂點到魔法了");
+            mGL.mouseClick(SPTList("pBattleCancelMagic").get(0).coord);
+            sleep(1000);
+        }
         mGL.mouseClick(SPTList("pBattleAttack").get(0).coord);
-        sleep(150);
+        sleep(200);
         mGL.mouseClick(SCDList("cBattleSkills").get(0));
-        sleep(150);
+        sleep(200);
         mGL.mouseClick(SPTList("pBattleAttack").get(0).coord);
-        sleep(150);
+        sleep(200);
         mGL.mouseClick(SCDList("cBattleSkills").get(1));
-        sleep(150);
+        sleep(200);
         mGL.mouseClick(SPTList("pBattleAttack").get(0).coord);
-        sleep(150);
+        sleep(200);
         mGL.mouseClick(SCDList("cBattleSkills").get(2));
-        sleep(150);
+        sleep(200);
         mGL.mouseClick(SPTList("pBattleAttack").get(0).coord);
-        sleep(150);
+        sleep(200);
         mGL.mouseClick(SCDList("cBattleSkills").get(3));
+    }
+
+    public void handleNetworkError() {
+        mGL.mouseClick(SPTList("pNetworkError").get(0).coord);
     }
 
     /*
@@ -193,7 +208,7 @@ public class ClaudiaRoutine {
         sleep(1000);
 
         sendMessage("開始亂點");
-        while (!mGL.colorsAre(SPTList("pBattleResult"))) {
+        while (!mGL.colorsAre(SPTList("pBattleResult")) && !mGL.colorsAre(SPTList("pBattleAgain"))) {
             if (!monsterHunterUsed && useMonsterHunter && mGL.colorsAre(SPTList("pBattleBossGauge"))) {
                 sendMessage("BOSS出現");
                 sleep(1200);
@@ -208,11 +223,11 @@ public class ClaudiaRoutine {
     }
 
     /*
-     * Handle RESULT -> SELECT_FRIEND
+     * Handle RESULT -> AGAIN
      */
     public int postBattle() throws InterruptedException, GameLibrary20.ScreenshotErrorException {
         int timeout = 10000; //10 seconds
-        int sleepInterval = 100; // 100 ms
+        int sleepInterval = 250; // 250 ms
         int retryCount = timeout / sleepInterval;
 
         sendMessage("開始處理結果");
@@ -226,11 +241,30 @@ public class ClaudiaRoutine {
             return -1;
         }
 
-        sendMessage("按再戰");
-        mGL.mouseClick(SPTList("pBattleAgain").get(0).coord);
-        sleep(2000);
+        return 0;
+    }
 
-        return -1;
+    /*
+     * Handle AGAIN -> SELECT_FRIEND
+     */
+    public int battleAgain() throws InterruptedException, GameLibrary20.ScreenshotErrorException {
+        int timeout = 20000; //20 seconds
+        int sleepInterval = 1000; // 1 second
+        int retryCount = timeout / sleepInterval;
+
+        sendMessage("按再戰");
+        while (mGL.colorsAre(SPTList("pBattleAgain")) && retryCount-- > 0) {
+            mGL.mouseClick(SPTList("pBattleAgain").get(0).coord);
+            sleep(sleepInterval);
+        }
+
+        if (retryCount <= 0) {
+            sendMessage("處理結果失敗了，你可能升級或斷線了");
+            return -1;
+        }
+
+        sleep(1000);
+        return 0;
     }
 
     public void preBattleSelectFriend(boolean useMHFriend) throws InterruptedException, GameLibrary20.ScreenshotErrorException {

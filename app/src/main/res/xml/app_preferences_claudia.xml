@@ -7,7 +7,7 @@
             android:key="claudiaPerfBattleCount"
             android:title="連續戰鬥場數"
             android:summary=""
-            android:defaultValue="100"
+            android:defaultValue="1000"
             android:maxLength="5"/>
         <EditTextPreference
             android:key="claudiaPerfBattleTimeout"

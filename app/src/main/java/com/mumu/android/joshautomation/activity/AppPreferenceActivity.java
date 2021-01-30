@@ -441,6 +441,7 @@ public class AppPreferenceActivity extends PreferenceActivity {
             SharedPreferences sharedPrefs = PreferenceManager.getDefaultSharedPreferences(getContext());
 
             onSharedPreferenceChanged(sharedPrefs, "claudiaPerfBattleTimeout");
+            onSharedPreferenceChanged(sharedPrefs, "claudiaPerfBattleCount");
         }
 
         @Override

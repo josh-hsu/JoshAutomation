@@ -89,7 +89,7 @@ public class ClaudiaAutoEventJob extends AutoJob {
 
         private void main() throws Exception {
             boolean shouldRunning = true;
-            int battleCount = 300;
+            int battleCount = Integer.parseInt(AppPreferenceValue.getInstance().getPrefs().getString("claudiaPerfBattleCount", "1000"));
             boolean battleUseMH = AppPreferenceValue.getInstance().getPrefs().getBoolean("claudiaPerfBattleUseMonsterHunter", true);
             boolean battleUseMHFriend = AppPreferenceValue.getInstance().getPrefs().getBoolean("claudiaPerfBattleUseMonsterHunterFriend", true);
 
@@ -100,7 +100,7 @@ public class ClaudiaAutoEventJob extends AutoJob {
                 mGL.setScreenAmbiguousRange(new int[]{25,25,25});
 
                 sendMessage("開始識別");
-                while (battleCount -- > 0) {
+                while (battleCount > 0) {
                     switch (mClaudia.getCurrentStage()) {
                         case ClaudiaRoutine.STAGE_IN_GO_BATTLE:
                             sendMessage("GO");
@@ -109,13 +109,23 @@ public class ClaudiaAutoEventJob extends AutoJob {
                         case ClaudiaRoutine.STAGE_IN_BATTLE:
                             sendMessage("戰鬥");
                             mClaudia.battleRoutine(true, battleUseMH);
+                            battleCount--;
                             break;
                         case ClaudiaRoutine.STAGE_IN_BATTLE_RESULT:
                             sendMessage("結果");
                             mClaudia.postBattle();
+                            break;
                         case ClaudiaRoutine.STAGE_IN_SELECT_FRIEND:
                             sendMessage("選朋友畫面");
                             mClaudia.preBattleSelectFriend(battleUseMHFriend);
+                            break;
+                        case ClaudiaRoutine.STAGE_IN_BATTLE_AGAIN:
+                            sendMessage("再戰畫面");
+                            mClaudia.battleAgain();
+                            break;
+                        case ClaudiaRoutine.STAGE_IN_NETWORK_ERROR:
+                            sendMessage("網路錯誤");
+                            mClaudia.handleNetworkError();
                             break;
                     }
                     sleep(500);

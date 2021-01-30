@@ -106,7 +106,7 @@ public class Epic7AutoReplayJob extends AutoJob {
         private void main() throws Exception {
             boolean shouldRunning = true;
             int battleCount = Integer.parseInt(AppPreferenceValue.getInstance().getPrefs().getString("epic7PerfBattleCount", "10"));
-            int battleTimeout = Integer.parseInt(AppPreferenceValue.getInstance().getPrefs().getString("epic7PerfBattleTimeout", "120"));
+            int battleTimeoutMs = Integer.parseInt(AppPreferenceValue.getInstance().getPrefs().getString("epic7PerfBattleTimeout", "120")) * 1000;
             boolean battleUseLeaf = AppPreferenceValue.getInstance().getPrefs().getBoolean("epic7PerfBattleUseLeaf", false);
 
             while (shouldRunning) {
@@ -115,7 +115,7 @@ public class Epic7AutoReplayJob extends AutoJob {
                 mGL.useHardwareSimulatedInput(false);
                 mGL.setScreenAmbiguousRange(new int[]{25,25,25});
 
-                mEpic7.battleRoutine(battleCount, battleTimeout*1000, battleUseLeaf);
+                mEpic7.battleRoutine(battleCount, battleTimeoutMs, battleUseLeaf);
 
                 shouldRunning = false;
                 mListener.onJobDone(TAG);
