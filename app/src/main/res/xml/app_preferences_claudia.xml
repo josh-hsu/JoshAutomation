@@ -16,6 +16,11 @@
             android:defaultValue="240"
             android:maxLength="5"/>
         <CheckBoxPreference
+            android:key="claudiaPerfBattleUseGemSupply"
+            android:title="是否使用恢復寶玉"
+            android:summary="自動使用財務恢復寶玉"
+            android:defaultValue="true"/>
+        <CheckBoxPreference
             android:key="claudiaPerfBattleUseMonsterHunter"
             android:title="是否用魔物獵人"
             android:summary="戰鬥會在最後一關使用第一個隊友以及戰友的魔物獵人"
@@ -24,6 +29,6 @@
             android:key="claudiaPerfBattleUseMonsterHunterFriend"
             android:title="是否優先使用魔物獵人的戰友"
             android:summary="進關卡前優先選擇魔物獵人裝備的隊友"
-            android:defaultValue="true"/>
+            android:defaultValue="false"/>
     </PreferenceCategory>
 </PreferenceScreen>

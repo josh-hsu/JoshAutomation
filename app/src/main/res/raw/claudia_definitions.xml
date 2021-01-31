@@ -168,5 +168,23 @@
             <screenpoint>48,95,107,0xFF,880,1955,P</screenpoint>
             <screenpoint>183,140,70,0xFF,892,1959,P</screenpoint>
         </screenpoints>
+
+        <screenpoints name="pGemSupplyAuto">
+            <screenpoint>102,186,194,255,429,813,P</screenpoint>
+            <screenpoint>247,225,103,255,138,1099,P</screenpoint>
+        </screenpoints>
+
+        <screenpoints name="pGemSupplyClose">
+            <screenpoint>195,195,186,255,424,1940,P</screenpoint>
+            <screenpoint>229,229,220,255,454,1938,P</screenpoint>
+            <screenpoint>163,163,154,255,333,1932,P</screenpoint>
+            <screenpoint>247,225,103,255,138,1099,P</screenpoint>
+        </screenpoints>
+
+        <screenpoints name="pGemSupplyRecover">
+            <screenpoint>64,165,173,255,473,1801,P</screenpoint>
+            <screenpoint>35,102,112,255,639,1797,P</screenpoint>
+            <screenpoint>39,62,75,255,288,1791,P</screenpoint>
+        </screenpoints>
     </defset>
 </definitions>

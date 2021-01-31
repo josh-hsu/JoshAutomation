@@ -27,6 +27,7 @@ public class ClaudiaRoutine {
     public static final int STAGE_IN_BATTLE_AGAIN = 4;
     public static final int STAGE_IN_NETWORK_ERROR = 5;
     public static final int STAGE_IN_FRIEND_REQUEST = 6;
+    public static final int STAGE_IN_GEM_SUPPLY = 7;
 
     ClaudiaRoutine(GameLibrary20 gl, AutoJobEventListener el) {
         mGL = gl;
@@ -91,6 +92,8 @@ public class ClaudiaRoutine {
             return STAGE_IN_NETWORK_ERROR;
         else if (mGL.colorsAre(SPTList("pFriendRequest")))
             return STAGE_IN_FRIEND_REQUEST;
+        else if (mGL.colorsAre(SPTList("pGemSupplyClose")))
+            return STAGE_IN_GEM_SUPPLY;
         else
             return -1;
     }
@@ -206,6 +209,24 @@ public class ClaudiaRoutine {
         mGL.mouseClick(SPTList("pFriendRequest").get(0).coord);
     }
 
+    public void handleGemSupply(boolean useGemSupply) throws InterruptedException, GameLibrary20.ScreenshotErrorException {
+        if (useGemSupply) {
+            if (mGL.colorsAre(SPTList("pGemSupplyAuto"))) {
+                mGL.mouseClick(SPTList("pGemSupplyAuto").get(0).coord);
+                sleep(1000);
+                if (mGL.colorsAre(SPTList("pGemSupplyRecover"))) {
+                    mGL.mouseClick(SPTList("pGemSupplyRecover").get(0).coord);
+                    sleep(1000);
+                }
+            }
+        }
+
+        if (mGL.colorsAre(SPTList("pGemSupplyClose"))) {
+            mGL.mouseClick(SPTList("pGemSupplyClose").get(0).coord);
+            sleep(1000);
+        }
+    }
+
     /*
      * Handle ATTACK -> RESULT
      */
@@ -232,45 +253,16 @@ public class ClaudiaRoutine {
     /*
      * Handle RESULT -> AGAIN
      */
-    public int postBattle() throws InterruptedException, GameLibrary20.ScreenshotErrorException {
-        int timeout = 6000; //10 seconds
-        int sleepInterval = 250; // 250 ms
-        int retryCount = timeout / sleepInterval;
-
-        sendMessage("開始處理結果");
-        while (!mGL.colorsAre(SPTList("pBattleAgain")) && retryCount-- > 0) {
-            mGL.mouseClick(SPTList("pBattleResult").get(0).coord);
-            sleep(sleepInterval);
-        }
-
-        if (retryCount <= 0) {
-            sendMessage("處理結果失敗了，你可能升級或斷線了");
-            return -1;
-        }
-
+    public int postBattle() {
+        mGL.mouseClick(SPTList("pBattleResult").get(0).coord);
         return 0;
     }
 
     /*
      * Handle AGAIN -> SELECT_FRIEND
      */
-    public int battleAgain() throws InterruptedException, GameLibrary20.ScreenshotErrorException {
-        int timeout = 20000; //20 seconds
-        int sleepInterval = 1000; // 1 second
-        int retryCount = timeout / sleepInterval;
-
-        sendMessage("按再戰");
-        while (mGL.colorsAre(SPTList("pBattleAgain")) && retryCount-- > 0) {
-            mGL.mouseClick(SPTList("pBattleAgain").get(0).coord);
-            sleep(sleepInterval);
-        }
-
-        if (retryCount <= 0) {
-            sendMessage("處理結果失敗了，你可能升級或斷線了");
-            return -1;
-        }
-
-        sleep(1000);
+    public int battleAgain() {
+        mGL.mouseClick(SPTList("pBattleAgain").get(0).coord);
         return 0;
     }
 
@@ -285,7 +277,7 @@ public class ClaudiaRoutine {
      * Handle Go -> BATTLE
      */
     public int preBattle() throws InterruptedException, GameLibrary20.ScreenshotErrorException {
-        int timeout = 10000; //10 seconds
+        int timeout = 5000; //10 seconds
         int sleepInterval = 500; // 500 ms
         int retryCount = timeout / sleepInterval;
 
@@ -294,17 +286,10 @@ public class ClaudiaRoutine {
             sleep(sleepInterval);
         }
 
-        while (!mGL.colorsAre(SPTList("pBattleAttack")) && retryCount-- > 0) {
-            sleep(sleepInterval);
-        }
-
         if (retryCount <= 0) {
             sendMessage("逾時");
             return -1;
         }
-
-        sendMessage("進入戰鬥了");
-        sleep(500);
         return 0;
     }
 }

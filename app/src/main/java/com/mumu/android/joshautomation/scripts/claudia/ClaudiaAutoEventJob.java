@@ -92,6 +92,7 @@ public class ClaudiaAutoEventJob extends AutoJob {
             int battleCount = Integer.parseInt(AppPreferenceValue.getInstance().getPrefs().getString("claudiaPerfBattleCount", "1000"));
             boolean battleUseMH = AppPreferenceValue.getInstance().getPrefs().getBoolean("claudiaPerfBattleUseMonsterHunter", true);
             boolean battleUseMHFriend = AppPreferenceValue.getInstance().getPrefs().getBoolean("claudiaPerfBattleUseMonsterHunterFriend", true);
+            boolean battleUseGemSupply = AppPreferenceValue.getInstance().getPrefs().getBoolean("claudiaPerfBattleUseGemSupply", false);
 
             while (shouldRunning) {
                 // setup gl for game spec
@@ -130,6 +131,10 @@ public class ClaudiaAutoEventJob extends AutoJob {
                         case ClaudiaRoutine.STAGE_IN_FRIEND_REQUEST:
                             sendMessage("請求朋友");
                             mClaudia.handleFriendRequest();
+                            break;
+                        case ClaudiaRoutine.STAGE_IN_GEM_SUPPLY:
+                            sendMessage("寶玉判斷");
+                            mClaudia.handleGemSupply(battleUseGemSupply);
                             break;
                     }
                     sleep(500);
