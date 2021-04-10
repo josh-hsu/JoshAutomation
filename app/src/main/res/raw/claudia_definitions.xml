@@ -114,6 +114,7 @@
         <screenpoints name="pBattleResultEvent">
             <screenpoint>35,121,129,0xFF,399,1295,P</screenpoint>
             <screenpoint>26,93,103,0xFF,599,1309,P</screenpoint>
+            <screenpoint>100,102,102,0xFF,415,95,P</screenpoint>
         </screenpoints>
 
         <screenpoints name="pBattleAgain">

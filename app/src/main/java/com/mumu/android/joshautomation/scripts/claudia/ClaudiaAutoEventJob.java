@@ -116,6 +116,10 @@ public class ClaudiaAutoEventJob extends AutoJob {
                             sendMessage("結果");
                             mClaudia.postBattle();
                             break;
+                        case ClaudiaRoutine.STAGE_IN_RESULT_EVENT:
+                            sendMessage("結果新石記");
+                            mClaudia.eventResult();
+                            break;
                         case ClaudiaRoutine.STAGE_IN_SELECT_FRIEND:
                             sendMessage("選朋友畫面");
                             mClaudia.preBattleSelectFriend(battleUseMHFriend);

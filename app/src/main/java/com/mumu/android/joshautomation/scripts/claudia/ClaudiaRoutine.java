@@ -28,6 +28,7 @@ public class ClaudiaRoutine {
     public static final int STAGE_IN_NETWORK_ERROR = 5;
     public static final int STAGE_IN_FRIEND_REQUEST = 6;
     public static final int STAGE_IN_GEM_SUPPLY = 7;
+    public static final int STAGE_IN_RESULT_EVENT = 8;
 
     ClaudiaRoutine(GameLibrary20 gl, AutoJobEventListener el) {
         mGL = gl;
@@ -94,6 +95,8 @@ public class ClaudiaRoutine {
             return STAGE_IN_FRIEND_REQUEST;
         else if (mGL.colorsAre(SPTList("pGemSupplyClose")))
             return STAGE_IN_GEM_SUPPLY;
+        else if (mGL.colorsAre(SPTList("pBattleResultEvent")))
+            return STAGE_IN_RESULT_EVENT;
         else
             return -1;
     }
@@ -294,6 +297,11 @@ public class ClaudiaRoutine {
             sendMessage("逾時");
             return -1;
         }
+        return 0;
+    }
+
+    public int eventResult() {
+        mGL.mouseClick(SPTList("pBattleResultEvent").get(0).coord);
         return 0;
     }
 }
