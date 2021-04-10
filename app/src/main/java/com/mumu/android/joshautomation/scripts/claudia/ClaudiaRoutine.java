@@ -253,8 +253,12 @@ public class ClaudiaRoutine {
     /*
      * Handle RESULT -> AGAIN
      */
-    public int postBattle() {
+    public int postBattle() throws InterruptedException, GameLibrary20.ScreenshotErrorException {
         mGL.mouseClick(SPTList("pBattleResult").get(0).coord);
+        sleep(500);
+        if (mGL.colorsAre(SPTList("pBattleResultEvent"))) {
+            mGL.mouseClick(SPTList("pBattleResultEvent").get(0).coord);
+        }
         return 0;
     }
 

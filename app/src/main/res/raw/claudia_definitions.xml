@@ -53,7 +53,7 @@
    1.53 -> 1.54   (NOT OK, add 0.01)
    This number will be considered as floating number so don't use another dots
 -->
-<definitions version="1.1">
+<definitions version="1.2">
 
     <defset resolution="1080x2340" orientation="portrait">
         <screenpoints name="pBattleGo">
@@ -109,6 +109,11 @@
             <screenpoint>156,190,207,0xFF,328,113,P</screenpoint>
             <screenpoint>82,111,126,0xFF,501,113,P</screenpoint>
             <screenpoint>208,225,234,0xFF,744,80,P</screenpoint>
+        </screenpoints>
+
+        <screenpoints name="pBattleResultEvent">
+            <screenpoint>35,121,129,0xFF,399,1295,P</screenpoint>
+            <screenpoint>26,93,103,0xFF,599,1309,P</screenpoint>
         </screenpoints>
 
         <screenpoints name="pBattleAgain">
